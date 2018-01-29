@@ -1,0 +1,5 @@
+name: StaffTools
+version: 1.0.0
+main: me.thesquadmc.Main
+author: ckamps
+depend: [LuckPerms]
