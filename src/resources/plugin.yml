@@ -3,3 +3,29 @@ version: 1.0.0
 main: me.thesquadmc.Main
 author: ckamps
 depend: [LuckPerms]
+
+commands:
+    adminchat:
+        aliases: [ac]
+    find:
+        aliases: [whereis]
+    freeze:
+    freezepanel:
+    invsee:
+        aliases: [invc]
+    lookup:
+        aliases: [check]
+    managerchat:
+        aliases: [mc]
+    randomtp:
+        aliases: [rtp]
+    staffchat:
+        aliases: [sc]
+    staffmode:
+        aliases: [mod]
+    staff:
+        aliases: [onlinestaff, liststaff, online, onlineplayers, list, listplayers, eonline, elist]
+    unfreeze:
+    vanish:
+        aliases: [v]
+    xray:

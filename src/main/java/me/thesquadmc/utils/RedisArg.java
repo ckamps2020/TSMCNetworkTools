@@ -17,6 +17,15 @@ public enum RedisArg {
 	REDIS_ARG("REDIS_ARG"),
 	ORIGIN_PLAYER("ORIGIN_PLAYER"),
 	UUID("UUID"),
+
+	TRAINEE("TRAINEE"),
+	HELPER("HELPER"),
+	MOD("MOD"),
+	SRMOD("SRMOD"),
+	ADMIN("ADMIN"),
+	MANAGER("MANGER"),
+	DEVELOPER("DEVELOPER"),
+	OWNER("OWNER"),
 	;
 
 	private String arg;

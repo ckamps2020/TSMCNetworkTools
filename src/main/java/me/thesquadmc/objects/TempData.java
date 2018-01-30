@@ -2,6 +2,7 @@ package me.thesquadmc.objects;
 
 import me.thesquadmc.utils.MessageSettings;
 import me.thesquadmc.utils.StringUtils;
+import org.bukkit.Bukkit;
 
 public final class TempData {
 
@@ -13,16 +14,30 @@ public final class TempData {
 	private MessageSettings managerSetting;
 	private boolean managerchatEnabled;
 	private boolean vanished;
+	private boolean xray;
 
 	public TempData() {
 		loginTime = StringUtils.getDate();
 		staffchatSetting = MessageSettings.LOCAL;
-		staffchatEnabled = false;
+		staffchatEnabled = true;
 		adminchatSetting = MessageSettings.LOCAL;
-		adminchatEnabled = false;
+		adminchatEnabled = true;
 		managerSetting = MessageSettings.LOCAL;
-		managerchatEnabled = false;
+		managerchatEnabled = true;
 		vanished = false;
+		if (Bukkit.getServerName().toUpperCase().contains("FACTIONS")) {
+			xray = true;
+		} else {
+			xray = false;
+		}
+	}
+
+	public boolean isXray() {
+		return xray;
+	}
+
+	public void setXray(boolean xray) {
+		this.xray = xray;
 	}
 
 	public boolean isVanished() {

@@ -17,7 +17,6 @@ import java.util.*;
 public final class FreezeCommand implements CommandExecutor {
 
 	private final Main main;
-	private static Map<UUID, UUID> stafffrozen = new HashMap<>();
 	private static List<UUID> frozen = new ArrayList<>();
 
 	public FreezeCommand(Main main) {
@@ -37,16 +36,22 @@ public final class FreezeCommand implements CommandExecutor {
 					if (t != null) {
 						User u = main.getLuckPermsApi().getUser(t.getUniqueId());
 						if (!main.hasPerm(u, "tools.staff.freeze")) {
-							freezePlayer(t);
-							t.sendMessage(StringUtils.msg("&c&lYou have been frozen by staff, do not log out at all. Please follow staffs instructions at all time"));
-							frozen.add(t.getUniqueId());
-							main.getFrozenInventory().buildFrozenInventory(t);
-							player.sendMessage(StringUtils.msg("&e&lFREEZE &6■ &7You have frozen &e" + t.getName() + "&7!"));
+							if (!frozen.contains(t.getUniqueId())) {
+								freezePlayer(t);
+								t.sendMessage(StringUtils.msg("&c&lYou have been frozen by staff, do not log out at all. Please follow staffs instructions at all time"));
+								frozen.add(t.getUniqueId());
+								main.getFrozenInventory().buildFrozenInventory(t);
+								main.getFrozenInventory().buildStaffGUI(player, t);
+								main.getFrozenInventory().getViewing().put(player.getUniqueId(), t.getUniqueId());
+								player.sendMessage(StringUtils.msg("&e&lFREEZE &6■ &7You have frozen &e" + t.getName() + "&7!"));
+							} else {
+								player.sendMessage(StringUtils.msg("&cThat player is already frozen!"));
+							}
 						} else {
 							player.sendMessage(StringUtils.msg("&cYou are not allowed to freeze another staff member!"));
 						}
 					} else {
-						player.sendMessage(StringUtils.msg("&cYou do not have permission to use this command!"));
+						player.sendMessage(StringUtils.msg("&cThat player does not exist or is offline!"));
 					}
 				} else {
 					player.sendMessage(StringUtils.msg("&cUsage: /freeze <player>"));

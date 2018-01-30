@@ -20,6 +20,10 @@ public final class ItemBuilder {
 		this.itemStack = new ItemStack(mat);
 	}
 
+	public ItemBuilder(Material mat, int data) {
+		this.itemStack = new ItemStack(mat, 1, (short) data);
+	}
+
 	public ItemBuilder(ItemStack itemStack) {
 		this.itemStack = itemStack;
 	}
@@ -44,7 +48,7 @@ public final class ItemBuilder {
 		}
 
 		for (String s : name) {
-			lore.add(s);
+			lore.add(ChatColor.translateAlternateColorCodes('&', s));
 		}
 
 		meta.setLore(lore);

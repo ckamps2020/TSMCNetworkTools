@@ -10,6 +10,8 @@ public enum RedisChannels {
 	INSTANCE("INSTANCE"),
 	FIND("FIND"),
 	FOUND("FOUND"),
+	REQUEST_LIST("REQUEST_LIST"),
+	RETURN_REQUEST_LIST("RETURN_REQUEST_LIST"),
 	;
 
 	private String channelName;

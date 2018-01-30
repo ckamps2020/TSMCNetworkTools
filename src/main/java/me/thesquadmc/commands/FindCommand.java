@@ -39,7 +39,7 @@ public final class FindCommand implements CommandExecutor {
 					Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
 						@Override
 						public void run() {
-							player.sendMessage(StringUtils.msg("&e&lFIND&6■ &7Trying to find &e" + name));
+							player.sendMessage(StringUtils.msg("&e&lFIND&6■ &7Trying to find &e" + name + "&7..."));
 							try (Jedis jedis = main.getPool().getResource()) {
 								JedisTask.withName(UUID.randomUUID().toString())
 										.withArg(RedisArg.SERVER.getArg(), Bukkit.getServerName())

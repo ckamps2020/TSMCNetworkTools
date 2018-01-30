@@ -3,8 +3,10 @@ package me.thesquadmc.commands;
 import me.lucko.luckperms.api.User;
 import me.thesquadmc.Main;
 import me.thesquadmc.objects.TempData;
+import me.thesquadmc.utils.ItemBuilder;
 import me.thesquadmc.utils.StringUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -28,11 +30,17 @@ public final class VanishCommand implements CommandExecutor {
 				if (!tempData.isVanished()) {
 					hidePlayerSpectator(player);
 					tempData.setVanished(true);
+					if (StaffmodeCommand.getStaffmode().containsKey(player.getUniqueId())) {
+						player.getInventory().setItem(4, new ItemBuilder(Material.INK_SACK, 10).name("&e&lToggle Vanish &7off").lore("&7Toggle vanish on or off").build());
+					}
 					player.sendMessage(StringUtils.msg("&e&lVANISH &6■ &7You toggled vanish &eon&7! No one will be able to see you"));
 				} else {
 					showPlayerSpectator(player);
 					tempData.setVanished(false);
-					player.sendMessage(StringUtils.msg("&e&lVANISH &6■ &7You toggled vanish &eoff&7! No one will be able to see you"));
+					if (StaffmodeCommand.getStaffmode().containsKey(player.getUniqueId())) {
+						player.getInventory().setItem(4, new ItemBuilder(Material.INK_SACK, 8).name("&e&lToggle Vanish &7on").lore("&7Toggle vanish on or off").build());
+					}
+					player.sendMessage(StringUtils.msg("&e&lVANISH &6■ &7You toggled vanish &eoff&7! Everyone will be able to see you"));
 				}
 			} else {
 				player.sendMessage(StringUtils.msg("&cYou do not have permission to use this command!"));
