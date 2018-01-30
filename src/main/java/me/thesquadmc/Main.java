@@ -5,6 +5,7 @@ import me.lucko.luckperms.LuckPerms;
 import me.lucko.luckperms.api.LuckPermsApi;
 import me.lucko.luckperms.api.Node;
 import me.lucko.luckperms.api.User;
+import me.thesquadmc.inventories.FrozenInventory;
 import me.thesquadmc.managers.TempDataManager;
 import me.thesquadmc.networking.JedisTask;
 import me.thesquadmc.networking.RedisHandler;
@@ -24,6 +25,7 @@ public final class Main extends JavaPlugin {
 	private FileManager fileManager;
 	private TempDataManager tempDataManager;
 	private RedisHandler redisHandler;
+	private FrozenInventory frozenInventory;
 
 	private String host;
 	private int port;
@@ -35,6 +37,7 @@ public final class Main extends JavaPlugin {
 		main = this;
 		luckPermsApi = LuckPerms.getApi();
 		fileManager = new FileManager(this);
+		frozenInventory = new FrozenInventory(this);
 		fileManager.setup();
 		tempDataManager = new TempDataManager();
 		host = fileManager.getNetworkingConfig().getString("redis.host");
@@ -75,6 +78,10 @@ public final class Main extends JavaPlugin {
 			pool.close();
 		}
 		System.out.println("[StaffTools] Shut down! Cya :D");
+	}
+
+	public FrozenInventory getFrozenInventory() {
+		return frozenInventory;
 	}
 
 	public RedisHandler getRedisHandler() {

@@ -12,13 +12,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public final class FreezeCommand implements CommandExecutor {
 
 	private final Main main;
+	private static Map<UUID, UUID> stafffrozen = new HashMap<>();
 	private static List<UUID> frozen = new ArrayList<>();
 
 	public FreezeCommand(Main main) {
@@ -39,7 +38,9 @@ public final class FreezeCommand implements CommandExecutor {
 						User u = main.getLuckPermsApi().getUser(t.getUniqueId());
 						if (!main.hasPerm(u, "tools.staff.freeze")) {
 							freezePlayer(t);
+							t.sendMessage(StringUtils.msg("&c&lYou have been frozen by staff, do not log out at all. Please follow staffs instructions at all time"));
 							frozen.add(t.getUniqueId());
+							main.getFrozenInventory().buildFrozenInventory(t);
 							player.sendMessage(StringUtils.msg("&e&lFREEZE &6■ &7You have frozen &e" + t.getName() + "&7!"));
 						} else {
 							player.sendMessage(StringUtils.msg("&cYou are not allowed to freeze another staff member!"));
