@@ -33,3 +33,7 @@ commands:
         aliases: [reporthacks]
     managereports:
         aliases: [reports]
+    alert:
+        aliases: [global]
+    stop:
+    whitelist:

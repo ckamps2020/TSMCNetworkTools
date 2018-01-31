@@ -18,6 +18,7 @@ import me.thesquadmc.utils.FileManager;
 import me.thesquadmc.utils.RedisChannels;
 import me.thesquadmc.utils.handlers.UpdateHandler;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 import redis.clients.jedis.*;
 
@@ -27,6 +28,7 @@ public final class Main extends JavaPlugin {
 	private Gson gson = new Gson();
 	private static Main main;
 	private LuckPermsApi luckPermsApi;
+	private String whitelistMessage = ChatColor.translateAlternateColorCodes('&', "&cServer currently whitelisted!");
 
 	private FileManager fileManager;
 	private TempDataManager tempDataManager;
@@ -71,6 +73,10 @@ public final class Main extends JavaPlugin {
 		getCommand("xray").setExecutor(new XrayVerboseCommand(this));
 		getCommand("report").setExecutor(new ReportCommand(this));
 		getCommand("managereports").setExecutor(new ManageReportsCommand(this));
+		getCommand("alert").setExecutor(new AlertCommand(this));
+		getCommand("stop").setExecutor(new StopCommand(this));
+		getCommand("whitelist").setExecutor(new WhitelistCommand(this));
+		getServer().getPluginManager().registerEvents(new WhitelistListener(this), this);
 		getServer().getPluginManager().registerEvents(new ReportListener(this), this);
 		getServer().getPluginManager().registerEvents(new ConnectionListeners(this), this);
 		getServer().getPluginManager().registerEvents(new XrayListener(this), this);
@@ -107,7 +113,11 @@ public final class Main extends JavaPlugin {
 						RedisChannels.MANAGERCHAT.getChannelName(),
 						RedisChannels.FIND.getChannelName(),
 						RedisChannels.FOUND.getChannelName(),
-						RedisChannels.ANNOUNCEMENT.getChannelName()
+						RedisChannels.ANNOUNCEMENT.getChannelName(),
+						RedisChannels.STOP.getChannelName(),
+						RedisChannels.WHITELIST.getChannelName(),
+						RedisChannels.WHITELIST_ADD.getChannelName(),
+						RedisChannels.WHITELIST_REMOVE.getChannelName()
 				);
 			}
 		});
@@ -123,6 +133,15 @@ public final class Main extends JavaPlugin {
 		}
 		System.out.println("[StaffTools] Shut down! Cya :D");
 	}
+
+	public void setWhitelistMessage(String whitelistMessage) {
+		this.whitelistMessage = whitelistMessage;
+	}
+
+	public String getWhitelistMessage() {
+		return whitelistMessage;
+	}
+
 
 	public ReportInventory getReportInventory() {
 		return reportInventory;

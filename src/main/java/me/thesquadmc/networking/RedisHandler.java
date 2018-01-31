@@ -10,13 +10,12 @@ import me.thesquadmc.utils.RedisArg;
 import me.thesquadmc.utils.RedisChannels;
 import me.thesquadmc.utils.StringUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import redis.clients.jedis.Jedis;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public final class RedisHandler {
 
@@ -237,6 +236,62 @@ public final class RedisHandler {
 							m.getValue().put(RedisArg.OWNER, owner);
 						}
 					}
+				}
+			}
+		} else if (channel.equalsIgnoreCase(RedisChannels.ANNOUNCEMENT.getChannelName())) {
+			String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
+			if (server.equalsIgnoreCase("ALL") || Bukkit.getServerName().toUpperCase().contains(server)) {
+				String msg = String.valueOf(data.get(RedisArg.MESSAGE.getArg()));
+				Bukkit.broadcastMessage(StringUtils.msg("&8[&4&lALERT&8] &c" + msg));
+				for (Player p : Bukkit.getOnlinePlayers()) {
+					p.playSound(p.getLocation(), Sound.ENDERDRAGON_GROWL, 1.0f, 1.0f);
+				}
+			}
+		} else if (channel.equalsIgnoreCase(RedisChannels.STOP.getChannelName())) {
+			String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
+			if (server.equalsIgnoreCase(Bukkit.getServerName())) {
+				String msg = String.valueOf(data.get(RedisArg.MESSAGE.getArg()));
+				Bukkit.broadcastMessage(StringUtils.msg("&e&lSTOP &6■ &7Server stopping for reason: &e" + msg));
+				Bukkit.shutdown();
+			}
+		} else if (channel.equalsIgnoreCase(RedisChannels.WHITELIST_ADD.getChannelName())) {
+			String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
+			if (server.equalsIgnoreCase("ALL") || Bukkit.getServerName().toUpperCase().contains(server)) {
+				String name = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
+				System.out.println("Name is: " + name);
+				System.out.println("Whitelisted players: " + Bukkit.getWhitelistedPlayers().toString());
+				OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(name);
+				offlinePlayer.setWhitelisted(true);
+				Bukkit.reloadWhitelist();
+				System.out.println("Whitelisted players: " + Bukkit.getWhitelistedPlayers().toString());
+			}
+		} else if (channel.equalsIgnoreCase(RedisChannels.WHITELIST_REMOVE.getChannelName())) {
+			String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
+			if (server.equalsIgnoreCase("ALL") || Bukkit.getServerName().toUpperCase().contains(server)) {
+				String name = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
+				OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(name);
+				offlinePlayer.setWhitelisted(false);
+				Bukkit.reloadWhitelist();
+			}
+		} else if (channel.equalsIgnoreCase(RedisChannels.WHITELIST.getChannelName())) {
+			String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
+			if (server.equalsIgnoreCase("ALL") || Bukkit.getServerName().toUpperCase().contains(server)) {
+				String onoff = String.valueOf(data.get(RedisArg.ONOFF.getArg()));
+				String msg = String.valueOf(data.get(RedisArg.MESSAGE.getArg()));
+				if (onoff.equalsIgnoreCase("ON")) {
+					Bukkit.broadcastMessage(StringUtils.msg("&e&lWHITELIST &6■ &7Whitelist has been enabled for reason: &e" + msg));
+					Bukkit.setWhitelist(true);
+					for (Player p : Bukkit.getOnlinePlayers()) {
+						User user = main.getLuckPermsApi().getUser(p.getUniqueId());
+						OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(p.getName());
+						main.setWhitelistMessage(StringUtils.msg(msg));
+						if (!main.hasPerm(user, "tools.manager.management") && !Bukkit.getWhitelistedPlayers().contains(offlinePlayer)) {
+							p.kickPlayer(StringUtils.msg("&7Whitelist enabled \n&e" + msg));
+						}
+					}
+				} else {
+					Bukkit.broadcastMessage(StringUtils.msg("&e&lWHITELIST &6■ &7Whitelist has been disabled for reason: &e" + msg));
+					Bukkit.setWhitelist(false);
 				}
 			}
 		}
