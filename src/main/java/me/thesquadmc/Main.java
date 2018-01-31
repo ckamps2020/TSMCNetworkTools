@@ -12,6 +12,7 @@ import me.thesquadmc.listeners.ConnectionListeners;
 import me.thesquadmc.listeners.InventoryListener;
 import me.thesquadmc.listeners.StaffmodeListener;
 import me.thesquadmc.listeners.XrayListener;
+import me.thesquadmc.managers.ReportManager;
 import me.thesquadmc.managers.TempDataManager;
 import me.thesquadmc.networking.JedisTask;
 import me.thesquadmc.networking.RedisHandler;
@@ -35,6 +36,7 @@ public final class Main extends JavaPlugin {
 	private FrozenInventory frozenInventory;
 	private StaffmodeInventory staffmodeInventory;
 	private UpdateHandler updateHandler;
+	private ReportManager reportManager;
 
 	private String host;
 	private int port;
@@ -49,6 +51,7 @@ public final class Main extends JavaPlugin {
 		frozenInventory = new FrozenInventory(this);
 		staffmodeInventory = new StaffmodeInventory(this);
 		updateHandler = new UpdateHandler(this);
+		reportManager = new ReportManager();
 		fileManager.setup();
 		updateHandler.run();
 		tempDataManager = new TempDataManager();
@@ -115,6 +118,10 @@ public final class Main extends JavaPlugin {
 			pool.close();
 		}
 		System.out.println("[StaffTools] Shut down! Cya :D");
+	}
+
+	public ReportManager getReportManager() {
+		return reportManager;
 	}
 
 	public StaffmodeInventory getStaffmodeInventory() {
