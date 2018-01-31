@@ -2,6 +2,7 @@ package me.thesquadmc.listeners;
 
 import me.thesquadmc.Main;
 import me.thesquadmc.commands.StaffmodeCommand;
+import me.thesquadmc.objects.TempData;
 import me.thesquadmc.utils.InventorySize;
 import me.thesquadmc.utils.StringUtils;
 import me.thesquadmc.utils.handlers.UpdateEvent;
@@ -13,9 +14,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.PlayerInteractAtEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -83,7 +83,9 @@ public final class StaffmodeListener implements Listener {
 		Player player = e.getPlayer();
 		if (StaffmodeCommand.getStaffmode().containsKey(player.getUniqueId())) {
 			player.getInventory().clear();
-			player.performCommand("vanish");
+			for (Player p : Bukkit.getServer().getOnlinePlayers()) {
+				p.showPlayer(player);
+			}
 			for (ItemStack itemStack : StaffmodeCommand.getStaffmode().get(player.getUniqueId())) {
 				if (itemStack != null) {
 					player.getInventory().addItem(itemStack);
@@ -95,7 +97,27 @@ public final class StaffmodeListener implements Listener {
 	}
 
 	@EventHandler
+	public void onPickup(PlayerPickupItemEvent e) {
+		if (StaffmodeCommand.getStaffmode().containsKey(e.getPlayer().getUniqueId())) {
+			e.setCancelled(true);
+		}
+	}
+
+	@EventHandler
+	public void onDrop(PlayerDropItemEvent e) {
+		if (StaffmodeCommand.getStaffmode().containsKey(e.getPlayer().getUniqueId())) {
+			e.setCancelled(true);
+		}
+	}
+
+	@EventHandler
 	public void onInventoryClick(InventoryClickEvent e) {
+		if (e.getInventory() != null && e.getInventory().getType() == InventoryType.PLAYER) {
+			Player player = (Player) e.getWhoClicked();
+			if (StaffmodeCommand.getStaffmode().containsKey(player.getUniqueId())) {
+				e.setCancelled(true);
+			}
+		}
 		if (e.getInventory() != null && e.getInventory().getName().equalsIgnoreCase("CONTROL PANEL")) {
 			Player player = (Player) e.getWhoClicked();
 			e.setCancelled(true);

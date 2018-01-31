@@ -20,8 +20,7 @@ import me.thesquadmc.utils.RedisChannels;
 import me.thesquadmc.utils.handlers.UpdateHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPubSub;
+import redis.clients.jedis.*;
 
 public final class Main extends JavaPlugin {
 
@@ -78,8 +77,8 @@ public final class Main extends JavaPlugin {
 		redisHandler = new RedisHandler(this);
 		ClassLoader previous = Thread.currentThread().getContextClassLoader();
 		Thread.currentThread().setContextClassLoader(this.getClassLoader());
-		pool = new JedisPool(host, port);
-		//pool.getResource().auth(password);
+		JedisPoolConfig poolConfig = new JedisPoolConfig();
+		pool = new JedisPool(poolConfig, host, port, 10000, password);
 		Thread.currentThread().setContextClassLoader(previous);
 
 		JedisPubSub pubSub = new JedisPubSub() {

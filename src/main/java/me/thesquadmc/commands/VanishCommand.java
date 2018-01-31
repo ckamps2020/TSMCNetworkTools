@@ -49,13 +49,13 @@ public final class VanishCommand implements CommandExecutor {
 		return true;
 	}
 
-	private void hidePlayerSpectator(Player player) {
+	public static void hidePlayerSpectator(Player player) {
 		for (Player p : Bukkit.getServer().getOnlinePlayers()) {
 			p.hidePlayer(player);
 		}
 	}
 
-	private void showPlayerSpectator(Player player) {
+	public static void showPlayerSpectator(Player player) {
 		for (Player p : Bukkit.getServer().getOnlinePlayers()) {
 			p.showPlayer(player);
 		}
