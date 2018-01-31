@@ -1,4 +1,4 @@
-name: StaffTools
+name: NetworkTools
 version: 1.0.0
 main: me.thesquadmc.Main
 author: ckamps
@@ -37,3 +37,4 @@ commands:
         aliases: [global]
     stop:
     whitelist:
+    launch:

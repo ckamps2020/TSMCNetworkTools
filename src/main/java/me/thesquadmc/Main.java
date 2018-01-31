@@ -76,6 +76,7 @@ public final class Main extends JavaPlugin {
 		getCommand("alert").setExecutor(new AlertCommand(this));
 		getCommand("stop").setExecutor(new StopCommand(this));
 		getCommand("whitelist").setExecutor(new WhitelistCommand(this));
+		getCommand("launch").setExecutor(new LaunchCommand(this));
 		getServer().getPluginManager().registerEvents(new WhitelistListener(this), this);
 		getServer().getPluginManager().registerEvents(new ReportListener(this), this);
 		getServer().getPluginManager().registerEvents(new ConnectionListeners(this), this);

@@ -16,7 +16,7 @@
     </properties>
 
     <build>
-        <finalName>StaffTools</finalName>
+        <finalName>NetworkTools</finalName>
         <defaultGoal>clean package</defaultGoal>
         <plugins>
             <plugin>
