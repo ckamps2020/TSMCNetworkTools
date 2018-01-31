@@ -29,3 +29,7 @@ commands:
     vanish:
         aliases: [v]
     xray:
+    report:
+        aliases: [reporthacks]
+    managereports:
+        aliases: [reports]

@@ -122,7 +122,12 @@ public final class StaffmodeListener implements Listener {
 			Player player = (Player) e.getWhoClicked();
 			e.setCancelled(true);
 			if (e.getSlot() == 11) {
-				//open reports
+				if (!main.getReportManager().getReports().isEmpty()) {
+					main.getReportInventory().buildReportsMenu(player);
+				} else {
+					player.closeInventory();
+					player.sendMessage(StringUtils.msg("&cThere are no active reports!"));
+				}
 			} else if (e.getSlot() == 13) {
 				player.performCommand("randomtp");
 			} else if (e.getSlot() == 15) {

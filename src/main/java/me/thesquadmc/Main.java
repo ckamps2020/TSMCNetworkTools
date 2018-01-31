@@ -7,11 +7,9 @@ import me.lucko.luckperms.api.Node;
 import me.lucko.luckperms.api.User;
 import me.thesquadmc.commands.*;
 import me.thesquadmc.inventories.FrozenInventory;
+import me.thesquadmc.inventories.ReportInventory;
 import me.thesquadmc.inventories.StaffmodeInventory;
-import me.thesquadmc.listeners.ConnectionListeners;
-import me.thesquadmc.listeners.InventoryListener;
-import me.thesquadmc.listeners.StaffmodeListener;
-import me.thesquadmc.listeners.XrayListener;
+import me.thesquadmc.listeners.*;
 import me.thesquadmc.managers.ReportManager;
 import me.thesquadmc.managers.TempDataManager;
 import me.thesquadmc.networking.JedisTask;
@@ -37,6 +35,7 @@ public final class Main extends JavaPlugin {
 	private StaffmodeInventory staffmodeInventory;
 	private UpdateHandler updateHandler;
 	private ReportManager reportManager;
+	private ReportInventory reportInventory;
 
 	private String host;
 	private int port;
@@ -52,6 +51,7 @@ public final class Main extends JavaPlugin {
 		staffmodeInventory = new StaffmodeInventory(this);
 		updateHandler = new UpdateHandler(this);
 		reportManager = new ReportManager();
+		reportInventory = new ReportInventory(this);
 		fileManager.setup();
 		updateHandler.run();
 		tempDataManager = new TempDataManager();
@@ -69,6 +69,9 @@ public final class Main extends JavaPlugin {
 		getCommand("staffmode").setExecutor(new StaffmodeCommand(this));
 		getCommand("staff").setExecutor(new StafflistCommand(this));
 		getCommand("xray").setExecutor(new XrayVerboseCommand(this));
+		getCommand("report").setExecutor(new ReportCommand(this));
+		getCommand("managereports").setExecutor(new ManageReportsCommand(this));
+		getServer().getPluginManager().registerEvents(new ReportListener(this), this);
 		getServer().getPluginManager().registerEvents(new ConnectionListeners(this), this);
 		getServer().getPluginManager().registerEvents(new XrayListener(this), this);
 		getServer().getPluginManager().registerEvents(new StaffmodeListener(this), this);
@@ -80,8 +83,9 @@ public final class Main extends JavaPlugin {
 		redisHandler = new RedisHandler(this);
 		ClassLoader previous = Thread.currentThread().getContextClassLoader();
 		Thread.currentThread().setContextClassLoader(this.getClassLoader());
-		JedisPoolConfig poolConfig = new JedisPoolConfig();
-		pool = new JedisPool(poolConfig, host, port, 10000, password);
+		//JedisPoolConfig poolConfig = new JedisPoolConfig();
+		//pool = new JedisPool(poolConfig, host, port, 10000, password);
+		pool = new JedisPool(host, port);
 		Thread.currentThread().setContextClassLoader(previous);
 
 		JedisPubSub pubSub = new JedisPubSub() {
@@ -118,6 +122,10 @@ public final class Main extends JavaPlugin {
 			pool.close();
 		}
 		System.out.println("[StaffTools] Shut down! Cya :D");
+	}
+
+	public ReportInventory getReportInventory() {
+		return reportInventory;
 	}
 
 	public ReportManager getReportManager() {
