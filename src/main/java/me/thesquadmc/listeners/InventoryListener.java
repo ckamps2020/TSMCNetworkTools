@@ -1,9 +1,9 @@
 package me.thesquadmc.listeners;
 
-import me.lucko.luckperms.api.User;
 import me.thesquadmc.Main;
 import me.thesquadmc.commands.FreezeCommand;
-import me.thesquadmc.commands.UnFreezeCommand;
+import me.thesquadmc.utils.PlayerUtils;
+import me.thesquadmc.utils.Rank;
 import me.thesquadmc.utils.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -32,14 +32,13 @@ public final class InventoryListener implements Listener {
 	public void onLogout(PlayerQuitEvent e) {
 		Player player = e.getPlayer();
 		if (FreezeCommand.getFrozen().contains(player.getUniqueId())) {
-			UnFreezeCommand.unfreezePlayer(player);
+			PlayerUtils.unfreezePlayer(player);
 			main.getFrozenInventory().getScreenshare().remove(player.getUniqueId());
 			main.getFrozenInventory().getAdmitMenu().remove(player.getUniqueId());
 			main.getFrozenInventory().getAdmitted().remove(player.getUniqueId());
 			main.getFrozenInventory().getDenying().remove(player.getUniqueId());
 			for (Player t : Bukkit.getOnlinePlayers()) {
-				User user = main.getLuckPermsApi().getUser(t.getUniqueId());
-				if (main.hasPerm(user, "tools.staff.freeze")) {
+				if (PlayerUtils.isEqualOrHigherThen(t, Rank.MOD)) {
 					t.sendMessage(StringUtils.msg("&e&lFREEZE &6■ &c" + player.getName() + " has logged out while frozen!"));
 				}
 			}
@@ -106,7 +105,7 @@ public final class InventoryListener implements Listener {
 				player.sendMessage(StringUtils.msg("&ePlease enter your discord name in chat now:"));
 				main.getFrozenInventory().getTyping().put(player.getUniqueId(), t);
 			} else if (e.getSlot() == 13) {
-				UnFreezeCommand.unfreezePlayer(t);
+				PlayerUtils.unfreezePlayer(t);
 				FreezeCommand.getFrozen().remove(t.getUniqueId());
 				main.getFrozenInventory().getScreenshare().remove(player.getUniqueId());
 				main.getFrozenInventory().getAdmitMenu().remove(player.getUniqueId());

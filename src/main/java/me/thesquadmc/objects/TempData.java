@@ -15,6 +15,8 @@ public final class TempData {
 	private boolean managerchatEnabled;
 	private boolean vanished;
 	private boolean xray;
+	private boolean forcefieldEnabled;
+	private boolean ytVanishEnabled;
 
 	public TempData() {
 		loginTime = StringUtils.getDate();
@@ -25,11 +27,29 @@ public final class TempData {
 		managerSetting = MessageSettings.LOCAL;
 		managerchatEnabled = true;
 		vanished = false;
+		forcefieldEnabled = false;
+		ytVanishEnabled = false;
 		if (Bukkit.getServerName().toUpperCase().contains("FACTIONS")) {
 			xray = true;
 		} else {
 			xray = false;
 		}
+	}
+
+	public boolean isYtVanishEnabled() {
+		return ytVanishEnabled;
+	}
+
+	public void setYtVanishEnabled(boolean ytVanishEnabled) {
+		this.ytVanishEnabled = ytVanishEnabled;
+	}
+
+	public boolean isForcefieldEnabled() {
+		return forcefieldEnabled;
+	}
+
+	public void setForcefieldEnabled(boolean forcefieldEnabled) {
+		this.forcefieldEnabled = forcefieldEnabled;
 	}
 
 	public boolean isXray() {

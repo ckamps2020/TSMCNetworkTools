@@ -19,7 +19,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 import java.util.UUID;
 
-public class ReportListener implements Listener {
+public final class ReportListener implements Listener {
 
 	private final Main main;
 

@@ -1,9 +1,8 @@
 package me.thesquadmc.listeners;
 
 import me.thesquadmc.Main;
-import me.thesquadmc.commands.UnFreezeCommand;
-import me.thesquadmc.commands.VanishCommand;
 import me.thesquadmc.objects.TempData;
+import me.thesquadmc.utils.PlayerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -23,13 +22,13 @@ public final class ConnectionListeners implements Listener {
 	public void onJoin(PlayerJoinEvent e) {
 		TempData tempData = new TempData();
 		Player player = e.getPlayer();
-		UnFreezeCommand.unfreezePlayer(player);
+		PlayerUtils.unfreezePlayer(player);
 		main.getTempDataManager().registerNewData(player.getUniqueId(), tempData);
 		Bukkit.getScheduler().runTaskLater(main, () -> {
 			for (Player p : Bukkit.getOnlinePlayers()) {
 				TempData t = main.getTempDataManager().getTempData(p.getUniqueId());
-				if (t.isVanished()) {
-					VanishCommand.hidePlayerSpectator(p);
+				if (t.isVanished() || t.isYtVanishEnabled()) {
+					PlayerUtils.hidePlayerSpectator(p);
 				}
 			}
 		}, 3L);
@@ -38,6 +37,12 @@ public final class ConnectionListeners implements Listener {
 	@EventHandler
 	public void onQuit(PlayerQuitEvent e) {
 		Player player = e.getPlayer();
+		TempData tempData = main.getTempDataManager().getTempData(player.getUniqueId());
+		for (Player p : Bukkit.getServer().getOnlinePlayers()) {
+			if (tempData.isYtVanishEnabled()) {
+				p.showPlayer(player);
+			}
+		}
 		main.getTempDataManager().unregisterNewData(player.getUniqueId());
 	}
 

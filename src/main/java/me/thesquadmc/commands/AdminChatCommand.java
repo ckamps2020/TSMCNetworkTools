@@ -7,10 +7,7 @@ import me.lucko.luckperms.api.caching.UserData;
 import me.thesquadmc.Main;
 import me.thesquadmc.networking.JedisTask;
 import me.thesquadmc.objects.TempData;
-import me.thesquadmc.utils.MessageSettings;
-import me.thesquadmc.utils.RedisArg;
-import me.thesquadmc.utils.RedisChannels;
-import me.thesquadmc.utils.StringUtils;
+import me.thesquadmc.utils.*;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -34,7 +31,7 @@ public final class AdminChatCommand implements CommandExecutor {
 			Player player = (Player) sender;
 			User user = main.getLuckPermsApi().getUser(player.getUniqueId());
 			TempData tempData = main.getTempDataManager().getTempData(player.getUniqueId());
-			if (main.hasPerm(user, "tools.staff.adminchat")) {
+			if (PlayerUtils.isEqualOrHigherThen(player, Rank.ADMIN)) {
 				if (args.length == 0) {
 					if (!tempData.isAdminchatEnabled()) {
 						tempData.setAdminchatEnabled(true);
@@ -78,9 +75,8 @@ public final class AdminChatCommand implements CommandExecutor {
 						});
 					} else {
 						for (Player p : Bukkit.getOnlinePlayers()) {
-							User u = main.getLuckPermsApi().getUser(p.getUniqueId());
 							TempData data = main.getTempDataManager().getTempData(p.getUniqueId());
-							if (main.hasPerm(u, "tools.staff.adminchat")) {
+							if (PlayerUtils.isEqualOrHigherThen(p, Rank.ADMIN)) {
 								if (data.isAdminchatEnabled() && data.getAdminchatSetting() == MessageSettings.LOCAL) {
 									p.sendMessage(StringUtils.msg(finalMessage));
 								}

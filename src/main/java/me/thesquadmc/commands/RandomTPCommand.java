@@ -1,8 +1,8 @@
 package me.thesquadmc.commands;
 
-import me.lucko.luckperms.api.User;
 import me.thesquadmc.Main;
-import me.thesquadmc.objects.TempData;
+import me.thesquadmc.utils.PlayerUtils;
+import me.thesquadmc.utils.Rank;
 import me.thesquadmc.utils.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -24,9 +24,7 @@ public final class RandomTPCommand implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (sender instanceof Player) {
 			Player player = (Player) sender;
-			User user = main.getLuckPermsApi().getUser(player.getUniqueId());
-			TempData tempData = main.getTempDataManager().getTempData(player.getUniqueId());
-			if (main.hasPerm(user, "tools.staff.randomtp")) {
+			if (PlayerUtils.isEqualOrHigherThen(player, Rank.MOD)) {
 				if (Bukkit.getOnlinePlayers().size() > 10) {
 					int random = new Random().nextInt(Bukkit.getServer().getOnlinePlayers().size());
 					Player t = (Player) Bukkit.getServer().getOnlinePlayers().toArray()[random];

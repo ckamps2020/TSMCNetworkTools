@@ -5,7 +5,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 
-public class WhitelistListener implements Listener {
+public final class WhitelistListener implements Listener {
 
 	private final Main main;
 

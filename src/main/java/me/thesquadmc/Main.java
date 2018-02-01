@@ -77,6 +77,10 @@ public final class Main extends JavaPlugin {
 		getCommand("stop").setExecutor(new StopCommand(this));
 		getCommand("whitelist").setExecutor(new WhitelistCommand(this));
 		getCommand("launch").setExecutor(new LaunchCommand(this));
+		getCommand("ytvanish").setExecutor(new YtVanishCommand(this));
+		getCommand("forcefield").setExecutor(new ForceFieldCommand(this));
+		getServer().getPluginManager().registerEvents(new ForceFieldListeners(this), this);
+		getServer().getPluginManager().registerEvents(new VanishListener(this), this);
 		getServer().getPluginManager().registerEvents(new WhitelistListener(this), this);
 		getServer().getPluginManager().registerEvents(new ReportListener(this), this);
 		getServer().getPluginManager().registerEvents(new ConnectionListeners(this), this);
@@ -90,9 +94,9 @@ public final class Main extends JavaPlugin {
 		redisHandler = new RedisHandler(this);
 		ClassLoader previous = Thread.currentThread().getContextClassLoader();
 		Thread.currentThread().setContextClassLoader(this.getClassLoader());
-		//JedisPoolConfig poolConfig = new JedisPoolConfig();
-		//pool = new JedisPool(poolConfig, host, port, 10000, password);
-		pool = new JedisPool(host, port);
+		JedisPoolConfig poolConfig = new JedisPoolConfig();
+		pool = new JedisPool(poolConfig, host, port, 10000, password);
+		//pool = new JedisPool(host, port);
 		Thread.currentThread().setContextClassLoader(previous);
 
 		JedisPubSub pubSub = new JedisPubSub() {
@@ -186,15 +190,6 @@ public final class Main extends JavaPlugin {
 
 	public Gson getGson() {
 		return gson;
-	}
-
-	public boolean hasPerm(User user, String perm) {
-		return user.getPermissions().stream()
-				.filter(Node::getValue)
-				.filter(Node::isPermanent)
-				.filter(n -> !n.isServerSpecific())
-				.filter(n -> !n.isWorldSpecific())
-				.anyMatch(n -> n.getPermission().startsWith(perm));
 	}
 
 }

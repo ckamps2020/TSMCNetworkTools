@@ -2,7 +2,6 @@ package me.thesquadmc.listeners;
 
 import me.thesquadmc.Main;
 import me.thesquadmc.commands.StaffmodeCommand;
-import me.thesquadmc.objects.TempData;
 import me.thesquadmc.utils.InventorySize;
 import me.thesquadmc.utils.StringUtils;
 import me.thesquadmc.utils.handlers.UpdateEvent;

@@ -5,10 +5,7 @@ import me.thesquadmc.Main;
 import me.thesquadmc.commands.FindCommand;
 import me.thesquadmc.commands.StafflistCommand;
 import me.thesquadmc.objects.TempData;
-import me.thesquadmc.utils.MessageSettings;
-import me.thesquadmc.utils.RedisArg;
-import me.thesquadmc.utils.RedisChannels;
-import me.thesquadmc.utils.StringUtils;
+import me.thesquadmc.utils.*;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
@@ -29,9 +26,8 @@ public final class RedisHandler {
 		Map<String, Object> data = task.getData();
 		if (channel.equalsIgnoreCase(RedisChannels.STAFFCHAT.toString())) {
 			for (Player player : Bukkit.getOnlinePlayers()) {
-				User user = main.getLuckPermsApi().getUser(player.getUniqueId());
 				TempData tempData = main.getTempDataManager().getTempData(player.getUniqueId());
-				if (main.hasPerm(user, "tools.staff.staffchat")) {
+				if (PlayerUtils.isEqualOrHigherThen(player, Rank.TRAINEE)) {
 					if (tempData.isStaffchatEnabled() && tempData.getStaffchatSetting() == MessageSettings.GLOBAL) {
 						player.sendMessage(StringUtils.msg(String.valueOf(data.get(RedisArg.MESSAGE.getArg()))));
 					}
@@ -102,23 +98,22 @@ public final class RedisHandler {
 					StringBuilder oSB = new StringBuilder();
 					for (Player p : Bukkit.getOnlinePlayers()) {
 						TempData tempData = main.getTempDataManager().getTempData(p.getUniqueId());
-						User user = main.getLuckPermsApi().getUser(p.getUniqueId());
 						if (!tempData.isVanished()) {
-							if (main.hasPerm(user, "stafflist.trainee")) {
+							if (PlayerUtils.isEqualOrHigherThen(p, Rank.TRAINEE)) {
 								trainee.add(p.getName());
-							} else if (main.hasPerm(user, "stafflist.helper")) {
+							} else if (PlayerUtils.isEqualOrHigherThen(p, Rank.HELPER)) {
 								helper.add(p.getName());
-							} else if (main.hasPerm(user, "stafflist.mod")) {
+							} else if (PlayerUtils.isEqualOrHigherThen(p, Rank.MOD)) {
 								mod.add(p.getName());
-							} else if (main.hasPerm(user, "stafflist.srmod")) {
+							} else if (PlayerUtils.isEqualOrHigherThen(p, Rank.SRMOD)) {
 								srmod.add(p.getName());
-							} else if (main.hasPerm(user, "stafflist.admin")) {
+							} else if (PlayerUtils.isEqualOrHigherThen(p, Rank.ADMIN)) {
 								admin.add(p.getName());
-							} else if (main.hasPerm(user, "stafflist.manager")) {
+							} else if (PlayerUtils.isEqualOrHigherThen(p, Rank.MANAGER)) {
 								manager.add(p.getName());
-							} else if (main.hasPerm(user, "stafflist.developer")) {
+							} else if (PlayerUtils.isEqualOrHigherThen(p, Rank.DEVELOPER)) {
 								developer.add(p.getName());
-							} else if (main.hasPerm(user, "stafflist.owner")) {
+							} else if (PlayerUtils.isEqualOrHigherThen(p, Rank.OWNER)) {
 								owner.add(p.getName());
 							}
 						}
@@ -282,10 +277,9 @@ public final class RedisHandler {
 					Bukkit.broadcastMessage(StringUtils.msg("&e&lWHITELIST &6■ &7Whitelist has been enabled for reason: &e" + msg));
 					Bukkit.setWhitelist(true);
 					for (Player p : Bukkit.getOnlinePlayers()) {
-						User user = main.getLuckPermsApi().getUser(p.getUniqueId());
 						OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(p.getName());
 						main.setWhitelistMessage(StringUtils.msg(msg));
-						if (!main.hasPerm(user, "tools.manager.management") && !Bukkit.getWhitelistedPlayers().contains(offlinePlayer)) {
+						if (!PlayerUtils.isEqualOrHigherThen(p, Rank.MANAGER) && !Bukkit.getWhitelistedPlayers().contains(offlinePlayer)) {
 							p.kickPlayer(StringUtils.msg("&7Whitelist enabled \n&e" + msg));
 						}
 					}

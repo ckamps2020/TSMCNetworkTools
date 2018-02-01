@@ -1,9 +1,7 @@
 package me.thesquadmc.commands;
 
-import me.lucko.luckperms.api.User;
 import me.thesquadmc.Main;
 import me.thesquadmc.objects.Report;
-import me.thesquadmc.objects.TempData;
 import me.thesquadmc.utils.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -23,8 +21,6 @@ public final class ReportCommand implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (sender instanceof Player) {
 			Player player = (Player) sender;
-			User user = main.getLuckPermsApi().getUser(player.getUniqueId());
-			TempData tempData = main.getTempDataManager().getTempData(player.getUniqueId());
 			if (args.length >= 2) {
 				String name = args[0];
 				Player t = Bukkit.getPlayer(name);

@@ -1,12 +1,8 @@
 package me.thesquadmc.commands;
 
-import me.lucko.luckperms.api.User;
 import me.thesquadmc.Main;
 import me.thesquadmc.networking.JedisTask;
-import me.thesquadmc.objects.TempData;
-import me.thesquadmc.utils.RedisArg;
-import me.thesquadmc.utils.RedisChannels;
-import me.thesquadmc.utils.StringUtils;
+import me.thesquadmc.utils.*;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -29,9 +25,7 @@ public final class WhitelistCommand implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (sender instanceof Player) {
 			Player player = (Player) sender;
-			User user = main.getLuckPermsApi().getUser(player.getUniqueId());
-			TempData tempData = main.getTempDataManager().getTempData(player.getUniqueId());
-			if (main.hasPerm(user, "tools.manager.management")) {
+			if (PlayerUtils.isEqualOrHigherThen(player, Rank.MANAGER)) {
 				if (args.length == 1) {
 					if (args[0].equalsIgnoreCase("list")) {
 						StringBuilder stringBuilder = new StringBuilder();
@@ -56,7 +50,7 @@ public final class WhitelistCommand implements CommandExecutor {
 							public void run() {
 								try (Jedis jedis = main.getPool().getResource()) {
 									JedisTask.withName(UUID.randomUUID().toString())
-											.withArg(RedisArg.SERVER.getArg(), server)
+											.withArg(RedisArg.SERVER.getArg(), server.toUpperCase())
 											.withArg(RedisArg.PLAYER.getArg(), name)
 											.send(RedisChannels.WHITELIST_ADD.getChannelName(), jedis);
 								}
@@ -71,7 +65,7 @@ public final class WhitelistCommand implements CommandExecutor {
 							public void run() {
 								try (Jedis jedis = main.getPool().getResource()) {
 									JedisTask.withName(UUID.randomUUID().toString())
-											.withArg(RedisArg.SERVER.getArg(), server)
+											.withArg(RedisArg.SERVER.getArg(), server.toUpperCase())
 											.withArg(RedisArg.PLAYER.getArg(), name)
 											.send(RedisChannels.WHITELIST_REMOVE.getChannelName(), jedis);
 								}
@@ -105,7 +99,7 @@ public final class WhitelistCommand implements CommandExecutor {
 							public void run() {
 								try (Jedis jedis = main.getPool().getResource()) {
 									JedisTask.withName(UUID.randomUUID().toString())
-											.withArg(RedisArg.SERVER.getArg(), server)
+											.withArg(RedisArg.SERVER.getArg(), server.toUpperCase())
 											.withArg(RedisArg.ONOFF.getArg(), onoff)
 											.withArg(RedisArg.MESSAGE.getArg(), stringBuilder.toString())
 											.send(RedisChannels.WHITELIST.getChannelName(), jedis);

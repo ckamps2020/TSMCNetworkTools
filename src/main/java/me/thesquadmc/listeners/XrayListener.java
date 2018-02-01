@@ -1,8 +1,9 @@
 package me.thesquadmc.listeners;
 
-import me.lucko.luckperms.api.User;
 import me.thesquadmc.Main;
 import me.thesquadmc.objects.TempData;
+import me.thesquadmc.utils.PlayerUtils;
+import me.thesquadmc.utils.Rank;
 import me.thesquadmc.utils.StringUtils;
 import me.thesquadmc.utils.handlers.UpdateEvent;
 import me.thesquadmc.utils.handlers.UpdateType;
@@ -48,9 +49,8 @@ public final class XrayListener implements Listener {
 			}
 			if (diamondsMined.get(player.getUniqueId()) >= diamondThreshhold) {
 				for (Player p : Bukkit.getOnlinePlayers()) {
-					User u = main.getLuckPermsApi().getUser(p.getUniqueId());
 					TempData data = main.getTempDataManager().getTempData(p.getUniqueId());
-					if (main.hasPerm(u, "tools.staff.xrayverbose")) {
+					if (PlayerUtils.isEqualOrHigherThen(p, Rank.TRAINEE)) {
 						if (data.isXray()) {
 							p.sendMessage(StringUtils.msg("&8[&4&lAnitCheat&8] &4[XRAY] &f" + player.getName() + " is suspected for XRAY. Mined " + diamondsMined.get(player.getUniqueId()) + " diamonds in the last MINUTE! World&4=&f" + player.getWorld().getName() + ""));
 						}
@@ -65,9 +65,8 @@ public final class XrayListener implements Listener {
 			}
 			if (spawnerMined.get(player.getUniqueId()) >= spawnerThreshhold) {
 				for (Player p : Bukkit.getOnlinePlayers()) {
-					User u = main.getLuckPermsApi().getUser(p.getUniqueId());
 					TempData data = main.getTempDataManager().getTempData(p.getUniqueId());
-					if (main.hasPerm(u, "tools.staff.xrayverbose")) {
+					if (PlayerUtils.isEqualOrHigherThen(p, Rank.TRAINEE)) {
 						if (data.isXray()) {
 							p.sendMessage(StringUtils.msg("&8[&4&lAnitCheat&8] &4[XRAY] &f" + player.getName() + " is suspected for XRAY. Mined " + spawnerMined.get(player.getUniqueId()) + " spawners in the last MINUTE! World&4=&f" + player.getWorld().getName() + ""));
 						}

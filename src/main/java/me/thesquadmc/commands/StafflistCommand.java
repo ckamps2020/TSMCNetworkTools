@@ -1,9 +1,7 @@
 package me.thesquadmc.commands;
 
-import me.lucko.luckperms.api.User;
 import me.thesquadmc.Main;
 import me.thesquadmc.networking.JedisTask;
-import me.thesquadmc.objects.TempData;
 import me.thesquadmc.utils.RedisArg;
 import me.thesquadmc.utils.RedisChannels;
 import me.thesquadmc.utils.StringUtils;
@@ -31,8 +29,6 @@ public final class StafflistCommand implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (sender instanceof Player) {
 			Player player = (Player) sender;
-			User user = main.getLuckPermsApi().getUser(player.getUniqueId());
-			TempData tempData = main.getTempDataManager().getTempData(player.getUniqueId());
 			Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
 				@Override
 				public void run() {

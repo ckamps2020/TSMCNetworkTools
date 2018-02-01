@@ -1,15 +1,14 @@
 package me.thesquadmc.commands;
 
-import me.lucko.luckperms.api.User;
 import me.thesquadmc.Main;
-import me.thesquadmc.objects.TempData;
+import me.thesquadmc.utils.PlayerUtils;
+import me.thesquadmc.utils.Rank;
 import me.thesquadmc.utils.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffectType;
 
 public final class UnFreezeCommand implements CommandExecutor {
 
@@ -24,17 +23,14 @@ public final class UnFreezeCommand implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (sender instanceof Player) {
 			Player player = (Player) sender;
-			User user = main.getLuckPermsApi().getUser(player.getUniqueId());
-			TempData tempData = main.getTempDataManager().getTempData(player.getUniqueId());
-			if (main.hasPerm(user, "tools.staff.freeze")) {
+			if (PlayerUtils.isEqualOrHigherThen(player, Rank.MOD)) {
 				if (args.length == 1) {
 					String name = args[0];
 					Player t = Bukkit.getPlayer(name);
 					if (t != null) {
-						User u = main.getLuckPermsApi().getUser(t.getUniqueId());
-						if (!main.hasPerm(u, "tools.staff.freeze")) {
+						if (!PlayerUtils.isEqualOrHigherThen(t, Rank.MOD)) {
 							if (FreezeCommand.getFrozen().contains(t.getUniqueId())) {
-								unfreezePlayer(t);
+								PlayerUtils.unfreezePlayer(t);
 								main.getFrozenInventory().getScreenshare().remove(player.getUniqueId());
 								main.getFrozenInventory().getAdmitMenu().remove(player.getUniqueId());
 								main.getFrozenInventory().getAdmitted().remove(player.getUniqueId());
@@ -61,12 +57,6 @@ public final class UnFreezeCommand implements CommandExecutor {
 			}
 		}
 		return true;
-	}
-
-	public static void unfreezePlayer(Player player) {
-		player.setWalkSpeed(0.2f);
-		player.setFlySpeed(0.1f);
-		player.removePotionEffect(PotionEffectType.JUMP);
 	}
 
 }

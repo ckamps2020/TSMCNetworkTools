@@ -1,8 +1,8 @@
 package me.thesquadmc.commands;
 
-import me.lucko.luckperms.api.User;
 import me.thesquadmc.Main;
-import me.thesquadmc.objects.TempData;
+import me.thesquadmc.utils.PlayerUtils;
+import me.thesquadmc.utils.Rank;
 import me.thesquadmc.utils.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -22,9 +22,7 @@ public final class FreezePanelCommand implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (sender instanceof Player) {
 			Player player = (Player) sender;
-			User user = main.getLuckPermsApi().getUser(player.getUniqueId());
-			TempData tempData = main.getTempDataManager().getTempData(player.getUniqueId());
-			if (main.hasPerm(user, "tools.staff.freeze")) {
+			if (PlayerUtils.isEqualOrHigherThen(player, Rank.MOD)) {
 				if (args.length == 1) {
 					Player t = Bukkit.getPlayer(args[0]);
 					if (t != null) {
