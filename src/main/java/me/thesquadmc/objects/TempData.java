@@ -20,7 +20,7 @@ public final class TempData {
 
 	public TempData() {
 		loginTime = StringUtils.getDate();
-		staffchatSetting = MessageSettings.LOCAL;
+		staffchatSetting = MessageSettings.GLOBAL;
 		staffchatEnabled = true;
 		adminchatSetting = MessageSettings.LOCAL;
 		adminchatEnabled = true;

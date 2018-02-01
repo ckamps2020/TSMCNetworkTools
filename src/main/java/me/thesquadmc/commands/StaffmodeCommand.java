@@ -5,6 +5,7 @@ import me.thesquadmc.utils.ItemBuilder;
 import me.thesquadmc.utils.PlayerUtils;
 import me.thesquadmc.utils.Rank;
 import me.thesquadmc.utils.StringUtils;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -47,6 +48,7 @@ public final class StaffmodeCommand implements CommandExecutor {
 					}
 					staffmode.remove(player.getUniqueId());
 					player.performCommand("vanish");
+					player.setGameMode(GameMode.SURVIVAL);
 					player.sendMessage(StringUtils.msg("&e&lSTAFF &6■  &7Staff mode has been &edisabled&7"));
 				}
 			} else {

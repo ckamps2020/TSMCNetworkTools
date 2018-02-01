@@ -27,7 +27,7 @@ public final class YtVanishCommand implements CommandExecutor {
 				if (!tempData.isYtVanishEnabled()) {
 					player.sendMessage(StringUtils.msg("&e&lYT VANISH &6■ &7Vanish has been &eenabled"));
 					tempData.setYtVanishEnabled(true);
-					PlayerUtils.hidePlayerSpectator(player);
+					PlayerUtils.hidePlayerSpectatorYT(player);
 				} else {
 					player.sendMessage(StringUtils.msg("&e&lYT VANISH &6■ &7Vanish has been &edisabled"));
 					tempData.setYtVanishEnabled(false);

@@ -3,8 +3,6 @@ package me.thesquadmc;
 import com.google.gson.Gson;
 import me.lucko.luckperms.LuckPerms;
 import me.lucko.luckperms.api.LuckPermsApi;
-import me.lucko.luckperms.api.Node;
-import me.lucko.luckperms.api.User;
 import me.thesquadmc.commands.*;
 import me.thesquadmc.inventories.FrozenInventory;
 import me.thesquadmc.inventories.ReportInventory;
@@ -79,6 +77,7 @@ public final class Main extends JavaPlugin {
 		getCommand("launch").setExecutor(new LaunchCommand(this));
 		getCommand("ytvanish").setExecutor(new YtVanishCommand(this));
 		getCommand("forcefield").setExecutor(new ForceFieldCommand(this));
+		getCommand("staffmenu").setExecutor(new StaffMenuCommand(this));
 		getServer().getPluginManager().registerEvents(new ForceFieldListeners(this), this);
 		getServer().getPluginManager().registerEvents(new VanishListener(this), this);
 		getServer().getPluginManager().registerEvents(new WhitelistListener(this), this);
@@ -86,7 +85,7 @@ public final class Main extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new ConnectionListeners(this), this);
 		getServer().getPluginManager().registerEvents(new XrayListener(this), this);
 		getServer().getPluginManager().registerEvents(new StaffmodeListener(this), this);
-		getServer().getPluginManager().registerEvents(new InventoryListener(this), this);
+		getServer().getPluginManager().registerEvents(new FreezeListener(this), this);
 		host = fileManager.getNetworkingConfig().getString("redis.host");
 		port = fileManager.getNetworkingConfig().getInt("redis.port");
 		password = fileManager.getNetworkingConfig().getString("redis.password");
@@ -122,7 +121,9 @@ public final class Main extends JavaPlugin {
 						RedisChannels.STOP.getChannelName(),
 						RedisChannels.WHITELIST.getChannelName(),
 						RedisChannels.WHITELIST_ADD.getChannelName(),
-						RedisChannels.WHITELIST_REMOVE.getChannelName()
+						RedisChannels.WHITELIST_REMOVE.getChannelName(),
+						RedisChannels.REPORTS.getChannelName(),
+						RedisChannels.CLOSED_REPORTS.getChannelName()
 				);
 			}
 		});

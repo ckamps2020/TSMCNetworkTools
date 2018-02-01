@@ -11,6 +11,9 @@ public enum RedisArg {
 	UUID("UUID"),
 	ONOFF("ONOFF"),
 
+	DATE("DATE"),
+	REASON("REASON"),
+
 	TRAINEE("TRAINEE"),
 	HELPER("HELPER"),
 	MOD("MOD"),

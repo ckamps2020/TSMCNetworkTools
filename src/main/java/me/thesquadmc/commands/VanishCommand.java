@@ -27,7 +27,7 @@ public final class VanishCommand implements CommandExecutor {
 			TempData tempData = main.getTempDataManager().getTempData(player.getUniqueId());
 			if (PlayerUtils.isEqualOrHigherThen(player, Rank.HELPER)) {
 				if (!tempData.isVanished()) {
-					PlayerUtils.hidePlayerSpectator(player);
+					PlayerUtils.hidePlayerSpectatorStaff(player);
 					tempData.setVanished(true);
 					if (StaffmodeCommand.getStaffmode().containsKey(player.getUniqueId())) {
 						player.getInventory().setItem(4, new ItemBuilder(Material.INK_SACK, 10).name("&e&lToggle Vanish &7off").lore("&7Toggle vanish on or off").build());

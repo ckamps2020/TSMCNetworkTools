@@ -1,5 +1,7 @@
 package me.thesquadmc.utils;
 
+import me.lucko.luckperms.api.Group;
+import me.lucko.luckperms.api.Node;
 import me.lucko.luckperms.api.User;
 import me.thesquadmc.Main;
 import net.minecraft.server.v1_8_R3.IChatBaseComponent;
@@ -40,7 +42,15 @@ public final class PlayerUtils {
 		return found;
 	}
 
-	public static void hidePlayerSpectator(Player player) {
+	public static void hidePlayerSpectatorStaff(Player player) {
+		for (Player p : Bukkit.getServer().getOnlinePlayers()) {
+			if (!isEqualOrHigherThen(p, Rank.TRAINEE)) {
+				p.hidePlayer(player);
+			}
+		}
+	}
+
+	public static void hidePlayerSpectatorYT(Player player) {
 		for (Player p : Bukkit.getServer().getOnlinePlayers()) {
 			p.hidePlayer(player);
 		}
@@ -83,6 +93,29 @@ public final class PlayerUtils {
 			}
 		}
 		return false;
+	}
+
+	public static boolean doesRankMatch(Player player, Rank rank) {
+		User user = Main.getMain().getLuckPermsApi().getUser(player.getUniqueId());
+		if (user.getPrimaryGroup() != null) {
+			for (Rank r : Rank.values()) {
+				if (r.getName().equalsIgnoreCase(user.getPrimaryGroup())) {
+					if (r.getName().equalsIgnoreCase(rank.getName())) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	public static boolean hasPermission(Group group, String permission) {
+		return group.getPermissions().stream()
+				.filter(Node::getValue)
+				.filter(Node::isPermanent)
+				.filter(n -> !n.isServerSpecific())
+				.filter(n -> !n.isWorldSpecific())
+				.anyMatch(n -> n.getPermission().startsWith(permission));
 	}
 
 }

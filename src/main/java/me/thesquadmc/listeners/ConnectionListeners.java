@@ -27,8 +27,10 @@ public final class ConnectionListeners implements Listener {
 		Bukkit.getScheduler().runTaskLater(main, () -> {
 			for (Player p : Bukkit.getOnlinePlayers()) {
 				TempData t = main.getTempDataManager().getTempData(p.getUniqueId());
-				if (t.isVanished() || t.isYtVanishEnabled()) {
-					PlayerUtils.hidePlayerSpectator(p);
+				if (t.isVanished()) {
+					PlayerUtils.hidePlayerSpectatorStaff(p);
+				} else if (t.isYtVanishEnabled()) {
+					PlayerUtils.hidePlayerSpectatorYT(p);
 				}
 			}
 		}, 3L);

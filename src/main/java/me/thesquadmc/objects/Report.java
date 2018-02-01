@@ -12,8 +12,9 @@ public final class Report {
 	private int timeAlive;
 	private String reportCloser;
 	private UUID reportID;
+	private String server;
 
-	public Report(String username, String date, String reporter, String... reason) {
+	public Report(String username, String date, String reporter, String server, String... reason) {
 		this.username = username;
 		this.date = date;
 		this.reporter = reporter;
@@ -21,6 +22,15 @@ public final class Report {
 		timeAlive = -1;
 		reportCloser = "N/A";
 		reportID = UUID.randomUUID();
+		this.server = server;
+	}
+
+	public void setReportID(UUID reportID) {
+		this.reportID = reportID;
+	}
+
+	public String getServer() {
+		return server;
 	}
 
 	public UUID getReportID() {

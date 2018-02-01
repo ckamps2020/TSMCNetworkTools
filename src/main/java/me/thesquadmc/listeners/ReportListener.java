@@ -111,11 +111,9 @@ public final class ReportListener implements Listener {
 							if (report != null) {
 								player.closeInventory();
 								player.sendMessage(StringUtils.msg("&aReport " + report.getReportID() + " has been closed!"));
-								report.setTimeAlive(0);
-								report.setCloseDate(StringUtils.getDate());
-								report.setReportCloser(player.getName());
-								main.getReportManager().removeReport(report);
-								main.getReportManager().newClosedReport(report);
+								main.getReportManager().newClosedReport(report.getReportID().toString(), player.getName());
+							} else {
+								player.sendMessage(StringUtils.msg("&7This report already seems to be closed!"));
 							}
 						}
 					}

@@ -8,6 +8,7 @@ import me.thesquadmc.Main;
 import me.thesquadmc.utils.PlayerUtils;
 import me.thesquadmc.utils.Rank;
 import me.thesquadmc.utils.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -36,8 +37,11 @@ public final class LookupCommand implements CommandExecutor {
 						player.sendMessage(" ");
 						player.sendMessage(StringUtils.msg("&6&l" + name));
 						player.sendMessage(StringUtils.msg("&8■ &7Rank: &f" + metaData.getPrefix()));
+						if (Bukkit.getServerName().toUpperCase().contains("SKYBLOCK") || Bukkit.getServerName().toUpperCase().contains("FACTIONS")) {
+							player.sendMessage(StringUtils.msg("&8■ &7Has Flight: &f" + PlayerUtils.hasPermission(main.getLuckPermsApi().getGroup(u.getPrimaryGroup()), "essentials.fly")));
+						}
 					} else {
-						player.sendMessage(StringUtils.msg("&e&lFIND&6■ &7That player is not online"));
+						player.sendMessage(StringUtils.msg("&e&lLOOKUP&6■ &7That player is not online"));
 					}
 				} else {
 					player.sendMessage(StringUtils.msg("&cUsage: /lookup <player>"));

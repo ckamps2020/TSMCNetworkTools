@@ -56,7 +56,7 @@ public final class ReportInventory {
 					} else {
 						lore.add(StringUtils.msg("&7Reported by: &c" + report.getReporter()));
 					}
-					lore.add(StringUtils.msg("&7Server: &e" + Bukkit.getServerName()));
+					lore.add(StringUtils.msg("&7Server: &e" + report.getServer()));
 					StringBuilder stringBuilder = new StringBuilder();
 					for (String s : report.getReason()) {
 						stringBuilder.append(" " + s);
@@ -83,7 +83,7 @@ public final class ReportInventory {
 					} else {
 						lore.add(StringUtils.msg("&7Reported by: &c" + report.getReporter()));
 					}
-					lore.add(StringUtils.msg("&7Server: &e" + Bukkit.getServerName()));
+					lore.add(StringUtils.msg("&7Server: &e" + report.getServer()));
 					StringBuilder stringBuilder = new StringBuilder();
 					for (String s : report.getReason()) {
 						stringBuilder.append(" " + s);

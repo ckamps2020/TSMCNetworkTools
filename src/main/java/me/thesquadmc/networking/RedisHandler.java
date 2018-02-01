@@ -1,9 +1,9 @@
 package me.thesquadmc.networking;
 
-import me.lucko.luckperms.api.User;
 import me.thesquadmc.Main;
 import me.thesquadmc.commands.FindCommand;
 import me.thesquadmc.commands.StafflistCommand;
+import me.thesquadmc.objects.Report;
 import me.thesquadmc.objects.TempData;
 import me.thesquadmc.utils.*;
 import org.bukkit.Bukkit;
@@ -99,21 +99,21 @@ public final class RedisHandler {
 					for (Player p : Bukkit.getOnlinePlayers()) {
 						TempData tempData = main.getTempDataManager().getTempData(p.getUniqueId());
 						if (!tempData.isVanished()) {
-							if (PlayerUtils.isEqualOrHigherThen(p, Rank.TRAINEE)) {
+							if (PlayerUtils.doesRankMatch(p, Rank.TRAINEE)) {
 								trainee.add(p.getName());
-							} else if (PlayerUtils.isEqualOrHigherThen(p, Rank.HELPER)) {
+							} else if (PlayerUtils.doesRankMatch(p, Rank.HELPER)) {
 								helper.add(p.getName());
-							} else if (PlayerUtils.isEqualOrHigherThen(p, Rank.MOD)) {
+							} else if (PlayerUtils.doesRankMatch(p, Rank.MOD)) {
 								mod.add(p.getName());
-							} else if (PlayerUtils.isEqualOrHigherThen(p, Rank.SRMOD)) {
+							} else if (PlayerUtils.doesRankMatch(p, Rank.SRMOD)) {
 								srmod.add(p.getName());
-							} else if (PlayerUtils.isEqualOrHigherThen(p, Rank.ADMIN)) {
+							} else if (PlayerUtils.doesRankMatch(p, Rank.ADMIN)) {
 								admin.add(p.getName());
-							} else if (PlayerUtils.isEqualOrHigherThen(p, Rank.MANAGER)) {
+							} else if (PlayerUtils.doesRankMatch(p, Rank.MANAGER)) {
 								manager.add(p.getName());
-							} else if (PlayerUtils.isEqualOrHigherThen(p, Rank.DEVELOPER)) {
+							} else if (PlayerUtils.doesRankMatch(p, Rank.DEVELOPER)) {
 								developer.add(p.getName());
-							} else if (PlayerUtils.isEqualOrHigherThen(p, Rank.OWNER)) {
+							} else if (PlayerUtils.doesRankMatch(p, Rank.OWNER)) {
 								owner.add(p.getName());
 							}
 						}
@@ -288,6 +288,28 @@ public final class RedisHandler {
 					Bukkit.setWhitelist(false);
 				}
 			}
+		} else if (channel.equalsIgnoreCase(RedisChannels.REPORTS.getChannelName())) {
+			String uuid = String.valueOf(data.get(RedisArg.UUID.getArg()));
+			String name = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
+			String date = String.valueOf(data.get(RedisArg.DATE.getArg()));
+			String reporter = String.valueOf(data.get(RedisArg.ORIGIN_PLAYER.getArg()));
+			String reason = String.valueOf(data.get(RedisArg.REASON.getArg()));
+			String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
+			String regex = "[ ]+";
+			String[] tokens = reason.split(regex);
+			Report report = new Report(name, date, reporter, server, tokens);
+			report.setReportID(UUID.fromString(uuid));
+			main.getReportManager().registerReport(report);
+		} else if (channel.equalsIgnoreCase(RedisChannels.CLOSED_REPORTS.getChannelName())) {
+			String uuid = String.valueOf(data.get(RedisArg.UUID.getArg()));
+			String name = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
+			String date = String.valueOf(data.get(RedisArg.DATE.getArg()));
+			Report report = main.getReportManager().getReportFromUUID(uuid);
+			report.setTimeAlive(0);
+			report.setCloseDate(date);
+			report.setReportCloser(name);
+			main.getReportManager().removeReport(report);
+			main.getReportManager().registerClosedReport(report);
 		}
 	}
 

@@ -20,11 +20,11 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Map;
 import java.util.UUID;
 
-public final class InventoryListener implements Listener {
+public final class FreezeListener implements Listener {
 
 	private final Main main;
 
-	public InventoryListener(Main main) {
+	public FreezeListener(Main main) {
 		this.main = main;
 	}
 
@@ -37,6 +37,7 @@ public final class InventoryListener implements Listener {
 			main.getFrozenInventory().getAdmitMenu().remove(player.getUniqueId());
 			main.getFrozenInventory().getAdmitted().remove(player.getUniqueId());
 			main.getFrozenInventory().getDenying().remove(player.getUniqueId());
+			FreezeCommand.getFrozen().remove(player.getUniqueId());
 			for (Player t : Bukkit.getOnlinePlayers()) {
 				if (PlayerUtils.isEqualOrHigherThen(t, Rank.MOD)) {
 					t.sendMessage(StringUtils.msg("&e&lFREEZE &6■ &c" + player.getName() + " has logged out while frozen!"));

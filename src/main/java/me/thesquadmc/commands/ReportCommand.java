@@ -44,7 +44,7 @@ public final class ReportCommand implements CommandExecutor {
 							return true;
 						}
 					}
-					main.getReportManager().newReport(new Report(t.getName(), StringUtils.getDate(), player.getName(), tokens));
+					main.getReportManager().newReport(new Report(t.getName(), StringUtils.getDate(), player.getName(), Bukkit.getServerName(), tokens));
 					player.sendMessage(StringUtils.msg("&e&lREPORT &6■ &7You reported &e" + t.getName() + " &7for &e" + stringBuilder.toString() + "&7"));
 				} else {
 					player.sendMessage(StringUtils.msg("&e&lREPORT &6■ &7This player does not exist"));

@@ -45,15 +45,6 @@ public final class StaffChatCommand implements CommandExecutor {
 						player.sendMessage(StringUtils.msg("&cPlease enable staffchat first!"));
 						return true;
 					}
-					if (args[0].equalsIgnoreCase("global")) {
-						tempData.setStaffchatSetting(MessageSettings.GLOBAL);
-						player.sendMessage(StringUtils.msg("&e&lSTAFF CHAT &6■ &7You toggled Staff Chat settings to &eglobal&7!"));
-						return true;
-					} else if (args[0].equalsIgnoreCase("server")) {
-						tempData.setStaffchatSetting(MessageSettings.LOCAL);
-						player.sendMessage(StringUtils.msg("&e&lSTAFF CHAT &6■ &7You toggled Staff Chat settings to &eserver&7!"));
-						return true;
-					}
 					StringBuilder stringBuilder = new StringBuilder();
 					for (String s : args) {
 						stringBuilder.append(s + " ");
@@ -61,28 +52,17 @@ public final class StaffChatCommand implements CommandExecutor {
 					UserData cachedData = user.getCachedData();
 					Contexts contexts = Contexts.allowAll();
 					MetaData metaData = cachedData.getMetaData(contexts);
-					String finalMessage = "&8[&6&lSC&8] " + metaData.getPrefix() + " " + player.getName() + " &8» &e" + stringBuilder.toString();
-					if (tempData.getStaffchatSetting() == MessageSettings.GLOBAL) {
-						Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
-							@Override
-							public void run() {
-								try (Jedis jedis = main.getPool().getResource()) {
-									JedisTask.withName(UUID.randomUUID().toString())
-											.withArg(RedisArg.MESSAGE.getArg(), finalMessage)
-											.send(RedisChannels.STAFFCHAT.getChannelName(), jedis);
-								}
-							}
-						});
-					} else {
-						for (Player p : Bukkit.getOnlinePlayers()) {
-							TempData data = main.getTempDataManager().getTempData(p.getUniqueId());
-							if (PlayerUtils.isEqualOrHigherThen(p, Rank.TRAINEE)) {
-								if (data.isStaffchatEnabled() && data.getStaffchatSetting() == MessageSettings.LOCAL) {
-									p.sendMessage(StringUtils.msg(finalMessage));
-								}
+					String finalMessage = "&8[&a&lSTAFFCHAT&8] " + metaData.getPrefix() + "" + player.getName() + " &8» &a" + stringBuilder.toString();
+					Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
+						@Override
+						public void run() {
+							try (Jedis jedis = main.getPool().getResource()) {
+								JedisTask.withName(UUID.randomUUID().toString())
+										.withArg(RedisArg.MESSAGE.getArg(), finalMessage)
+										.send(RedisChannels.STAFFCHAT.getChannelName(), jedis);
 							}
 						}
-					}
+					});
 				}
 			} else {
 				player.sendMessage(StringUtils.msg("&cYou do not have permission to use this command!"));

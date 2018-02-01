@@ -7,11 +7,14 @@ import me.thesquadmc.utils.StringUtils;
 import me.thesquadmc.utils.handlers.UpdateEvent;
 import me.thesquadmc.utils.handlers.UpdateType;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.*;
@@ -110,13 +113,18 @@ public final class StaffmodeListener implements Listener {
 	}
 
 	@EventHandler
-	public void onInventoryClick(InventoryClickEvent e) {
-		if (e.getInventory() != null && e.getInventory().getType() == InventoryType.PLAYER) {
-			Player player = (Player) e.getWhoClicked();
-			if (StaffmodeCommand.getStaffmode().containsKey(player.getUniqueId())) {
+	public void onHit(EntityDamageByEntityEvent e) {
+		if (e.getEntity().getType() == EntityType.PLAYER && e.getDamager().getType() == EntityType.PLAYER) {
+			Player p = (Player) e.getEntity();
+			Player d = (Player) e.getDamager();
+			if (StaffmodeCommand.getStaffmode().containsKey(p.getUniqueId()) || StaffmodeCommand.getStaffmode().containsKey(d.getUniqueId())) {
 				e.setCancelled(true);
 			}
 		}
+	}
+
+	@EventHandler
+	public void onInventoryClick(InventoryClickEvent e) {
 		if (e.getInventory() != null && e.getInventory().getName().equalsIgnoreCase("CONTROL PANEL")) {
 			Player player = (Player) e.getWhoClicked();
 			e.setCancelled(true);
@@ -158,6 +166,25 @@ public final class StaffmodeListener implements Listener {
 			}
 		} else if (e.getInventory() != null && e.getInventory().getName().equalsIgnoreCase("Miners Below Y 16")) {
 			e.setCancelled(true);
+			if (e.getCurrentItem() != null) {
+				ItemStack stack = e.getCurrentItem();
+				if (stack.getItemMeta() != null) {
+					Player player = (Player) e.getWhoClicked();
+					String name = ChatColor.stripColor(stack.getItemMeta().getDisplayName());
+					Player t = Bukkit.getPlayer(name);
+					if (t != null) {
+						player.setGameMode(GameMode.SPECTATOR);
+						player.teleport(t.getLocation());
+					} else {
+						player.sendMessage(StringUtils.msg("&cThat player is offline or does not exist!"));
+					}
+				}
+			}
+		} else if (e.getInventory() != null) {
+			Player player = (Player) e.getWhoClicked();
+			if (StaffmodeCommand.getStaffmode().containsKey(player.getUniqueId())) {
+				e.setCancelled(true);
+			}
 		}
 	}
 
