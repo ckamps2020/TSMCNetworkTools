@@ -27,6 +27,10 @@ public final class FreezeCommand implements CommandExecutor {
 		if (sender instanceof Player) {
 			Player player = (Player) sender;
 			if (PlayerUtils.isEqualOrHigherThen(player, Rank.MOD)) {
+				if (Bukkit.getServerName().toUpperCase().contains("HUB")) {
+					player.sendMessage(StringUtils.msg("&cYou are not allowed to use this command here!"));
+					return true;
+				}
 				if (args.length == 1) {
 					String name = args[0];
 					Player t = Bukkit.getPlayer(name);

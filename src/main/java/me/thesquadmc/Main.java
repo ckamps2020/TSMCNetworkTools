@@ -27,6 +27,7 @@ public final class Main extends JavaPlugin {
 	private static Main main;
 	private LuckPermsApi luckPermsApi;
 	private String whitelistMessage = ChatColor.translateAlternateColorCodes('&', "&cServer currently whitelisted!");
+	private long startup = System.currentTimeMillis();
 
 	private FileManager fileManager;
 	private TempDataManager tempDataManager;
@@ -78,6 +79,8 @@ public final class Main extends JavaPlugin {
 		getCommand("ytvanish").setExecutor(new YtVanishCommand(this));
 		getCommand("forcefield").setExecutor(new ForceFieldCommand(this));
 		getCommand("staffmenu").setExecutor(new StaffMenuCommand(this));
+		getCommand("proxylist").setExecutor(new ProxyListCommand(this));
+		getCommand("monitor").setExecutor(new MonitorCommand(this));
 		getServer().getPluginManager().registerEvents(new ForceFieldListeners(this), this);
 		getServer().getPluginManager().registerEvents(new VanishListener(this), this);
 		getServer().getPluginManager().registerEvents(new WhitelistListener(this), this);
@@ -123,7 +126,10 @@ public final class Main extends JavaPlugin {
 						RedisChannels.WHITELIST_ADD.getChannelName(),
 						RedisChannels.WHITELIST_REMOVE.getChannelName(),
 						RedisChannels.REPORTS.getChannelName(),
-						RedisChannels.CLOSED_REPORTS.getChannelName()
+						RedisChannels.CLOSED_REPORTS.getChannelName(),
+						RedisChannels.MONITOR_INFO.getChannelName(),
+						RedisChannels.PROXY_RETURN.getChannelName(),
+						RedisChannels.MONITOR_REQUEST.getChannelName()
 				);
 			}
 		});
@@ -140,6 +146,14 @@ public final class Main extends JavaPlugin {
 		System.out.println("[StaffTools] Shut down! Cya :D");
 	}
 
+	public long getStartup() {
+		return startup;
+	}
+
+	public void setStartup(long startup) {
+		this.startup = startup;
+	}
+
 	public void setWhitelistMessage(String whitelistMessage) {
 		this.whitelistMessage = whitelistMessage;
 	}
@@ -147,7 +161,6 @@ public final class Main extends JavaPlugin {
 	public String getWhitelistMessage() {
 		return whitelistMessage;
 	}
-
 
 	public ReportInventory getReportInventory() {
 		return reportInventory;

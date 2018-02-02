@@ -11,6 +11,11 @@ public enum RedisArg {
 	UUID("UUID"),
 	ONOFF("ONOFF"),
 
+	PROXIES("PROXIES"),
+	COUNT("COUNT"),
+	UPTIME("UPTIME"),
+	TPS("TPS"),
+
 	DATE("DATE"),
 	REASON("REASON"),
 

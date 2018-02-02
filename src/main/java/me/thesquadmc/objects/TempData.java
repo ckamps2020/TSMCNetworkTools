@@ -17,6 +17,7 @@ public final class TempData {
 	private boolean xray;
 	private boolean forcefieldEnabled;
 	private boolean ytVanishEnabled;
+	private boolean monitor;
 
 	public TempData() {
 		loginTime = StringUtils.getDate();
@@ -29,11 +30,20 @@ public final class TempData {
 		vanished = false;
 		forcefieldEnabled = false;
 		ytVanishEnabled = false;
+		monitor = true;
 		if (Bukkit.getServerName().toUpperCase().contains("FACTIONS")) {
 			xray = true;
 		} else {
 			xray = false;
 		}
+	}
+
+	public boolean isMonitor() {
+		return monitor;
+	}
+
+	public void setMonitor(boolean monitor) {
+		this.monitor = monitor;
 	}
 
 	public boolean isYtVanishEnabled() {

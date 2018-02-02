@@ -5,6 +5,7 @@ import me.thesquadmc.objects.TempData;
 import me.thesquadmc.utils.PlayerUtils;
 import me.thesquadmc.utils.Rank;
 import me.thesquadmc.utils.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -24,6 +25,10 @@ public final class XrayVerboseCommand implements CommandExecutor {
 			Player player = (Player) sender;
 			TempData tempData = main.getTempDataManager().getTempData(player.getUniqueId());
 			if (PlayerUtils.isEqualOrHigherThen(player, Rank.TRAINEE)) {
+				if (Bukkit.getServerName().toUpperCase().contains("HUB")) {
+					player.sendMessage(StringUtils.msg("&cYou are not allowed to use this command here!"));
+					return true;
+				}
 				if (!tempData.isXray()) {
 					tempData.setXray(true);
 					player.sendMessage(StringUtils.msg("&8[&4&lAntiCheat&8] &4[XRAY] &fYou enabled Xray Verbose"));

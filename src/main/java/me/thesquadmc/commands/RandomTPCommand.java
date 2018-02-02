@@ -25,6 +25,10 @@ public final class RandomTPCommand implements CommandExecutor {
 		if (sender instanceof Player) {
 			Player player = (Player) sender;
 			if (PlayerUtils.isEqualOrHigherThen(player, Rank.MOD)) {
+				if (Bukkit.getServerName().toUpperCase().contains("HUB")) {
+					player.sendMessage(StringUtils.msg("&cYou are not allowed to use this command here!"));
+					return true;
+				}
 				if (Bukkit.getOnlinePlayers().size() > 10) {
 					int random = new Random().nextInt(Bukkit.getServer().getOnlinePlayers().size());
 					Player t = (Player) Bukkit.getServer().getOnlinePlayers().toArray()[random];

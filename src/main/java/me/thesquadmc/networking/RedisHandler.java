@@ -310,6 +310,77 @@ public final class RedisHandler {
 			report.setReportCloser(name);
 			main.getReportManager().removeReport(report);
 			main.getReportManager().registerClosedReport(report);
+		} else if (channel.equalsIgnoreCase(RedisChannels.MONITOR_REQUEST.getChannelName())) {
+			String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
+			if (server.equalsIgnoreCase(Bukkit.getServerName())) {
+				Bukkit.getScheduler().runTaskAsynchronously(main, () -> {
+					try (Jedis jedis = Main.getMain().getPool().getResource()) {
+						JedisTask.withName(UUID.randomUUID().toString())
+								.withArg(RedisArg.SERVER.getArg(), server)
+								.withArg(RedisArg.UPTIME.getArg(), TimeUtils.millisToRoundedTime(System.currentTimeMillis() - main.getStartup()))
+								.withArg(RedisArg.COUNT.getArg(), String.valueOf(Bukkit.getOnlinePlayers().size()))
+								.withArg(RedisArg.TPS.getArg(), ServerUtils.getTPS(0))
+								.withArg(RedisArg.MESSAGE.getArg(), "&7TPS = &e" + ServerUtils.getTPS(0) + "&7, &7Memory = &e" + ServerUtils.getUsedMemory() + "&8/&e" + ServerUtils.getTotalMemory() + "&7")
+								.send(RedisChannels.MONITOR_RETURN.getChannelName(), jedis);
+					}
+				});
+			}
+		} else if (channel.equalsIgnoreCase(RedisChannels.PROXY_RETURN.getChannelName())) {
+			String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
+			String player = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
+			if (server.equalsIgnoreCase(Bukkit.getServerName())) {
+				Player p = Bukkit.getPlayer(player);
+				if (p != null) {
+					String proxies = String.valueOf(data.get(RedisArg.PROXIES.getArg()));
+					String count = String.valueOf(data.get(RedisArg.COUNT.getArg()));
+					String regex = "[ ]+";
+					String[] tokens = proxies.split(regex);
+					p.sendMessage(StringUtils.msg("&7"));
+					for (String s : tokens) {
+						p.sendMessage(StringUtils.msg(s));
+					}
+					p.sendMessage(StringUtils.msg("&7"));
+					p.sendMessage(StringUtils.msg("&e" + count + "&8/&e4000 &7Online globally"));
+					p.sendMessage(StringUtils.msg("&7"));
+				}
+			}
+		} else if (channel.equalsIgnoreCase(RedisChannels.MONITOR_INFO.getChannelName())) {
+			String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
+			String count = String.valueOf(data.get(RedisArg.COUNT.getArg()));
+			String msg = String.valueOf(data.get(RedisArg.MESSAGE.getArg()));
+			String uptime = String.valueOf(data.get(RedisArg.UPTIME.getArg()));
+			String tps = String.valueOf(data.get(RedisArg.TPS.getArg()));
+			if (!uptime.equalsIgnoreCase("0")) {
+				for (Player player : Bukkit.getOnlinePlayers()) {
+					if (PlayerUtils.isEqualOrHigherThen(player, Rank.MANAGER) && main.getTempDataManager().getTempData(player.getUniqueId()).isMonitor()) {
+						if (Double.valueOf(tps) > 15.0) {
+							player.sendMessage(StringUtils.msg("&8&m-------------------------------------------------"));
+							player.sendMessage(StringUtils.msg("&6&l[MONITOR REPORT] &f" + server + " &7" + count + "&8/&7200"));
+							player.sendMessage(StringUtils.msg("&7"));
+							player.sendMessage(StringUtils.msg(msg));
+							player.sendMessage(StringUtils.msg("&7Uptime = &e" + uptime));
+							player.sendMessage(StringUtils.msg("&8&m-------------------------------------------------"));
+						} else {
+							player.sendMessage(StringUtils.msg("&8&m-------------------------------------------------"));
+							player.sendMessage(StringUtils.msg("&6&l[MONITOR REPORT] &f" + server + " &cBelow 15 TPS!"));
+							player.sendMessage(StringUtils.msg("&7"));
+							player.sendMessage(StringUtils.msg(msg));
+							player.sendMessage(StringUtils.msg("&7Uptime = &e" + uptime));
+							player.sendMessage(StringUtils.msg("&8&m-------------------------------------------------"));
+						}
+					}
+				}
+			} else {
+				for (Player player : Bukkit.getOnlinePlayers()) {
+					if (PlayerUtils.isEqualOrHigherThen(player, Rank.MANAGER) && main.getTempDataManager().getTempData(player.getUniqueId()).isMonitor()) {
+						player.sendMessage(StringUtils.msg("&8&m-------------------------------------------------"));
+						player.sendMessage(StringUtils.msg("&6&l[MONITOR REPORT] &f" + server + " &7" + count + "&8/&7200"));
+						player.sendMessage(StringUtils.msg("&7"));
+						player.sendMessage(StringUtils.msg(msg));
+						player.sendMessage(StringUtils.msg("&8&m-------------------------------------------------"));
+					}
+				}
+			}
 		}
 	}
 

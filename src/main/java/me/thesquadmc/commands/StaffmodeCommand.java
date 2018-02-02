@@ -5,6 +5,7 @@ import me.thesquadmc.utils.ItemBuilder;
 import me.thesquadmc.utils.PlayerUtils;
 import me.thesquadmc.utils.Rank;
 import me.thesquadmc.utils.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -29,6 +30,10 @@ public final class StaffmodeCommand implements CommandExecutor {
 		if (sender instanceof Player) {
 			Player player = (Player) sender;
 			if (PlayerUtils.isEqualOrHigherThen(player, Rank.MOD)) {
+				if (Bukkit.getServerName().toUpperCase().contains("HUB")) {
+					player.sendMessage(StringUtils.msg("&cYou are not allowed to use this command here!"));
+					return true;
+				}
 				if (!staffmode.containsKey(player.getUniqueId())) {
 					player.performCommand("vanish");
 					staffmode.put(player.getUniqueId(), player.getInventory().getContents());
