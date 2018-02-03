@@ -15,14 +15,12 @@ import me.thesquadmc.networking.RedisHandler;
 import me.thesquadmc.objects.Config;
 import me.thesquadmc.utils.FileManager;
 import me.thesquadmc.utils.RedisChannels;
+import me.thesquadmc.utils.StringUtils;
 import me.thesquadmc.utils.handlers.UpdateHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 import redis.clients.jedis.*;
-
-import java.util.HashSet;
-import java.util.Set;
 
 public final class Main extends JavaPlugin {
 
@@ -34,9 +32,7 @@ public final class Main extends JavaPlugin {
 	private long startup = System.currentTimeMillis();
 	private String value = "NONE";
 	private String sig = "NONE";
-
-	private Set<String> filteredPhrases;
-	private Set<String> filteredWords;
+	private Jedis jedis;
 
 	private FileManager fileManager;
 	private TempDataManager tempDataManager;
@@ -55,11 +51,9 @@ public final class Main extends JavaPlugin {
 	public void onEnable() {
 		System.out.println("[StaffTools] Starting the plugin up...");
 		main = this;
-		Config config = new Config("filter", this);
-		filteredPhrases = new HashSet<>(config.getConfig().getStringList("filtered-phrases"));
-		filteredWords = new HashSet<>(config.getConfig().getStringList("filtered-words"));
 		luckPermsApi = LuckPerms.getApi();
 		fileManager = new FileManager(this);
+		new StringUtils();
 		frozenInventory = new FrozenInventory(this);
 		staffmodeInventory = new StaffmodeInventory(this);
 		updateHandler = new UpdateHandler(this);
@@ -116,6 +110,24 @@ public final class Main extends JavaPlugin {
 		JedisPoolConfig poolConfig = new JedisPoolConfig();
 		pool = new JedisPool(poolConfig, host, port, 10000, password);
 		//pool = new JedisPool(host, port);
+		jedis = pool.getResource();
+		Bukkit.getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
+			@Override
+			public void run() {
+				if (!jedis.isConnected()) {
+					System.out.println("[StaffTools] --------------------");
+					System.out.println("[StaffTools] Jedis Disconnected setting up config log report...");
+					Config c = new Config(Bukkit.getServerName() + "-" + StringUtils.getDate(), main);
+					c.getConfig().set("time", StringUtils.getDate());
+					c.getConfig().set("server", Bukkit.getServerName());
+					jedis.connect();
+					c.getConfig().set("reconnected", jedis.isConnected());
+					System.out.println("[StaffTools] has jedis reconnected? " + jedis.isConnected());
+					System.out.println("[StaffTools] Jedis config log created!");
+					System.out.println("[StaffTools] --------------------");
+				}
+			}
+		}, 1L, 5 * 20L);
 		Thread.currentThread().setContextClassLoader(previous);
 
 		JedisPubSub pubSub = new JedisPubSub() {
@@ -177,14 +189,6 @@ public final class Main extends JavaPlugin {
 
 	public void setSig(String sig) {
 		this.sig = sig;
-	}
-
-	public Set<String> getFilteredPhrases() {
-		return filteredPhrases;
-	}
-
-	public Set<String> getFilteredWords() {
-		return filteredWords;
 	}
 
 	public long getStartup() {

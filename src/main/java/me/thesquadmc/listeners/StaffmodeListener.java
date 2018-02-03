@@ -103,15 +103,15 @@ public final class StaffmodeListener implements Listener {
 				}
 			}
 		}
+		if (tempCPS.get(player.getUniqueId()) != null) {
+			tempCPS.put(player.getUniqueId(), tempCPS.get(player.getUniqueId()));
+		} else {
+			tempCPS.put(player.getUniqueId(), 1);
+		}
 		for (Map.Entry<UUID, Map<UUID, Integer>> m : cps.entrySet()) {
 			Map<UUID, Integer> mm = m.getValue();
 			if (mm.get(player.getUniqueId()) != null) {
 				mm.put(player.getUniqueId(), mm.get(player.getUniqueId()) + 1);
-				if (tempCPS.get(player.getUniqueId()) != null) {
-					tempCPS.put(player.getUniqueId(), tempCPS.get(player.getUniqueId()));
-				} else {
-					tempCPS.put(player.getUniqueId(), 1);
-				}
 			}
 		}
 	}

@@ -6,10 +6,12 @@ import me.thesquadmc.utils.PlayerUtils;
 import me.thesquadmc.utils.Rank;
 import me.thesquadmc.utils.StringUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -42,6 +44,16 @@ public final class FreezeListener implements Listener {
 				if (PlayerUtils.isEqualOrHigherThen(t, Rank.MOD)) {
 					t.sendMessage(StringUtils.msg("&e&lFREEZE &6■ &c" + player.getName() + " has logged out while frozen!"));
 				}
+			}
+		}
+	}
+
+	@EventHandler
+	public void onDamage(EntityDamageEvent e) {
+		if (e.getEntity() != null && e.getEntity().getType() == EntityType.PLAYER) {
+			Player player = (Player) e.getEntity();
+			if (FreezeCommand.getFrozen().contains(player.getUniqueId())) {
+				e.setCancelled(true);
 			}
 		}
 	}

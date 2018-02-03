@@ -6,9 +6,9 @@ depend: [LuckPerms]
 
 commands:
     adminchat:
-        aliases: [ac]
+        aliases: [ac, a, achat]
     find:
-        aliases: [whereis]
+        aliases: [whereis, locate, findplayer, locateplayer, findp, locatep]
     freeze:
     freezepanel:
     invsee:
@@ -34,7 +34,7 @@ commands:
     managereports:
         aliases: [reports]
     alert:
-        aliases: [global]
+        aliases: [global, announce]
     stop:
     whitelist:
     launch:
