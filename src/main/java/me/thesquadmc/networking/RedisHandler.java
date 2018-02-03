@@ -3,13 +3,16 @@ package me.thesquadmc.networking;
 import me.thesquadmc.Main;
 import me.thesquadmc.commands.FindCommand;
 import me.thesquadmc.commands.StafflistCommand;
+import me.thesquadmc.commands.StaffmodeCommand;
 import me.thesquadmc.objects.Report;
 import me.thesquadmc.objects.TempData;
 import me.thesquadmc.utils.*;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import redis.clients.jedis.Jedis;
 
 import java.util.*;
@@ -256,7 +259,9 @@ public final class RedisHandler {
 			if (server.equalsIgnoreCase("ALL") || Bukkit.getServerName().toUpperCase().contains(server)) {
 				String msg = String.valueOf(data.get(RedisArg.MESSAGE.getArg()));
 				Bukkit.broadcastMessage(StringUtils.msg("&7"));
+				Bukkit.broadcastMessage(StringUtils.msg("&7"));
 				Bukkit.broadcastMessage(StringUtils.msg("&8[&4&lALERT&8] &c" + msg));
+				Bukkit.broadcastMessage(StringUtils.msg("&7"));
 				Bukkit.broadcastMessage(StringUtils.msg("&7"));
 				for (Player p : Bukkit.getOnlinePlayers()) {
 					p.playSound(p.getLocation(), Sound.ENDERDRAGON_GROWL, 1.0f, 1.0f);
@@ -266,8 +271,48 @@ public final class RedisHandler {
 			String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
 			if (server.equalsIgnoreCase(Bukkit.getServerName())) {
 				String msg = String.valueOf(data.get(RedisArg.MESSAGE.getArg()));
-				Bukkit.broadcastMessage(StringUtils.msg("&e&lSTOP &6■ &7Server stopping for reason: &e" + msg));
-				Bukkit.shutdown();
+				Bukkit.broadcastMessage(StringUtils.msg("&7"));
+				Bukkit.broadcastMessage(StringUtils.msg("&7"));
+				Bukkit.broadcastMessage(StringUtils.msg("&e&lSTOP &6■ &7Server restarting in &e15 &7seconds for reason: &e" + msg));
+				Bukkit.broadcastMessage(StringUtils.msg("&7"));
+				Bukkit.broadcastMessage(StringUtils.msg("&7"));
+				Bukkit.getScheduler().runTask(main, new Runnable() {
+					@Override
+					public void run() {
+						for (Player p : Bukkit.getOnlinePlayers()) {
+							if (PlayerUtils.isEqualOrHigherThen(p, Rank.MOD)) {
+								TempData tempData = main.getTempDataManager().getTempData(p.getUniqueId());
+								if (StaffmodeCommand.getStaffmode().containsKey(p.getUniqueId())) {
+									p.getInventory().clear();
+									for (ItemStack itemStack : StaffmodeCommand.getStaffmode().get(p.getUniqueId())) {
+										if (itemStack != null) {
+											p.getInventory().addItem(itemStack);
+										}
+									}
+									StaffmodeCommand.getStaffmode().remove(p.getUniqueId());
+									p.setGameMode(GameMode.SURVIVAL);
+									StaffmodeCommand.getStaffmode().remove(p.getUniqueId());
+									p.performCommand("spawn");
+									p.sendMessage(StringUtils.msg("&e&lSTOP &6■ &7Due to server restart you have been taken out of staffmode"));
+								}
+								if (tempData.isVanished() || tempData.isYtVanishEnabled()) {
+									PlayerUtils.showPlayerSpectator(p);
+									tempData.setVanished(false);
+									tempData.setYtVanishEnabled(false);
+									p.sendMessage(StringUtils.msg("&e&lSTOP &6■ &7Due to server restart you have been taken out of vanish"));
+								}
+							}
+							p.playSound(p.getLocation(), Sound.ANVIL_USE, 1.0f, 1.0f);
+						}
+					}
+				});
+				Bukkit.getScheduler().runTaskLater(main, new Runnable() {
+					@Override
+					public void run() {
+						Bukkit.shutdown();
+						Bukkit.broadcastMessage(StringUtils.msg("&e&lSTOP &6■ &7Server restarting for reason: &e" + msg));
+					}
+				}, 15 * 20L);
 			}
 		} else if (channel.equalsIgnoreCase(RedisChannels.WHITELIST_ADD.getChannelName())) {
 			String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));

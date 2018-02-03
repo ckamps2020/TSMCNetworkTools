@@ -6,10 +6,8 @@ import me.thesquadmc.utils.InventorySize;
 import me.thesquadmc.utils.StringUtils;
 import me.thesquadmc.utils.handlers.UpdateEvent;
 import me.thesquadmc.utils.handlers.UpdateType;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
-import org.bukkit.Material;
+import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -84,9 +82,23 @@ public final class StaffmodeListener implements Listener {
 					player.performCommand("vanish");
 					return;
 				}
+				if (stack.getItemMeta() != null && stack.getItemMeta().getDisplayName().toUpperCase().contains("PLACE CHEST")) {
+					if (e.getClickedBlock() != null && e.getClickedBlock().getType() != null) {
+						if (e.getAction().toString().toUpperCase().contains("RIGHT")) {
+							Block block = e.getClickedBlock();
+							block.getLocation().getWorld().getBlockAt(block.getLocation().clone().add(0, 1, 0)).setType(Material.CHEST);
+						}
+					}
+					return;
+				}
 				if (stack.getItemMeta() != null && stack.getItemMeta().getDisplayName().toUpperCase().contains("CONTROL PANEL")) {
-					player.closeInventory();
-					main.getStaffmodeInventory().buildStaffpanel(player);
+					if (e.getAction().toString().toUpperCase().contains("RIGHT")) {
+						player.closeInventory();
+						main.getStaffmodeInventory().buildStaffpanel(player);
+					} else if (e.getAction().toString().toUpperCase().contains("LEFT")) {
+						player.closeInventory();
+						player.performCommand("rtp");
+					}
 					return;
 				}
 			}
@@ -161,9 +173,7 @@ public final class StaffmodeListener implements Listener {
 
 	@EventHandler
 	public void onBreak(BlockBreakEvent e) {
-		if (StaffmodeCommand.getStaffmode().containsKey(e.getPlayer().getUniqueId())) {
-			e.setCancelled(true);
-		} else {
+		if (Bukkit.getServerName().toUpperCase().contains("SKYBLOCK")) {
 			if (!mining.contains(e.getPlayer().getUniqueId())) {
 				mining.add(e.getPlayer().getUniqueId());
 			}
@@ -349,8 +359,6 @@ public final class StaffmodeListener implements Listener {
 						} else {
 							player.sendMessage(StringUtils.msg("&cYou are already calculating someones CPS!"));
 						}
-					} else if (stack.getItemMeta() != null && stack.getItemMeta().getDisplayName().toUpperCase().contains("OPEN INVENTORY")) {
-						player.performCommand("invsee " + target.getName());
 					}
 				}
 			}

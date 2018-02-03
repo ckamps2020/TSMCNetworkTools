@@ -41,19 +41,19 @@ public final class ForceFieldListeners implements Listener {
 						double finalY = 0;
 						double finalZ = 0;
 						if (x >= xx) {
-							finalX = 1;
+							finalX = 0.8;
 						} else if (x <= xx) {
-							finalX = -1;
+							finalX = -0.8;
 						}
 						if (y >= yy) {
-							finalY = 0.5;
+							finalY = 0.7;
 						} else if (y <= yy) {
-							finalY = -0.5;
+							finalY = -0.7;
 						}
 						if (z >= zz) {
-							finalZ = 1;
+							finalZ = 0.8;
 						} else if (z <= zz) {
-							finalZ = -1;
+							finalZ = -0.8;
 						}
 						p.setVelocity(new Vector(finalX, finalY, finalZ));
 						p.playSound(p.getLocation(), Sound.CHICKEN_EGG_POP, 1.0f, 1.0f);

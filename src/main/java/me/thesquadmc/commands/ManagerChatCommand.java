@@ -52,7 +52,7 @@ public final class ManagerChatCommand implements CommandExecutor {
 					UserData cachedData = user.getCachedData();
 					Contexts contexts = Contexts.allowAll();
 					MetaData metaData = cachedData.getMetaData(contexts);
-					String finalMessage = "&8[&c&lMANAGERCHAT&8] " + metaData.getPrefix() + " " + player.getName() + " &8» &c" + stringBuilder.toString();
+					String finalMessage = "&8[&c&lMANAGERCHAT&8] " + metaData.getPrefix() + "" + player.getName() + " &8» &c" + stringBuilder.toString();
 					Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
 						@Override
 						public void run() {

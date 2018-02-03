@@ -35,7 +35,7 @@ public class UndisguisePlayerCommand implements CommandExecutor {
 								Bukkit.getScheduler().runTaskLater(main, new Runnable() {
 									@Override
 									public void run() {
-										PlayerUtils.setSkin(p, p.getName());
+										PlayerUtils.restorePlayerTextures(p);
 									}
 								}, n);
 							}

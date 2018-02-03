@@ -42,11 +42,11 @@ public final class StaffmodeCommand implements CommandExecutor {
 					player.sendMessage(StringUtils.msg("&e&lVANISH &6■ &7You toggled vanish &eon&7! No one will be able to see you"));
 					staffmode.put(player.getUniqueId(), player.getInventory().getContents());
 					player.getInventory().clear();
-					player.getInventory().setItem(0, new ItemBuilder(Material.REDSTONE_COMPARATOR).name("&e&lControl Panel").lore("&7View more staff options to perform").build());
+					player.getInventory().setItem(0, new ItemBuilder(Material.REDSTONE_COMPARATOR).name("&e&lControl Panel").lore("&7Right Click to open the Control Panel", "&7Left-Click to random teleport").build());
 					player.getInventory().setItem(2, new ItemBuilder(Material.ICE).name("&e&lFreeze Target").lore("&7Freeze the player you are looking at").build());
 					player.getInventory().setItem(4, new ItemBuilder(Material.INK_SACK, 10).name("&e&lToggle Vanish &7off").lore("&7Toggle vanish on or off").build());
 					player.getInventory().setItem(6, new ItemBuilder(Material.DIAMOND_SWORD).name("&e&lCPS Checker").lore("&7Right-Click the target to check their CPS").build());
-					player.getInventory().setItem(8, new ItemBuilder(Material.CHEST).name("&e&lOpen Inventory").lore("&7Open the player you're look at's inventory").build());
+					player.getInventory().setItem(8, new ItemBuilder(Material.CHEST).name("&e&lPlace Chest").lore("&7Place a chest down at location").build());
 					player.sendMessage(StringUtils.msg("&e&lSTAFF &6■  &7Staff mode has been &eenabled&7"));
 				} else {
 					player.getInventory().clear();

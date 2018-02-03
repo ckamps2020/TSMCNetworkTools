@@ -83,43 +83,43 @@ public final class StafflistCommand implements CommandExecutor {
 							String[] dtokens = developer.split(dr);
 							String[] otokens = owner.split(or);
 							if (!trainee.equalsIgnoreCase("")) {
-								player.spigot().sendMessage(StringUtils.getHoverMessage("&a" + (ttokens.length - 1) + " &8[&f&lTrainee&8]&7" + trainee, "&7Want to become &eTrainee&7? Apply at:\n" +
+								player.spigot().sendMessage(StringUtils.getHoverMessage("&a" + (ttokens.length - 1) + " &8[&f&lTrainee&8]&f" + trainee, "&7Want to become &eTrainee&7? Apply at:\n" +
 										"&6&nwww.thesquadmc.net/forums/staff-applications"));
 							} else {
 								player.sendMessage(StringUtils.msg("&c0 &8[&f&lTrainee&8] &7None"));
 							}
 							if (!helper.equalsIgnoreCase("")) {
-								player.sendMessage(StringUtils.msg("&a" + (htokens.length - 1) + " &8[&3&lHelper&8]&7" + helper));
+								player.sendMessage(StringUtils.msg("&a" + (htokens.length - 1) + " &8[&3&lHelper&8]&3" + helper));
 							} else {
 								player.sendMessage(StringUtils.msg("&c0 &8[&3&lHelper&8] &7None"));
 							}
 							if (!mod.equalsIgnoreCase("")) {
-								player.sendMessage(StringUtils.msg("&a" + (mtokens.length - 1) + " &8[&5&lMod&8]&7" + mod));
+								player.sendMessage(StringUtils.msg("&a" + (mtokens.length - 1) + " &8[&5&lMod&8]&5" + mod));
 							} else {
 								player.sendMessage(StringUtils.msg("&c0 &8[&5&lMod&8] &7None"));
 							}
 							if (!srmod.equalsIgnoreCase("")) {
-								player.sendMessage(StringUtils.msg("&a" + (srtokens.length - 1) + " &8[&d&lSr-Mod&8]&7" + srmod));
+								player.sendMessage(StringUtils.msg("&a" + (srtokens.length - 1) + " &8[&d&lSr-Mod&8]&d" + srmod));
 							} else {
 								player.sendMessage(StringUtils.msg("&c0 &8[&d&lSr-Mod&8] &7None"));
 							}
 							if (!admin.equalsIgnoreCase("")) {
-								player.sendMessage(StringUtils.msg("&a" + (atokens.length - 1) + " &8[&c&lAdmin&8]&7" + admin));
+								player.sendMessage(StringUtils.msg("&a" + (atokens.length - 1) + " &8[&c&lAdmin&8]&c" + admin));
 							} else {
 								player.sendMessage(StringUtils.msg("&c0 &8[&c&lAdmin&8] &7None"));
 							}
 							if (!manager.equalsIgnoreCase("")) {
-								player.sendMessage(StringUtils.msg("&a" + (mantokens.length - 1) + " &8[&c&lManager&8]&7" + manager));
+								player.sendMessage(StringUtils.msg("&a" + (mantokens.length - 1) + " &8[&c&lManager&8]&c" + manager));
 							} else {
 								player.sendMessage(StringUtils.msg("&c0 &8[&c&lManager&8] &7None"));
 							}
 							if (!developer.equalsIgnoreCase("")) {
-								player.sendMessage(StringUtils.msg("&a" + (dtokens.length - 1) + " &8[&c&lDeveloper&8] &7" + developer));
+								player.sendMessage(StringUtils.msg("&a" + (dtokens.length - 1) + " &8[&c&lDeveloper&8]&c" + developer));
 							} else {
 								player.sendMessage(StringUtils.msg("&c0 &8[&c&lDeveloper&8] &7None"));
 							}
 							if (!owner.equalsIgnoreCase("")) {
-								player.sendMessage(StringUtils.msg("&a" + (otokens.length - 1) + " &8[&4&lOwner&8]&7" + owner));
+								player.sendMessage(StringUtils.msg("&a" + (otokens.length - 1) + " &8[&4&lOwner&8]&4" + owner));
 							} else {
 								player.sendMessage(StringUtils.msg("&c0 &8[&4&lOwner&8] &7None"));
 							}

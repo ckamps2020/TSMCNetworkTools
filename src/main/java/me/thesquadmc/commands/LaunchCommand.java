@@ -1,12 +1,9 @@
 package me.thesquadmc.commands;
 
-import me.lucko.luckperms.api.User;
 import me.thesquadmc.Main;
-import me.thesquadmc.objects.TempData;
 import me.thesquadmc.utils.PlayerUtils;
 import me.thesquadmc.utils.Rank;
 import me.thesquadmc.utils.StringUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -28,8 +25,8 @@ public final class LaunchCommand implements CommandExecutor {
 			if (PlayerUtils.isEqualOrHigherThen(player, Rank.YOUTUBE)) {
 				for (Player p : PlayerUtils.getNearbyPlayers(player.getLocation(), 300)) {
 					p.setVelocity(new Vector(0, 10, 0));
+					p.sendMessage(StringUtils.msg("&c&lWHOOSH!"));
 				}
-				Bukkit.broadcastMessage(StringUtils.msg("&c&lWHOOSH!"));
 			} else {
 				player.sendMessage(StringUtils.msg("&cYou do not have permission to use this command!"));
 			}
