@@ -24,7 +24,13 @@ public final class VanishListener implements Listener {
 			for (Player player : Bukkit.getOnlinePlayers()) {
 				TempData tempData = main.getTempDataManager().getTempData(player.getUniqueId());
 				if (tempData.isYtVanishEnabled()) {
-					PlayerUtils.sendActionBarToPlayer("&7Vanish is &e&lenabled", player);
+					if (tempData.isNicknamed()) {
+						PlayerUtils.sendActionBarToPlayer("&e&lVanished &7and nicknamed as &e&l" + player.getName(), player);
+					} else {
+						PlayerUtils.sendActionBarToPlayer("&7Vanish is &e&lenabled", player);
+					}
+				} else if (tempData.isNicknamed()) {
+					PlayerUtils.sendActionBarToPlayer("&7Nicked as &e&l" + player.getName() + "&7", player);
 				}
 			}
 		}

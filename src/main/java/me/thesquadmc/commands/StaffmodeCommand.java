@@ -1,6 +1,7 @@
 package me.thesquadmc.commands;
 
 import me.thesquadmc.Main;
+import me.thesquadmc.objects.TempData;
 import me.thesquadmc.utils.ItemBuilder;
 import me.thesquadmc.utils.PlayerUtils;
 import me.thesquadmc.utils.Rank;
@@ -29,13 +30,16 @@ public final class StaffmodeCommand implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (sender instanceof Player) {
 			Player player = (Player) sender;
+			TempData tempData = main.getTempDataManager().getTempData(player.getUniqueId());
 			if (PlayerUtils.isEqualOrHigherThen(player, Rank.MOD)) {
 				if (Bukkit.getServerName().toUpperCase().contains("HUB")) {
 					player.sendMessage(StringUtils.msg("&cYou are not allowed to use this command here!"));
 					return true;
 				}
 				if (!staffmode.containsKey(player.getUniqueId())) {
-					player.performCommand("vanish");
+					PlayerUtils.hidePlayerSpectatorStaff(player);
+					tempData.setVanished(true);
+					player.sendMessage(StringUtils.msg("&e&lVANISH &6■ &7You toggled vanish &eon&7! No one will be able to see you"));
 					staffmode.put(player.getUniqueId(), player.getInventory().getContents());
 					player.getInventory().clear();
 					player.getInventory().setItem(0, new ItemBuilder(Material.REDSTONE_COMPARATOR).name("&e&lControl Panel").lore("&7View more staff options to perform").build());
@@ -52,7 +56,9 @@ public final class StaffmodeCommand implements CommandExecutor {
 						}
 					}
 					staffmode.remove(player.getUniqueId());
-					player.performCommand("vanish");
+					PlayerUtils.showPlayerSpectator(player);
+					tempData.setVanished(false);
+					player.sendMessage(StringUtils.msg("&e&lVANISH &6■ &7You toggled vanish &eoff&7! Everyone will be able to see you"));
 					player.setGameMode(GameMode.SURVIVAL);
 					player.sendMessage(StringUtils.msg("&e&lSTAFF &6■  &7Staff mode has been &edisabled&7"));
 				}

@@ -46,3 +46,8 @@ commands:
         aliases: [bungeelist]
     monitor:
         aliases: [monitorreport]
+    ytnick:
+    disguiseplayer:
+        aliases: [displayer]
+    undisguiseplayer:
+        aliases: [undisplayer]

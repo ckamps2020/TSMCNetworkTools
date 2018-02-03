@@ -8,7 +8,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class MonitorCommand implements CommandExecutor {
+public final class MonitorCommand implements CommandExecutor {
 
 	private final Main main;
 

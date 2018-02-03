@@ -14,7 +14,11 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.*;
@@ -29,6 +33,8 @@ public final class StaffmodeListener implements Listener {
 	private final Main main;
 	private Map<UUID, Integer> timeRemaining = new HashMap<>();
 	private Map<UUID, Map<UUID, Integer>> cps = new HashMap<>();
+	private Map<UUID, Integer> tempCPS = new HashMap<>();
+	private static List<UUID> mining = new ArrayList<>();
 
 	public StaffmodeListener(Main main) {
 		this.main = main;
@@ -50,9 +56,20 @@ public final class StaffmodeListener implements Listener {
 						timeRemaining.remove(player.getUniqueId());
 					} else {
 						timeRemaining.put(player.getUniqueId(), timeRemaining.get(player.getUniqueId()) - 1);
-						player.sendMessage(StringUtils.msg("&e&lSTAFF &6■ &7Calculating… printing CPS in &e" + timeRemaining.get(player.getUniqueId()) + "&7"));
+						player.sendMessage(StringUtils.msg("&e&lSTAFF &6■ &7Calculating… printing CPS in &e" + timeRemaining.get(player.getUniqueId()) + "&7 (Current CPS:&e " + tempCPS.get(player.getUniqueId()) + ")"));
+						tempCPS.clear();
 					}
 				}
+			}
+		}
+	}
+
+	@EventHandler
+	public void onTarget(EntityTargetLivingEntityEvent e) {
+		if (e.getTarget() != null && e.getTarget().getType() == EntityType.PLAYER) {
+			Player player = (Player) e.getTarget();
+			if (StaffmodeCommand.getStaffmode().containsKey(player.getUniqueId())) {
+				e.setCancelled(true);
 			}
 		}
 	}
@@ -65,10 +82,12 @@ public final class StaffmodeListener implements Listener {
 				ItemStack stack = e.getPlayer().getItemInHand();
 				if (stack.getItemMeta() != null && stack.getItemMeta().getDisplayName().toUpperCase().contains("VANISH")) {
 					player.performCommand("vanish");
+					return;
 				}
 				if (stack.getItemMeta() != null && stack.getItemMeta().getDisplayName().toUpperCase().contains("CONTROL PANEL")) {
 					player.closeInventory();
 					main.getStaffmodeInventory().buildStaffpanel(player);
+					return;
 				}
 			}
 		}
@@ -76,6 +95,11 @@ public final class StaffmodeListener implements Listener {
 			Map<UUID, Integer> mm = m.getValue();
 			if (mm.get(player.getUniqueId()) != null) {
 				mm.put(player.getUniqueId(), mm.get(player.getUniqueId()) + 1);
+				if (tempCPS.get(player.getUniqueId()) != null) {
+					tempCPS.put(player.getUniqueId(), tempCPS.get(player.getUniqueId()));
+				} else {
+					tempCPS.put(player.getUniqueId(), 1);
+				}
 			}
 		}
 	}
@@ -113,6 +137,47 @@ public final class StaffmodeListener implements Listener {
 	}
 
 	@EventHandler
+	public void  onMove(PlayerMoveEvent e) {
+		Double x = e.getFrom().getX();
+		Double y = e.getFrom().getY();
+		Double z = e.getFrom().getZ();
+		Double xx = e.getTo().getX();
+		Double yy = e.getTo().getY();
+		Double zz = e.getTo().getZ();
+		if (x.intValue() > xx.intValue() || x.intValue() < xx.intValue()) {
+			if (mining.contains(e.getPlayer().getUniqueId())) {
+				mining.remove(e.getPlayer().getUniqueId());
+			}
+		} else if (y.intValue() > yy.intValue() || y.intValue() < yy.intValue()) {
+			if (mining.contains(e.getPlayer().getUniqueId())) {
+				mining.remove(e.getPlayer().getUniqueId());
+			}
+		} else if (z.intValue() > zz.intValue() || z.intValue() < zz.intValue()) {
+			if (mining.contains(e.getPlayer().getUniqueId())) {
+				mining.remove(e.getPlayer().getUniqueId());
+			}
+		}
+	}
+
+	@EventHandler
+	public void onBreak(BlockBreakEvent e) {
+		if (StaffmodeCommand.getStaffmode().containsKey(e.getPlayer().getUniqueId())) {
+			e.setCancelled(true);
+		} else {
+			if (!mining.contains(e.getPlayer().getUniqueId())) {
+				mining.add(e.getPlayer().getUniqueId());
+			}
+		}
+	}
+
+	@EventHandler
+	public void onPlace(BlockPlaceEvent e) {
+		if (StaffmodeCommand.getStaffmode().containsKey(e.getPlayer().getUniqueId())) {
+			e.setCancelled(true);
+		}
+	}
+
+	@EventHandler
 	public void onHit(EntityDamageByEntityEvent e) {
 		if (e.getEntity().getType() == EntityType.PLAYER && e.getDamager().getType() == EntityType.PLAYER) {
 			Player p = (Player) e.getEntity();
@@ -120,6 +185,47 @@ public final class StaffmodeListener implements Listener {
 			if (StaffmodeCommand.getStaffmode().containsKey(p.getUniqueId()) || StaffmodeCommand.getStaffmode().containsKey(d.getUniqueId())) {
 				e.setCancelled(true);
 			}
+		} else if (e.getEntity().getType() == EntityType.PLAYER) {
+			Player p = (Player) e.getEntity();
+			if (StaffmodeCommand.getStaffmode().containsKey(p.getUniqueId())) {
+				e.setCancelled(true);
+			}
+		} else if (e.getDamager().getType() == EntityType.PLAYER) {
+			Player p = (Player) e.getDamager();
+			if (StaffmodeCommand.getStaffmode().containsKey(p.getUniqueId())) {
+				e.setCancelled(true);
+			}
+		}
+	}
+
+	@EventHandler
+	public void onLoss(FoodLevelChangeEvent e) {
+		Player player = (Player) e.getEntity();
+		if (StaffmodeCommand.getStaffmode().containsKey(player.getUniqueId())) {
+			e.setCancelled(true);
+			player.setFoodLevel(20);
+			player.setSaturation(20);
+		}
+	}
+
+	@EventHandler
+	public void onDur(PlayerItemDamageEvent e) {
+		if (StaffmodeCommand.getStaffmode().containsKey(e.getPlayer().getUniqueId())) {
+			e.setCancelled(true);
+		}
+	}
+
+	@EventHandler
+	public void portalEvent(PlayerPortalEvent e) {
+		if (StaffmodeCommand.getStaffmode().containsKey(e.getPlayer().getUniqueId())) {
+			e.setCancelled(true);
+		}
+	}
+
+	@EventHandler
+	public void onAInteract(PlayerArmorStandManipulateEvent e) {
+		if (StaffmodeCommand.getStaffmode().containsKey(e.getPlayer().getUniqueId())) {
+			e.setCancelled(true);
 		}
 	}
 
@@ -128,7 +234,13 @@ public final class StaffmodeListener implements Listener {
 		if (e.getInventory() != null && e.getInventory().getName().equalsIgnoreCase("CONTROL PANEL")) {
 			Player player = (Player) e.getWhoClicked();
 			e.setCancelled(true);
-			if (e.getSlot() == 11) {
+			if (e.getSlot() == 4) {
+				if (player.getGameMode() == GameMode.SPECTATOR) {
+					player.closeInventory();
+					player.setGameMode(GameMode.SURVIVAL);
+					player.sendMessage(StringUtils.msg("&7Gamemode updated to survival"));
+				}
+			} else if (e.getSlot() == 11) {
 				if (!main.getReportManager().getReports().isEmpty()) {
 					main.getReportInventory().buildReportsMenu(player);
 				} else {
@@ -138,33 +250,62 @@ public final class StaffmodeListener implements Listener {
 			} else if (e.getSlot() == 13) {
 				player.performCommand("randomtp");
 			} else if (e.getSlot() == 15) {
-				int i = 0;
-				List<Player> below = new ArrayList<>();
-				for (Player t : Bukkit.getOnlinePlayers()) {
-					if (i < 54) {
-						if (t.getLocation().getY() < 16.0) {
-							below.add(t);
-							i++;
+				if (Bukkit.getServerName().toUpperCase().contains("FACTIONS")) {
+					int i = 0;
+					List<Player> below = new ArrayList<>();
+					for (Player t : Bukkit.getOnlinePlayers()) {
+						if (i < 54) {
+							if (t.getLocation().getY() < 16.0) {
+								below.add(t);
+								i++;
+							}
+						} else {
+							break;
 						}
-					} else {
-						break;
 					}
+					Inventory inv = Bukkit.createInventory(null, InventorySize.SIX_LINE.getSize(), "Miners Below Y 16");
+					int ii = 0;
+					for (Player p : below) {
+						ItemStack head = new ItemStack(Material.SKULL_ITEM, 1);
+						head.setDurability((short) 3);
+						SkullMeta skullMeta = (SkullMeta) head.getItemMeta();
+						skullMeta.setOwner(p.getName());
+						skullMeta.setDisplayName(p.getName());
+						head.setItemMeta(skullMeta);
+						inv.setItem(ii, head);
+						ii++;
+					}
+					player.openInventory(inv);
+				} else if (Bukkit.getServerName().toUpperCase().contains("SKYBLOCK")) {
+					int i = 0;
+					List<Player> below = new ArrayList<>();
+					for (UUID uuid : mining) {
+						if (i < 54) {
+							Player t = Bukkit.getPlayer(uuid);
+							if (t != null) {
+								below.add(t);
+								i++;
+							}
+						} else {
+							break;
+						}
+					}
+					Inventory inv = Bukkit.createInventory(null, InventorySize.SIX_LINE.getSize(), "AFK Miners");
+					int ii = 0;
+					for (Player p : below) {
+						ItemStack head = new ItemStack(Material.SKULL_ITEM, 1);
+						head.setDurability((short) 3);
+						SkullMeta skullMeta = (SkullMeta) head.getItemMeta();
+						skullMeta.setOwner(p.getName());
+						skullMeta.setDisplayName(p.getName());
+						head.setItemMeta(skullMeta);
+						inv.setItem(ii, head);
+						ii++;
+					}
+					player.openInventory(inv);
 				}
-				Inventory inv = Bukkit.createInventory(null, InventorySize.SIX_LINE.getSize(), "Miners Below Y 16");
-				int ii = 0;
-				for (Player p : below) {
-					ItemStack head = new ItemStack(Material.SKULL_ITEM, 1);
-					head.setDurability((short) 3);
-					SkullMeta skullMeta = (SkullMeta) head.getItemMeta();
-					skullMeta.setOwner(p.getName());
-					skullMeta.setDisplayName(p.getName());
-					head.setItemMeta(skullMeta);
-					inv.setItem(ii, head);
-					ii++;
-				}
-				player.openInventory(inv);
 			}
-		} else if (e.getInventory() != null && e.getInventory().getName().equalsIgnoreCase("Miners Below Y 16")) {
+		} else if (e.getInventory() != null && e.getInventory().getName().equalsIgnoreCase("Miners Below Y 16") || e.getInventory().getName().equalsIgnoreCase("AFK Miners")) {
 			e.setCancelled(true);
 			if (e.getCurrentItem() != null) {
 				ItemStack stack = e.getCurrentItem();
@@ -199,11 +340,15 @@ public final class StaffmodeListener implements Listener {
 					if (stack.getItemMeta() != null && stack.getItemMeta().getDisplayName().toUpperCase().contains("FREEZE TARGET")) {
 						player.performCommand("freeze " + target.getName());
 					} else if (stack.getItemMeta() != null && stack.getItemMeta().getDisplayName().toUpperCase().contains("CPS CHECKER")) {
-						player.sendMessage(StringUtils.msg("&e&lSTAFF &6■ &7Calculating… printing CPS in &e5&7"));
-						timeRemaining.put(player.getUniqueId(), 5);
-						Map<UUID, Integer> map = new HashMap<>();
-						map.put(target.getUniqueId(), 0);
-						cps.put(player.getUniqueId(), map);
+						if (!cps.containsKey(player.getUniqueId())) {
+							player.sendMessage(StringUtils.msg("&e&lSTAFF &6■ &7Calculating… printing CPS in &e5&7"));
+							timeRemaining.put(player.getUniqueId(), 5);
+							Map<UUID, Integer> map = new HashMap<>();
+							map.put(target.getUniqueId(), 0);
+							cps.put(player.getUniqueId(), map);
+						} else {
+							player.sendMessage(StringUtils.msg("&cYou are already calculating someones CPS!"));
+						}
 					} else if (stack.getItemMeta() != null && stack.getItemMeta().getDisplayName().toUpperCase().contains("OPEN INVENTORY")) {
 						player.performCommand("invsee " + target.getName());
 					}

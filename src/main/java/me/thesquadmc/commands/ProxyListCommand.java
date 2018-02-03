@@ -12,7 +12,7 @@ import redis.clients.jedis.Jedis;
 
 import java.util.UUID;
 
-public class ProxyListCommand implements CommandExecutor {
+public final class ProxyListCommand implements CommandExecutor {
 
 	private final Main main;
 

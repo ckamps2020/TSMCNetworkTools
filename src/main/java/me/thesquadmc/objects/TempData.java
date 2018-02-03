@@ -18,24 +18,61 @@ public final class TempData {
 	private boolean forcefieldEnabled;
 	private boolean ytVanishEnabled;
 	private boolean monitor;
+	private String realname;
+	private boolean nickname;
+	private String skinkey;
+	private String signature;
 
 	public TempData() {
 		loginTime = StringUtils.getDate();
 		staffchatSetting = MessageSettings.GLOBAL;
 		staffchatEnabled = true;
-		adminchatSetting = MessageSettings.LOCAL;
+		adminchatSetting = MessageSettings.GLOBAL;
 		adminchatEnabled = true;
-		managerSetting = MessageSettings.LOCAL;
+		managerSetting = MessageSettings.GLOBAL;
 		managerchatEnabled = true;
 		vanished = false;
 		forcefieldEnabled = false;
 		ytVanishEnabled = false;
 		monitor = true;
+		nickname = false;
 		if (Bukkit.getServerName().toUpperCase().contains("FACTIONS")) {
 			xray = true;
 		} else {
 			xray = false;
 		}
+	}
+
+	public String getSkinkey() {
+		return skinkey;
+	}
+
+	public void setSkinkey(String skinkey) {
+		this.skinkey = skinkey;
+	}
+
+	public String getSignature() {
+		return signature;
+	}
+
+	public void setSignature(String signature) {
+		this.signature = signature;
+	}
+
+	public boolean isNicknamed() {
+		return nickname;
+	}
+
+	public void setNickname(boolean nickname) {
+		this.nickname = nickname;
+	}
+
+	public String getRealname() {
+		return realname;
+	}
+
+	public void setRealname(String realname) {
+		this.realname = realname;
 	}
 
 	public boolean isMonitor() {

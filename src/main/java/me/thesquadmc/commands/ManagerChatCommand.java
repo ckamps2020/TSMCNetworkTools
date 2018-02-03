@@ -45,15 +45,6 @@ public final class ManagerChatCommand implements CommandExecutor {
 						player.sendMessage(StringUtils.msg("&cPlease enable managerchat first!"));
 						return true;
 					}
-					if (args[0].equalsIgnoreCase("global")) {
-						tempData.setManagerSetting(MessageSettings.GLOBAL);
-						player.sendMessage(StringUtils.msg("&e&lMANAGER CHAT &6■ &7You toggled Manager Chat settings to &eglobal&7!"));
-						return true;
-					} else if (args[0].equalsIgnoreCase("server")) {
-						tempData.setManagerSetting(MessageSettings.LOCAL);
-						player.sendMessage(StringUtils.msg("&e&lMANAGER CHAT &6■ &7You toggled Manager Chat settings to &eserver&7!"));
-						return true;
-					}
 					StringBuilder stringBuilder = new StringBuilder();
 					for (String s : args) {
 						stringBuilder.append(s + " ");
@@ -61,28 +52,17 @@ public final class ManagerChatCommand implements CommandExecutor {
 					UserData cachedData = user.getCachedData();
 					Contexts contexts = Contexts.allowAll();
 					MetaData metaData = cachedData.getMetaData(contexts);
-					String finalMessage = "&8[&c&lMC&8] " + metaData.getPrefix() + " " + player.getName() + " &8» &e" + stringBuilder.toString();
-					if (tempData.getManagerSetting() == MessageSettings.GLOBAL) {
-						Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
-							@Override
-							public void run() {
-								try (Jedis jedis = main.getPool().getResource()) {
-									JedisTask.withName(UUID.randomUUID().toString())
-											.withArg(RedisArg.MESSAGE.getArg(), finalMessage)
-											.send(RedisChannels.MANAGERCHAT.getChannelName(), jedis);
-								}
-							}
-						});
-					} else {
-						for (Player p : Bukkit.getOnlinePlayers()) {
-							TempData data = main.getTempDataManager().getTempData(p.getUniqueId());
-							if (PlayerUtils.isEqualOrHigherThen(p, Rank.MANAGER)) {
-								if (data.isManagerchatEnabled() && data.getManagerSetting() == MessageSettings.LOCAL) {
-									p.sendMessage(StringUtils.msg(finalMessage));
-								}
+					String finalMessage = "&8[&c&lMANAGERCHAT&8] " + metaData.getPrefix() + " " + player.getName() + " &8» &c" + stringBuilder.toString();
+					Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
+						@Override
+						public void run() {
+							try (Jedis jedis = main.getPool().getResource()) {
+								JedisTask.withName(UUID.randomUUID().toString())
+										.withArg(RedisArg.MESSAGE.getArg(), finalMessage)
+										.send(RedisChannels.MANAGERCHAT.getChannelName(), jedis);
 							}
 						}
-					}
+					});
 				}
 			} else {
 				player.sendMessage(StringUtils.msg("&cYou do not have permission to use this command!"));

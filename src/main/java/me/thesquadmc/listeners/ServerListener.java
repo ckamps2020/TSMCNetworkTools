@@ -15,7 +15,7 @@ import redis.clients.jedis.Jedis;
 
 import java.util.UUID;
 
-public class ServerListener implements Listener {
+public final class ServerListener implements Listener {
 
 	@EventHandler
 	public void onUpdate(UpdateEvent e) {

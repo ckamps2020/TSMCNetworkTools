@@ -33,6 +33,24 @@ public final class RedisHandler {
 					}
 				}
 			}
+		} else if (channel.equalsIgnoreCase(RedisChannels.MANAGERCHAT.toString())) {
+			for (Player player : Bukkit.getOnlinePlayers()) {
+				TempData tempData = main.getTempDataManager().getTempData(player.getUniqueId());
+				if (PlayerUtils.isEqualOrHigherThen(player, Rank.MANAGER)) {
+					if (tempData.isManagerchatEnabled() && tempData.getStaffchatSetting() == MessageSettings.GLOBAL) {
+						player.sendMessage(StringUtils.msg(String.valueOf(data.get(RedisArg.MESSAGE.getArg()))));
+					}
+				}
+			}
+		} else if (channel.equalsIgnoreCase(RedisChannels.ADMINCHAT.toString())) {
+			for (Player player : Bukkit.getOnlinePlayers()) {
+				TempData tempData = main.getTempDataManager().getTempData(player.getUniqueId());
+				if (PlayerUtils.isEqualOrHigherThen(player, Rank.ADMIN)) {
+					if (tempData.isAdminchatEnabled() && tempData.getStaffchatSetting() == MessageSettings.GLOBAL) {
+						player.sendMessage(StringUtils.msg(String.valueOf(data.get(RedisArg.MESSAGE.getArg()))));
+					}
+				}
+			}
 		} else if (channel.equalsIgnoreCase(RedisChannels.FIND.getChannelName())) {
 			main.getServer().getScheduler().runTaskAsynchronously(main, new Runnable() {
 				@Override
@@ -98,7 +116,7 @@ public final class RedisHandler {
 					StringBuilder oSB = new StringBuilder();
 					for (Player p : Bukkit.getOnlinePlayers()) {
 						TempData tempData = main.getTempDataManager().getTempData(p.getUniqueId());
-						if (!tempData.isVanished()) {
+						if (!tempData.isVanished() && !tempData.isYtVanishEnabled()) {
 							if (PlayerUtils.doesRankMatch(p, Rank.TRAINEE)) {
 								trainee.add(p.getName());
 							} else if (PlayerUtils.doesRankMatch(p, Rank.HELPER)) {
@@ -237,7 +255,9 @@ public final class RedisHandler {
 			String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
 			if (server.equalsIgnoreCase("ALL") || Bukkit.getServerName().toUpperCase().contains(server)) {
 				String msg = String.valueOf(data.get(RedisArg.MESSAGE.getArg()));
+				Bukkit.broadcastMessage(StringUtils.msg("&7"));
 				Bukkit.broadcastMessage(StringUtils.msg("&8[&4&lALERT&8] &c" + msg));
+				Bukkit.broadcastMessage(StringUtils.msg("&7"));
 				for (Player p : Bukkit.getOnlinePlayers()) {
 					p.playSound(p.getLocation(), Sound.ENDERDRAGON_GROWL, 1.0f, 1.0f);
 				}

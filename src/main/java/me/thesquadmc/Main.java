@@ -12,6 +12,7 @@ import me.thesquadmc.managers.ReportManager;
 import me.thesquadmc.managers.TempDataManager;
 import me.thesquadmc.networking.JedisTask;
 import me.thesquadmc.networking.RedisHandler;
+import me.thesquadmc.objects.Config;
 import me.thesquadmc.utils.FileManager;
 import me.thesquadmc.utils.RedisChannels;
 import me.thesquadmc.utils.handlers.UpdateHandler;
@@ -19,6 +20,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 import redis.clients.jedis.*;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public final class Main extends JavaPlugin {
 
@@ -28,6 +32,11 @@ public final class Main extends JavaPlugin {
 	private LuckPermsApi luckPermsApi;
 	private String whitelistMessage = ChatColor.translateAlternateColorCodes('&', "&cServer currently whitelisted!");
 	private long startup = System.currentTimeMillis();
+	private String value = "NONE";
+	private String sig = "NONE";
+
+	private Set<String> filteredPhrases;
+	private Set<String> filteredWords;
 
 	private FileManager fileManager;
 	private TempDataManager tempDataManager;
@@ -46,6 +55,9 @@ public final class Main extends JavaPlugin {
 	public void onEnable() {
 		System.out.println("[StaffTools] Starting the plugin up...");
 		main = this;
+		Config config = new Config("filter", this);
+		filteredPhrases = new HashSet<>(config.getConfig().getStringList("filtered-phrases"));
+		filteredWords = new HashSet<>(config.getConfig().getStringList("filtered-words"));
 		luckPermsApi = LuckPerms.getApi();
 		fileManager = new FileManager(this);
 		frozenInventory = new FrozenInventory(this);
@@ -81,6 +93,11 @@ public final class Main extends JavaPlugin {
 		getCommand("staffmenu").setExecutor(new StaffMenuCommand(this));
 		getCommand("proxylist").setExecutor(new ProxyListCommand(this));
 		getCommand("monitor").setExecutor(new MonitorCommand(this));
+		getCommand("ytnick").setExecutor(new YtNickCommand(this));
+		getCommand("disguiseplayer").setExecutor(new DisguisePlayerCommand(this));
+		getCommand("undisguiseplayer").setExecutor(new UndisguisePlayerCommand(this));
+		getServer().getPluginManager().registerEvents(new FilterListener(), this);
+		getServer().getPluginManager().registerEvents(new ServerListener(), this);
 		getServer().getPluginManager().registerEvents(new ForceFieldListeners(this), this);
 		getServer().getPluginManager().registerEvents(new VanishListener(this), this);
 		getServer().getPluginManager().registerEvents(new WhitelistListener(this), this);
@@ -144,6 +161,30 @@ public final class Main extends JavaPlugin {
 			pool.close();
 		}
 		System.out.println("[StaffTools] Shut down! Cya :D");
+	}
+
+	public String getValue() {
+		return value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
+	}
+
+	public String getSig() {
+		return sig;
+	}
+
+	public void setSig(String sig) {
+		this.sig = sig;
+	}
+
+	public Set<String> getFilteredPhrases() {
+		return filteredPhrases;
+	}
+
+	public Set<String> getFilteredWords() {
+		return filteredWords;
 	}
 
 	public long getStartup() {

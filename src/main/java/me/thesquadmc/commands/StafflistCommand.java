@@ -125,7 +125,7 @@ public final class StafflistCommand implements CommandExecutor {
 							}
 							//fetch online count
 							stafflist.remove(player.getUniqueId());
-						}, 20L);
+						}, 10L);
 					}
 				}
 			});
