@@ -20,7 +20,7 @@ public final class MonitorCommand implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (sender instanceof Player) {
 			Player player = (Player) sender;
-			if (PlayerUtils.isEqualOrHigherThen(player, Rank.MANAGER)) {
+			if (PlayerUtils.isEqualOrHigherThen(player, Rank.ADMIN)) {
 				TempData tempData = main.getTempDataManager().getTempData(player.getUniqueId());
 				if (!tempData.isMonitor()) {
 					tempData.setMonitor(true);

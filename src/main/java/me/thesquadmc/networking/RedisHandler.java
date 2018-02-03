@@ -372,7 +372,7 @@ public final class RedisHandler {
 			String tps = String.valueOf(data.get(RedisArg.TPS.getArg()));
 			if (!uptime.equalsIgnoreCase("0")) {
 				for (Player player : Bukkit.getOnlinePlayers()) {
-					if (PlayerUtils.isEqualOrHigherThen(player, Rank.MANAGER) && main.getTempDataManager().getTempData(player.getUniqueId()).isMonitor()) {
+					if (PlayerUtils.isEqualOrHigherThen(player, Rank.ADMIN) && main.getTempDataManager().getTempData(player.getUniqueId()).isMonitor()) {
 						if (Double.valueOf(tps) > 15.0) {
 							player.sendMessage(StringUtils.msg("&8&m-------------------------------------------------"));
 							player.sendMessage(StringUtils.msg("&6&l[MONITOR REPORT] &f" + server + " &7" + count + "&8/&7200"));
@@ -392,7 +392,7 @@ public final class RedisHandler {
 				}
 			} else {
 				for (Player player : Bukkit.getOnlinePlayers()) {
-					if (PlayerUtils.isEqualOrHigherThen(player, Rank.MANAGER) && main.getTempDataManager().getTempData(player.getUniqueId()).isMonitor()) {
+					if (PlayerUtils.isEqualOrHigherThen(player, Rank.ADMIN) && main.getTempDataManager().getTempData(player.getUniqueId()).isMonitor()) {
 						player.sendMessage(StringUtils.msg("&8&m-------------------------------------------------"));
 						player.sendMessage(StringUtils.msg("&6&l[MONITOR REPORT] &f" + server + " &7" + count + "&8/&7200"));
 						player.sendMessage(StringUtils.msg("&7"));

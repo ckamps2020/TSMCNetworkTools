@@ -10,7 +10,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class DisguisePlayerCommand implements CommandExecutor {
+public final class DisguisePlayerCommand implements CommandExecutor {
 
 	private final Main main;
 
