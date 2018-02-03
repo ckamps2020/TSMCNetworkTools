@@ -249,6 +249,10 @@ public final class StaffmodeListener implements Listener {
 					player.closeInventory();
 					player.setGameMode(GameMode.SURVIVAL);
 					player.sendMessage(StringUtils.msg("&7Gamemode updated to survival"));
+				} else {
+					player.closeInventory();
+					player.setGameMode(GameMode.SPECTATOR);
+					player.sendMessage(StringUtils.msg("&7Gamemode updated to spectator"));
 				}
 			} else if (e.getSlot() == 11) {
 				if (!main.getReportManager().getReports().isEmpty()) {
