@@ -85,8 +85,12 @@ public final class StaffmodeListener implements Listener {
 				if (stack.getItemMeta() != null && stack.getItemMeta().getDisplayName().toUpperCase().contains("PLACE CHEST")) {
 					if (e.getClickedBlock() != null && e.getClickedBlock().getType() != null) {
 						if (e.getAction().toString().toUpperCase().contains("RIGHT")) {
-							Block block = e.getClickedBlock();
-							block.getLocation().getWorld().getBlockAt(block.getLocation().clone().add(0, 1, 0)).setType(Material.CHEST);
+							if (Bukkit.getServerName().contains("FACTIONS") && player.getLocation().getY() <= 30) {
+								Block block = e.getClickedBlock();
+								block.getLocation().getWorld().getBlockAt(block.getLocation().clone().add(0, 1, 0)).setType(Material.CHEST);
+							} else {
+								player.sendMessage(StringUtils.msg("&cYou can't use that here!"));
+							}
 						}
 					}
 					return;

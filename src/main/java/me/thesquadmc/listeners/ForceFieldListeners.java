@@ -1,6 +1,5 @@
 package me.thesquadmc.listeners;
 
-import me.lucko.luckperms.api.User;
 import me.thesquadmc.Main;
 import me.thesquadmc.objects.TempData;
 import me.thesquadmc.utils.PlayerUtils;
@@ -28,35 +27,37 @@ public final class ForceFieldListeners implements Listener {
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			TempData tempData = main.getTempDataManager().getTempData(player.getUniqueId());
 			if (tempData.isForcefieldEnabled()) {
-				List<Player> players = PlayerUtils.getNearbyPlayers(player.getLocation(), 5);
+				List<Player> players = PlayerUtils.getNearbyPlayers(player.getLocation(), 8);
 				for (Player p : players) {
-					if (!PlayerUtils.isEqualOrHigherThen(p, Rank.YOUTUBE)) {
-						double x = p.getLocation().getX();
-						double y = p.getLocation().getY();
-						double z = p.getLocation().getZ();
-						double xx = player.getLocation().getX();
-						double yy = player.getLocation().getY();
-						double zz = player.getLocation().getZ();
-						double finalX = 0;
-						double finalY = 0;
-						double finalZ = 0;
-						if (x >= xx) {
-							finalX = 0.8;
-						} else if (x <= xx) {
-							finalX = -0.8;
+					if (p.getName() != null) {
+						if (!PlayerUtils.isEqualOrHigherThen(p, Rank.YOUTUBE)) {
+							double x = p.getLocation().getX();
+							double y = p.getLocation().getY();
+							double z = p.getLocation().getZ();
+							double xx = player.getLocation().getX();
+							double yy = player.getLocation().getY();
+							double zz = player.getLocation().getZ();
+							double finalX = 0;
+							double finalY = 0;
+							double finalZ = 0;
+							if (x >= xx) {
+								finalX = 0.8;
+							} else if (x <= xx) {
+								finalX = -0.8;
+							}
+							if (y >= yy) {
+								finalY = 0.7;
+							} else if (y <= yy) {
+								finalY = -0.7;
+							}
+							if (z >= zz) {
+								finalZ = 0.8;
+							} else if (z <= zz) {
+								finalZ = -0.8;
+							}
+							p.setVelocity(new Vector(finalX, finalY, finalZ));
+							p.playSound(p.getLocation(), Sound.CHICKEN_EGG_POP, 1.0f, 1.0f);
 						}
-						if (y >= yy) {
-							finalY = 0.7;
-						} else if (y <= yy) {
-							finalY = -0.7;
-						}
-						if (z >= zz) {
-							finalZ = 0.8;
-						} else if (z <= zz) {
-							finalZ = -0.8;
-						}
-						p.setVelocity(new Vector(finalX, finalY, finalZ));
-						p.playSound(p.getLocation(), Sound.CHICKEN_EGG_POP, 1.0f, 1.0f);
 					}
 				}
 			}

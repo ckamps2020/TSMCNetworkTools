@@ -14,13 +14,17 @@ import me.thesquadmc.networking.JedisTask;
 import me.thesquadmc.networking.RedisHandler;
 import me.thesquadmc.objects.Config;
 import me.thesquadmc.utils.FileManager;
+import me.thesquadmc.utils.RedisArg;
 import me.thesquadmc.utils.RedisChannels;
 import me.thesquadmc.utils.StringUtils;
 import me.thesquadmc.utils.handlers.UpdateHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.plugin.java.JavaPlugin;
 import redis.clients.jedis.*;
+
+import java.util.UUID;
 
 public final class Main extends JavaPlugin {
 
@@ -33,6 +37,10 @@ public final class Main extends JavaPlugin {
 	private String value = "NONE";
 	private String sig = "NONE";
 	private Jedis jedis;
+	private JedisPoolConfig poolConfig;
+
+	private int chatslow = 0;
+	private boolean chatSilenced = false;
 
 	private FileManager fileManager;
 	private TempDataManager tempDataManager;
@@ -90,7 +98,11 @@ public final class Main extends JavaPlugin {
 		getCommand("ytnick").setExecutor(new YtNickCommand(this));
 		getCommand("disguiseplayer").setExecutor(new DisguisePlayerCommand(this));
 		getCommand("undisguiseplayer").setExecutor(new UndisguisePlayerCommand(this));
-		getServer().getPluginManager().registerEvents(new FilterListener(), this);
+		getCommand("silence").setExecutor(new ChatSilenceCommand(this));
+		getCommand("slowchat").setExecutor(new ChatSlowCommand(this));
+		getCommand("smite").setExecutor(new SmiteCommand(this));
+		getServer().getPluginManager().registerEvents(new LightningListener(), this);
+		getServer().getPluginManager().registerEvents(new FilterListener(this), this);
 		getServer().getPluginManager().registerEvents(new ServerListener(), this);
 		getServer().getPluginManager().registerEvents(new ForceFieldListeners(this), this);
 		getServer().getPluginManager().registerEvents(new VanishListener(this), this);
@@ -107,9 +119,12 @@ public final class Main extends JavaPlugin {
 		redisHandler = new RedisHandler(this);
 		ClassLoader previous = Thread.currentThread().getContextClassLoader();
 		Thread.currentThread().setContextClassLoader(this.getClassLoader());
-		JedisPoolConfig poolConfig = new JedisPoolConfig();
-		pool = new JedisPool(poolConfig, host, port, 10000, password);
-		//pool = new JedisPool(host, port);
+		poolConfig = new JedisPoolConfig();
+		poolConfig.setBlockWhenExhausted(true);
+		poolConfig.setMinIdle(100);
+		poolConfig.setMaxIdle(500);
+		pool = new JedisPool(poolConfig, host, port, 10*1000, password);
+		//pool = new JedisPool(poolConfig, host, port, 10*1000);
 		jedis = pool.getResource();
 		Bukkit.getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
 			@Override
@@ -126,8 +141,19 @@ public final class Main extends JavaPlugin {
 					System.out.println("[StaffTools] Jedis config log created!");
 					System.out.println("[StaffTools] --------------------");
 				}
+				Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
+					@Override
+					public void run() {
+						try (Jedis jedis = main.getPool().getResource()) {
+							JedisTask.withName(UUID.randomUUID().toString())
+									.withArg(RedisArg.DATE.getArg(), StringUtils.getDate())
+									.send(RedisChannels.HEARTBEAT.getChannelName(), jedis);
+						}
+					}
+				});
+				System.out.println("[StaffTools] Current Redis Usage: " + getPoolCurrentUsage());
 			}
-		}, 1L, 5 * 20L);
+		}, 1L, 10 * 20L);
 		Thread.currentThread().setContextClassLoader(previous);
 
 		JedisPubSub pubSub = new JedisPubSub() {
@@ -158,7 +184,8 @@ public final class Main extends JavaPlugin {
 						RedisChannels.CLOSED_REPORTS.getChannelName(),
 						RedisChannels.MONITOR_INFO.getChannelName(),
 						RedisChannels.PROXY_RETURN.getChannelName(),
-						RedisChannels.MONITOR_REQUEST.getChannelName()
+						RedisChannels.MONITOR_REQUEST.getChannelName(),
+						RedisChannels.HEARTBEAT.getChannelName()
 				);
 			}
 		});
@@ -173,6 +200,26 @@ public final class Main extends JavaPlugin {
 			pool.close();
 		}
 		System.out.println("[StaffTools] Shut down! Cya :D");
+	}
+
+	public Jedis getJedis() {
+		return jedis;
+	}
+
+	public int getChatslow() {
+		return chatslow;
+	}
+
+	public void setChatslow(int chatslow) {
+		this.chatslow = chatslow;
+	}
+
+	public boolean isChatSilenced() {
+		return chatSilenced;
+	}
+
+	public void setChatSilenced(boolean chatSilenced) {
+		this.chatSilenced = chatSilenced;
 	}
 
 	public String getValue() {
@@ -249,6 +296,23 @@ public final class Main extends JavaPlugin {
 
 	public Gson getGson() {
 		return gson;
+	}
+
+	private String getPoolCurrentUsage() {
+		int active = pool.getNumActive();
+		int idle = pool.getNumIdle();
+		int total = active + idle;
+		String log = String.format(
+				"Active=%d, Idle=%d, Waiters=%d, total=%d, maxTotal=%d, minIdle=%d, maxIdle=%d",
+				active,
+				idle,
+				pool.getNumWaiters(),
+				total,
+				poolConfig.getMaxTotal(),
+				poolConfig.getMinIdle(),
+				poolConfig.getMaxIdle()
+		);
+		return log;
 	}
 
 }

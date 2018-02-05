@@ -89,17 +89,8 @@ public final class StringUtils {
 				.replace("{.}", ".")
 				.replace("{dot}", ".")
 				.trim();
-		String[] words = msg.trim().split(" ");
-		for (String word : words) {
-			if (!word.matches("[a-zA-Z0-9]*")) {
-				return true;
-			}
-		}
 
-		for (String word : message.replace("(dot)", ".").replace("[dot]", ".").replace(",", ".")
-				.replace("[.]", ".")
-				.replace("{.}", ".")
-				.replace("{dot}", ".").trim().split(" ")) {
+		for (String word : message.trim().split(" ")) {
 			boolean continueIt = false;
 			for (String phrase : LINK_WHITELIST) {
 				if (word.toLowerCase().contains(phrase)) {

@@ -11,6 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import redis.clients.jedis.Jedis;
@@ -318,20 +319,15 @@ public final class RedisHandler {
 			String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
 			if (server.equalsIgnoreCase("ALL") || Bukkit.getServerName().toUpperCase().contains(server)) {
 				String name = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
-				System.out.println("Name is: " + name);
-				System.out.println("Whitelisted players: " + Bukkit.getWhitelistedPlayers().toString());
-				OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(name);
-				offlinePlayer.setWhitelisted(true);
-				Bukkit.reloadWhitelist();
-				System.out.println("Whitelisted players: " + Bukkit.getWhitelistedPlayers().toString());
+				ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+				Bukkit.dispatchCommand(console, "minecraft:whitelist add " + name);
 			}
 		} else if (channel.equalsIgnoreCase(RedisChannels.WHITELIST_REMOVE.getChannelName())) {
 			String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
 			if (server.equalsIgnoreCase("ALL") || Bukkit.getServerName().toUpperCase().contains(server)) {
 				String name = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
-				OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(name);
-				offlinePlayer.setWhitelisted(false);
-				Bukkit.reloadWhitelist();
+				ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+				Bukkit.dispatchCommand(console, "minecraft:whitelist remove " + name);
 			}
 		} else if (channel.equalsIgnoreCase(RedisChannels.WHITELIST.getChannelName())) {
 			String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
@@ -340,7 +336,8 @@ public final class RedisHandler {
 				String msg = String.valueOf(data.get(RedisArg.MESSAGE.getArg()));
 				if (onoff.equalsIgnoreCase("ON")) {
 					Bukkit.broadcastMessage(StringUtils.msg("&e&lWHITELIST &6■ &7Whitelist has been enabled for reason: &e" + msg));
-					Bukkit.setWhitelist(true);
+					ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+					Bukkit.dispatchCommand(console, "minecraft:whitelist on");
 					for (Player p : Bukkit.getOnlinePlayers()) {
 						OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(p.getName());
 						main.setWhitelistMessage(StringUtils.msg(msg));
@@ -350,7 +347,8 @@ public final class RedisHandler {
 					}
 				} else {
 					Bukkit.broadcastMessage(StringUtils.msg("&e&lWHITELIST &6■ &7Whitelist has been disabled for reason: &e" + msg));
-					Bukkit.setWhitelist(false);
+					ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+					Bukkit.dispatchCommand(console, "minecraft:whitelist off");
 				}
 			}
 		} else if (channel.equalsIgnoreCase(RedisChannels.REPORTS.getChannelName())) {

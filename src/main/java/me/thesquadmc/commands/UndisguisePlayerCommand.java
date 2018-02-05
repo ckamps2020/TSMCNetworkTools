@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 
 import java.util.Random;
 
-public class UndisguisePlayerCommand implements CommandExecutor {
+public final class UndisguisePlayerCommand implements CommandExecutor {
 
 	private final Main main;
 

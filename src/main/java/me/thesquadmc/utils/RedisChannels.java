@@ -22,6 +22,7 @@ public enum RedisChannels {
 	MONITOR_INFO("MONITOR_INFO"),
 	PROXY_REQUEST("PROXY_REQUEST"),
 	PROXY_RETURN("PROXY_RETURN"),
+	HEARTBEAT("HEARTBEAT"),
 	;
 
 	private String channelName;

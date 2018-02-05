@@ -51,3 +51,8 @@ commands:
         aliases: [displayer]
     undisguiseplayer:
         aliases: [undisplayer]
+    silence:
+    slowchat:
+        aliases: [delay, delaychat]
+    smite:
+        aliases: [lightning]
