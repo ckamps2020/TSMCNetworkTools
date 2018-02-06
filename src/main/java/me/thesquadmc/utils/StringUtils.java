@@ -69,6 +69,20 @@ public final class StringUtils {
 		return components;
 	}
 
+	public static String fixStringForCaps(String message) {
+		int upperCase = 0;
+		int lowerCase = 0;
+		for (int k = 0; k < message.length(); k++) {
+			if (Character.isUpperCase(message.charAt(k))) upperCase++;
+			if (Character.isLowerCase(message.charAt(k))) lowerCase++;
+		}
+
+		if (upperCase > lowerCase) {
+			return message.toLowerCase();
+		}
+		return message;
+	}
+
 	private static final Set<String> curses = new HashSet<>();
 	private static final Pattern URL_REGEX = Pattern.compile(
 			"^(http://www\\.|https://www\\.|http://|https://)?[a-z0-9]+([\\-.][a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]{1,5})?(/.*)?$");

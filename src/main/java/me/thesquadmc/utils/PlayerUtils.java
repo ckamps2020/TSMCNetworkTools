@@ -17,10 +17,12 @@ import net.minecraft.server.v1_8_R3.PacketPlayOutChat;
 import net.minecraft.server.v1_8_R3.PlayerConnection;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -244,6 +246,66 @@ public final class PlayerUtils {
 			((CraftPlayer) player).getHandle().getProfile().getProperties().put("textures", property);
 		}
 		showPlayerSpectator(player);
+	}
+
+	public static void giveMeTheirItem(Player player, Player target, ItemStack itemStack) {
+		if (target != null) {
+			if (target.getInventory() != null) {
+				for (int i = 0; i < player.getInventory().getSize(); i++) {
+					ItemStack stack = player.getInventory().getItem(i);
+					if (stack != null && stack.getType() != Material.AIR) {
+						player.getInventory().addItem(itemStack);
+						target.getInventory().remove(stack);
+					}
+				}
+			}
+		}
+	}
+
+	public static double getArmorLevel(Player player) {
+		org.bukkit.inventory.PlayerInventory inv = player.getInventory();
+		ItemStack helmet = null;
+		ItemStack boots = null;
+		ItemStack chest = null;
+		ItemStack pants = null;
+
+		if(inv.getBoots() != null){boots = inv.getBoots();}
+		if(inv.getBoots() == null){boots = new ItemStack(Material.LEATHER_BOOTS);}
+		if (inv.getHelmet() != null){helmet = inv.getHelmet(); }
+		if(inv.getHelmet() == null){helmet = new ItemStack(Material.LEATHER_HELMET);}
+		if (inv.getChestplate() != null){chest = inv.getChestplate();}
+		if(inv.getChestplate() == null){chest = new ItemStack(Material.LEATHER_CHESTPLATE);}
+		if (inv.getLeggings() != null){pants = inv.getLeggings();}
+		if(inv.getLeggings() == null){pants = new ItemStack(Material.LEATHER_LEGGINGS);}
+		double red = 0.0;
+		if (helmet.getType() == null || helmet.getType() == Material.AIR)red = red + 0.0;
+		else if(helmet != null && helmet.getType() == Material.LEATHER_HELMET)red = red + 0.04;
+		else if(helmet != null && helmet.getType() == Material.GOLD_HELMET)red = red + 0.08;
+		else if(helmet != null && helmet.getType() == Material.CHAINMAIL_HELMET)red = red + 0.08;
+		else if(helmet != null && helmet.getType() == Material.IRON_HELMET)red = red + 0.08;
+		else if(helmet != null && helmet.getType() == Material.DIAMOND_HELMET)red = red + 0.12;
+		//
+		if (boots.getType() == null || boots.getType() == Material.AIR)red = red + 0;
+		else if(boots != null && boots.getType() == Material.LEATHER_BOOTS)red = red + 0.04;
+		else if(boots != null && boots.getType() == Material.GOLD_BOOTS)red = red + 0.04;
+		else if(boots != null && boots.getType() == Material.CHAINMAIL_BOOTS)red = red + 0.04;
+		else if(boots != null && boots.getType() == Material.IRON_BOOTS)red = red + 0.08;
+		else if(boots != null && boots.getType() == Material.DIAMOND_BOOTS)red = red + 0.12;
+		//
+		if (pants.getType() == null || pants.getType() == Material.AIR)red = red + 0;
+		else if(pants != null && pants.getType() == Material.LEATHER_LEGGINGS)red = red + 0.08;
+		else if(pants != null && pants.getType() == Material.GOLD_LEGGINGS)red = red + 0.12;
+		else if(pants != null && pants.getType() == Material.CHAINMAIL_LEGGINGS)red = red + 0.16;
+		else if(pants != null && pants.getType() == Material.IRON_LEGGINGS)red = red + 0.20;
+		else if(pants != null && pants.getType() == Material.DIAMOND_LEGGINGS)red = red + 0.24;
+		//
+		if (chest.getType() == null || chest.getType() == Material.AIR)red = red + 0;
+		else if(chest != null && chest.getType() == Material.LEATHER_CHESTPLATE)red = red + 0.12;
+		else if(chest != null && chest.getType() == Material.GOLD_CHESTPLATE)red = red + 0.20;
+		else if(chest != null && chest.getType() == Material.CHAINMAIL_CHESTPLATE)red = red + 0.20;
+		else if(chest != null && chest.getType() == Material.IRON_CHESTPLATE)red = red + 0.24;
+		else if(chest != null && chest.getType() == Material.DIAMOND_CHESTPLATE)red = red + 0.32;
+		return red;
 	}
 
 }

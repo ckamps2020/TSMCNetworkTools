@@ -60,6 +60,8 @@ public final class AdminChatCommand implements CommandExecutor {
 								JedisTask.withName(UUID.randomUUID().toString())
 										.withArg(RedisArg.MESSAGE.getArg(), finalMessage)
 										.send(RedisChannels.ADMINCHAT.getChannelName(), jedis);
+							} finally {
+								main.getPool().returnResource(main.getPool().getResource());
 							}
 						}
 					});

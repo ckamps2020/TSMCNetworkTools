@@ -11,9 +11,14 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 public final class LaunchCommand implements CommandExecutor {
 
 	private final Main main;
+	private static List<UUID> launched = new ArrayList<>();
 
 	public LaunchCommand(Main main) {
 		this.main = main;
@@ -29,6 +34,13 @@ public final class LaunchCommand implements CommandExecutor {
 						for (Player p : Bukkit.getOnlinePlayers()) {
 							p.setVelocity(new Vector(0, 10, 0));
 							p.sendMessage(StringUtils.msg("&c&lWHOOSH!"));
+							launched.add(p.getUniqueId());
+							Bukkit.getScheduler().runTaskLater(main, new Runnable() {
+								@Override
+								public void run() {
+									launched.remove(p.getUniqueId());
+								}
+							}, 30L);
 						}
 					} else {
 						Player t = Bukkit.getPlayer(args[0]);
@@ -36,6 +48,13 @@ public final class LaunchCommand implements CommandExecutor {
 							player.sendMessage(StringUtils.msg("&cYou launched " + t.getName()));
 							t.setVelocity(new Vector(0, 10, 0));
 							t.sendMessage(StringUtils.msg("&c&lWHOOSH!"));
+							launched.add(t.getUniqueId());
+							Bukkit.getScheduler().runTaskLater(main, new Runnable() {
+								@Override
+								public void run() {
+									launched.remove(t.getUniqueId());
+								}
+							}, 8 * 20L);
 						} else {
 							player.sendMessage(StringUtils.msg("&cThat player is offline or does not exist!"));
 						}
@@ -44,6 +63,13 @@ public final class LaunchCommand implements CommandExecutor {
 					for (Player p : PlayerUtils.getNearbyPlayers(player.getLocation(), 300)) {
 						p.setVelocity(new Vector(0, 10, 0));
 						p.sendMessage(StringUtils.msg("&c&lWHOOSH!"));
+						launched.add(p.getUniqueId());
+						Bukkit.getScheduler().runTaskLater(main, new Runnable() {
+							@Override
+							public void run() {
+								launched.remove(p.getUniqueId());
+							}
+						}, 8 * 20L);
 					}
 				}
 			} else {
@@ -51,6 +77,10 @@ public final class LaunchCommand implements CommandExecutor {
 			}
 		}
 		return true;
+	}
+
+	public static List<UUID> getLaunched() {
+		return launched;
 	}
 
 }

@@ -10,7 +10,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class SmiteCommand implements CommandExecutor {
+public final class SmiteCommand implements CommandExecutor {
 
 	private final Main main;
 

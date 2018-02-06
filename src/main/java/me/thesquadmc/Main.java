@@ -101,6 +101,7 @@ public final class Main extends JavaPlugin {
 		getCommand("silence").setExecutor(new ChatSilenceCommand(this));
 		getCommand("slowchat").setExecutor(new ChatSlowCommand(this));
 		getCommand("smite").setExecutor(new SmiteCommand(this));
+		getServer().getPluginManager().registerEvents(new LaunchListener(), this);
 		getServer().getPluginManager().registerEvents(new LightningListener(), this);
 		getServer().getPluginManager().registerEvents(new FilterListener(this), this);
 		getServer().getPluginManager().registerEvents(new ServerListener(), this);
@@ -120,12 +121,13 @@ public final class Main extends JavaPlugin {
 		ClassLoader previous = Thread.currentThread().getContextClassLoader();
 		Thread.currentThread().setContextClassLoader(this.getClassLoader());
 		poolConfig = new JedisPoolConfig();
-		poolConfig.setBlockWhenExhausted(true);
+		poolConfig.setTestOnReturn(true);
+		poolConfig.setTestWhileIdle(true);
 		poolConfig.setMinIdle(100);
 		poolConfig.setMaxIdle(250);
 		poolConfig.setMaxTotal(250);
-		pool = new JedisPool(poolConfig, host, port, 10*1000, password);
-		//pool = new JedisPool(poolConfig, host, port, 10*1000);
+		//pool = new JedisPool(poolConfig, host, port, 40*1000, password);
+		pool = new JedisPool(poolConfig, host, port, 40*1000);
 		jedis = pool.getResource();
 		Bukkit.getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
 			@Override
@@ -148,11 +150,11 @@ public final class Main extends JavaPlugin {
 						try (Jedis jedis = main.getPool().getResource()) {
 							JedisTask.withName(UUID.randomUUID().toString())
 									.withArg(RedisArg.DATE.getArg(), StringUtils.getDate())
+									.withArg(RedisArg.SERVER.getArg(), Bukkit.getServerName())
 									.send(RedisChannels.HEARTBEAT.getChannelName(), jedis);
 						}
 					}
 				});
-				System.out.println("[StaffTools] Current Redis Usage: " + getPoolCurrentUsage());
 			}
 		}, 1L, 10 * 20L);
 		Thread.currentThread().setContextClassLoader(previous);

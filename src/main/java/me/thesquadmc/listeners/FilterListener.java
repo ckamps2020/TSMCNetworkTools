@@ -32,7 +32,7 @@ public final class FilterListener implements Listener {
 				if (main.getChatslow() != 0) {
 					if (!slowchat.contains(player.getUniqueId())) {
 						String msg = e.getMessage();
-						String message = msg.toLowerCase();
+						String message = StringUtils.fixStringForCaps(msg);
 						e.setMessage(message);
 						if (StringUtils.shouldFilter(msg)) {
 							e.setCancelled(true);

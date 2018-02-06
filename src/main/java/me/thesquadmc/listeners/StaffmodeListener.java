@@ -33,6 +33,7 @@ public final class StaffmodeListener implements Listener {
 	private Map<UUID, Map<UUID, Integer>> cps = new HashMap<>();
 	private Map<UUID, Integer> tempCPS = new HashMap<>();
 	private static List<UUID> mining = new ArrayList<>();
+	private static Map<UUID, Integer> blocksMined = new HashMap<>();
 
 	public StaffmodeListener(Main main) {
 		this.main = main;
@@ -54,7 +55,7 @@ public final class StaffmodeListener implements Listener {
 						timeRemaining.remove(player.getUniqueId());
 					} else {
 						timeRemaining.put(player.getUniqueId(), timeRemaining.get(player.getUniqueId()) - 1);
-						player.sendMessage(StringUtils.msg("&e&lSTAFF &6■ &7Calculating… printing CPS in &e" + timeRemaining.get(player.getUniqueId()) + "&7 (Current CPS:&e " + tempCPS.get(player.getUniqueId()) + ")"));
+						player.sendMessage(StringUtils.msg("&e&lSTAFF &6■ &7Calculating… printing CPS in &e" + timeRemaining.get(player.getUniqueId())));
 						tempCPS.clear();
 					}
 				}
@@ -163,14 +164,17 @@ public final class StaffmodeListener implements Listener {
 		if (x.intValue() > xx.intValue() || x.intValue() < xx.intValue()) {
 			if (mining.contains(e.getPlayer().getUniqueId())) {
 				mining.remove(e.getPlayer().getUniqueId());
+				blocksMined.remove(e.getPlayer().getUniqueId());
 			}
 		} else if (y.intValue() > yy.intValue() || y.intValue() < yy.intValue()) {
 			if (mining.contains(e.getPlayer().getUniqueId())) {
 				mining.remove(e.getPlayer().getUniqueId());
+				blocksMined.remove(e.getPlayer().getUniqueId());
 			}
 		} else if (z.intValue() > zz.intValue() || z.intValue() < zz.intValue()) {
 			if (mining.contains(e.getPlayer().getUniqueId())) {
 				mining.remove(e.getPlayer().getUniqueId());
+				blocksMined.remove(e.getPlayer().getUniqueId());
 			}
 		}
 	}
@@ -178,8 +182,16 @@ public final class StaffmodeListener implements Listener {
 	@EventHandler
 	public void onBreak(BlockBreakEvent e) {
 		if (Bukkit.getServerName().toUpperCase().contains("SKYBLOCK")) {
-			if (!mining.contains(e.getPlayer().getUniqueId())) {
-				mining.add(e.getPlayer().getUniqueId());
+			if (blocksMined.containsKey(e.getPlayer().getUniqueId())) {
+				if (blocksMined.get(e.getPlayer().getUniqueId()) + 1 >= 3) {
+					if (!mining.contains(e.getPlayer().getUniqueId())) {
+						mining.add(e.getPlayer().getUniqueId());
+					}
+				} else {
+					blocksMined.put(e.getPlayer().getUniqueId(), blocksMined.get(e.getPlayer().getUniqueId()) + 1);
+				}
+			} else {
+				blocksMined.put(e.getPlayer().getUniqueId(), 1);
 			}
 		}
 	}

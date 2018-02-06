@@ -22,6 +22,7 @@ public final class TempData {
 	private boolean nickname;
 	private String skinkey;
 	private String signature;
+	private boolean reportsEnabled;
 
 	public TempData() {
 		loginTime = StringUtils.getDate();
@@ -36,12 +37,22 @@ public final class TempData {
 		ytVanishEnabled = false;
 		monitor = true;
 		nickname = false;
+		reportsEnabled = true;
 		if (Bukkit.getServerName().toUpperCase().contains("FACTIONS")) {
 			xray = true;
 		} else {
 			xray = false;
 		}
 	}
+
+	public boolean isReportsEnabled() {
+		return reportsEnabled;
+	}
+
+	public void setReportsEnabled(boolean reportsEnabled) {
+		this.reportsEnabled = reportsEnabled;
+	}
+
 
 	public String getSkinkey() {
 		return skinkey;

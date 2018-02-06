@@ -38,9 +38,7 @@ public final class RedisHandler {
 				if (PlayerUtils.isEqualOrHigherThen(player, Rank.TRAINEE)) {
 					if (tempData.isStaffchatEnabled() && tempData.getStaffchatSetting() == MessageSettings.GLOBAL) {
 						String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
-						player.spigot().sendMessage(new ComponentBuilder(StringUtils.msg(String.valueOf(data.get(RedisArg.MESSAGE.getArg()))))
-								.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(StringUtils.msg("&7Currently on &e" + server))))
-								.create());
+						player.spigot().sendMessage(StringUtils.getHoverMessage(String.valueOf(data.get(RedisArg.MESSAGE.getArg())), "&7Currently on &e" + server));
 					}
 				}
 			}
