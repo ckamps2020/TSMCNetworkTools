@@ -2,6 +2,7 @@ package me.thesquadmc.utils;
 
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 
@@ -56,6 +57,18 @@ public final class StringUtils {
 		return components;
 	}
 
+	public static BaseComponent[] getHoverMessage(String message, String hoverMessage, String command) {
+		BaseComponent[] components = TextComponent.fromLegacyText(org.bukkit.ChatColor.translateAlternateColorCodes('&', message));
+		BaseComponent[] hoverText = TextComponent.fromLegacyText(org.bukkit.ChatColor.translateAlternateColorCodes('&', hoverMessage));
+		ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.RUN_COMMAND, command);
+		HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText);
+		for (BaseComponent component : components) {
+			component.setClickEvent(clickEvent);
+			component.setHoverEvent(hoverEvent);
+		}
+		return components;
+	}
+
 	private static final Set<String> curses = new HashSet<>();
 	private static final Pattern URL_REGEX = Pattern.compile(
 			"^(http://www\\.|https://www\\.|http://|https://)?[a-z0-9]+([\\-.][a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]{1,5})?(/.*)?$");
@@ -89,6 +102,10 @@ public final class StringUtils {
 				.replace("{.}", ".")
 				.replace("{dot}", ".")
 				.trim();
+
+		if (msg.startsWith("/")) {
+			return false;
+		}
 
 		for (String word : message.trim().split(" ")) {
 			boolean continueIt = false;

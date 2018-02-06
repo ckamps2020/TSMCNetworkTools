@@ -7,6 +7,10 @@ import me.thesquadmc.commands.StaffmodeCommand;
 import me.thesquadmc.objects.Report;
 import me.thesquadmc.objects.TempData;
 import me.thesquadmc.utils.*;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
@@ -33,7 +37,10 @@ public final class RedisHandler {
 				TempData tempData = main.getTempDataManager().getTempData(player.getUniqueId());
 				if (PlayerUtils.isEqualOrHigherThen(player, Rank.TRAINEE)) {
 					if (tempData.isStaffchatEnabled() && tempData.getStaffchatSetting() == MessageSettings.GLOBAL) {
-						player.sendMessage(StringUtils.msg(String.valueOf(data.get(RedisArg.MESSAGE.getArg()))));
+						String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
+						player.spigot().sendMessage(new ComponentBuilder(StringUtils.msg(String.valueOf(data.get(RedisArg.MESSAGE.getArg()))))
+								.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(StringUtils.msg("&7Currently on &e" + server))))
+								.create());
 					}
 				}
 			}
@@ -363,6 +370,18 @@ public final class RedisHandler {
 			Report report = new Report(name, date, reporter, server, tokens);
 			report.setReportID(UUID.fromString(uuid));
 			main.getReportManager().registerReport(report);
+			for (Player player : Bukkit.getOnlinePlayers()) {
+				if (PlayerUtils.isEqualOrHigherThen(player, Rank.MOD)) {
+					player.sendMessage(StringUtils.msg("&8&m---------------&8[ &6&lREPORT &8]&8&m---------------"));
+					player.sendMessage(" ");
+					player.sendMessage(StringUtils.msg("&eReport by: &7" + report.getReporter()));
+					player.sendMessage(StringUtils.msg("&eReported player: &7" + report.getUsername()));
+					player.sendMessage(StringUtils.msg("&7Reported player is currently on &e" + report.getServer()));
+					player.spigot().sendMessage(StringUtils.getHoverMessage("&8(Click to view reports)", "&7Click to view reports", "/reports"));
+					player.sendMessage(" ");
+					player.sendMessage(StringUtils.msg("&8&m---------------&8[ &6&lREPORT &8]&8&m---------------"));
+				}
+			}
 		} else if (channel.equalsIgnoreCase(RedisChannels.CLOSED_REPORTS.getChannelName())) {
 			String uuid = String.valueOf(data.get(RedisArg.UUID.getArg()));
 			String name = String.valueOf(data.get(RedisArg.PLAYER.getArg()));

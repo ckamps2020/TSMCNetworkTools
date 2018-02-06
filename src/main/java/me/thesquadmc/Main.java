@@ -122,7 +122,8 @@ public final class Main extends JavaPlugin {
 		poolConfig = new JedisPoolConfig();
 		poolConfig.setBlockWhenExhausted(true);
 		poolConfig.setMinIdle(100);
-		poolConfig.setMaxIdle(500);
+		poolConfig.setMaxIdle(250);
+		poolConfig.setMaxTotal(250);
 		pool = new JedisPool(poolConfig, host, port, 10*1000, password);
 		//pool = new JedisPool(poolConfig, host, port, 10*1000);
 		jedis = pool.getResource();
