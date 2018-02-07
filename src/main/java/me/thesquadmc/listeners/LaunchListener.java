@@ -7,7 +7,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 
-public class LaunchListener implements Listener {
+public final class LaunchListener implements Listener {
 
 	@EventHandler
 	public void onDamage(EntityDamageEvent e) {

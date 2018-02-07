@@ -38,6 +38,7 @@ public final class Main extends JavaPlugin {
 	private String sig = "NONE";
 	private Jedis jedis;
 	private JedisPoolConfig poolConfig;
+	private JedisPubSub jedisPubSub;
 
 	private int chatslow = 0;
 	private boolean chatSilenced = false;
@@ -126,8 +127,8 @@ public final class Main extends JavaPlugin {
 		poolConfig.setMinIdle(100);
 		poolConfig.setMaxIdle(250);
 		poolConfig.setMaxTotal(250);
-		//pool = new JedisPool(poolConfig, host, port, 40*1000, password);
-		pool = new JedisPool(poolConfig, host, port, 40*1000);
+		pool = new JedisPool(poolConfig, host, port, 40*1000, password);
+		//pool = new JedisPool(poolConfig, host, port, 40*1000);
 		jedis = pool.getResource();
 		Bukkit.getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
 			@Override
@@ -144,6 +145,8 @@ public final class Main extends JavaPlugin {
 					System.out.println("[StaffTools] Jedis config log created!");
 					System.out.println("[StaffTools] --------------------");
 				}
+				System.out.println("Is it subscribed: " + jedisPubSub.isSubscribed());
+				System.out.println("Total subbed channels: " + jedisPubSub.getSubscribedChannels());
 				Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
 					@Override
 					public void run() {
@@ -156,10 +159,10 @@ public final class Main extends JavaPlugin {
 					}
 				});
 			}
-		}, 1L, 10 * 20L);
+		}, 1L, 5 * 20L);
 		Thread.currentThread().setContextClassLoader(previous);
 
-		JedisPubSub pubSub = new JedisPubSub() {
+		jedisPubSub = new JedisPubSub() {
 			@Override
 			public void onMessage(String channel, String message) {
 				JedisTask task = gson.fromJson(message, JedisTask.class);
@@ -170,7 +173,7 @@ public final class Main extends JavaPlugin {
 		Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable() {
 			@Override
 			public void run() {
-				pool.getResource().subscribe(pubSub,
+				pool.getResource().subscribe(jedisPubSub,
 						RedisChannels.ADMINCHAT.getChannelName(),
 						RedisChannels.REQUEST_LIST.getChannelName(),
 						RedisChannels.RETURN_REQUEST_LIST.getChannelName(),
@@ -199,9 +202,9 @@ public final class Main extends JavaPlugin {
 	@Override
 	public void onDisable() {
 		System.out.println("[StaffTools] Shutting down...");
-		if (!pool.isClosed()) {
-			pool.close();
-		}
+		jedisPubSub.unsubscribe();
+		pool.getResource().disconnect();
+		pool.close();
 		System.out.println("[StaffTools] Shut down! Cya :D");
 	}
 

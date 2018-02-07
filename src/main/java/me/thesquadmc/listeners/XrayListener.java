@@ -21,7 +21,7 @@ import java.util.UUID;
 public final class XrayListener implements Listener {
 
 	private final Main main;
-	private final int diamondThreshhold = 8;
+	private final int diamondThreshhold = 13;
 	private final int spawnerThreshhold = 4;
 	private Map<UUID, Integer> diamondsMined = new HashMap<>();
 	private Map<UUID, Integer> spawnerMined = new HashMap<>();

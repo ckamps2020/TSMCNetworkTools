@@ -101,10 +101,6 @@ public final class FreezeListener implements Listener {
 	@EventHandler
 	public void onClick(InventoryClickEvent e) {
 		Player player = (Player) e.getWhoClicked();
-		if (e.getInventory() != null && e.getInventory().getName().equalsIgnoreCase("INVSEE")) {
-			e.setCancelled(true);
-			return;
-		}
 		if (e.getInventory() != null && e.getInventory().getName().toUpperCase().startsWith("FREEZE MENU FOR ")) {
 			e.setCancelled(true);
 			Player t = Bukkit.getPlayer(main.getFrozenInventory().getViewing().get(player.getUniqueId()));
