@@ -12,7 +12,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
-public class SettingsListener implements Listener {
+public final class SettingsListener implements Listener {
 
 	@EventHandler
 	public void onClick(InventoryClickEvent e) {

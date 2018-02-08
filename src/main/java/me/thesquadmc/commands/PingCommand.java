@@ -8,7 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
-public class PingCommand implements CommandExecutor {
+public final class PingCommand implements CommandExecutor {
 
 	private final Main main;
 

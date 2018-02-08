@@ -21,7 +21,7 @@ import redis.clients.jedis.Jedis;
 
 import java.util.*;
 
-public class FriendCommand implements CommandExecutor {
+public final class FriendCommand implements CommandExecutor {
 
 	private final Main main;
 	public static Map<UUID, List<String>> online = new HashMap<>();
