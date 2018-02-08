@@ -32,7 +32,6 @@ public final class RedisHandler {
 
 	public void processRedisMessage(JedisTask task, String channel, String message) {
 		Map<String, Object> data = task.getData();
-		System.out.println("We got a message: " + data);
 		if (channel.equalsIgnoreCase(RedisChannels.STAFFCHAT.toString())) {
 			for (Player player : Bukkit.getOnlinePlayers()) {
 				TempData tempData = main.getTempDataManager().getTempData(player.getUniqueId());

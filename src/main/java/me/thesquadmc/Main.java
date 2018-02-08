@@ -13,10 +13,7 @@ import me.thesquadmc.managers.TempDataManager;
 import me.thesquadmc.networking.JedisTask;
 import me.thesquadmc.networking.RedisHandler;
 import me.thesquadmc.objects.Config;
-import me.thesquadmc.utils.FileManager;
-import me.thesquadmc.utils.RedisArg;
-import me.thesquadmc.utils.RedisChannels;
-import me.thesquadmc.utils.StringUtils;
+import me.thesquadmc.utils.*;
 import me.thesquadmc.utils.handlers.UpdateHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -39,6 +36,7 @@ public final class Main extends JavaPlugin {
 	private Jedis jedis;
 	private JedisPoolConfig poolConfig;
 	private JedisPubSub jedisPubSub;
+	private Jedis j;
 
 	private int chatslow = 0;
 	private boolean chatSilenced = false;
@@ -124,53 +122,71 @@ public final class Main extends JavaPlugin {
 		poolConfig = new JedisPoolConfig();
 		poolConfig.setTestOnReturn(true);
 		poolConfig.setTestWhileIdle(true);
-		poolConfig.setMinIdle(100);
-		poolConfig.setMaxIdle(250);
-		poolConfig.setMaxTotal(250);
+		poolConfig.setMinIdle(20);
+		poolConfig.setMaxIdle(150);
+		poolConfig.setMaxTotal(150);
 		pool = new JedisPool(poolConfig, host, port, 40*1000, password);
 		//pool = new JedisPool(poolConfig, host, port, 40*1000);
 		jedis = pool.getResource();
-		Bukkit.getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
+		Thread.currentThread().setContextClassLoader(previous);
+		Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable() {
 			@Override
 			public void run() {
-				if (!jedis.isConnected()) {
-					System.out.println("[StaffTools] --------------------");
-					System.out.println("[StaffTools] Jedis Disconnected setting up config log report...");
-					Config c = new Config(Bukkit.getServerName() + "-" + StringUtils.getDate(), main);
-					c.getConfig().set("time", StringUtils.getDate());
-					c.getConfig().set("server", Bukkit.getServerName());
-					jedis.connect();
-					c.getConfig().set("reconnected", jedis.isConnected());
-					System.out.println("[StaffTools] has jedis reconnected? " + jedis.isConnected());
-					System.out.println("[StaffTools] Jedis config log created!");
-					System.out.println("[StaffTools] --------------------");
-				}
-				System.out.println("Is it subscribed: " + jedisPubSub.isSubscribed());
-				System.out.println("Total subbed channels: " + jedisPubSub.getSubscribedChannels());
-				Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
+				Multithreading.runAsync(new Runnable() {
 					@Override
 					public void run() {
-						try (Jedis jedis = main.getPool().getResource()) {
-							JedisTask.withName(UUID.randomUUID().toString())
-									.withArg(RedisArg.DATE.getArg(), StringUtils.getDate())
-									.withArg(RedisArg.SERVER.getArg(), Bukkit.getServerName())
-									.send(RedisChannels.HEARTBEAT.getChannelName(), jedis);
+						try {
+							j = new Jedis(host, port, 40 * 1000);
+							j.auth(password);
+							j.connect();
+							//j = new Jedis(host, port);
+							j.subscribe(new JedisPubSub() {
+								            @Override
+								            public void onMessage(String channel, String message) {
+									            JedisTask task = gson.fromJson(message, JedisTask.class);
+									            getRedisHandler().processRedisMessage(task, channel, message);
+								            }
+							            }, RedisChannels.ADMINCHAT.getChannelName(),
+									RedisChannels.REQUEST_LIST.getChannelName(),
+									RedisChannels.RETURN_REQUEST_LIST.getChannelName(),
+									RedisChannels.STAFFCHAT.getChannelName(),
+									RedisChannels.MANAGERCHAT.getChannelName(),
+									RedisChannels.FIND.getChannelName(),
+									RedisChannels.FOUND.getChannelName(),
+									RedisChannels.ANNOUNCEMENT.getChannelName(),
+									RedisChannels.STOP.getChannelName(),
+									RedisChannels.WHITELIST.getChannelName(),
+									RedisChannels.WHITELIST_ADD.getChannelName(),
+									RedisChannels.WHITELIST_REMOVE.getChannelName(),
+									RedisChannels.REPORTS.getChannelName(),
+									RedisChannels.CLOSED_REPORTS.getChannelName(),
+									RedisChannels.MONITOR_INFO.getChannelName(),
+									RedisChannels.PROXY_RETURN.getChannelName(),
+									RedisChannels.MONITOR_REQUEST.getChannelName(),
+									RedisChannels.HEARTBEAT.getChannelName());
+						} catch (Exception e) {
+							e.printStackTrace();
 						}
 					}
 				});
+				/**jedis.subscribe(new JedisPubSub() {
+					@Override
+					public void onMessage(String channel, String message) {
+						JedisTask task = gson.fromJson(message, JedisTask.class);
+						getRedisHandler().processRedisMessage(task, channel, message);
+					}
+				});
+				jedisPubSub = new JedisPubSub() {
+					@Override
+					public void onMessage(String channel, String message) {
+						JedisTask task = gson.fromJson(message, JedisTask.class);
+						getRedisHandler().processRedisMessage(task, channel, message);
+					}
+				};**/
 			}
-		}, 1L, 5 * 20L);
-		Thread.currentThread().setContextClassLoader(previous);
+		});
 
-		jedisPubSub = new JedisPubSub() {
-			@Override
-			public void onMessage(String channel, String message) {
-				JedisTask task = gson.fromJson(message, JedisTask.class);
-				getRedisHandler().processRedisMessage(task, channel, message);
-			}
-		};
-
-		Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable() {
+		/**Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable() {
 			@Override
 			public void run() {
 				pool.getResource().subscribe(jedisPubSub,
@@ -194,7 +210,7 @@ public final class Main extends JavaPlugin {
 						RedisChannels.HEARTBEAT.getChannelName()
 				);
 			}
-		});
+		});**/
 		System.out.println("[StaffTools] Redis PUB/SUB setup!");
 		System.out.println("[StaffTools] Plugin started up and ready to go!");
 	}
@@ -202,8 +218,8 @@ public final class Main extends JavaPlugin {
 	@Override
 	public void onDisable() {
 		System.out.println("[StaffTools] Shutting down...");
-		jedisPubSub.unsubscribe();
 		pool.getResource().disconnect();
+		j.disconnect();
 		pool.close();
 		System.out.println("[StaffTools] Shut down! Cya :D");
 	}

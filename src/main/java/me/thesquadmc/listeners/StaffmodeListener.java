@@ -15,6 +15,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -245,6 +246,18 @@ public final class StaffmodeListener implements Listener {
 	public void portalEvent(PlayerPortalEvent e) {
 		if (StaffmodeCommand.getStaffmode().containsKey(e.getPlayer().getUniqueId())) {
 			e.setCancelled(true);
+		}
+	}
+
+	@EventHandler
+	public void onDamage(EntityDamageEvent e) {
+		if (e.getEntity() != null && e.getEntity().getType() == EntityType.PLAYER) {
+			Player player = (Player) e.getEntity();
+			if (player != null) {
+				if (StaffmodeCommand.getStaffmode().containsKey(player.getUniqueId())) {
+					e.setCancelled(true);
+				}
+			}
 		}
 	}
 
