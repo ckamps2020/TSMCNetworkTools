@@ -409,6 +409,7 @@ public final class RedisHandler {
 			if (server.equalsIgnoreCase(Bukkit.getServerName())) {
 				Player p = Bukkit.getPlayer(player);
 				if (p != null) {
+
 					String proxies = String.valueOf(data.get(RedisArg.PROXIES.getArg()));
 					String count = String.valueOf(data.get(RedisArg.COUNT.getArg()));
 					String regex = "[ ]+";
