@@ -58,3 +58,5 @@ commands:
         aliases: [lightning]
     friend:
         aliases: [friends]
+    ping:
+    status:

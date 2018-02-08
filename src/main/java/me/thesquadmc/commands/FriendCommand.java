@@ -35,6 +35,11 @@ public class FriendCommand implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (sender instanceof Player) {
 			Player player = (Player) sender;
+			boolean enabled = true;
+			if (enabled) {
+				player.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &7This command is currently disabled!"));
+				return true;
+			}
 			if (args.length == 0) {
 				sendHelpMessage(player);
 			} else if (args.length == 1) {

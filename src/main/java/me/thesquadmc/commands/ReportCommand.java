@@ -9,9 +9,13 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+import java.util.UUID;
+
 public final class ReportCommand implements CommandExecutor {
 
 	private final Main main;
+	private ArrayList<UUID> cooldown = new ArrayList<>();
 
 	public ReportCommand(Main main) {
 		this.main = main;
@@ -44,8 +48,19 @@ public final class ReportCommand implements CommandExecutor {
 							return true;
 						}
 					}
+					if (cooldown.contains(player.getUniqueId())) {
+						player.sendMessage(StringUtils.msg("&e&lREPORT &6■ &7Please slowdown using the report command!"));
+						return true;
+					}
+					cooldown.add(player.getUniqueId());
 					main.getReportManager().newReport(new Report(t.getName(), StringUtils.getDate(), player.getName(), Bukkit.getServerName(), tokens));
 					player.sendMessage(StringUtils.msg("&e&lREPORT &6■ &7You reported &e" + t.getName() + " &7for &e" + stringBuilder.toString() + "&7"));
+					Bukkit.getScheduler().runTaskLater(main, new Runnable() {
+						@Override
+						public void run() {
+							cooldown.remove(player.getUniqueId());
+						}
+					}, 20 * 20L);
 				} else {
 					player.sendMessage(StringUtils.msg("&e&lREPORT &6■ &7This player does not exist"));
 				}

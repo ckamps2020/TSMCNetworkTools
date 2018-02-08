@@ -27,6 +27,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 public final class Main extends JavaPlugin {
 
@@ -43,6 +45,7 @@ public final class Main extends JavaPlugin {
 	private JedisPubSub jedisPubSub;
 	private Jedis j;
 	private DatabaseManager MySQL;
+	private ThreadPoolExecutor threadPoolExecutor;
 
 	private int chatslow = 0;
 	private boolean chatSilenced = false;
@@ -75,6 +78,7 @@ public final class Main extends JavaPlugin {
 		main = this;
 		luckPermsApi = LuckPerms.getApi();
 		fileManager = new FileManager(this);
+		threadPoolExecutor = (ThreadPoolExecutor) Executors.newCachedThreadPool();
 		MySQL = new DatabaseManager(this, this);
 		new StringUtils();
 		frozenInventory = new FrozenInventory(this);
@@ -117,6 +121,8 @@ public final class Main extends JavaPlugin {
 		getCommand("slowchat").setExecutor(new ChatSlowCommand(this));
 		getCommand("smite").setExecutor(new SmiteCommand(this));
 		getCommand("friend").setExecutor(new FriendCommand(this));
+		getCommand("ping").setExecutor(new PingCommand(this));
+		getCommand("status").setExecutor(new StatusCommand(this));
 		getServer().getPluginManager().registerEvents(new ChatListener(), this);
 		getServer().getPluginManager().registerEvents(new SettingsListener(), this);
 		getServer().getPluginManager().registerEvents(new LaunchListener(), this);
@@ -134,11 +140,11 @@ public final class Main extends JavaPlugin {
 		host = fileManager.getNetworkingConfig().getString("redis.host");
 		port = fileManager.getNetworkingConfig().getInt("redis.port");
 		password = fileManager.getNetworkingConfig().getString("redis.password");
-		mysqlhost = fileManager.getNetworkingConfig().getString("mysql.host");
+		/**mysqlhost = fileManager.getNetworkingConfig().getString("mysql.host");
 		mysqlport = fileManager.getNetworkingConfig().getString("mysql.port");
 		mysqlpassword = fileManager.getNetworkingConfig().getString("mysql.dbpassword");
 		mysqldb = fileManager.getNetworkingConfig().getString("mysql.dbname");
-		dbuser = fileManager.getNetworkingConfig().getString("mysql.dbuser");
+		dbuser = fileManager.getNetworkingConfig().getString("mysql.dbuser");**/
 		System.out.println("[NetworkTools] Loading Redis PUB/SUB...");
 		redisHandler = new RedisHandler(this);
 		ClassLoader previous = Thread.currentThread().getContextClassLoader();
@@ -204,7 +210,7 @@ public final class Main extends JavaPlugin {
 			}
 		});
 		System.out.println("[NetworkTools] Redis PUB/SUB setup!");
-		Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable() {
+		/**Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable() {
 			@Override
 			public void run() {
 				System.out.println("[NetworkTools] Connecting to mysql database...");
@@ -217,7 +223,7 @@ public final class Main extends JavaPlugin {
 					System.out.println("[NetworkTools] Unable to connect to mysql database!");
 				}
 			}
-		});
+		});**/
 		System.out.println("[NetworkTools] Plugin started up and ready to go!");
 	}
 
@@ -226,8 +232,11 @@ public final class Main extends JavaPlugin {
 		System.out.println("[NetworkTools] Shutting down...");
 		pool.getResource().disconnect();
 		j.disconnect();
-		pool.close();
 		System.out.println("[NetworkTools] Shut down! Cya :D");
+	}
+
+	public ThreadPoolExecutor getThreadPoolExecutor() {
+		return threadPoolExecutor;
 	}
 
 	public DatabaseManager getMySQL() {
