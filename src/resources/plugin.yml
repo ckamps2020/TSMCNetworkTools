@@ -56,3 +56,5 @@ commands:
         aliases: [delay, delaychat]
     smite:
         aliases: [lightning]
+    friend:
+        aliases: [friends]

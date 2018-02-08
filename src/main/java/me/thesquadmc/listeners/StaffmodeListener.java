@@ -2,7 +2,7 @@ package me.thesquadmc.listeners;
 
 import me.thesquadmc.Main;
 import me.thesquadmc.commands.StaffmodeCommand;
-import me.thesquadmc.utils.InventorySize;
+import me.thesquadmc.utils.enums.InventorySize;
 import me.thesquadmc.utils.StringUtils;
 import me.thesquadmc.utils.handlers.UpdateEvent;
 import me.thesquadmc.utils.handlers.UpdateType;
@@ -19,7 +19,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;

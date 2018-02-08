@@ -12,15 +12,20 @@ import me.thesquadmc.managers.ReportManager;
 import me.thesquadmc.managers.TempDataManager;
 import me.thesquadmc.networking.JedisTask;
 import me.thesquadmc.networking.RedisHandler;
-import me.thesquadmc.objects.Config;
+import me.thesquadmc.networking.mysql.DatabaseManager;
 import me.thesquadmc.utils.*;
+import me.thesquadmc.utils.enums.RedisChannels;
+import me.thesquadmc.utils.enums.Settings;
 import me.thesquadmc.utils.handlers.UpdateHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.plugin.java.JavaPlugin;
 import redis.clients.jedis.*;
 
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public final class Main extends JavaPlugin {
@@ -37,6 +42,7 @@ public final class Main extends JavaPlugin {
 	private JedisPoolConfig poolConfig;
 	private JedisPubSub jedisPubSub;
 	private Jedis j;
+	private DatabaseManager MySQL;
 
 	private int chatslow = 0;
 	private boolean chatSilenced = false;
@@ -53,13 +59,23 @@ public final class Main extends JavaPlugin {
 	private String host;
 	private int port;
 	private String password;
+	private String mysqlhost;
+	private String mysqlport;
+	private String mysqlpassword;
+	private String mysqldb;
+	private String dbuser;
+
+	private Map<UUID, List<String>> friends = new HashMap<>();
+	private Map<UUID, List<String>> requests = new HashMap<>();
+	private Map<UUID, Map<Settings, Boolean>> settings = new HashMap<>();
 
 	@Override
 	public void onEnable() {
-		System.out.println("[StaffTools] Starting the plugin up...");
+		System.out.println("[NetworkTools] Starting the plugin up...");
 		main = this;
 		luckPermsApi = LuckPerms.getApi();
 		fileManager = new FileManager(this);
+		MySQL = new DatabaseManager(this, this);
 		new StringUtils();
 		frozenInventory = new FrozenInventory(this);
 		staffmodeInventory = new StaffmodeInventory(this);
@@ -100,6 +116,9 @@ public final class Main extends JavaPlugin {
 		getCommand("silence").setExecutor(new ChatSilenceCommand(this));
 		getCommand("slowchat").setExecutor(new ChatSlowCommand(this));
 		getCommand("smite").setExecutor(new SmiteCommand(this));
+		getCommand("friend").setExecutor(new FriendCommand(this));
+		getServer().getPluginManager().registerEvents(new ChatListener(), this);
+		getServer().getPluginManager().registerEvents(new SettingsListener(), this);
 		getServer().getPluginManager().registerEvents(new LaunchListener(), this);
 		getServer().getPluginManager().registerEvents(new LightningListener(), this);
 		getServer().getPluginManager().registerEvents(new FilterListener(this), this);
@@ -115,7 +134,12 @@ public final class Main extends JavaPlugin {
 		host = fileManager.getNetworkingConfig().getString("redis.host");
 		port = fileManager.getNetworkingConfig().getInt("redis.port");
 		password = fileManager.getNetworkingConfig().getString("redis.password");
-		System.out.println("[StaffTools] Loading Redis PUB/SUB...");
+		mysqlhost = fileManager.getNetworkingConfig().getString("mysql.host");
+		mysqlport = fileManager.getNetworkingConfig().getString("mysql.port");
+		mysqlpassword = fileManager.getNetworkingConfig().getString("mysql.dbpassword");
+		mysqldb = fileManager.getNetworkingConfig().getString("mysql.dbname");
+		dbuser = fileManager.getNetworkingConfig().getString("mysql.dbuser");
+		System.out.println("[NetworkTools] Loading Redis PUB/SUB...");
 		redisHandler = new RedisHandler(this);
 		ClassLoader previous = Thread.currentThread().getContextClassLoader();
 		Thread.currentThread().setContextClassLoader(this.getClassLoader());
@@ -125,8 +149,8 @@ public final class Main extends JavaPlugin {
 		poolConfig.setMinIdle(20);
 		poolConfig.setMaxIdle(150);
 		poolConfig.setMaxTotal(150);
-		pool = new JedisPool(poolConfig, host, port, 40*1000, password);
-		//pool = new JedisPool(poolConfig, host, port, 40*1000);
+		//pool = new JedisPool(poolConfig, host, port, 40*1000, password);
+		pool = new JedisPool(poolConfig, host, port, 40*1000);
 		jedis = pool.getResource();
 		Thread.currentThread().setContextClassLoader(previous);
 		Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable() {
@@ -136,10 +160,10 @@ public final class Main extends JavaPlugin {
 					@Override
 					public void run() {
 						try {
-							j = new Jedis(host, port, 40 * 1000);
-							j.auth(password);
+							//j = new Jedis(host, port, 40 * 1000);
+							//j.auth(password);
+							j = new Jedis(host, port);
 							j.connect();
-							//j = new Jedis(host, port);
 							j.subscribe(new JedisPubSub() {
 								            @Override
 								            public void onMessage(String channel, String message) {
@@ -163,65 +187,87 @@ public final class Main extends JavaPlugin {
 									RedisChannels.MONITOR_INFO.getChannelName(),
 									RedisChannels.PROXY_RETURN.getChannelName(),
 									RedisChannels.MONITOR_REQUEST.getChannelName(),
-									RedisChannels.HEARTBEAT.getChannelName());
+									RedisChannels.HEARTBEAT.getChannelName(),
+									RedisChannels.FRIEND_ADD.getChannelName(),
+									RedisChannels.FRIEND_REMOVE_INBOUND.getChannelName(),
+									RedisChannels.FRIEND_REMOVE_OUTBOUND.getChannelName(),
+									RedisChannels.FRIEND_CHAT.getChannelName(),
+									RedisChannels.FRIEND_CHECK_REQUEST.getChannelName(),
+									RedisChannels.FRIEND_RETURN_REQUEST.getChannelName(),
+									RedisChannels.LEAVE.getChannelName(),
+									RedisChannels.LOGIN.getChannelName());
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
 					}
 				});
-				/**jedis.subscribe(new JedisPubSub() {
-					@Override
-					public void onMessage(String channel, String message) {
-						JedisTask task = gson.fromJson(message, JedisTask.class);
-						getRedisHandler().processRedisMessage(task, channel, message);
-					}
-				});
-				jedisPubSub = new JedisPubSub() {
-					@Override
-					public void onMessage(String channel, String message) {
-						JedisTask task = gson.fromJson(message, JedisTask.class);
-						getRedisHandler().processRedisMessage(task, channel, message);
-					}
-				};**/
 			}
 		});
-
-		/**Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable() {
+		System.out.println("[NetworkTools] Redis PUB/SUB setup!");
+		Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable() {
 			@Override
 			public void run() {
-				pool.getResource().subscribe(jedisPubSub,
-						RedisChannels.ADMINCHAT.getChannelName(),
-						RedisChannels.REQUEST_LIST.getChannelName(),
-						RedisChannels.RETURN_REQUEST_LIST.getChannelName(),
-						RedisChannels.STAFFCHAT.getChannelName(),
-						RedisChannels.MANAGERCHAT.getChannelName(),
-						RedisChannels.FIND.getChannelName(),
-						RedisChannels.FOUND.getChannelName(),
-						RedisChannels.ANNOUNCEMENT.getChannelName(),
-						RedisChannels.STOP.getChannelName(),
-						RedisChannels.WHITELIST.getChannelName(),
-						RedisChannels.WHITELIST_ADD.getChannelName(),
-						RedisChannels.WHITELIST_REMOVE.getChannelName(),
-						RedisChannels.REPORTS.getChannelName(),
-						RedisChannels.CLOSED_REPORTS.getChannelName(),
-						RedisChannels.MONITOR_INFO.getChannelName(),
-						RedisChannels.PROXY_RETURN.getChannelName(),
-						RedisChannels.MONITOR_REQUEST.getChannelName(),
-						RedisChannels.HEARTBEAT.getChannelName()
-				);
+				System.out.println("[NetworkTools] Connecting to mysql database...");
+				try {
+					MySQL.setupDB();
+					System.out.println("[NetworkTools] Connected to mysql database!");
+				}
+				catch (ClassNotFoundException|SQLException e) {
+					e.printStackTrace();
+					System.out.println("[NetworkTools] Unable to connect to mysql database!");
+				}
 			}
-		});**/
-		System.out.println("[StaffTools] Redis PUB/SUB setup!");
-		System.out.println("[StaffTools] Plugin started up and ready to go!");
+		});
+		System.out.println("[NetworkTools] Plugin started up and ready to go!");
 	}
 
 	@Override
 	public void onDisable() {
-		System.out.println("[StaffTools] Shutting down...");
+		System.out.println("[NetworkTools] Shutting down...");
 		pool.getResource().disconnect();
 		j.disconnect();
 		pool.close();
-		System.out.println("[StaffTools] Shut down! Cya :D");
+		System.out.println("[NetworkTools] Shut down! Cya :D");
+	}
+
+	public DatabaseManager getMySQL() {
+		return MySQL;
+	}
+
+	public String getMysqlhost() {
+		return mysqlhost;
+	}
+
+	public String getMysqlport() {
+		return mysqlport;
+	}
+
+	public String getMysqlpassword() {
+		return mysqlpassword;
+	}
+
+	public String getMysqldb() {
+		return mysqldb;
+	}
+
+	public String getDbuser() {
+		return dbuser;
+	}
+
+	public Map<UUID, List<String>> getFriends() {
+		return friends;
+	}
+
+	public Map<UUID, List<String>> getRequests() {
+		return requests;
+	}
+
+	public Map<UUID, Map<Settings, Boolean>> getSettings() {
+		return settings;
+	}
+
+	public JedisPubSub getJedisPubSub() {
+		return jedisPubSub;
 	}
 
 	public Jedis getJedis() {

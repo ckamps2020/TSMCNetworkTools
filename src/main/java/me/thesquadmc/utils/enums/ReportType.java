@@ -1,4 +1,4 @@
-package me.thesquadmc.utils;
+package me.thesquadmc.utils.enums;
 
 public enum ReportType {
 

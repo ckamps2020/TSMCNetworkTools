@@ -2,7 +2,7 @@ package me.thesquadmc.listeners;
 
 import me.thesquadmc.Main;
 import me.thesquadmc.utils.PlayerUtils;
-import me.thesquadmc.utils.Rank;
+import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

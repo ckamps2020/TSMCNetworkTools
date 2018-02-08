@@ -1,9 +1,5 @@
 package me.thesquadmc.utils;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import me.lucko.luckperms.api.Group;
@@ -11,6 +7,7 @@ import me.lucko.luckperms.api.Node;
 import me.lucko.luckperms.api.User;
 import me.thesquadmc.Main;
 import me.thesquadmc.objects.TempData;
+import me.thesquadmc.utils.enums.Rank;
 import net.minecraft.server.v1_8_R3.IChatBaseComponent;
 import net.minecraft.server.v1_8_R3.Packet;
 import net.minecraft.server.v1_8_R3.PacketPlayOutChat;
@@ -18,7 +15,6 @@ import net.minecraft.server.v1_8_R3.PlayerConnection;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -31,11 +27,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Stream;
 
 public final class PlayerUtils {

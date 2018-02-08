@@ -2,7 +2,7 @@ package me.thesquadmc.inventories;
 
 import me.thesquadmc.Main;
 import me.thesquadmc.objects.Report;
-import me.thesquadmc.utils.InventorySize;
+import me.thesquadmc.utils.enums.InventorySize;
 import me.thesquadmc.utils.ItemBuilder;
 import me.thesquadmc.utils.MathUtils;
 import me.thesquadmc.utils.StringUtils;

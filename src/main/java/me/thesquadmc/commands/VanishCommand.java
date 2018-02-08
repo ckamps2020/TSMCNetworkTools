@@ -4,7 +4,7 @@ import me.thesquadmc.Main;
 import me.thesquadmc.objects.TempData;
 import me.thesquadmc.utils.ItemBuilder;
 import me.thesquadmc.utils.PlayerUtils;
-import me.thesquadmc.utils.Rank;
+import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.StringUtils;
 import org.bukkit.Material;
 import org.bukkit.command.Command;

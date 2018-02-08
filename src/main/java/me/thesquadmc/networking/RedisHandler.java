@@ -2,15 +2,13 @@ package me.thesquadmc.networking;
 
 import me.thesquadmc.Main;
 import me.thesquadmc.commands.FindCommand;
+import me.thesquadmc.commands.FriendCommand;
 import me.thesquadmc.commands.StafflistCommand;
 import me.thesquadmc.commands.StaffmodeCommand;
 import me.thesquadmc.objects.Report;
 import me.thesquadmc.objects.TempData;
 import me.thesquadmc.utils.*;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
+import me.thesquadmc.utils.enums.*;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
@@ -459,6 +457,126 @@ public final class RedisHandler {
 						player.sendMessage(StringUtils.msg(msg));
 						player.sendMessage(StringUtils.msg("&8&m-------------------------------------------------"));
 					}
+				}
+			}
+		} else if (channel.equalsIgnoreCase(RedisChannels.FRIEND_CHECK_REQUEST.getChannelName())) {
+			main.getServer().getScheduler().runTaskAsynchronously(main, new Runnable() {
+				@Override
+				public void run() {
+					String name = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
+					for (Player p : Bukkit.getOnlinePlayers()) {
+						if (p.getName().equalsIgnoreCase(name)) {
+							try (Jedis jedis = main.getPool().getResource()) {
+								JedisTask.withName(UUID.randomUUID().toString())
+										.withArg(RedisArg.SERVER.getArg(), String.valueOf(data.get(RedisArg.SERVER.getArg())))
+										.withArg(RedisArg.PLAYER.getArg(), name)
+										.withArg(RedisArg.ORIGIN_PLAYER.getArg(), String.valueOf(data.get(RedisArg.ORIGIN_PLAYER.getArg())))
+										.send(RedisChannels.FRIEND_RETURN_REQUEST.getChannelName(), jedis);
+							}
+							return;
+						}
+					}
+				}
+			});
+		} else if (channel.equalsIgnoreCase(RedisChannels.FRIEND_RETURN_REQUEST.getChannelName())) {
+			main.getServer().getScheduler().runTaskAsynchronously(main, new Runnable() {
+				@Override
+				public void run() {
+					String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
+					if (server.equalsIgnoreCase(Bukkit.getServerName())) {
+						String name = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
+						String origin = String.valueOf(data.get(RedisArg.ORIGIN_PLAYER.getArg()));
+						Player p = Bukkit.getPlayer(origin);
+						if (p != null) {
+							FriendCommand.online.get(p.getUniqueId()).add(name);
+						}
+					}
+				}
+			});
+		} else if (channel.equalsIgnoreCase(RedisChannels.FRIEND_REMOVE_OUTBOUND.getChannelName())) {
+			main.getServer().getScheduler().runTaskAsynchronously(main, new Runnable() {
+				@Override
+				public void run() {
+					String name = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
+					for (Player p : Bukkit.getOnlinePlayers()) {
+						if (p.getName().equalsIgnoreCase(name)) {
+							OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(String.valueOf(data.get(RedisArg.ORIGIN_PLAYER.getArg())));
+							main.getFriends().get(p.getUniqueId()).remove(offlinePlayer.getUniqueId().toString());
+							p.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &a" + offlinePlayer.getName() + " &7has removed you as a friend"));
+							try (Jedis jedis = main.getPool().getResource()) {
+								JedisTask.withName(UUID.randomUUID().toString())
+										.withArg(RedisArg.SERVER.getArg(), String.valueOf(data.get(RedisArg.SERVER.getArg())))
+										.withArg(RedisArg.PLAYER.getArg(), name)
+										.withArg(RedisArg.ORIGIN_PLAYER.getArg(), String.valueOf(data.get(RedisArg.ORIGIN_PLAYER.getArg())))
+										.send(RedisChannels.FRIEND_REMOVE_INBOUND.getChannelName(), jedis);
+							}
+							try {
+								main.getMySQL().saveFriendAccount(p.getUniqueId().toString());
+							} catch (Exception e) {
+								System.out.println("[NetworkTools] Unable to execute mysql operation");
+							}
+							return;
+						}
+					}
+				}
+			});
+		} else if (channel.equalsIgnoreCase(RedisChannels.FRIEND_REMOVE_INBOUND.getChannelName())) {
+			main.getServer().getScheduler().runTaskAsynchronously(main, new Runnable() {
+				@Override
+				public void run() {
+					String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
+					if (server.equalsIgnoreCase(Bukkit.getServerName())) {
+						String name = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
+						String origin = String.valueOf(data.get(RedisArg.ORIGIN_PLAYER.getArg()));
+						Player p = Bukkit.getPlayer(origin);
+						if (p != null) {
+							FriendCommand.getStillLooking().remove(p.getName());
+						}
+					}
+				}
+			});
+		} else if (channel.equalsIgnoreCase(RedisChannels.FRIEND_CHAT.getChannelName())) {
+			main.getServer().getScheduler().runTaskAsynchronously(main, new Runnable() {
+				@Override
+				public void run() {
+					String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
+					String friends = String.valueOf(data.get(RedisArg.FRIENDS.getArg()));
+					String player = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
+					String message = String.valueOf(data.get(RedisArg.MESSAGE.getArg()));
+					String ss = String.valueOf(data.get(RedisArg.SSMSG.getArg()));
+					List<String> f = new ArrayList<>();
+					String regex = "[ ]+";
+					String[] tokens = friends.split(regex);
+					for (String s : tokens) {
+						f.add(s);
+					}
+					for (Player p : Bukkit.getOnlinePlayers()) {
+						if (PlayerUtils.isEqualOrHigherThen(p, Rank.TRAINEE) && main.getSettings().get(p.getUniqueId()).get(Settings.SOCIALSPY)) {
+							p.spigot().sendMessage(StringUtils.getHoverMessage(ss, "&7Currently on &e" + server));
+						}
+					}
+					for (String s : f) {
+						Player t = Bukkit.getPlayer(UUID.fromString(s));
+						if (t != null) {
+							t.spigot().sendMessage(StringUtils.getHoverMessage(message, "&7Currently on &e" + server));
+						}
+					}
+				}
+			});
+		} else if (channel.equalsIgnoreCase(RedisChannels.LOGIN.getChannelName())) {
+			String player = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
+			OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(player);
+			for (Player p : Bukkit.getOnlinePlayers()) {
+				if (main.getFriends().get(p.getUniqueId()).contains(offlinePlayer.getUniqueId().toString())) {
+					p.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &a" + player + " &7has logged in!"));
+				}
+			}
+		} else if (channel.equalsIgnoreCase(RedisChannels.LEAVE.getChannelName())) {
+			String player = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
+			OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(player);
+			for (Player p : Bukkit.getOnlinePlayers()) {
+				if (main.getFriends().get(p.getUniqueId()).contains(offlinePlayer.getUniqueId().toString())) {
+					p.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &a" + player + " &7has logged out!"));
 				}
 			}
 		}

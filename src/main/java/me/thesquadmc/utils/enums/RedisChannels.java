@@ -1,4 +1,4 @@
-package me.thesquadmc.utils;
+package me.thesquadmc.utils.enums;
 
 public enum RedisChannels {
 
@@ -23,6 +23,19 @@ public enum RedisChannels {
 	PROXY_REQUEST("PROXY_REQUEST"),
 	PROXY_RETURN("PROXY_RETURN"),
 	HEARTBEAT("HEARTBEAT"),
+
+	FRIEND_ADD("FRIEND_ADD"),
+	FRIEND_REMOVE_OUTBOUND("FRIEND_REMOVE_OUTBOUND"),
+	FRIEND_REMOVE_INBOUND("FRIEND_REMOVE_INBOUND"),
+	FRIEND_CHAT("FRIEND_CHAT"),
+
+	FRIEND_CHECK_REQUEST("FRIEND_CHECK_REQUEST"),
+	FRIEND_RETURN_REQUEST("FRIEND_RETURN_REQUEST"),
+
+	LOGIN("LOGIN"),
+	LEAVE("LEAVE"),
+
+	TRANSPORT("TRANSPORT"),
 	;
 
 	private String channelName;

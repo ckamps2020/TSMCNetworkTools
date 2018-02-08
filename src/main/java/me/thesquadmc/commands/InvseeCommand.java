@@ -2,6 +2,7 @@ package me.thesquadmc.commands;
 
 import me.thesquadmc.Main;
 import me.thesquadmc.utils.*;
+import me.thesquadmc.utils.enums.Rank;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

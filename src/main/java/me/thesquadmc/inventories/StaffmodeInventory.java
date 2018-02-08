@@ -1,7 +1,7 @@
 package me.thesquadmc.inventories;
 
 import me.thesquadmc.Main;
-import me.thesquadmc.utils.InventorySize;
+import me.thesquadmc.utils.enums.InventorySize;
 import me.thesquadmc.utils.ItemBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;

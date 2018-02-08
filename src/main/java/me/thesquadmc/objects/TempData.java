@@ -1,6 +1,6 @@
 package me.thesquadmc.objects;
 
-import me.thesquadmc.utils.MessageSettings;
+import me.thesquadmc.utils.enums.MessageSettings;
 import me.thesquadmc.utils.StringUtils;
 import org.bukkit.Bukkit;
 

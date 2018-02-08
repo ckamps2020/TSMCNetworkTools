@@ -1,4 +1,4 @@
-package me.thesquadmc.utils;
+package me.thesquadmc.utils.enums;
 
 public enum RedisArg {
 
@@ -27,6 +27,9 @@ public enum RedisArg {
 	MANAGER("MANGER"),
 	DEVELOPER("DEVELOPER"),
 	OWNER("OWNER"),
+
+	FRIENDS("FRIENDS"),
+	SSMSG("SSMSG"),
 	;
 
 	private String arg;

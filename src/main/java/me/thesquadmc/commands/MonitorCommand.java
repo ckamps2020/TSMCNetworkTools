@@ -3,6 +3,7 @@ package me.thesquadmc.commands;
 import me.thesquadmc.Main;
 import me.thesquadmc.objects.TempData;
 import me.thesquadmc.utils.*;
+import me.thesquadmc.utils.enums.Rank;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

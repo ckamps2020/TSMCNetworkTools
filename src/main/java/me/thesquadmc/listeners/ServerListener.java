@@ -2,8 +2,8 @@ package me.thesquadmc.listeners;
 
 import me.thesquadmc.Main;
 import me.thesquadmc.networking.JedisTask;
-import me.thesquadmc.utils.RedisArg;
-import me.thesquadmc.utils.RedisChannels;
+import me.thesquadmc.utils.enums.RedisArg;
+import me.thesquadmc.utils.enums.RedisChannels;
 import me.thesquadmc.utils.ServerUtils;
 import me.thesquadmc.utils.TimeUtils;
 import me.thesquadmc.utils.handlers.UpdateEvent;

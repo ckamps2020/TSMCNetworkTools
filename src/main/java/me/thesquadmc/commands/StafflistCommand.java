@@ -2,8 +2,8 @@ package me.thesquadmc.commands;
 
 import me.thesquadmc.Main;
 import me.thesquadmc.networking.JedisTask;
-import me.thesquadmc.utils.RedisArg;
-import me.thesquadmc.utils.RedisChannels;
+import me.thesquadmc.utils.enums.RedisArg;
+import me.thesquadmc.utils.enums.RedisChannels;
 import me.thesquadmc.utils.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -125,7 +125,7 @@ public final class StafflistCommand implements CommandExecutor {
 							}
 							//fetch online count
 							stafflist.remove(player.getUniqueId());
-						}, 10L);
+						}, 7L);
 					}
 				}
 			});
