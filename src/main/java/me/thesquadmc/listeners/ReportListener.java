@@ -1,10 +1,14 @@
 package me.thesquadmc.listeners;
 
 import me.thesquadmc.Main;
+import me.thesquadmc.networking.JedisTask;
 import me.thesquadmc.objects.Report;
 import me.thesquadmc.utils.StringUtils;
+import me.thesquadmc.utils.enums.RedisArg;
+import me.thesquadmc.utils.enums.RedisChannels;
 import me.thesquadmc.utils.handlers.UpdateEvent;
 import me.thesquadmc.utils.handlers.UpdateType;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -15,6 +19,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import redis.clients.jedis.Jedis;
 
 import java.util.List;
 import java.util.UUID;
@@ -62,14 +67,14 @@ public final class ReportListener implements Listener {
 						main.getReportInventory().buildReportsMenu(player);
 					} else {
 						player.closeInventory();
-						player.sendMessage(StringUtils.msg("&cThere are no active reports!"));
+						player.sendMessage(StringUtils.msg("&e&lREPORT &6■ &7There are no active reports!"));
 					}
 				} else if (e.getSlot() == 15) {
 					if (!main.getReportManager().getClosedReports().isEmpty()) {
 						main.getReportInventory().buildClosedReportsMenu(player);
 					} else {
 						player.closeInventory();
-						player.sendMessage(StringUtils.msg("&cThere are no active closed reports!"));
+						player.sendMessage(StringUtils.msg("&e&lREPORT &6■ &7There are no active closed reports!"));
 					}
 				}
 			} else if (e.getInventory().getName().toUpperCase().startsWith("CLOSED REPORTS") || e.getInventory().getName().toUpperCase().startsWith("REPORTS")) {
@@ -86,7 +91,7 @@ public final class ReportListener implements Listener {
 								player.openInventory(inv);
 								main.getReportInventory().getMap().put(player.getUniqueId(), list);
 							} else {
-								player.sendMessage(StringUtils.msg("&cThere are no more pages of reports!"));
+								player.sendMessage(StringUtils.msg("&e&lREPORT &6■ &7There are no more pages of reports!"));
 							}
 						} catch (Exception ex) {
 							player.closeInventory();
@@ -110,11 +115,44 @@ public final class ReportListener implements Listener {
 							}
 							if (report != null) {
 								player.closeInventory();
-								player.sendMessage(StringUtils.msg("&aReport " + report.getReportID() + " has been closed!"));
+								player.sendMessage(StringUtils.msg("&e&lREPORT &6■ &7Report " + report.getReportID() + " has been closed!"));
 								main.getReportManager().newClosedReport(report.getReportID().toString(), player.getName());
 							} else {
-								player.sendMessage(StringUtils.msg("&7This report already seems to be closed!"));
+								player.sendMessage(StringUtils.msg("&e&lREPORT &6■ &7This report already seems to be closed!"));
 							}
+						} else if (e.getClick() == ClickType.LEFT) {
+							boolean enabled = true;
+							if (enabled) {
+								return;
+							}
+							Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
+								@Override
+								public void run() {
+									List<String> lore = stack.getItemMeta().getLore();
+									Report report = null;
+									for (String s : lore) {
+										String ss = ChatColor.stripColor(s);
+										if (ss.toUpperCase().startsWith("ID")) {
+											String regex = "[ ]+";
+											String[] tokens = s.split(regex);
+											if (tokens.length == 2) {
+												report = main.getReportManager().getReportFromUUID(tokens[1]);
+												break;
+											}
+										}
+									}
+									if (report != null) {
+										player.closeInventory();
+										player.sendMessage(StringUtils.msg("&e&lREPORT &6■ &7Sending you to &e" + report.getServer() + "..."));
+										try (Jedis jedis = main.getPool().getResource()) {
+											JedisTask.withName(UUID.randomUUID().toString())
+													.withArg(RedisArg.PLAYER.getArg(), player.getName())
+													.withArg(RedisArg.SERVER.getArg(), report.getServer())
+													.send(RedisChannels.TRANSPORT.getChannelName(), jedis);
+										}
+									}
+								}
+							});
 						}
 					}
 				}

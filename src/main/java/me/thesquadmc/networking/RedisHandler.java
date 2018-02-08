@@ -565,21 +565,21 @@ public final class RedisHandler {
 				}
 			});
 		} else if (channel.equalsIgnoreCase(RedisChannels.LOGIN.getChannelName())) {
-			String player = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
+			/**String player = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
 			OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(player);
 			for (Player p : Bukkit.getOnlinePlayers()) {
 				if (main.getFriends().get(p.getUniqueId()).contains(offlinePlayer.getUniqueId().toString())) {
 					p.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &a" + player + " &7has logged in!"));
 				}
-			}
+			}**/
 		} else if (channel.equalsIgnoreCase(RedisChannels.LEAVE.getChannelName())) {
-			String player = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
+			/**String player = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
 			OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(player);
 			for (Player p : Bukkit.getOnlinePlayers()) {
 				if (main.getFriends().get(p.getUniqueId()).contains(offlinePlayer.getUniqueId().toString())) {
 					p.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &a" + player + " &7has logged out!"));
 				}
-			}
+			}**/
 		}
 	}
 
