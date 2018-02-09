@@ -4,6 +4,7 @@ import me.thesquadmc.Main;
 import me.thesquadmc.utils.PlayerUtils;
 import me.thesquadmc.utils.ServerUtils;
 import me.thesquadmc.utils.StringUtils;
+import me.thesquadmc.utils.TimeUtils;
 import me.thesquadmc.utils.enums.Rank;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -35,6 +36,7 @@ public final class StatusCommand implements CommandExecutor {
 				player.sendMessage(StringUtils.msg("&e&lSTATUS &6■ &7Largest Pool Size: &e" + ServerUtils.getLargestPoolSize()));
 				player.sendMessage(StringUtils.msg("&e&lSTATUS &6■ &7Process CPU Load: &e" + ServerUtils.getProcessCpuLoadFormatted()));
 				player.sendMessage(StringUtils.msg("&e&lSTATUS &6■ &7System CPU Load: &e" + ServerUtils.getSystemCpuLoadFormatted()));
+				player.sendMessage(StringUtils.msg("&e&lSTATUS &6■ &7Uptime: &e" + TimeUtils.millisToRoundedTime(System.currentTimeMillis() - main.getStartup())));
 				player.sendMessage(" ");
 			} else {
 				player.sendMessage(StringUtils.msg("&cYou do not have permission to use this command!"));

@@ -90,13 +90,7 @@ public final class StringUtils {
 			"^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])([.,])){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$");
 	private static final List<String> LINK_WHITELIST = Arrays.asList(
 			// Our stuff
-			"thesquadmc.net",
-
-			// Social media
-			"youtube.com", "youtu.be", "discord.gg", "twitter.com",
-
-			// Images
-			"prnt.sc", "gyazo.com", "imgur.com"
+			"thesquadmc.net"
 	);
 
 	public static boolean shouldFilter(String message) {
