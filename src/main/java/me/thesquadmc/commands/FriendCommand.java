@@ -150,7 +150,7 @@ public final class FriendCommand implements CommandExecutor {
 							if (!targetRequests.contains(player.getUniqueId().toString())) {
 								targetRequests.add(player.getUniqueId().toString());
 								target.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &d" + player.getName() + " &7has sent you a friend request"));
-								target.spigot().sendMessage(new ComponentBuilder(StringUtils.msg("&d&l[ACCEPT]"))
+								target.spigot().sendMessage(new ComponentBuilder(StringUtils.msg("&a&l[ACCEPT]"))
 										.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/friend accept " + player.getName()))
 										.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(StringUtils.msg("&dClick to accept the friend request"))))
 										.append(StringUtils.msg(" &c&l[DECLINE]"))
@@ -180,7 +180,7 @@ public final class FriendCommand implements CommandExecutor {
 							targetRequests.add(player.getUniqueId().toString());
 							main.getRequests().put(target.getUniqueId(), targetRequests);
 							target.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &d" + player.getName() + " &7has sent you a friend request"));
-							target.spigot().sendMessage(new ComponentBuilder(StringUtils.msg("&d&l[ACCEPT]"))
+							target.spigot().sendMessage(new ComponentBuilder(StringUtils.msg("&a&l[ACCEPT]"))
 									.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/friend accept " + player.getName()))
 									.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(StringUtils.msg("&dClick to accept the friend request"))))
 									.append(StringUtils.msg(" &c&l[DECLINE]"))
@@ -256,23 +256,28 @@ public final class FriendCommand implements CommandExecutor {
 												.withArg(RedisArg.PLAYER.getArg(), name)
 												.withArg(RedisArg.ORIGIN_PLAYER.getArg(), player.getName())
 												.send(RedisChannels.FRIEND_REMOVE_OUTBOUND.getChannelName(), jedis);
-										Bukkit.getScheduler().runTaskLater(main, new Runnable() {
-											@Override
-											public void run() {
-												try {
-													if (stillLooking.contains(player.getName())) {
-														stillLooking.remove(player.getName());
-														main.getMySQL().saveFriendAccount(player.getUniqueId().toString());
-														main.getMySQL().newRemoval(offlinePlayer.getUniqueId().toString(), player.getUniqueId().toString());
-													}
-												} catch (Exception e) {
-													System.out.println("[NetworkTools] Unable to execute mysql operation");
-												}
-											}
-										}, 10L);
 									}
+									try {
+										main.getMySQL().saveFriendAccount(player.getUniqueId().toString());
+									} catch (Exception e) {
+										System.out.println("[NetworkTools] Unable to execute mysql operation");
+									}
+
+									Bukkit.getScheduler().runTaskLater(main, new Runnable() {
+										@Override
+										public void run() {
+											try {
+												if (stillLooking.contains(player.getName())) {
+													stillLooking.remove(player.getName());
+													main.getMySQL().newRemoval(offlinePlayer.getUniqueId().toString(), player.getUniqueId().toString());
+												}
+											} catch (Exception e) {
+												System.out.println("[NetworkTools] Unable to execute mysql operation");
+											}
+										}
+									}, 7L);
 								} else {
-									player.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &7" + name + " is not on your friends list!"));
+									player.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &d" + name + " is not on your friends list!"));
 								}
 							}
 						});

@@ -503,7 +503,7 @@ public final class RedisHandler {
 						if (p.getName().equalsIgnoreCase(name)) {
 							OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(String.valueOf(data.get(RedisArg.ORIGIN_PLAYER.getArg())));
 							main.getFriends().get(p.getUniqueId()).remove(offlinePlayer.getUniqueId().toString());
-							p.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &a" + offlinePlayer.getName() + " &7has removed you as a friend"));
+							p.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &d" + offlinePlayer.getName() + " &7has removed you as a friend"));
 							try (Jedis jedis = main.getPool().getResource()) {
 								JedisTask.withName(UUID.randomUUID().toString())
 										.withArg(RedisArg.SERVER.getArg(), String.valueOf(data.get(RedisArg.SERVER.getArg())))
@@ -568,7 +568,7 @@ public final class RedisHandler {
 			String player = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
 			OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(player);
 			for (Player p : Bukkit.getOnlinePlayers()) {
-				if (main.getFriends().get(p.getUniqueId()).contains(offlinePlayer.getUniqueId().toString())) {
+				if (main.getFriends() != null && main.getFriends().get(p.getUniqueId()) != null && main.getFriends().get(p.getUniqueId()).contains(offlinePlayer.getUniqueId().toString())) {
 					p.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &d" + player + " &7has logged in!"));
 				}
 			}
@@ -576,7 +576,7 @@ public final class RedisHandler {
 			String player = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
 			OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(player);
 			for (Player p : Bukkit.getOnlinePlayers()) {
-				if (main.getFriends().get(p.getUniqueId()).contains(offlinePlayer.getUniqueId().toString())) {
+				if (main.getFriends() != null && main.getFriends().get(p.getUniqueId()) != null && main.getFriends().get(p.getUniqueId()).contains(offlinePlayer.getUniqueId().toString())) {
 					p.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &d" + player + " &7has logged out!"));
 				}
 			}
