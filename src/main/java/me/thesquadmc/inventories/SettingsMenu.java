@@ -50,8 +50,6 @@ public final class SettingsMenu {
 							.lore("&7" + settings.name() + " are toggled off!", "&7Click to toggle on").build());
 				}
 			} else if (settings == Settings.PMS) {
-				System.out.println(Main.getMain().getSettings().get(player.getUniqueId()) == null);
-				System.out.println(Main.getMain().getSettings().get(player.getUniqueId()));
 				if (Main.getMain().getSettings().get(player.getUniqueId()).get(Settings.PMS)) {
 					inventory.setItem(21, new ItemBuilder(Material.INK_SACK, 10).name("&a&l" + settings.name() + " On")
 							.lore("&7" + settings.name() + " are toggled on!", "&7Click to toggle off").build());

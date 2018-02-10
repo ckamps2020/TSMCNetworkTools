@@ -29,7 +29,7 @@ public final class ChatListener implements Listener {
 		if (Main.getMain().getSettings() != null && Main.getMain().getSettings().get(player.getUniqueId()) != null && Main.getMain().getSettings().get(player.getUniqueId()).get(Settings.FRIENDCHAT)) {
 			e.setCancelled(true);
 			if (Main.getMain().getFriends() == null || Main.getMain().getFriends().get(player.getUniqueId()) == null || Main.getMain().getFriends().get(player.getUniqueId()).isEmpty()) {
-				player.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &7Add some friends before you use this!"));
+				player.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &7Add some friends before you use this!"));
 				return;
 			}
 			StringBuilder stringBuilder = new StringBuilder();
@@ -40,8 +40,8 @@ public final class ChatListener implements Listener {
 			UserData cachedData = user.getCachedData();
 			Contexts contexts = Contexts.allowAll();
 			MetaData metaData = cachedData.getMetaData(contexts);
-			String formattedMsg = StringUtils.msg("&8[&5&lFRIENDCHAT&8] &r" + metaData.getPrefix() + player.getName() + "&8» &d" + message);
-			String ssMsg = StringUtils.msg("&8[&5&lFRIENDCHAT SS&8] &r" + player.getName() + "&8» &d" + message);
+			String formattedMsg = StringUtils.msg("&8[&d&lFRIENDCHAT&8] &r" + metaData.getPrefix() + player.getName() + " &8» &d" + message);
+			String ssMsg = StringUtils.msg("&8[&d&lFRIENDCHAT SS&8] &7" + player.getName() + " &8» &d" + message);
 			player.sendMessage(formattedMsg);
 			Bukkit.getScheduler().runTaskAsynchronously(Main.getMain(), new Runnable() {
 				@Override

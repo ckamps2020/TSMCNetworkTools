@@ -140,11 +140,11 @@ public final class Main extends JavaPlugin {
 		host = fileManager.getNetworkingConfig().getString("redis.host");
 		port = fileManager.getNetworkingConfig().getInt("redis.port");
 		password = fileManager.getNetworkingConfig().getString("redis.password");
-		/**mysqlhost = fileManager.getNetworkingConfig().getString("mysql.host");
+		mysqlhost = fileManager.getNetworkingConfig().getString("mysql.host");
 		mysqlport = fileManager.getNetworkingConfig().getString("mysql.port");
 		mysqlpassword = fileManager.getNetworkingConfig().getString("mysql.dbpassword");
 		mysqldb = fileManager.getNetworkingConfig().getString("mysql.dbname");
-		dbuser = fileManager.getNetworkingConfig().getString("mysql.dbuser");**/
+		dbuser = fileManager.getNetworkingConfig().getString("mysql.dbuser");
 		System.out.println("[NetworkTools] Loading Redis PUB/SUB...");
 		redisHandler = new RedisHandler(this);
 		ClassLoader previous = Thread.currentThread().getContextClassLoader();
@@ -210,7 +210,7 @@ public final class Main extends JavaPlugin {
 			}
 		});
 		System.out.println("[NetworkTools] Redis PUB/SUB setup!");
-		/**Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable() {
+		Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable() {
 			@Override
 			public void run() {
 				System.out.println("[NetworkTools] Connecting to mysql database...");
@@ -223,7 +223,7 @@ public final class Main extends JavaPlugin {
 					System.out.println("[NetworkTools] Unable to connect to mysql database!");
 				}
 			}
-		});**/
+		});
 		System.out.println("[NetworkTools] Plugin started up and ready to go!");
 	}
 

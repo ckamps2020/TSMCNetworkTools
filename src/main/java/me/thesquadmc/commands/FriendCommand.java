@@ -35,11 +35,6 @@ public final class FriendCommand implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (sender instanceof Player) {
 			Player player = (Player) sender;
-			boolean enabled = true;
-			if (enabled) {
-				player.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &7This command is currently disabled!"));
-				return true;
-			}
 			if (args.length == 0) {
 				sendHelpMessage(player);
 			} else if (args.length == 1) {
@@ -50,9 +45,9 @@ public final class FriendCommand implements CommandExecutor {
 						player.sendMessage(StringUtils.msg("&8&m---------------&8[ &d&lFRIENDS &8]&8&m---------------"));
 						for (String s : request) {
 							if (Bukkit.getPlayer(UUID.fromString(s)) != null) {
-								player.spigot().sendMessage(new ComponentBuilder(StringUtils.msg("&8[&a✔&8]"))
+								player.spigot().sendMessage(new ComponentBuilder(StringUtils.msg("&8[&d✔&8]"))
 										.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/friend accept " + Bukkit.getPlayer(UUID.fromString(s)).getName()))
-										.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(StringUtils.msg("&aClick to accept the friend request"))))
+										.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(StringUtils.msg("&dClick to accept the friend request"))))
 										.append(StringUtils.msg(" &8[&c✖&8]"))
 										.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/friend deny " + Bukkit.getPlayer(UUID.fromString(s)).getName()))
 										.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(StringUtils.msg("&cClick to deny the friend request"))))
@@ -64,7 +59,7 @@ public final class FriendCommand implements CommandExecutor {
 						}
 						player.sendMessage(StringUtils.msg("&8&m---------------&8[ &d&lFRIENDS &8]&8&m---------------"));
 					} else {
-						player.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &7You have no pending friend requests!"));
+						player.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &7You have no pending friend requests!"));
 					}
 				} else if (action.equalsIgnoreCase("chat")) {
 					Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
@@ -72,28 +67,17 @@ public final class FriendCommand implements CommandExecutor {
 						public void run() {
 							if (main.getSettings().get(player.getUniqueId()).get(Settings.FRIENDCHAT)) {
 								main.getSettings().get(player.getUniqueId()).put(Settings.FRIENDCHAT, false);
-								player.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &7You have toggled friend chat mode &eoff"));
+								player.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &7You have toggled friend chat mode &doff"));
 							} else {
 								main.getSettings().get(player.getUniqueId()).put(Settings.FRIENDCHAT, true);
-								player.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &7You have toggled friend chat mode &eon"));
+								player.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &7You have toggled friend chat mode &don"));
 							}
 						}
 					});
 				} else if (action.equalsIgnoreCase("list")) {
 					if (!main.getFriends().get(player.getUniqueId()).isEmpty()) {
 						if (!online.containsKey(player.getUniqueId())) {
-							player.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &7Fetching friends list..."));
-							/**online.put(player.getUniqueId(), new ArrayList<>());
-							 for (String s : main.getFriends().get(player.getUniqueId())) {
-							 OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(s));
-							 try (Jedis jedis = main.getPool().getResource()) {
-							 JedisTask.withName(UUID.randomUUID().toString())
-							 .withArg(RedisArg.SERVER.getArg(), Bukkit.getServerName())
-							 .withArg(RedisArg.PLAYER.getArg(), offlinePlayer.getName())
-							 .withArg(RedisArg.ORIGIN_PLAYER.getArg(), player.getName())
-							 .send(RedisChannels.FRIEND_CHECK_REQUEST.getChannelName(), jedis);
-							 }
-							 }**/
+							player.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &7Fetching friends list..."));
 							Bukkit.getScheduler().runTaskLater(main, new Runnable() {
 								@Override
 								public void run() {
@@ -101,23 +85,7 @@ public final class FriendCommand implements CommandExecutor {
 									for (String sss : main.getFriends().get(player.getUniqueId())) {
 										strings.add(sss);
 									}
-									/**if (!online.get(player.getUniqueId()).isEmpty()) {
-									 for (String o : online.get(player.getUniqueId())) {
-									 if (o != null && Bukkit.getOfflinePlayer(o) != null) {
-									 OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(o);
-									 strings.remove(offlinePlayer.getUniqueId().toString());
-									 }
-									 }
-									 }**/
 									player.sendMessage(StringUtils.msg("&8&m---------------&8[ &d&lFRIENDS &8]&8&m---------------"));
-									/**if (online.get(player.getUniqueId()) != null && !online.get(player.getUniqueId()).isEmpty()) {
-									 for (String s : online.get(player.getUniqueId())) {
-									 if (s == null || s.equalsIgnoreCase("null")) {
-									 continue;
-									 }
-									 player.sendMessage(StringUtils.msg("&a" + s));
-									 }
-									 }**/
 									if (!strings.isEmpty()) {
 										for (String s : strings) {
 											if (s.equalsIgnoreCase(" ") || s.equalsIgnoreCase("")) {
@@ -137,10 +105,10 @@ public final class FriendCommand implements CommandExecutor {
 								}
 							}, 1L);
 						} else {
-							player.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &7You are currently listing friends, please standby..."));
+							player.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &7You are currently listing friends, please standby..."));
 						}
 					} else {
-						player.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &7You have no friends! Get started by adding some!"));
+						player.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &7You have no friends! Get started by adding some!"));
 					}
 				} else if (action.equalsIgnoreCase("settings")) {
 					SettingsMenu.buildSettingsMenu(player);
@@ -148,10 +116,10 @@ public final class FriendCommand implements CommandExecutor {
 					if (PlayerUtils.isEqualOrHigherThen(player, Rank.TRAINEE)) {
 						if (main.getSettings().get(player.getUniqueId()).get(Settings.SOCIALSPY)) {
 							main.getSettings().get(player.getUniqueId()).put(Settings.SOCIALSPY, false);
-							player.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &7You have toggled friend social spy &eoff"));
+							player.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &7You have toggled friend social spy &doff"));
 						} else {
 							main.getSettings().get(player.getUniqueId()).put(Settings.SOCIALSPY, true);
-							player.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &7You have toggled friend social spy &eon"));
+							player.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &7You have toggled friend social spy &don"));
 						}
 					} else {
 						player.sendMessage(StringUtils.msg("&cYou do not have permission to use this command!"));
@@ -164,92 +132,92 @@ public final class FriendCommand implements CommandExecutor {
 				String name = args[1];
 				if (action.equalsIgnoreCase("add")) {
 					if (main.getFriends().get(player.getUniqueId()).contains(Bukkit.getOfflinePlayer(name).getUniqueId().toString())) {
-						player.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &7That person is already on your friends list!"));
+						player.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &7That person is already on your friends list!"));
 						return true;
 					}
 					if (isOnline(name)) {
 						Player target = Bukkit.getPlayer(name);
 						if (target.getUniqueId() == player.getUniqueId()) {
-							player.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &7You can't add yourself as a friend silly!"));
+							player.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &7You can't add yourself as a friend silly!"));
 							return true;
 						}
 						if (!main.getSettings().get(target.getUniqueId()).get(Settings.REQUESTS)) {
-							player.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &7" + target.getName() + " currently has their friend requests disabled!"));
+							player.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &7" + target.getName() + " currently has their friend requests disabled!"));
 							return true;
 						}
 						List<String> targetRequests = main.getRequests().get(target.getUniqueId());
 						if (targetRequests != null) {
 							if (!targetRequests.contains(player.getUniqueId().toString())) {
 								targetRequests.add(player.getUniqueId().toString());
-								target.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &a" + player.getName() + " &7has sent you a friend request"));
-								target.spigot().sendMessage(new ComponentBuilder(StringUtils.msg("&a&l[ACCEPT]"))
+								target.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &d" + player.getName() + " &7has sent you a friend request"));
+								target.spigot().sendMessage(new ComponentBuilder(StringUtils.msg("&d&l[ACCEPT]"))
 										.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/friend accept " + player.getName()))
-										.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(StringUtils.msg("&aClick to accept the friend request"))))
+										.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(StringUtils.msg("&dClick to accept the friend request"))))
 										.append(StringUtils.msg(" &c&l[DECLINE]"))
 										.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/friend deny " + player.getName()))
 										.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(StringUtils.msg("&cClick to deny the friend request"))))
 										.create());
-								player.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &7A friend request has been sent to &a" + target.getName()));
+								player.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &7A friend request has been sent to &d" + target.getName()));
 								Bukkit.getScheduler().runTaskLaterAsynchronously(main, new Runnable() {
 									@Override
 									public void run() {
 										if (main.getRequests().get(target.getUniqueId()) != null && main.getRequests().get(target.getUniqueId()).contains(player.getUniqueId().toString())) {
 											main.getRequests().get(target.getUniqueId()).remove(player.getUniqueId().toString());
-											target.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &7Your friend request from " + player.getName() + " has expired"));
+											target.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &7Your friend request from " + player.getName() + " has expired"));
 											if (isOnline(player.getName())) {
-												player.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &7You friend request to " + target.getName() + " has expired"));
+												player.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &7You friend request to " + target.getName() + " has expired"));
 											}
 										} else if (main.getFriends().get(player.getUniqueId()) != null && !main.getFriends().get(player.getUniqueId()).contains(target.getUniqueId().toString())) {
-											player.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &7You friend request to " + target.getName() + " has expired"));
+											player.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &7You friend request to " + target.getName() + " has expired"));
 										}
 									}
 								}, 300 * 20L);
 							} else {
-								player.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &7You have already sent " + target.getName() + " a request in the last 5 minutes!"));
+								player.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &7You have already sent " + target.getName() + " a request in the last 5 minutes!"));
 							}
 						} else {
 							targetRequests = new ArrayList<>();
 							targetRequests.add(player.getUniqueId().toString());
 							main.getRequests().put(target.getUniqueId(), targetRequests);
-							target.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &a" + player.getName() + " &7has sent you a friend request"));
-							target.spigot().sendMessage(new ComponentBuilder(StringUtils.msg("&a&l[ACCEPT]"))
+							target.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &d" + player.getName() + " &7has sent you a friend request"));
+							target.spigot().sendMessage(new ComponentBuilder(StringUtils.msg("&d&l[ACCEPT]"))
 									.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/friend accept " + player.getName()))
-									.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(StringUtils.msg("&aClick to accept the friend request"))))
+									.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(StringUtils.msg("&dClick to accept the friend request"))))
 									.append(StringUtils.msg(" &c&l[DECLINE]"))
 									.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/friend deny " + player.getName()))
 									.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(StringUtils.msg("&cClick to deny the friend request"))))
 									.create());
-							player.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &7A friend request has been sent to &a" + target.getName()));
+							player.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &7A friend request has been sent to &d" + target.getName()));
 							Bukkit.getScheduler().runTaskLaterAsynchronously(main, new Runnable() {
 								@Override
 								public void run() {
 									if (main.getRequests().get(target.getUniqueId()) != null && main.getRequests().get(target.getUniqueId()).contains(player.getUniqueId().toString())) {
 										main.getRequests().get(target.getUniqueId()).remove(player.getUniqueId().toString());
-										target.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &7Your friend request from " + player.getName() + " has expired"));
+										target.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &7Your friend request from " + player.getName() + " has expired"));
 										if (isOnline(player.getName())) {
-											player.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &7You friend request to " + target.getName() + " has expired"));
+											player.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &7You friend request to " + target.getName() + " has expired"));
 										}
 									} else if (main.getFriends().get(player.getUniqueId()) != null && !main.getFriends().get(player.getUniqueId()).contains(target.getUniqueId().toString())) {
-										player.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &7You friend request to " + target.getName() + " has expired"));
+										player.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &7You friend request to " + target.getName() + " has expired"));
 									}
 								}
 							}, 300 * 20L);
 						}
 					} else {
-						player.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &a" + name + " &7is not online or does not exist!"));
+						player.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &d" + name + " &7is not online or does not exist!"));
 					}
 				} else if (action.equalsIgnoreCase("deny")) {
 					if (isOnline(name)) {
 						Player target = Bukkit.getPlayer(name);
 						if (main.getRequests().get(player.getUniqueId()) != null && main.getRequests().get(player.getUniqueId()).contains(target.getUniqueId().toString())) {
 							main.getRequests().get(player.getUniqueId()).remove(target.getUniqueId().toString());
-							player.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &7You have declined &a" + target.getName() + "’s &7friend request"));
-							target.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &a" + player.getName() + " &7has declined your friend request"));
+							player.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &7You have declined &d" + target.getName() + "’s &7friend request"));
+							target.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &d" + player.getName() + " &7has declined your friend request"));
 						} else {
-							player.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &7You do not have a pending invite from " + target.getName()));
+							player.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &7You do not have a pending invite from " + target.getName()));
 						}
 					} else {
-						player.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &7You do not have a pending invite from " + name));
+						player.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &7You do not have a pending invite from " + name));
 					}
 				} else if (action.equalsIgnoreCase("remove")) {
 					if (isOnline(name)) {
@@ -257,8 +225,8 @@ public final class FriendCommand implements CommandExecutor {
 						if (main.getFriends().get(player.getUniqueId()).contains(target.getUniqueId().toString())) {
 							main.getFriends().get(player.getUniqueId()).remove(target.getUniqueId().toString());
 							main.getFriends().get(target.getUniqueId()).remove(player.getUniqueId().toString());
-							player.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &a" + target.getName() + " &7is no longer a friend"));
-							target.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &a" + player.getName() + " &7has removed you as a friend"));
+							player.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &d" + target.getName() + " &7is no longer a friend"));
+							target.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &d" + player.getName() + " &7has removed you as a friend"));
 							Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
 								@Override
 								public void run() {
@@ -271,7 +239,7 @@ public final class FriendCommand implements CommandExecutor {
 								}
 							});
 						} else {
-							player.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &a" + name + " &7is not on your friends list!"));
+							player.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &d" + name + " &7is not on your friends list!"));
 						}
 					} else {
 						Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
@@ -280,7 +248,7 @@ public final class FriendCommand implements CommandExecutor {
 								OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(name);
 								if (main.getFriends().get(player.getUniqueId()).contains(offlinePlayer.getUniqueId().toString())) {
 									main.getFriends().get(player.getUniqueId()).remove(offlinePlayer.getUniqueId().toString());
-									player.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &a" + name + " &7is no longer a friend"));
+									player.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &d" + name + " &7is no longer a friend"));
 									stillLooking.add(player.getName());
 									try (Jedis jedis = main.getPool().getResource()) {
 										JedisTask.withName(UUID.randomUUID().toString())
@@ -304,13 +272,13 @@ public final class FriendCommand implements CommandExecutor {
 										}, 10L);
 									}
 								} else {
-									player.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &7" + name + " is not on your friends list!"));
+									player.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &7" + name + " is not on your friends list!"));
 								}
 							}
 						});
 					}
 				} else if (action.equalsIgnoreCase("tp")) {
-					player.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &7Coming soon!"));
+					player.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &7Coming soon!"));
 					//make ProxyTransport
 				} else if (action.equalsIgnoreCase("accept")) {
 					if (isOnline(name)) {
@@ -319,8 +287,8 @@ public final class FriendCommand implements CommandExecutor {
 							Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
 								@Override
 								public void run() {
-									player.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &a" + target.getName() + " &7is now a friend!"));
-									target.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &a" + player.getName() + " &7is now a friend!"));
+									player.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &d" + target.getName() + " &7is now a friend!"));
+									target.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &d" + player.getName() + " &7is now a friend!"));
 									main.getRequests().get(player.getUniqueId()).remove(target.getUniqueId().toString());
 									main.getFriends().get(player.getUniqueId()).add(target.getUniqueId().toString());
 									main.getFriends().get(target.getUniqueId()).add(player.getUniqueId().toString());
@@ -333,10 +301,10 @@ public final class FriendCommand implements CommandExecutor {
 								}
 							});
 						} else {
-							player.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &7You do not have a pending invite from " + name));
+							player.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &7You do not have a pending invite from " + name));
 						}
 					} else {
-						player.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &7You do not have a pending invite from " + name));
+						player.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &7You do not have a pending invite from " + name));
 					}
 				} else {
 					sendHelpMessage(player);

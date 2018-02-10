@@ -27,7 +27,7 @@ public final class ConnectionListeners implements Listener {
 	public void onJoin(PlayerJoinEvent e) {
 		TempData tempData = new TempData();
 		Player player = e.getPlayer();
-		/**Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
+		Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
 			@Override
 			public void run() {
 				try {
@@ -38,7 +38,7 @@ public final class ConnectionListeners implements Listener {
 					System.out.println("[NetworkTools] Unable to load friends for " + player.getName());
 				}
 			}
-		});**/
+		});
 		CraftPlayer pl = (CraftPlayer) player;
 		for (Map.Entry<String, Collection<Property>> map : pl.getProfile().getProperties().asMap().entrySet()) {
 			map.getValue().forEach(value -> {
@@ -68,7 +68,7 @@ public final class ConnectionListeners implements Listener {
 	@EventHandler
 	public void onQuit(PlayerQuitEvent e) {
 		Player player = e.getPlayer();
-		/**Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
+		Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
 			@Override
 			public void run() {
 				try {
@@ -79,7 +79,7 @@ public final class ConnectionListeners implements Listener {
 					System.out.println("[NetworkTools] Unable to save friends for " + player.getName());
 				}
 			}
-		});**/
+		});
 		TempData tempData = main.getTempDataManager().getTempData(player.getUniqueId());
 		for (Player p : Bukkit.getServer().getOnlinePlayers()) {
 			if (tempData.isYtVanishEnabled()) {

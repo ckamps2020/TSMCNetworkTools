@@ -25,7 +25,7 @@ public final class SettingsListener implements Listener {
 					if (itemStack.getData() != null && itemStack.getData().getData() == (short) 10) {
 						Main.getMain().getSettings().get(player.getUniqueId()).put(Settings.NOTIFICATIONS, false);
 						e.getInventory().setItem(e.getSlot(), getOff("NOTIFICATIONS"));
-						player.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &7You toggled notifications &eoff"));
+						player.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &7You toggled notifications &doff"));
 						Bukkit.getScheduler().runTaskAsynchronously(Main.getMain(), new Runnable() {
 							@Override
 							public void run() {
@@ -39,7 +39,7 @@ public final class SettingsListener implements Listener {
 					} else if (itemStack.getData() != null && itemStack.getData().getData() == (short) 8) {
 						Main.getMain().getSettings().get(player.getUniqueId()).put(Settings.NOTIFICATIONS, true);
 						e.getInventory().setItem(e.getSlot(), getOn("NOTIFICATIONS"));
-						player.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &7You toggled notifications &eon"));
+						player.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &7You toggled notifications &don"));
 						Bukkit.getScheduler().runTaskAsynchronously(Main.getMain(), new Runnable() {
 							@Override
 							public void run() {
@@ -55,7 +55,7 @@ public final class SettingsListener implements Listener {
 					if (itemStack.getData() != null && itemStack.getData().getData() == (short) 10) {
 						Main.getMain().getSettings().get(player.getUniqueId()).put(Settings.PMS, false);
 						e.getInventory().setItem(e.getSlot(), getOff("PMS"));
-						player.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &7You toggled pms &eoff"));
+						player.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &7You toggled pms &doff"));
 						Bukkit.getScheduler().runTaskAsynchronously(Main.getMain(), new Runnable() {
 							@Override
 							public void run() {
@@ -69,7 +69,7 @@ public final class SettingsListener implements Listener {
 					} else if (itemStack.getData() != null && itemStack.getData().getData() == (short) 8) {
 						Main.getMain().getSettings().get(player.getUniqueId()).put(Settings.PMS, true);
 						e.getInventory().setItem(e.getSlot(), getOn("PMS"));
-						player.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &7You toggled pms &eon"));
+						player.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &7You toggled pms &don"));
 						Bukkit.getScheduler().runTaskAsynchronously(Main.getMain(), new Runnable() {
 							@Override
 							public void run() {
@@ -85,7 +85,7 @@ public final class SettingsListener implements Listener {
 					if (itemStack.getData() != null && itemStack.getData().getData() == (short) 10) {
 						Main.getMain().getSettings().get(player.getUniqueId()).put(Settings.FRIENDCHAT, false);
 						e.getInventory().setItem(e.getSlot(), getOff("FRIENDCHAT"));
-						player.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &7You toggled friendchat &eoff"));
+						player.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &7You toggled friendchat &doff"));
 						Bukkit.getScheduler().runTaskAsynchronously(Main.getMain(), new Runnable() {
 							@Override
 							public void run() {
@@ -99,7 +99,7 @@ public final class SettingsListener implements Listener {
 					} else if (itemStack.getData() != null && itemStack.getData().getData() == (short) 8) {
 						Main.getMain().getSettings().get(player.getUniqueId()).put(Settings.FRIENDCHAT, true);
 						e.getInventory().setItem(e.getSlot(), getOn("FRIENDCHAT"));
-						player.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &7You toggled friendchat &eon"));
+						player.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &7You toggled friendchat &don"));
 						Bukkit.getScheduler().runTaskAsynchronously(Main.getMain(), new Runnable() {
 							@Override
 							public void run() {
@@ -115,7 +115,7 @@ public final class SettingsListener implements Listener {
 					if (itemStack.getData() != null && itemStack.getData().getData() == (short) 10) {
 						Main.getMain().getSettings().get(player.getUniqueId()).put(Settings.REQUESTS, false);
 						e.getInventory().setItem(e.getSlot(), getOff("REQUESTS"));
-						player.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &7You toggled requests &eoff"));
+						player.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &7You toggled requests &doff"));
 						Bukkit.getScheduler().runTaskAsynchronously(Main.getMain(), new Runnable() {
 							@Override
 							public void run() {
@@ -129,7 +129,7 @@ public final class SettingsListener implements Listener {
 					} else if (itemStack.getData() != null && itemStack.getData().getData() == (short) 8) {
 						Main.getMain().getSettings().get(player.getUniqueId()).put(Settings.REQUESTS, true);
 						e.getInventory().setItem(e.getSlot(), getOn("REQUESTS"));
-						player.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &7You toggled requests &eon"));
+						player.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &7You toggled requests &don"));
 						Bukkit.getScheduler().runTaskAsynchronously(Main.getMain(), new Runnable() {
 							@Override
 							public void run() {
