@@ -109,6 +109,7 @@ public final class StringUtils {
 				.replace("[.]", ".")
 				.replace("{.}", ".")
 				.replace("{dot}", ".")
+				.replace("[,]", ".")
 				.trim();
 
 		if (msg.startsWith("/")) {

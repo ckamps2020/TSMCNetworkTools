@@ -22,13 +22,13 @@ import java.util.UUID;
 
 public final class ChatListener implements Listener {
 
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler
 	public void onChat(AsyncPlayerChatEvent e) {
 		String message = e.getMessage();
 		Player player = e.getPlayer();
-		if (Main.getMain().getSettings().get(player.getUniqueId()).get(Settings.FRIENDCHAT)) {
+		if (Main.getMain().getSettings() != null && Main.getMain().getSettings().get(player.getUniqueId()) != null && Main.getMain().getSettings().get(player.getUniqueId()).get(Settings.FRIENDCHAT)) {
 			e.setCancelled(true);
-			if (Main.getMain().getFriends() == null || Main.getMain().getFriends().get(player.getUniqueId()).isEmpty()) {
+			if (Main.getMain().getFriends() == null || Main.getMain().getFriends().get(player.getUniqueId()) == null || Main.getMain().getFriends().get(player.getUniqueId()).isEmpty()) {
 				player.sendMessage(StringUtils.msg("&a&lFRIENDS &2■ &7Add some friends before you use this!"));
 				return;
 			}
