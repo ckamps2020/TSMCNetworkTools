@@ -3,6 +3,7 @@ package me.thesquadmc.commands;
 import me.thesquadmc.Main;
 import me.thesquadmc.inventories.SettingsMenu;
 import me.thesquadmc.networking.JedisTask;
+import me.thesquadmc.utils.Multithreading;
 import me.thesquadmc.utils.PlayerUtils;
 import me.thesquadmc.utils.StringUtils;
 import me.thesquadmc.utils.enums.Rank;
@@ -230,12 +231,17 @@ public final class FriendCommand implements CommandExecutor {
 							Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
 								@Override
 								public void run() {
-									try {
-										main.getMySQL().saveFriendAccount(player.getUniqueId().toString());
-										main.getMySQL().saveFriendAccount(target.getUniqueId().toString());
-									} catch (Exception e) {
-										System.out.println("[NetworkTools] Unable to execute mysql operation");
-									}
+									Multithreading.runAsync(new Runnable() {
+										@Override
+										public void run() {
+											try {
+												main.getMySQL().saveFriendAccount(player.getUniqueId().toString());
+												main.getMySQL().saveFriendAccount(target.getUniqueId().toString());
+											} catch (Exception e) {
+												System.out.println("[NetworkTools] Unable to execute mysql operation");
+											}
+										}
+									});
 								}
 							});
 						} else {
@@ -257,23 +263,33 @@ public final class FriendCommand implements CommandExecutor {
 												.withArg(RedisArg.ORIGIN_PLAYER.getArg(), player.getName())
 												.send(RedisChannels.FRIEND_REMOVE_OUTBOUND.getChannelName(), jedis);
 									}
-									try {
-										main.getMySQL().saveFriendAccount(player.getUniqueId().toString());
-									} catch (Exception e) {
-										System.out.println("[NetworkTools] Unable to execute mysql operation");
-									}
+									Multithreading.runAsync(new Runnable() {
+										@Override
+										public void run() {
+											try {
+												main.getMySQL().saveFriendAccount(player.getUniqueId().toString());
+											} catch (Exception e) {
+												System.out.println("[NetworkTools] Unable to execute mysql operation");
+											}
+										}
+									});
 
 									Bukkit.getScheduler().runTaskLater(main, new Runnable() {
 										@Override
 										public void run() {
-											try {
-												if (stillLooking.contains(player.getName())) {
-													stillLooking.remove(player.getName());
-													main.getMySQL().newRemoval(offlinePlayer.getUniqueId().toString(), player.getUniqueId().toString());
+											Multithreading.runAsync(new Runnable() {
+												@Override
+												public void run() {
+													try {
+														if (stillLooking.contains(player.getName())) {
+															stillLooking.remove(player.getName());
+															main.getMySQL().newRemoval(offlinePlayer.getUniqueId().toString(), player.getUniqueId().toString());
+														}
+													} catch (Exception e) {
+														System.out.println("[NetworkTools] Unable to execute mysql operation");
+													}
 												}
-											} catch (Exception e) {
-												System.out.println("[NetworkTools] Unable to execute mysql operation");
-											}
+											});
 										}
 									}, 7L);
 								} else {
@@ -297,12 +313,17 @@ public final class FriendCommand implements CommandExecutor {
 									main.getRequests().get(player.getUniqueId()).remove(target.getUniqueId().toString());
 									main.getFriends().get(player.getUniqueId()).add(target.getUniqueId().toString());
 									main.getFriends().get(target.getUniqueId()).add(player.getUniqueId().toString());
-									try {
-										main.getMySQL().saveFriendAccount(player.getUniqueId().toString());
-										main.getMySQL().saveFriendAccount(target.getUniqueId().toString());
-									} catch (Exception e) {
-										System.out.println("[NetworkTools] Unable to execute mysql operation");
-									}
+									Multithreading.runAsync(new Runnable() {
+										@Override
+										public void run() {
+											try {
+												main.getMySQL().saveFriendAccount(player.getUniqueId().toString());
+												main.getMySQL().saveFriendAccount(target.getUniqueId().toString());
+											} catch (Exception e) {
+												System.out.println("[NetworkTools] Unable to execute mysql operation");
+											}
+										}
+									});
 								}
 							});
 						} else {

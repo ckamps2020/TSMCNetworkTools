@@ -3,6 +3,7 @@ package me.thesquadmc.listeners;
 import com.mojang.authlib.properties.Property;
 import me.thesquadmc.Main;
 import me.thesquadmc.objects.TempData;
+import me.thesquadmc.utils.Multithreading;
 import me.thesquadmc.utils.PlayerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
@@ -30,13 +31,18 @@ public final class ConnectionListeners implements Listener {
 		Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
 			@Override
 			public void run() {
-				try {
-					main.getMySQL().loadFriendAccount(player.getUniqueId().toString());
-					System.out.println("[NetworkTools] Loaded account for " + player.getName());
-				} catch (Exception ex) {
-					ex.printStackTrace();
-					System.out.println("[NetworkTools] Unable to load friends for " + player.getName());
-				}
+				Multithreading.runAsync(new Runnable() {
+					@Override
+					public void run() {
+						try {
+							main.getMySQL().loadFriendAccount(player.getUniqueId().toString());
+							System.out.println("[NetworkTools] Loaded account for " + player.getName());
+						} catch (Exception ex) {
+							ex.printStackTrace();
+							System.out.println("[NetworkTools] Unable to load friends for " + player.getName());
+						}
+					}
+				});
 			}
 		});
 		CraftPlayer pl = (CraftPlayer) player;
@@ -71,13 +77,18 @@ public final class ConnectionListeners implements Listener {
 		Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
 			@Override
 			public void run() {
-				try {
-					main.getMySQL().saveFriendAccount(player.getUniqueId().toString());
-					System.out.println("[NetworkTools] Saved account for " + player.getName());
-				} catch (Exception ex) {
-					ex.printStackTrace();
-					System.out.println("[NetworkTools] Unable to save friends for " + player.getName());
-				}
+				Multithreading.runAsync(new Runnable() {
+					@Override
+					public void run() {
+						try {
+							main.getMySQL().saveFriendAccount(player.getUniqueId().toString());
+							System.out.println("[NetworkTools] Saved account for " + player.getName());
+						} catch (Exception ex) {
+							ex.printStackTrace();
+							System.out.println("[NetworkTools] Unable to save friends for " + player.getName());
+						}
+					}
+				});
 			}
 		});
 		TempData tempData = main.getTempDataManager().getTempData(player.getUniqueId());

@@ -36,6 +36,8 @@ public enum RedisChannels {
 	LEAVE("LEAVE"),
 
 	TRANSPORT("TRANSPORT"),
+
+	SERVER_STATE("SERVER_STATE"),
 	;
 
 	private String channelName;

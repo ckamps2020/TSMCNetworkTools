@@ -60,3 +60,7 @@ commands:
         aliases: [friends]
     ping:
     status:
+    proxytransport:
+        aliases: [pt, ptransport, takemethere]
+    serverstate:
+        aliases: [setserverstate]

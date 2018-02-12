@@ -49,6 +49,7 @@ public final class Main extends JavaPlugin {
 
 	private int chatslow = 0;
 	private boolean chatSilenced = false;
+	private String serverState = ServerState.LOADING;
 
 	private FileManager fileManager;
 	private TempDataManager tempDataManager;
@@ -123,6 +124,8 @@ public final class Main extends JavaPlugin {
 		getCommand("friend").setExecutor(new FriendCommand(this));
 		getCommand("ping").setExecutor(new PingCommand(this));
 		getCommand("status").setExecutor(new StatusCommand(this));
+		getCommand("serverstate").setExecutor(new ServerStateCommand(this));
+		getCommand("proxytransport").setExecutor(new ProxyTransportCommand(this));
 		getServer().getPluginManager().registerEvents(new ChatListener(), this);
 		getServer().getPluginManager().registerEvents(new SettingsListener(), this);
 		getServer().getPluginManager().registerEvents(new LaunchListener(), this);
@@ -210,7 +213,7 @@ public final class Main extends JavaPlugin {
 			}
 		});
 		System.out.println("[NetworkTools] Redis PUB/SUB setup!");
-		Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable() {
+		Multithreading.runAsync(new Runnable() {
 			@Override
 			public void run() {
 				System.out.println("[NetworkTools] Connecting to mysql database...");
@@ -224,6 +227,7 @@ public final class Main extends JavaPlugin {
 				}
 			}
 		});
+		ServerUtils.updateServerState(ServerState.ONLINE);
 		System.out.println("[NetworkTools] Plugin started up and ready to go!");
 	}
 
@@ -233,6 +237,14 @@ public final class Main extends JavaPlugin {
 		pool.getResource().disconnect();
 		j.disconnect();
 		System.out.println("[NetworkTools] Shut down! Cya :D");
+	}
+
+	public String getServerState() {
+		return serverState;
+	}
+
+	public void setServerState(String serverState) {
+		this.serverState = serverState;
 	}
 
 	public ThreadPoolExecutor getThreadPoolExecutor() {

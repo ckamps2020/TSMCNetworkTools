@@ -2,12 +2,17 @@ package me.thesquadmc.utils;
 
 import com.sun.management.OperatingSystemMXBean;
 import me.thesquadmc.Main;
+import me.thesquadmc.networking.JedisTask;
+import me.thesquadmc.utils.enums.RedisArg;
+import me.thesquadmc.utils.enums.RedisChannels;
 import org.bukkit.Bukkit;
+import redis.clients.jedis.Jedis;
 
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.Field;
 import java.text.DecimalFormat;
 import java.util.Locale;
+import java.util.UUID;
 
 public final class ServerUtils {
 
@@ -27,6 +32,21 @@ public final class ServerUtils {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	public static void updateServerState(String serverState) {
+		Main.getMain().setServerState(serverState);
+		Bukkit.getScheduler().runTaskAsynchronously(Main.getMain(), new Runnable() {
+			@Override
+			public void run() {
+				try (Jedis jedis = Main.getMain().getPool().getResource()) {
+					JedisTask.withName(UUID.randomUUID().toString())
+							.withArg(RedisArg.SERVER.getArg(), Bukkit.getServerName())
+							.withArg(RedisArg.SERVER_STATE.getArg(), serverState)
+							.send(RedisChannels.SERVER_STATE.getChannelName(), jedis);
+				}
+			}
+		});
 	}
 
 	public static String getSystemCpuLoadFormatted() {

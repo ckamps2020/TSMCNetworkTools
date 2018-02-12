@@ -30,6 +30,8 @@ public enum RedisArg {
 
 	FRIENDS("FRIENDS"),
 	SSMSG("SSMSG"),
+
+	SERVER_STATE("SERVER_STATE"),
 	;
 
 	private String arg;

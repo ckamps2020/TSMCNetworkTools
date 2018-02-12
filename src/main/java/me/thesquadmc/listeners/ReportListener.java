@@ -121,10 +121,6 @@ public final class ReportListener implements Listener {
 								player.sendMessage(StringUtils.msg("&e&lREPORT &6■ &7This report already seems to be closed!"));
 							}
 						} else if (e.getClick() == ClickType.LEFT) {
-							boolean enabled = true;
-							if (enabled) {
-								return;
-							}
 							Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
 								@Override
 								public void run() {
