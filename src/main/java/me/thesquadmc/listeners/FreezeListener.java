@@ -4,7 +4,7 @@ import me.thesquadmc.Main;
 import me.thesquadmc.commands.FreezeCommand;
 import me.thesquadmc.utils.PlayerUtils;
 import me.thesquadmc.utils.enums.Rank;
-import me.thesquadmc.utils.StringUtils;
+import me.thesquadmc.utils.msgs.CC;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -42,7 +42,7 @@ public final class FreezeListener implements Listener {
 			FreezeCommand.getFrozen().remove(player.getUniqueId());
 			for (Player t : Bukkit.getOnlinePlayers()) {
 				if (PlayerUtils.isEqualOrHigherThen(t, Rank.MOD)) {
-					t.sendMessage(StringUtils.msg("&e&lFREEZE &6■ &c" + player.getName() + " has logged out while frozen!"));
+					t.sendMessage(CC.translate("&e&lFREEZE &6■ &c" + player.getName() + " has logged out while frozen!"));
 				}
 			}
 		}
@@ -91,7 +91,7 @@ public final class FreezeListener implements Listener {
 				t.closeInventory();
 				main.getFrozenInventory().getScreenshare().put(t.getUniqueId(), discordName);
 				main.getFrozenInventory().buildScreenshareInventory(t, discordName);
-				e.getPlayer().sendMessage(StringUtils.msg("&9Thanks! Informing the frozen player now"));
+				e.getPlayer().sendMessage(CC.translate("&9Thanks! Informing the frozen player now"));
 			} else {
 				main.getFrozenInventory().getTyping().remove(e.getPlayer().getUniqueId());
 			}
@@ -111,7 +111,7 @@ public final class FreezeListener implements Listener {
 			}
 			if (e.getSlot() == 11) {
 				player.closeInventory();
-				player.sendMessage(StringUtils.msg("&ePlease enter your discord name in chat now:"));
+				player.sendMessage(CC.translate("&ePlease enter your discord name in chat now:"));
 				main.getFrozenInventory().getTyping().put(player.getUniqueId(), t);
 			} else if (e.getSlot() == 13) {
 				PlayerUtils.unfreezePlayer(t);
@@ -122,16 +122,16 @@ public final class FreezeListener implements Listener {
 				main.getFrozenInventory().getDenying().remove(player.getUniqueId());
 				main.getFrozenInventory().getScreenshare().remove(player.getUniqueId());
 				player.closeInventory();
-				player.sendMessage(StringUtils.msg("&e&lFREEZE &6■ &7You have unfrozen &e" + t.getName()));
+				player.sendMessage(CC.translate("&e&lFREEZE &6■ &7You have unfrozen &e" + t.getName()));
 				t.closeInventory();
-				t.sendMessage(StringUtils.msg("&e&lFREEZE &6■ &7You have been &eunfrozen&7. Thank you for your &epatience&7"));
+				t.sendMessage(CC.translate("&e&lFREEZE &6■ &7You have been &eunfrozen&7. Thank you for your &epatience&7"));
 			} else if (e.getSlot() == 15) {
 				ItemStack itemStack = e.getCurrentItem();
 				if (itemStack != null) {
 					if (itemStack.getData().getData() == (byte) 7) {
 						main.getFrozenInventory().getAdmitMenu().add(t.getUniqueId());
 						main.getFrozenInventory().buildAdmitInventory(t);
-						player.sendMessage(StringUtils.msg("&e&lFREEZE &6■ &7You have asked the player to admit to breaking the rules!"));
+						player.sendMessage(CC.translate("&e&lFREEZE &6■ &7You have asked the player to admit to breaking the rules!"));
 						player.closeInventory();
 					}
 				}

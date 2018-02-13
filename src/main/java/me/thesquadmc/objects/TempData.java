@@ -1,7 +1,7 @@
 package me.thesquadmc.objects;
 
 import me.thesquadmc.utils.enums.MessageSettings;
-import me.thesquadmc.utils.StringUtils;
+import me.thesquadmc.utils.msgs.StringUtils;
 import org.bukkit.Bukkit;
 
 public final class TempData {

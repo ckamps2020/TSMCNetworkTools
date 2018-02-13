@@ -4,9 +4,9 @@ import me.thesquadmc.Main;
 import me.thesquadmc.objects.TempData;
 import me.thesquadmc.utils.PlayerUtils;
 import me.thesquadmc.utils.enums.Rank;
-import me.thesquadmc.utils.StringUtils;
 import me.thesquadmc.utils.handlers.UpdateEvent;
-import me.thesquadmc.utils.handlers.UpdateType;
+import me.thesquadmc.utils.enums.UpdateType;
+import me.thesquadmc.utils.msgs.CC;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -52,7 +52,7 @@ public final class XrayListener implements Listener {
 					TempData data = main.getTempDataManager().getTempData(p.getUniqueId());
 					if (PlayerUtils.isEqualOrHigherThen(p, Rank.TRAINEE)) {
 						if (data.isXray()) {
-							p.sendMessage(StringUtils.msg("&8[&4&lAnitCheat&8] &4[XRAY] &f" + player.getName() + " is suspected for XRAY. Mined " + diamondsMined.get(player.getUniqueId()) + " diamonds in the last MINUTE! World&4=&f" + player.getWorld().getName() + ""));
+							p.sendMessage(CC.translate("&8[&4&lAnitCheat&8] &4[XRAY] &f" + player.getName() + " is suspected for XRAY. Mined " + diamondsMined.get(player.getUniqueId()) + " diamonds in the last MINUTE! World&4=&f" + player.getWorld().getName() + ""));
 						}
 					}
 				}
@@ -68,7 +68,7 @@ public final class XrayListener implements Listener {
 					TempData data = main.getTempDataManager().getTempData(p.getUniqueId());
 					if (PlayerUtils.isEqualOrHigherThen(p, Rank.TRAINEE)) {
 						if (data.isXray()) {
-							p.sendMessage(StringUtils.msg("&8[&4&lAnitCheat&8] &4[XRAY] &f" + player.getName() + " is suspected for XRAY. Mined " + spawnerMined.get(player.getUniqueId()) + " spawners in the last MINUTE! World&4=&f" + player.getWorld().getName() + ""));
+							p.sendMessage(CC.translate("&8[&4&lAnitCheat&8] &4[XRAY] &f" + player.getName() + " is suspected for XRAY. Mined " + spawnerMined.get(player.getUniqueId()) + " spawners in the last MINUTE! World&4=&f" + player.getWorld().getName() + ""));
 						}
 					}
 				}

@@ -1,4 +1,4 @@
-package me.thesquadmc.utils;
+package me.thesquadmc.utils.file;
 
 import me.thesquadmc.Main;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -54,6 +54,11 @@ public final class FileManager {
 			networkingConfig.set("redis.host", "0.0.0.0");
 			networkingConfig.set("redis.port", 6379);
 			networkingConfig.set("redis.password", "");
+			networkingConfig.set("mysql.host", "localhost");
+			networkingConfig.set("mysql.port", "3306");
+			networkingConfig.set("mysql.dbpassword", "password");
+			networkingConfig.set("mysql.dbname", "global");
+			networkingConfig.set("mysql.dbuser", "root");
 			System.out.println("[NetworkTools] Default networking created!");
 			System.out.println("[NetworkTools] Saving networking file...");
 			saveNetworkingConfig();

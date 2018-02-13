@@ -6,6 +6,7 @@ import me.thesquadmc.utils.*;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.enums.RedisArg;
 import me.thesquadmc.utils.enums.RedisChannels;
+import me.thesquadmc.utils.msgs.CC;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -35,19 +36,19 @@ public final class WhitelistCommand implements CommandExecutor {
 						for (OfflinePlayer offlinePlayer : Bukkit.getWhitelistedPlayers()) {
 							stringBuilder.append(offlinePlayer.getName() + " ");
 						}
-						player.sendMessage(StringUtils.msg("&e&lWhitelisted users &7(" + Bukkit.getWhitelistedPlayers().size() + "): &f" + stringBuilder.toString()));
+						player.sendMessage(CC.translate("&e&lWhitelisted users &7(" + Bukkit.getWhitelistedPlayers().size() + "): &f" + stringBuilder.toString()));
 					} else {
-						player.sendMessage(StringUtils.msg("&cUsage: /whitelist <servertype|server|all> <on|off> <reason>"));
-						player.sendMessage(StringUtils.msg("&cUsage: /whitelist add <player> <servertype|server|all>"));
-						player.sendMessage(StringUtils.msg("&cUsage: /whitelist remove <player> <servertype|server|all>"));
-						player.sendMessage(StringUtils.msg("&cUsage: /whitelist list"));
+						player.sendMessage(CC.translate("&cUsage: /whitelist <servertype|server|all> <on|off> <reason>"));
+						player.sendMessage(CC.translate("&cUsage: /whitelist add <player> <servertype|server|all>"));
+						player.sendMessage(CC.translate("&cUsage: /whitelist remove <player> <servertype|server|all>"));
+						player.sendMessage(CC.translate("&cUsage: /whitelist list"));
 					}
 				} else if (args.length >= 3) {
 					String a = args[0];
 					if (a.equalsIgnoreCase("add")) {
 						String name = args[1];
 						String server = args[2];
-						player.sendMessage(StringUtils.msg("&e&lWHITELIST &6■ &7You have added &e" + name + " &7to the whitelist on server &e" + server));
+						player.sendMessage(CC.translate("&e&lWHITELIST &6■ &7You have added &e" + name + " &7to the whitelist on server &e" + server));
 						Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
 							@Override
 							public void run() {
@@ -62,7 +63,7 @@ public final class WhitelistCommand implements CommandExecutor {
 					} else if (a.equalsIgnoreCase("remove")) {
 						String name = args[1];
 						String server = args[2];
-						player.sendMessage(StringUtils.msg("&e&lWHITELIST &6■ &7You have removed &e" + name + " &7to the whitelist on server &e" + server));
+						player.sendMessage(CC.translate("&e&lWHITELIST &6■ &7You have removed &e" + name + " &7to the whitelist on server &e" + server));
 						Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
 							@Override
 							public void run() {
@@ -79,18 +80,18 @@ public final class WhitelistCommand implements CommandExecutor {
 						String onoff = args[1];
 						if (onoff.equalsIgnoreCase("ON")) {
 							if (server.equalsIgnoreCase("ALL")) {
-								player.sendMessage(StringUtils.msg("&e&lWHITELIST &6■ &7You have whitelisted &eall servers&7"));
+								player.sendMessage(CC.translate("&e&lWHITELIST &6■ &7You have whitelisted &eall servers&7"));
 							} else {
-								player.sendMessage(StringUtils.msg("&e&lWHITELIST &6■ &7You have whitelisted &e" + server + "&7"));
+								player.sendMessage(CC.translate("&e&lWHITELIST &6■ &7You have whitelisted &e" + server + "&7"));
 							}
 						} else if (onoff.equalsIgnoreCase("OFF")) {
 							if (server.equalsIgnoreCase("ALL")) {
-								player.sendMessage(StringUtils.msg("&e&lWHITELIST &6■ &7You have turned whitelist off on &eall servers&7"));
+								player.sendMessage(CC.translate("&e&lWHITELIST &6■ &7You have turned whitelist off on &eall servers&7"));
 							} else {
-								player.sendMessage(StringUtils.msg("&e&lWHITELIST &6■ &7You have turned whitelist off on &e" + server + "&7"));
+								player.sendMessage(CC.translate("&e&lWHITELIST &6■ &7You have turned whitelist off on &e" + server + "&7"));
 							}
 						} else {
-							player.sendMessage(StringUtils.msg("&e&lWHITELIST &6■ &e" + onoff + " &7is not valid and should either be on or off!"));
+							player.sendMessage(CC.translate("&e&lWHITELIST &6■ &e" + onoff + " &7is not valid and should either be on or off!"));
 							return true;
 						}
 						StringBuilder stringBuilder = new StringBuilder();
@@ -111,13 +112,13 @@ public final class WhitelistCommand implements CommandExecutor {
 						});
 					}
 				} else {
-					player.sendMessage(StringUtils.msg("&cUsage: /whitelist <servertype|server|all> <on|off> <reason>"));
-					player.sendMessage(StringUtils.msg("&cUsage: /whitelist add <player> <servertype|server|all>"));
-					player.sendMessage(StringUtils.msg("&cUsage: /whitelist remove <player> <servertype|server|all>"));
-					player.sendMessage(StringUtils.msg("&cUsage: /whitelist list"));
+					player.sendMessage(CC.translate("&cUsage: /whitelist <servertype|server|all> <on|off> <reason>"));
+					player.sendMessage(CC.translate("&cUsage: /whitelist add <player> <servertype|server|all>"));
+					player.sendMessage(CC.translate("&cUsage: /whitelist remove <player> <servertype|server|all>"));
+					player.sendMessage(CC.translate("&cUsage: /whitelist list"));
 				}
 			} else {
-				player.sendMessage(StringUtils.msg("&cYou do not have permission to use this command!"));
+				player.sendMessage(CC.translate("&cYou do not have permission to use this command!"));
 			}
 		}
 		return true;

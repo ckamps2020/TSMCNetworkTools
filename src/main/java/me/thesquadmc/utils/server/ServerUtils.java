@@ -1,4 +1,4 @@
-package me.thesquadmc.utils;
+package me.thesquadmc.utils.server;
 
 import com.sun.management.OperatingSystemMXBean;
 import me.thesquadmc.Main;

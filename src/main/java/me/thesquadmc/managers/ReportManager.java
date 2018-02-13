@@ -6,7 +6,7 @@ import me.thesquadmc.objects.Report;
 import me.thesquadmc.utils.enums.RedisArg;
 import me.thesquadmc.utils.enums.RedisChannels;
 import me.thesquadmc.utils.enums.ReportType;
-import me.thesquadmc.utils.StringUtils;
+import me.thesquadmc.utils.msgs.StringUtils;
 import org.bukkit.Bukkit;
 import redis.clients.jedis.Jedis;
 

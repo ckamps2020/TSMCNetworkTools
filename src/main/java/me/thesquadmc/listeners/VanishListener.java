@@ -4,7 +4,8 @@ import me.thesquadmc.Main;
 import me.thesquadmc.objects.TempData;
 import me.thesquadmc.utils.PlayerUtils;
 import me.thesquadmc.utils.handlers.UpdateEvent;
-import me.thesquadmc.utils.handlers.UpdateType;
+import me.thesquadmc.utils.enums.UpdateType;
+import me.thesquadmc.utils.nms.TitleUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -25,12 +26,12 @@ public final class VanishListener implements Listener {
 				TempData tempData = main.getTempDataManager().getTempData(player.getUniqueId());
 				if (tempData.isYtVanishEnabled()) {
 					if (tempData.isNicknamed()) {
-						PlayerUtils.sendActionBarToPlayer("&e&lVanished &7and nicknamed as &e&l" + player.getName(), player);
+						TitleUtils.sendActionBarToPlayer("&e&lVanished &7and nicknamed as &e&l" + player.getName(), player);
 					} else {
-						PlayerUtils.sendActionBarToPlayer("&7Vanish is &e&lenabled", player);
+						TitleUtils.sendActionBarToPlayer("&7Vanish is &e&lenabled", player);
 					}
 				} else if (tempData.isNicknamed()) {
-					PlayerUtils.sendActionBarToPlayer("&7Nicked as &e&l" + player.getName() + "&7", player);
+					TitleUtils.sendActionBarToPlayer("&7Nicked as &e&l" + player.getName() + "&7", player);
 				}
 			}
 		}

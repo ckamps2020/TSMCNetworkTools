@@ -3,7 +3,7 @@ package me.thesquadmc.commands;
 import me.thesquadmc.Main;
 import me.thesquadmc.utils.PlayerUtils;
 import me.thesquadmc.utils.enums.Rank;
-import me.thesquadmc.utils.StringUtils;
+import me.thesquadmc.utils.msgs.CC;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -33,7 +33,7 @@ public final class LaunchCommand implements CommandExecutor {
 					if (args[0].equalsIgnoreCase("all")) {
 						for (Player p : Bukkit.getOnlinePlayers()) {
 							p.setVelocity(new Vector(0, 10, 0));
-							p.sendMessage(StringUtils.msg("&c&lWHOOSH!"));
+							p.sendMessage(CC.translate("&c&lWHOOSH!"));
 							launched.add(p.getUniqueId());
 							Bukkit.getScheduler().runTaskLater(main, new Runnable() {
 								@Override
@@ -45,9 +45,9 @@ public final class LaunchCommand implements CommandExecutor {
 					} else {
 						Player t = Bukkit.getPlayer(args[0]);
 						if (t != null) {
-							player.sendMessage(StringUtils.msg("&cYou launched " + t.getName()));
+							player.sendMessage(CC.translate("&cYou launched " + t.getName()));
 							t.setVelocity(new Vector(0, 10, 0));
-							t.sendMessage(StringUtils.msg("&c&lWHOOSH!"));
+							t.sendMessage(CC.translate("&c&lWHOOSH!"));
 							launched.add(t.getUniqueId());
 							Bukkit.getScheduler().runTaskLater(main, new Runnable() {
 								@Override
@@ -56,13 +56,13 @@ public final class LaunchCommand implements CommandExecutor {
 								}
 							}, 8 * 20L);
 						} else {
-							player.sendMessage(StringUtils.msg("&cThat player is offline or does not exist!"));
+							player.sendMessage(CC.translate("&cThat player is offline or does not exist!"));
 						}
 					}
 				} else {
 					for (Player p : PlayerUtils.getNearbyPlayers(player.getLocation(), 300)) {
 						p.setVelocity(new Vector(0, 10, 0));
-						p.sendMessage(StringUtils.msg("&c&lWHOOSH!"));
+						p.sendMessage(CC.translate("&c&lWHOOSH!"));
 						launched.add(p.getUniqueId());
 						Bukkit.getScheduler().runTaskLater(main, new Runnable() {
 							@Override
@@ -73,7 +73,7 @@ public final class LaunchCommand implements CommandExecutor {
 					}
 				}
 			} else {
-				player.sendMessage(StringUtils.msg("&cYou do not have permission to use this command!"));
+				player.sendMessage(CC.translate("&cYou do not have permission to use this command!"));
 			}
 		}
 		return true;

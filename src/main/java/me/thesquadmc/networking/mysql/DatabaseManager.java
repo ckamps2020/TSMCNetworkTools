@@ -20,6 +20,10 @@ public final class DatabaseManager {
 		this.plugin = plugin;
 	}
 
+	public MySQL getDB() {
+		return DB;
+	}
+
 	public void setupDB() throws SQLException, ClassNotFoundException {
 		this.DB = new MySQL(plugin, main.getMysqlhost(), main.getMysqlport(), main.getMysqldb(), main.getDbuser(), main.getMysqlpassword());
 		this.DB.openConnection();

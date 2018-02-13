@@ -3,7 +3,7 @@ package me.thesquadmc.commands;
 import me.thesquadmc.Main;
 import me.thesquadmc.utils.PlayerUtils;
 import me.thesquadmc.utils.enums.Rank;
-import me.thesquadmc.utils.StringUtils;
+import me.thesquadmc.utils.msgs.CC;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -26,16 +26,16 @@ public final class ChatSilenceCommand implements CommandExecutor {
 				if (!main.isChatSilenced()) {
 					main.setChatSilenced(true);
 					Bukkit.broadcastMessage(" ");
-					Bukkit.broadcastMessage(StringUtils.msg("&e&lCHAT &6■ &7Chat silence has been &eenabled!"));
+					Bukkit.broadcastMessage(CC.translate("&e&lCHAT &6■ &7Chat silence has been &eenabled!"));
 					Bukkit.broadcastMessage(" ");
 				} else {
 					main.setChatSilenced(false);
 					Bukkit.broadcastMessage(" ");
-					Bukkit.broadcastMessage(StringUtils.msg("&e&lCHAT &6■ &7Chat silence has been &edisabled!"));
+					Bukkit.broadcastMessage(CC.translate("&e&lCHAT &6■ &7Chat silence has been &edisabled!"));
 					Bukkit.broadcastMessage(" ");
 				}
 			} else {
-				player.sendMessage(StringUtils.msg("&cYou do not have permission to use this command!"));
+				player.sendMessage(CC.translate("&cYou do not have permission to use this command!"));
 			}
 		}
 		return true;

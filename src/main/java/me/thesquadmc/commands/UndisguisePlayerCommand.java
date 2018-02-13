@@ -3,7 +3,7 @@ package me.thesquadmc.commands;
 import me.thesquadmc.Main;
 import me.thesquadmc.utils.PlayerUtils;
 import me.thesquadmc.utils.enums.Rank;
-import me.thesquadmc.utils.StringUtils;
+import me.thesquadmc.utils.msgs.CC;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -41,22 +41,22 @@ public final class UndisguisePlayerCommand implements CommandExecutor {
 							}
 							main.setSig("NONE");
 							main.setValue("NONE");
-							player.sendMessage(StringUtils.msg("&e&lDISGUISE &6■ &7You have undisguised the server!"));
+							player.sendMessage(CC.translate("&e&lDISGUISE &6■ &7You have undisguised the server!"));
 						} else {
-							player.sendMessage(StringUtils.msg("&e&lDISGUISE &6■ &7The server is not disguised!"));
+							player.sendMessage(CC.translate("&e&lDISGUISE &6■ &7The server is not disguised!"));
 						}
 					} else {
 						Player t = Bukkit.getPlayer(user);
 						if (t != null) {
-							player.sendMessage(StringUtils.msg("&e&lDISGUISE &6■ &7You have undisguised &e" + t.getName()));
+							player.sendMessage(CC.translate("&e&lDISGUISE &6■ &7You have undisguised &e" + t.getName()));
 							PlayerUtils.restorePlayerTextures(t);
 						} else {
-							player.sendMessage(StringUtils.msg("&cThat player is offline or doesnt exist!"));
+							player.sendMessage(CC.translate("&cThat player is offline or doesnt exist!"));
 						}
 					}
 				}
 			} else {
-				player.sendMessage(StringUtils.msg("&cYou do not have permission to use this command!"));
+				player.sendMessage(CC.translate("&cYou do not have permission to use this command!"));
 			}
 		}
 		return true;

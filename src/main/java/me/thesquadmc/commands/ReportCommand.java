@@ -2,7 +2,8 @@ package me.thesquadmc.commands;
 
 import me.thesquadmc.Main;
 import me.thesquadmc.objects.Report;
-import me.thesquadmc.utils.StringUtils;
+import me.thesquadmc.utils.msgs.CC;
+import me.thesquadmc.utils.msgs.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -38,23 +39,23 @@ public final class ReportCommand implements CommandExecutor {
 					String[] tokens = s.split(regex);
 					for (String ss : tokens) {
 						if (!main.getReportManager().isValidReportType(ss)) {
-							player.sendMessage(StringUtils.msg("&cThis is not a valid reason, you can only report a player for the following reasons. (Commas for multiple reasons are supported)"));
+							player.sendMessage(CC.translate("&cThis is not a valid reason, you can only report a player for the following reasons. (Commas for multiple reasons are supported)"));
 							player.sendMessage(" ");
-							player.sendMessage(StringUtils.msg("&eKillAura, Reach, Fly, Glide, AutoClicker, Speed, AntiKnockback, Jesus, Dolphin, Criticals, vClip, hClip, NoFall, Phase, Sneak & Fastbow"));
+							player.sendMessage(CC.translate("&eKillAura, Reach, Fly, Glide, AutoClicker, Speed, AntiKnockback, Jesus, Dolphin, Criticals, vClip, hClip, NoFall, Phase, Sneak & Fastbow"));
 							player.sendMessage(" ");
-							player.sendMessage(StringUtils.msg("&4&lAbuse of the report system will lead to a punishment"));
-							player.sendMessage(StringUtils.msg("&cYou can report rule breakers here as well:\n" +
+							player.sendMessage(CC.translate("&4&lAbuse of the report system will lead to a punishment"));
+							player.sendMessage(CC.translate("&cYou can report rule breakers here as well:\n" +
 									"&fhttps://www.thesquadmc.net/forums/player-reports/"));
 							return true;
 						}
 					}
 					if (cooldown.contains(player.getUniqueId())) {
-						player.sendMessage(StringUtils.msg("&e&lREPORT &6■ &7Please slowdown using the report command!"));
+						player.sendMessage(CC.translate("&e&lREPORT &6■ &7Please slowdown using the report command!"));
 						return true;
 					}
 					cooldown.add(player.getUniqueId());
 					main.getReportManager().newReport(new Report(t.getName(), StringUtils.getDate(), player.getName(), Bukkit.getServerName(), tokens));
-					player.sendMessage(StringUtils.msg("&e&lREPORT &6■ &7You reported &e" + t.getName() + " &7for &e" + stringBuilder.toString() + "&7"));
+					player.sendMessage(CC.translate("&e&lREPORT &6■ &7You reported &e" + t.getName() + " &7for &e" + stringBuilder.toString() + "&7"));
 					Bukkit.getScheduler().runTaskLater(main, new Runnable() {
 						@Override
 						public void run() {
@@ -62,15 +63,15 @@ public final class ReportCommand implements CommandExecutor {
 						}
 					}, 20 * 20L);
 				} else {
-					player.sendMessage(StringUtils.msg("&e&lREPORT &6■ &7This player does not exist"));
+					player.sendMessage(CC.translate("&e&lREPORT &6■ &7This player does not exist"));
 				}
 			} else {
-				player.sendMessage(StringUtils.msg("&eUsage: /report <player> <reason(s)>"));
+				player.sendMessage(CC.translate("&eUsage: /report <player> <reason(s)>"));
 				player.sendMessage(" ");
-				player.sendMessage(StringUtils.msg("&eKillAura, Reach, Fly, Glide, AutoClicker, Speed, AntiKnockback, Jesus, Dolphin, Criticals, vClip, hClip, NoFall, Phase, Sneak & Fastbow"));
+				player.sendMessage(CC.translate("&eKillAura, Reach, Fly, Glide, AutoClicker, Speed, AntiKnockback, Jesus, Dolphin, Criticals, vClip, hClip, NoFall, Phase, Sneak & Fastbow"));
 				player.sendMessage(" ");
-				player.sendMessage(StringUtils.msg("&4&lAbuse of the report system will lead to a punishment"));
-				player.sendMessage(StringUtils.msg("&cYou can report rule breakers here as well:\n" +
+				player.sendMessage(CC.translate("&4&lAbuse of the report system will lead to a punishment"));
+				player.sendMessage(CC.translate("&cYou can report rule breakers here as well:\n" +
 						"&fhttps://www.thesquadmc.net/forums/player-reports/"));
 			}
 		}

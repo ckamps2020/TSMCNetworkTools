@@ -8,15 +8,21 @@ import me.thesquadmc.inventories.FrozenInventory;
 import me.thesquadmc.inventories.ReportInventory;
 import me.thesquadmc.inventories.StaffmodeInventory;
 import me.thesquadmc.listeners.*;
+import me.thesquadmc.managers.HologramManager;
+import me.thesquadmc.managers.NPCManager;
 import me.thesquadmc.managers.ReportManager;
 import me.thesquadmc.managers.TempDataManager;
 import me.thesquadmc.networking.JedisTask;
 import me.thesquadmc.networking.RedisHandler;
 import me.thesquadmc.networking.mysql.DatabaseManager;
-import me.thesquadmc.utils.*;
 import me.thesquadmc.utils.enums.RedisChannels;
 import me.thesquadmc.utils.enums.Settings;
+import me.thesquadmc.utils.file.FileManager;
 import me.thesquadmc.utils.handlers.UpdateHandler;
+import me.thesquadmc.utils.msgs.StringUtils;
+import me.thesquadmc.utils.server.Multithreading;
+import me.thesquadmc.utils.server.ServerState;
+import me.thesquadmc.utils.server.ServerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -59,6 +65,8 @@ public final class Main extends JavaPlugin {
 	private UpdateHandler updateHandler;
 	private ReportManager reportManager;
 	private ReportInventory reportInventory;
+	private HologramManager hologramManager;
+	private NPCManager npcManager;
 
 	private String host;
 	private int port;
@@ -90,6 +98,8 @@ public final class Main extends JavaPlugin {
 		fileManager.setup();
 		updateHandler.run();
 		tempDataManager = new TempDataManager();
+		hologramManager = new HologramManager();
+		npcManager = new NPCManager();
 		getCommand("staffchat").setExecutor(new StaffChatCommand(this));
 		getCommand("adminchat").setExecutor(new AdminChatCommand(this));
 		getCommand("managerchat").setExecutor(new ManagerChatCommand(this));
@@ -124,7 +134,6 @@ public final class Main extends JavaPlugin {
 		getCommand("friend").setExecutor(new FriendCommand(this));
 		getCommand("ping").setExecutor(new PingCommand(this));
 		getCommand("status").setExecutor(new StatusCommand(this));
-		getCommand("serverstate").setExecutor(new ServerStateCommand(this));
 		getCommand("proxytransport").setExecutor(new ProxyTransportCommand(this));
 		getServer().getPluginManager().registerEvents(new ChatListener(), this);
 		getServer().getPluginManager().registerEvents(new SettingsListener(), this);
@@ -237,6 +246,14 @@ public final class Main extends JavaPlugin {
 		pool.getResource().disconnect();
 		j.disconnect();
 		System.out.println("[NetworkTools] Shut down! Cya :D");
+	}
+
+	public HologramManager getHologramManager() {
+		return hologramManager;
+	}
+
+	public NPCManager getNpcManager() {
+		return npcManager;
 	}
 
 	public String getServerState() {

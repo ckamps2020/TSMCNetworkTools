@@ -3,11 +3,11 @@ package me.thesquadmc.listeners;
 import me.thesquadmc.Main;
 import me.thesquadmc.networking.JedisTask;
 import me.thesquadmc.objects.Report;
-import me.thesquadmc.utils.StringUtils;
 import me.thesquadmc.utils.enums.RedisArg;
 import me.thesquadmc.utils.enums.RedisChannels;
 import me.thesquadmc.utils.handlers.UpdateEvent;
-import me.thesquadmc.utils.handlers.UpdateType;
+import me.thesquadmc.utils.enums.UpdateType;
+import me.thesquadmc.utils.msgs.CC;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -67,14 +67,14 @@ public final class ReportListener implements Listener {
 						main.getReportInventory().buildReportsMenu(player);
 					} else {
 						player.closeInventory();
-						player.sendMessage(StringUtils.msg("&e&lREPORT &6■ &7There are no active reports!"));
+						player.sendMessage(CC.translate("&e&lREPORT &6■ &7There are no active reports!"));
 					}
 				} else if (e.getSlot() == 15) {
 					if (!main.getReportManager().getClosedReports().isEmpty()) {
 						main.getReportInventory().buildClosedReportsMenu(player);
 					} else {
 						player.closeInventory();
-						player.sendMessage(StringUtils.msg("&e&lREPORT &6■ &7There are no active closed reports!"));
+						player.sendMessage(CC.translate("&e&lREPORT &6■ &7There are no active closed reports!"));
 					}
 				}
 			} else if (e.getInventory().getName().toUpperCase().startsWith("CLOSED REPORTS") || e.getInventory().getName().toUpperCase().startsWith("REPORTS")) {
@@ -91,7 +91,7 @@ public final class ReportListener implements Listener {
 								player.openInventory(inv);
 								main.getReportInventory().getMap().put(player.getUniqueId(), list);
 							} else {
-								player.sendMessage(StringUtils.msg("&e&lREPORT &6■ &7There are no more pages of reports!"));
+								player.sendMessage(CC.translate("&e&lREPORT &6■ &7There are no more pages of reports!"));
 							}
 						} catch (Exception ex) {
 							player.closeInventory();
@@ -115,10 +115,10 @@ public final class ReportListener implements Listener {
 							}
 							if (report != null) {
 								player.closeInventory();
-								player.sendMessage(StringUtils.msg("&e&lREPORT &6■ &7Report " + report.getReportID() + " has been closed!"));
+								player.sendMessage(CC.translate("&e&lREPORT &6■ &7Report " + report.getReportID() + " has been closed!"));
 								main.getReportManager().newClosedReport(report.getReportID().toString(), player.getName());
 							} else {
-								player.sendMessage(StringUtils.msg("&e&lREPORT &6■ &7This report already seems to be closed!"));
+								player.sendMessage(CC.translate("&e&lREPORT &6■ &7This report already seems to be closed!"));
 							}
 						} else if (e.getClick() == ClickType.LEFT) {
 							Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
@@ -139,7 +139,7 @@ public final class ReportListener implements Listener {
 									}
 									if (report != null) {
 										player.closeInventory();
-										player.sendMessage(StringUtils.msg("&e&lREPORT &6■ &7Sending you to &e" + report.getServer() + "..."));
+										player.sendMessage(CC.translate("&e&lREPORT &6■ &7Sending you to &e" + report.getServer() + "..."));
 										try (Jedis jedis = main.getPool().getResource()) {
 											JedisTask.withName(UUID.randomUUID().toString())
 													.withArg(RedisArg.PLAYER.getArg(), player.getName())

@@ -2,10 +2,10 @@ package me.thesquadmc.inventories;
 
 import me.thesquadmc.Main;
 import me.thesquadmc.objects.Report;
-import me.thesquadmc.utils.enums.InventorySize;
-import me.thesquadmc.utils.ItemBuilder;
-import me.thesquadmc.utils.MathUtils;
-import me.thesquadmc.utils.StringUtils;
+import me.thesquadmc.utils.inventory.InventorySize;
+import me.thesquadmc.utils.inventory.ItemBuilder;
+import me.thesquadmc.utils.math.MathUtils;
+import me.thesquadmc.utils.msgs.CC;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -25,7 +25,7 @@ public final class ReportInventory {
 	}
 
 	public void buildManagerReportsMenu(Player player) {
-		Inventory inv = Bukkit.createInventory(null, InventorySize.THREE_LINE.getSize(), "Report Manager");
+		Inventory inv = Bukkit.createInventory(null, InventorySize.THREE_LINE, "Report Manager");
 		inv.setItem(11, new ItemBuilder(Material.DIAMOND_SWORD).name("&e&lOpen Reports").lore("&7View all open reports").build());
 		inv.setItem(15, new ItemBuilder(Material.BARRIER).name("&e&lClosed Reports").lore("&7View all current closed reports").build());
 		player.openInventory(inv);
@@ -37,7 +37,7 @@ public final class ReportInventory {
 		List<Inventory> list = new ArrayList<>();
 		boolean override = false;
 		for (int i = 0; i < pages; i++) {
-			Inventory inv = Bukkit.createInventory(null, InventorySize.SIX_LINE.getSize(), "Reports Page " + (i + 1));
+			Inventory inv = Bukkit.createInventory(null, InventorySize.SIX_LINE, "Reports Page " + (i + 1));
 			for (int l = loc; l < main.getReportManager().getReports().size(); l++) {
 				if (override) {
 					loc++;
@@ -47,23 +47,23 @@ public final class ReportInventory {
 					head.setDurability((short) 3);
 					SkullMeta skullMeta = (SkullMeta) head.getItemMeta();
 					skullMeta.setOwner(report.getUsername());
-					skullMeta.setDisplayName(StringUtils.msg("&e&l" + report.getUsername()));
+					skullMeta.setDisplayName(CC.translate("&e&l" + report.getUsername()));
 					List<String> lore = new ArrayList<>();
-					lore.add(StringUtils.msg("&8DATE OF REPORT: " + report.getDate()));
-					lore.add(StringUtils.msg("&7"));
+					lore.add(CC.translate("&8DATE OF REPORT: " + report.getDate()));
+					lore.add(CC.translate("&7"));
 					if (Bukkit.getPlayer(report.getReporter()) != null) {
-						lore.add(StringUtils.msg("&7Reported by: &a" + report.getReporter()));
+						lore.add(CC.translate("&7Reported by: &a" + report.getReporter()));
 					} else {
-						lore.add(StringUtils.msg("&7Reported by: &c" + report.getReporter()));
+						lore.add(CC.translate("&7Reported by: &c" + report.getReporter()));
 					}
-					lore.add(StringUtils.msg("&7Server: &e" + report.getServer()));
+					lore.add(CC.translate("&7Server: &e" + report.getServer()));
 					StringBuilder stringBuilder = new StringBuilder();
 					for (String s : report.getReason()) {
 						stringBuilder.append(" " + s);
 					}
-					lore.add(StringUtils.msg("&7Reason(s):&e" + stringBuilder.toString()));
-					lore.add(StringUtils.msg("&c&lRIGHT-CLICK TO CLOSE REPORT"));
-					lore.add(StringUtils.msg("&cID " + report.getReportID()));
+					lore.add(CC.translate("&7Reason(s):&e" + stringBuilder.toString()));
+					lore.add(CC.translate("&c&lRIGHT-CLICK TO CLOSE REPORT"));
+					lore.add(CC.translate("&cID " + report.getReportID()));
 					skullMeta.setLore(lore);
 					head.setItemMeta(skullMeta);
 					inv.addItem(head);
@@ -74,23 +74,23 @@ public final class ReportInventory {
 					head.setDurability((short) 3);
 					SkullMeta skullMeta = (SkullMeta) head.getItemMeta();
 					skullMeta.setOwner(report.getUsername());
-					skullMeta.setDisplayName(StringUtils.msg("&e&l" + report.getUsername()));
+					skullMeta.setDisplayName(CC.translate("&e&l" + report.getUsername()));
 					List<String> lore = new ArrayList<>();
-					lore.add(StringUtils.msg("&8DATE OF REPORT: " + report.getDate()));
-					lore.add(StringUtils.msg("&7"));
+					lore.add(CC.translate("&8DATE OF REPORT: " + report.getDate()));
+					lore.add(CC.translate("&7"));
 					if (Bukkit.getPlayer(report.getReporter()) != null) {
-						lore.add(StringUtils.msg("&7Reported by: &a" + report.getReporter()));
+						lore.add(CC.translate("&7Reported by: &a" + report.getReporter()));
 					} else {
-						lore.add(StringUtils.msg("&7Reported by: &c" + report.getReporter()));
+						lore.add(CC.translate("&7Reported by: &c" + report.getReporter()));
 					}
-					lore.add(StringUtils.msg("&7Server: &e" + report.getServer()));
+					lore.add(CC.translate("&7Server: &e" + report.getServer()));
 					StringBuilder stringBuilder = new StringBuilder();
 					for (String s : report.getReason()) {
 						stringBuilder.append(" " + s);
 					}
-					lore.add(StringUtils.msg("&7Reason(s):&e" + stringBuilder.toString()));
-					lore.add(StringUtils.msg("&c&lRIGHT-CLICK TO CLOSE REPORT"));
-					lore.add(StringUtils.msg("&cID " + report.getReportID()));
+					lore.add(CC.translate("&7Reason(s):&e" + stringBuilder.toString()));
+					lore.add(CC.translate("&c&lRIGHT-CLICK TO CLOSE REPORT"));
+					lore.add(CC.translate("&cID " + report.getReportID()));
 					skullMeta.setLore(lore);
 					head.setItemMeta(skullMeta);
 					inv.addItem(head);
@@ -113,7 +113,7 @@ public final class ReportInventory {
 		List<Inventory> list = new ArrayList<>();
 		boolean override = false;
 		for (int i = 0; i < pages; i++) {
-			Inventory inv = Bukkit.createInventory(null, InventorySize.SIX_LINE.getSize(), "Closed Reports Page " + (i + 1));
+			Inventory inv = Bukkit.createInventory(null, InventorySize.SIX_LINE, "Closed Reports Page " + (i + 1));
 			for (int l = loc; l < main.getReportManager().getClosedReports().size(); l++) {
 				if (override) {
 					override = false;
@@ -124,17 +124,17 @@ public final class ReportInventory {
 					head.setDurability((short) 3);
 					SkullMeta skullMeta = (SkullMeta) head.getItemMeta();
 					skullMeta.setOwner(report.getUsername());
-					skullMeta.setDisplayName(StringUtils.msg("&e&l" + report.getUsername()));
+					skullMeta.setDisplayName(CC.translate("&e&l" + report.getUsername()));
 					List<String> lore = new ArrayList<>();
-					lore.add(StringUtils.msg("&8TIME OF CLOSE: " + report.getCloseDate()));
-					lore.add(StringUtils.msg("&7"));
-					lore.add(StringUtils.msg("&7Original Report by: &e" + report.getReporter()));
+					lore.add(CC.translate("&8TIME OF CLOSE: " + report.getCloseDate()));
+					lore.add(CC.translate("&7"));
+					lore.add(CC.translate("&7Original Report by: &e" + report.getReporter()));
 					StringBuilder stringBuilder = new StringBuilder();
 					for (String s : report.getReason()) {
 						stringBuilder.append(" " + s);
 					}
-					lore.add(StringUtils.msg("&7Reports Reason(s):&e" + stringBuilder.toString()));
-					lore.add(StringUtils.msg("&7Report Closed by: &e" + report.getReportCloser()));
+					lore.add(CC.translate("&7Reports Reason(s):&e" + stringBuilder.toString()));
+					lore.add(CC.translate("&7Report Closed by: &e" + report.getReportCloser()));
 					skullMeta.setLore(lore);
 					head.setItemMeta(skullMeta);
 					inv.addItem(head);
@@ -146,17 +146,17 @@ public final class ReportInventory {
 					head.setDurability((short) 3);
 					SkullMeta skullMeta = (SkullMeta) head.getItemMeta();
 					skullMeta.setOwner(report.getUsername());
-					skullMeta.setDisplayName(StringUtils.msg("&e&l" + report.getUsername()));
+					skullMeta.setDisplayName(CC.translate("&e&l" + report.getUsername()));
 					List<String> lore = new ArrayList<>();
-					lore.add(StringUtils.msg("&8TIME OF CLOSE: " + report.getCloseDate()));
-					lore.add(StringUtils.msg("&7"));
-					lore.add(StringUtils.msg("&7Original Report by: &e" + report.getReporter()));
+					lore.add(CC.translate("&8TIME OF CLOSE: " + report.getCloseDate()));
+					lore.add(CC.translate("&7"));
+					lore.add(CC.translate("&7Original Report by: &e" + report.getReporter()));
 					StringBuilder stringBuilder = new StringBuilder();
 					for (String s : report.getReason()) {
 						stringBuilder.append(" " + s);
 					}
-					lore.add(StringUtils.msg("&7Reports Reason(s):&e" + stringBuilder.toString()));
-					lore.add(StringUtils.msg("&7Report Closed by: &e" + report.getReportCloser()));
+					lore.add(CC.translate("&7Reports Reason(s):&e" + stringBuilder.toString()));
+					lore.add(CC.translate("&7Report Closed by: &e" + report.getReportCloser()));
 					skullMeta.setLore(lore);
 					head.setItemMeta(skullMeta);
 					inv.addItem(head);

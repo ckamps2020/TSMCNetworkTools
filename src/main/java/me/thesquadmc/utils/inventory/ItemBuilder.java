@@ -1,4 +1,4 @@
-package me.thesquadmc.utils;
+package me.thesquadmc.utils.inventory;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Color;

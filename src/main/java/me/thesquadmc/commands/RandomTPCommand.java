@@ -3,7 +3,7 @@ package me.thesquadmc.commands;
 import me.thesquadmc.Main;
 import me.thesquadmc.utils.PlayerUtils;
 import me.thesquadmc.utils.enums.Rank;
-import me.thesquadmc.utils.StringUtils;
+import me.thesquadmc.utils.msgs.CC;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -26,19 +26,19 @@ public final class RandomTPCommand implements CommandExecutor {
 			Player player = (Player) sender;
 			if (PlayerUtils.isEqualOrHigherThen(player, Rank.MOD)) {
 				if (Bukkit.getServerName().toUpperCase().contains("HUB")) {
-					player.sendMessage(StringUtils.msg("&cYou are not allowed to use this command here!"));
+					player.sendMessage(CC.translate("&cYou are not allowed to use this command here!"));
 					return true;
 				}
 				if (Bukkit.getOnlinePlayers().size() > 10) {
 					int random = new Random().nextInt(Bukkit.getServer().getOnlinePlayers().size());
 					Player t = (Player) Bukkit.getServer().getOnlinePlayers().toArray()[random];
 					player.teleport(t.getLocation());
-					player.sendMessage(StringUtils.msg("&e&lSTAFF &6■ &7You have been randomly teleported to &e" + t.getName() + "&7"));
+					player.sendMessage(CC.translate("&e&lSTAFF &6■ &7You have been randomly teleported to &e" + t.getName() + "&7"));
 				} else {
-					player.sendMessage(StringUtils.msg("&e&lSTAFF &6■ &7There are &enot enough &7players online to do this"));
+					player.sendMessage(CC.translate("&e&lSTAFF &6■ &7There are &enot enough &7players online to do this"));
 				}
 			} else {
-				player.sendMessage(StringUtils.msg("&cYou do not have permission to use this command!"));
+				player.sendMessage(CC.translate("&cYou do not have permission to use this command!"));
 			}
 		}
 		return true;

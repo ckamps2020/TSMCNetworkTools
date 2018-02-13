@@ -3,7 +3,7 @@ package me.thesquadmc.listeners;
 import com.mojang.authlib.properties.Property;
 import me.thesquadmc.Main;
 import me.thesquadmc.objects.TempData;
-import me.thesquadmc.utils.Multithreading;
+import me.thesquadmc.utils.server.Multithreading;
 import me.thesquadmc.utils.PlayerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;

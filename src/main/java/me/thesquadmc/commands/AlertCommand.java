@@ -6,6 +6,7 @@ import me.thesquadmc.utils.*;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.enums.RedisArg;
 import me.thesquadmc.utils.enums.RedisChannels;
+import me.thesquadmc.utils.msgs.CC;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -34,9 +35,9 @@ public final class AlertCommand implements CommandExecutor {
 					for (int i = 1; i < args.length; i++) {
 						stringBuilder.append(args[i] + " ");
 					}
-					player.sendMessage(StringUtils.msg("&e&lALERT &6■ &7You sent an alert:"));
-					player.sendMessage(StringUtils.msg("  &7Server: &e" + server));
-					player.sendMessage(StringUtils.msg("  &7Message: &e" + stringBuilder.toString()));
+					player.sendMessage(CC.translate("&e&lALERT &6■ &7You sent an alert:"));
+					player.sendMessage(CC.translate("  &7Server: &e" + server));
+					player.sendMessage(CC.translate("  &7Message: &e" + stringBuilder.toString()));
 					Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
 						@Override
 						public void run() {
@@ -49,10 +50,10 @@ public final class AlertCommand implements CommandExecutor {
 						}
 					});
 				} else {
-					player.sendMessage(StringUtils.msg("&cUsage: /alert <servertype|server|all> <message>"));
+					player.sendMessage(CC.translate("&cUsage: /alert <servertype|server|all> <message>"));
 				}
 			} else {
-				player.sendMessage(StringUtils.msg("&cYou do not have permission to use this command!"));
+				player.sendMessage(CC.translate("&cYou do not have permission to use this command!"));
 			}
 		}
 		return true;

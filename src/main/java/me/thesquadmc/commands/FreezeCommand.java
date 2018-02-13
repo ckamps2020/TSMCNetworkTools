@@ -3,7 +3,7 @@ package me.thesquadmc.commands;
 import me.thesquadmc.Main;
 import me.thesquadmc.utils.PlayerUtils;
 import me.thesquadmc.utils.enums.Rank;
-import me.thesquadmc.utils.StringUtils;
+import me.thesquadmc.utils.msgs.CC;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -27,7 +27,7 @@ public final class FreezeCommand implements CommandExecutor {
 			Player player = (Player) sender;
 			if (PlayerUtils.isEqualOrHigherThen(player, Rank.MOD)) {
 				if (Bukkit.getServerName().toUpperCase().contains("HUB")) {
-					player.sendMessage(StringUtils.msg("&cYou are not allowed to use this command here!"));
+					player.sendMessage(CC.translate("&cYou are not allowed to use this command here!"));
 					return true;
 				}
 				if (args.length == 1) {
@@ -37,26 +37,26 @@ public final class FreezeCommand implements CommandExecutor {
 						if (!PlayerUtils.isEqualOrHigherThen(t, Rank.MOD)) {
 							if (!frozen.contains(t.getUniqueId())) {
 								PlayerUtils.freezePlayer(t);
-								t.sendMessage(StringUtils.msg("&c&lYou have been frozen by staff, do not log out at all. Please follow staffs instructions at all time"));
+								t.sendMessage(CC.translate("&c&lYou have been frozen by staff, do not log out at all. Please follow staffs instructions at all time"));
 								frozen.add(t.getUniqueId());
 								main.getFrozenInventory().buildFrozenInventory(t);
 								main.getFrozenInventory().buildStaffGUI(player, t);
 								main.getFrozenInventory().getViewing().put(player.getUniqueId(), t.getUniqueId());
-								player.sendMessage(StringUtils.msg("&e&lFREEZE &6■ &7You have frozen &e" + t.getName() + "&7!"));
+								player.sendMessage(CC.translate("&e&lFREEZE &6■ &7You have frozen &e" + t.getName() + "&7!"));
 							} else {
-								player.sendMessage(StringUtils.msg("&cThat player is already frozen!"));
+								player.sendMessage(CC.translate("&cThat player is already frozen!"));
 							}
 						} else {
-							player.sendMessage(StringUtils.msg("&cYou are not allowed to freeze another staff member!"));
+							player.sendMessage(CC.translate("&cYou are not allowed to freeze another staff member!"));
 						}
 					} else {
-						player.sendMessage(StringUtils.msg("&cThat player does not exist or is offline!"));
+						player.sendMessage(CC.translate("&cThat player does not exist or is offline!"));
 					}
 				} else {
-					player.sendMessage(StringUtils.msg("&cUsage: /freeze <player>"));
+					player.sendMessage(CC.translate("&cUsage: /freeze <player>"));
 				}
 			} else {
-				player.sendMessage(StringUtils.msg("&cYou do not have permission to use this command!"));
+				player.sendMessage(CC.translate("&cYou do not have permission to use this command!"));
 			}
 		}
 		return true;

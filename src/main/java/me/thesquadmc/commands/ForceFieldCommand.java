@@ -4,7 +4,7 @@ import me.thesquadmc.Main;
 import me.thesquadmc.objects.TempData;
 import me.thesquadmc.utils.PlayerUtils;
 import me.thesquadmc.utils.enums.Rank;
-import me.thesquadmc.utils.StringUtils;
+import me.thesquadmc.utils.msgs.CC;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -25,14 +25,14 @@ public final class ForceFieldCommand implements CommandExecutor {
 			TempData tempData = main.getTempDataManager().getTempData(player.getUniqueId());
 			if (PlayerUtils.isEqualOrHigherThen(player, Rank.YOUTUBE)) {
 				if (!tempData.isForcefieldEnabled()) {
-					player.sendMessage(StringUtils.msg("&e&lFORCEFIELD &6■ &7Forcefield has been &eenabled"));
+					player.sendMessage(CC.translate("&e&lFORCEFIELD &6■ &7Forcefield has been &eenabled"));
 					tempData.setForcefieldEnabled(true);
 				} else {
-					player.sendMessage(StringUtils.msg("&e&lFORCEFIELD &6■ &7Forcefield has been &edisabled"));
+					player.sendMessage(CC.translate("&e&lFORCEFIELD &6■ &7Forcefield has been &edisabled"));
 					tempData.setForcefieldEnabled(false);
 				}
 			} else {
-				player.sendMessage(StringUtils.msg("&cYou do not have permission to use this command!"));
+				player.sendMessage(CC.translate("&cYou do not have permission to use this command!"));
 			}
 		}
 		return true;

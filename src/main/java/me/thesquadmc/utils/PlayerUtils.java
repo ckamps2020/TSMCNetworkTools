@@ -8,10 +8,7 @@ import me.lucko.luckperms.api.User;
 import me.thesquadmc.Main;
 import me.thesquadmc.objects.TempData;
 import me.thesquadmc.utils.enums.Rank;
-import net.minecraft.server.v1_8_R3.IChatBaseComponent;
-import net.minecraft.server.v1_8_R3.Packet;
-import net.minecraft.server.v1_8_R3.PacketPlayOutChat;
-import net.minecraft.server.v1_8_R3.PlayerConnection;
+import net.minecraft.server.v1_8_R3.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -54,6 +51,21 @@ public final class PlayerUtils {
 		return found;
 	}
 
+	public static void sendWorldBorderPacket(Player player, int warningBlocks) {
+		EntityPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
+		WorldBorder playerWorldBorder = nmsPlayer.world.getWorldBorder();
+		PacketPlayOutWorldBorder worldBorder = new PacketPlayOutWorldBorder(playerWorldBorder, PacketPlayOutWorldBorder.EnumWorldBorderAction.SET_WARNING_BLOCKS);
+		try {
+			Field field = worldBorder.getClass().getDeclaredField("i");
+			field.setAccessible(true);
+			field.setInt(worldBorder, warningBlocks);
+			field.setAccessible(!field.isAccessible());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		nmsPlayer.playerConnection.sendPacket(worldBorder);
+	}
+
 	public static void hidePlayerSpectatorStaff(Player player) {
 		for (Player p : Bukkit.getServer().getOnlinePlayers()) {
 			if (!isEqualOrHigherThen(p, Rank.TRAINEE)) {
@@ -84,13 +96,6 @@ public final class PlayerUtils {
 		player.setWalkSpeed(0);
 		player.setFlySpeed(0);
 		player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, 200, false, false));
-	}
-
-	public static void sendActionBarToPlayer(String actionBar, Player player) {
-		Packet<?> actionBarPacket = new PacketPlayOutChat(IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + StringUtils.msg(actionBar) + "\"}"), (byte)2);
-		CraftPlayer craftPlayer = (CraftPlayer) player;
-		PlayerConnection connection = craftPlayer.getHandle().playerConnection;
-		connection.sendPacket(actionBarPacket);
 	}
 
 	public static boolean isEqualOrHigherThen(Player player, Rank rank) {
@@ -239,20 +244,6 @@ public final class PlayerUtils {
 			((CraftPlayer) player).getHandle().getProfile().getProperties().put("textures", property);
 		}
 		showPlayerSpectator(player);
-	}
-
-	public static void giveMeTheirItem(Player player, Player target, ItemStack itemStack) {
-		if (target != null) {
-			if (target.getInventory() != null) {
-				for (int i = 0; i < player.getInventory().getSize(); i++) {
-					ItemStack stack = player.getInventory().getItem(i);
-					if (stack != null && stack.getType() != Material.AIR) {
-						player.getInventory().addItem(itemStack);
-						target.getInventory().remove(stack);
-					}
-				}
-			}
-		}
 	}
 
 	public static double getArmorLevel(Player player) {

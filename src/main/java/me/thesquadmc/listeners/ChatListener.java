@@ -6,14 +6,13 @@ import me.lucko.luckperms.api.caching.MetaData;
 import me.lucko.luckperms.api.caching.UserData;
 import me.thesquadmc.Main;
 import me.thesquadmc.networking.JedisTask;
-import me.thesquadmc.utils.StringUtils;
 import me.thesquadmc.utils.enums.RedisArg;
 import me.thesquadmc.utils.enums.RedisChannels;
 import me.thesquadmc.utils.enums.Settings;
+import me.thesquadmc.utils.msgs.CC;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import redis.clients.jedis.Jedis;
@@ -29,7 +28,7 @@ public final class ChatListener implements Listener {
 		if (Main.getMain().getSettings() != null && Main.getMain().getSettings().get(player.getUniqueId()) != null && Main.getMain().getSettings().get(player.getUniqueId()).get(Settings.FRIENDCHAT)) {
 			e.setCancelled(true);
 			if (Main.getMain().getFriends() == null || Main.getMain().getFriends().get(player.getUniqueId()) == null || Main.getMain().getFriends().get(player.getUniqueId()).isEmpty()) {
-				player.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &7Add some friends before you use this!"));
+				player.sendMessage(CC.translate("&d&lFRIENDS &5■ &7Add some friends before you use this!"));
 				return;
 			}
 			StringBuilder stringBuilder = new StringBuilder();
@@ -40,8 +39,8 @@ public final class ChatListener implements Listener {
 			UserData cachedData = user.getCachedData();
 			Contexts contexts = Contexts.allowAll();
 			MetaData metaData = cachedData.getMetaData(contexts);
-			String formattedMsg = StringUtils.msg("&8[&d&lFRIENDCHAT&8] &r" + metaData.getPrefix() + player.getName() + " &8» &d" + message);
-			String ssMsg = StringUtils.msg("&8[&d&lFRIENDCHAT SS&8] &7" + player.getName() + " &8» &d" + message);
+			String formattedMsg = CC.translate("&8[&d&lFRIENDCHAT&8] &r" + metaData.getPrefix() + player.getName() + " &8» &d" + message);
+			String ssMsg = CC.translate("&8[&d&lFRIENDCHAT SS&8] &7" + player.getName() + " &8» &d" + message);
 			player.sendMessage(formattedMsg);
 			Bukkit.getScheduler().runTaskAsynchronously(Main.getMain(), new Runnable() {
 				@Override

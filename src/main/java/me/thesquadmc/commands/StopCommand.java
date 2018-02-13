@@ -6,6 +6,7 @@ import me.thesquadmc.utils.*;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.enums.RedisArg;
 import me.thesquadmc.utils.enums.RedisChannels;
+import me.thesquadmc.utils.msgs.CC;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -34,7 +35,7 @@ public final class StopCommand implements CommandExecutor {
 					for (int i = 1; i < args.length; i++) {
 						stringBuilder.append(args[i] + " ");
 					}
-					player.sendMessage(StringUtils.msg("&e&lSTOP &6■ &7You have stopped &e" + server + " &7for &e" + stringBuilder.toString() + "&7"));
+					player.sendMessage(CC.translate("&e&lSTOP &6■ &7You have stopped &e" + server + " &7for &e" + stringBuilder.toString() + "&7"));
 					Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
 						@Override
 						public void run() {
@@ -47,10 +48,10 @@ public final class StopCommand implements CommandExecutor {
 						}
 					});
 				} else {
-					player.sendMessage(StringUtils.msg("&cUsage: /stop <servername> <reason>"));
+					player.sendMessage(CC.translate("&cUsage: /stop <servername> <reason>"));
 				}
 			} else {
-				player.sendMessage(StringUtils.msg("&cYou do not have permission to use this command!"));
+				player.sendMessage(CC.translate("&cYou do not have permission to use this command!"));
 			}
 		} else {
 			Bukkit.shutdown();

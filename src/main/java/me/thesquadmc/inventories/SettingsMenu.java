@@ -1,7 +1,8 @@
 package me.thesquadmc.inventories;
 
 import me.thesquadmc.Main;
-import me.thesquadmc.utils.ItemBuilder;
+import me.thesquadmc.utils.inventory.InventorySize;
+import me.thesquadmc.utils.inventory.ItemBuilder;
 import me.thesquadmc.utils.enums.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -11,7 +12,7 @@ import org.bukkit.inventory.Inventory;
 public final class SettingsMenu {
 
 	public static void buildSettingsMenu(Player player) {
-		Inventory inventory = Bukkit.createInventory(null, 36, "Friend Settings");
+		Inventory inventory = Bukkit.createInventory(null, InventorySize.FOUR_LINE, "Friend Settings");
 		inventory.setItem(10, new ItemBuilder(Material.SIGN).name("&d&lFriend Notifications").lore(
 				"&7",
 				"&7Friend Notifications are the &djoin & leave",

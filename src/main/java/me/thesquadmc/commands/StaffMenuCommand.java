@@ -3,7 +3,7 @@ package me.thesquadmc.commands;
 import me.thesquadmc.Main;
 import me.thesquadmc.utils.PlayerUtils;
 import me.thesquadmc.utils.enums.Rank;
-import me.thesquadmc.utils.StringUtils;
+import me.thesquadmc.utils.msgs.CC;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -25,10 +25,10 @@ public final class StaffMenuCommand implements CommandExecutor {
 				if (StaffmodeCommand.getStaffmode().containsKey(player.getUniqueId())) {
 					main.getStaffmodeInventory().buildStaffpanel(player);
 				} else {
-					player.sendMessage(StringUtils.msg("&cYou are not in staffmode!"));
+					player.sendMessage(CC.translate("&cYou are not in staffmode!"));
 				}
 			} else {
-				player.sendMessage(StringUtils.msg("&cYou do not have permission to use this command!"));
+				player.sendMessage(CC.translate("&cYou do not have permission to use this command!"));
 			}
 		}
 		return true;

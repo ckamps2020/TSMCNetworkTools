@@ -2,10 +2,10 @@ package me.thesquadmc.listeners;
 
 import me.thesquadmc.Main;
 import me.thesquadmc.commands.StaffmodeCommand;
-import me.thesquadmc.utils.enums.InventorySize;
-import me.thesquadmc.utils.StringUtils;
 import me.thesquadmc.utils.handlers.UpdateEvent;
-import me.thesquadmc.utils.handlers.UpdateType;
+import me.thesquadmc.utils.enums.UpdateType;
+import me.thesquadmc.utils.inventory.InventorySize;
+import me.thesquadmc.utils.msgs.CC;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
@@ -49,13 +49,13 @@ public final class StaffmodeListener implements Listener {
 						for (Map.Entry<UUID, Integer> mm : m.entrySet()) {
 							int averageCPS = mm.getValue() / 5;
 							Player t = Bukkit.getPlayer(mm.getKey());
-							player.sendMessage(StringUtils.msg("&e&lSTAFF &6■ &7CPS Calculated! Average CPS of &e" + t.getName() + " &7is: &e" + averageCPS));
+							player.sendMessage(CC.translate("&e&lSTAFF &6■ &7CPS Calculated! Average CPS of &e" + t.getName() + " &7is: &e" + averageCPS));
 						}
 						cps.remove(player.getUniqueId());
 						timeRemaining.remove(player.getUniqueId());
 					} else {
 						timeRemaining.put(player.getUniqueId(), timeRemaining.get(player.getUniqueId()) - 1);
-						player.sendMessage(StringUtils.msg("&e&lSTAFF &6■ &7Calculating… printing CPS in &e" + timeRemaining.get(player.getUniqueId())));
+						player.sendMessage(CC.translate("&e&lSTAFF &6■ &7Calculating… printing CPS in &e" + timeRemaining.get(player.getUniqueId())));
 						tempCPS.clear();
 					}
 				}
@@ -90,7 +90,7 @@ public final class StaffmodeListener implements Listener {
 								Block block = e.getClickedBlock();
 								block.getLocation().getWorld().getBlockAt(block.getLocation().clone().add(0, 1, 0)).setType(Material.CHEST);
 							} else {
-								player.sendMessage(StringUtils.msg("&cYou can't use that here!"));
+								player.sendMessage(CC.translate("&cYou can't use that here!"));
 							}
 						}
 					}
@@ -135,7 +135,7 @@ public final class StaffmodeListener implements Listener {
 				}
 			}
 			StaffmodeCommand.getStaffmode().remove(player.getUniqueId());
-			player.sendMessage(StringUtils.msg("&e&lSTAFF &6■  &7Staff mode has been &edisabled&7"));
+			player.sendMessage(CC.translate("&e&lSTAFF &6■  &7Staff mode has been &edisabled&7"));
 		}
 	}
 
@@ -276,18 +276,18 @@ public final class StaffmodeListener implements Listener {
 				if (player.getGameMode() == GameMode.SPECTATOR) {
 					player.closeInventory();
 					player.setGameMode(GameMode.SURVIVAL);
-					player.sendMessage(StringUtils.msg("&7Gamemode updated to survival"));
+					player.sendMessage(CC.translate("&7Gamemode updated to survival"));
 				} else {
 					player.closeInventory();
 					player.setGameMode(GameMode.SPECTATOR);
-					player.sendMessage(StringUtils.msg("&7Gamemode updated to spectator"));
+					player.sendMessage(CC.translate("&7Gamemode updated to spectator"));
 				}
 			} else if (e.getSlot() == 11) {
 				if (!main.getReportManager().getReports().isEmpty()) {
 					main.getReportInventory().buildReportsMenu(player);
 				} else {
 					player.closeInventory();
-					player.sendMessage(StringUtils.msg("&cThere are no active reports!"));
+					player.sendMessage(CC.translate("&cThere are no active reports!"));
 				}
 			} else if (e.getSlot() == 13) {
 				player.performCommand("randomtp");
@@ -305,7 +305,7 @@ public final class StaffmodeListener implements Listener {
 							break;
 						}
 					}
-					Inventory inv = Bukkit.createInventory(null, InventorySize.SIX_LINE.getSize(), "Miners Below Y 16");
+					Inventory inv = Bukkit.createInventory(null, InventorySize.SIX_LINE, "Miners Below Y 16");
 					int ii = 0;
 					for (Player p : below) {
 						ItemStack head = new ItemStack(Material.SKULL_ITEM, 1);
@@ -332,7 +332,7 @@ public final class StaffmodeListener implements Listener {
 							break;
 						}
 					}
-					Inventory inv = Bukkit.createInventory(null, InventorySize.SIX_LINE.getSize(), "AFK Miners");
+					Inventory inv = Bukkit.createInventory(null, InventorySize.SIX_LINE, "AFK Miners");
 					int ii = 0;
 					for (Player p : below) {
 						ItemStack head = new ItemStack(Material.SKULL_ITEM, 1);
@@ -359,7 +359,7 @@ public final class StaffmodeListener implements Listener {
 						player.setGameMode(GameMode.SPECTATOR);
 						player.teleport(t.getLocation());
 					} else {
-						player.sendMessage(StringUtils.msg("&cThat player is offline or does not exist!"));
+						player.sendMessage(CC.translate("&cThat player is offline or does not exist!"));
 					}
 				}
 			}
@@ -383,13 +383,13 @@ public final class StaffmodeListener implements Listener {
 						player.performCommand("freeze " + target.getName());
 					} else if (stack.getItemMeta() != null && stack.getItemMeta().getDisplayName().toUpperCase().contains("CPS CHECKER")) {
 						if (!cps.containsKey(player.getUniqueId())) {
-							player.sendMessage(StringUtils.msg("&e&lSTAFF &6■ &7Calculating… printing CPS in &e5&7"));
+							player.sendMessage(CC.translate("&e&lSTAFF &6■ &7Calculating… printing CPS in &e5&7"));
 							timeRemaining.put(player.getUniqueId(), 5);
 							Map<UUID, Integer> map = new HashMap<>();
 							map.put(target.getUniqueId(), 0);
 							cps.put(player.getUniqueId(), map);
 						} else {
-							player.sendMessage(StringUtils.msg("&cYou are already calculating someones CPS!"));
+							player.sendMessage(CC.translate("&cYou are already calculating someones CPS!"));
 						}
 					}
 				}

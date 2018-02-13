@@ -4,7 +4,7 @@ import me.thesquadmc.Main;
 import me.thesquadmc.objects.TempData;
 import me.thesquadmc.utils.PlayerUtils;
 import me.thesquadmc.utils.enums.Rank;
-import me.thesquadmc.utils.StringUtils;
+import me.thesquadmc.utils.msgs.CC;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -26,25 +26,25 @@ public final class YtNickCommand implements CommandExecutor {
 			if (PlayerUtils.isEqualOrHigherThen(player, Rank.YOUTUBE)) {
 				boolean t = true;
 				if (t) {
-					player.sendMessage(StringUtils.msg("&cCommand disabled for the moment!"));
+					player.sendMessage(CC.translate("&cCommand disabled for the moment!"));
 					return true;
 				}
 				if (!tempData.isNicknamed()) {
 					if (args.length == 1) {
 						String name = args[0];
-						player.sendMessage(StringUtils.msg("&e&lYT NICK &6■ &7You are now nicked as &e" + name));
+						player.sendMessage(CC.translate("&e&lYT NICK &6■ &7You are now nicked as &e" + name));
 						tempData.setNickname(true);
 						PlayerUtils.setName(player, name);
 					} else {
-						player.sendMessage(StringUtils.msg("&cUsage: /ytnick (name)"));
+						player.sendMessage(CC.translate("&cUsage: /ytnick (name)"));
 					}
 				} else {
-					player.sendMessage(StringUtils.msg("&e&lYT NICK &6■ &7You are &eno longer &7nicked"));
+					player.sendMessage(CC.translate("&e&lYT NICK &6■ &7You are &eno longer &7nicked"));
 					tempData.setNickname(false);
 					PlayerUtils.setName(player, tempData.getRealname());
 				}
 			} else {
-				player.sendMessage(StringUtils.msg("&cYou do not have permission to use this command!"));
+				player.sendMessage(CC.translate("&cYou do not have permission to use this command!"));
 			}
 		}
 		return true;

@@ -1,8 +1,8 @@
 package me.thesquadmc.inventories;
 
 import me.thesquadmc.Main;
-import me.thesquadmc.utils.enums.InventorySize;
-import me.thesquadmc.utils.ItemBuilder;
+import me.thesquadmc.utils.inventory.InventorySize;
+import me.thesquadmc.utils.inventory.ItemBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -25,24 +25,24 @@ public final class FrozenInventory {
 	}
 
 	public void buildFrozenInventory(Player player) {
-		Inventory inventory = Bukkit.createInventory(null, InventorySize.THREE_LINE.getSize(), "FROZEN");
-		for (int i = 0; i < InventorySize.THREE_LINE.getSize(); i++) {
+		Inventory inventory = Bukkit.createInventory(null, InventorySize.THREE_LINE, "FROZEN");
+		for (int i = 0; i < InventorySize.THREE_LINE; i++) {
 			inventory.setItem(i, new ItemBuilder(Material.STAINED_GLASS_PANE, 8).name("&c&lYOU HAVE BEEN FROZEN BY STAFF!").build());
 		}
 		player.openInventory(inventory);
 	}
 
 	public void buildScreenshareInventory(Player player, String name) {
-		Inventory inventory = Bukkit.createInventory(null, InventorySize.THREE_LINE.getSize(), "FROZEN");
-		for (int i = 0; i < InventorySize.THREE_LINE.getSize(); i++) {
+		Inventory inventory = Bukkit.createInventory(null, InventorySize.THREE_LINE, "FROZEN");
+		for (int i = 0; i < InventorySize.THREE_LINE; i++) {
 			inventory.setItem(i, new ItemBuilder(Material.STAINED_GLASS_PANE, 3).name("&e&lCONTACT ON DISCORD: " + name).build());
 		}
 		player.openInventory(inventory);
 	}
 
 	public void buildAdmitInventory(Player player) {
-		Inventory inventory = Bukkit.createInventory(null, InventorySize.THREE_LINE.getSize(), "FROZEN");
-		for (int i = 0; i < InventorySize.THREE_LINE.getSize(); i++) {
+		Inventory inventory = Bukkit.createInventory(null, InventorySize.THREE_LINE, "FROZEN");
+		for (int i = 0; i < InventorySize.THREE_LINE; i++) {
 			if (admitMenu.contains(player.getUniqueId())) {
 				inventory.setItem(i, new ItemBuilder(Material.STAINED_GLASS_PANE, 7).name("&7&lDO YOU ADMIT TO BREAKING RULES?")
 						.lore("&fLeft-Click to admit to break rules", "&fRight-Click to deny breaking the rules").build());
@@ -59,7 +59,7 @@ public final class FrozenInventory {
 	}
 
 	public void buildStaffGUI(Player player, Player target) {
-		Inventory inventory = Bukkit.createInventory(null, InventorySize.THREE_LINE.getSize(), "FREEZE MENU FOR " + target.getName());
+		Inventory inventory = Bukkit.createInventory(null, InventorySize.THREE_LINE, "FREEZE MENU FOR " + target.getName());
 		inventory.setItem(11, new ItemBuilder(Material.STAINED_GLASS_PANE, 4).name("&e&lScreenshare").lore("&7Will tell the user your discord name in their Freeze GUI").build());
 		inventory.setItem(13, new ItemBuilder(Material.STAINED_GLASS_PANE, 5).name("&e&lUnfreeze " + target.getName()).lore("&7Will unfreeze the player upon clicking").build());
 		if (admitMenu.contains(target.getUniqueId())) {

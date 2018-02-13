@@ -9,6 +9,9 @@ import me.thesquadmc.objects.Report;
 import me.thesquadmc.objects.TempData;
 import me.thesquadmc.utils.*;
 import me.thesquadmc.utils.enums.*;
+import me.thesquadmc.utils.msgs.CC;
+import me.thesquadmc.utils.msgs.StringUtils;
+import me.thesquadmc.utils.server.ServerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
@@ -45,7 +48,7 @@ public final class RedisHandler {
 				TempData tempData = main.getTempDataManager().getTempData(player.getUniqueId());
 				if (PlayerUtils.isEqualOrHigherThen(player, Rank.MANAGER)) {
 					if (tempData.isManagerchatEnabled() && tempData.getStaffchatSetting() == MessageSettings.GLOBAL) {
-						player.sendMessage(StringUtils.msg(String.valueOf(data.get(RedisArg.MESSAGE.getArg()))));
+						player.sendMessage(CC.translate(String.valueOf(data.get(RedisArg.MESSAGE.getArg()))));
 					}
 				}
 			}
@@ -54,7 +57,7 @@ public final class RedisHandler {
 				TempData tempData = main.getTempDataManager().getTempData(player.getUniqueId());
 				if (PlayerUtils.isEqualOrHigherThen(player, Rank.ADMIN)) {
 					if (tempData.isAdminchatEnabled() && tempData.getStaffchatSetting() == MessageSettings.GLOBAL) {
-						player.sendMessage(StringUtils.msg(String.valueOf(data.get(RedisArg.MESSAGE.getArg()))));
+						player.sendMessage(CC.translate(String.valueOf(data.get(RedisArg.MESSAGE.getArg()))));
 					}
 				}
 			}
@@ -94,9 +97,9 @@ public final class RedisHandler {
 						if (p != null) {
 							FindCommand.getStillLooking().remove(p.getName());
 							p.sendMessage(" ");
-							p.sendMessage(StringUtils.msg("&6&l" + name));
-							p.sendMessage(StringUtils.msg("&8■ &7Server: &f" + originServer));
-							p.sendMessage(StringUtils.msg("&8■ &7Online Since: &f" + time));
+							p.sendMessage(CC.translate("&6&l" + name));
+							p.sendMessage(CC.translate("&8■ &7Server: &f" + originServer));
+							p.sendMessage(CC.translate("&8■ &7Online Since: &f" + time));
 						}
 					}
 				}
@@ -262,11 +265,11 @@ public final class RedisHandler {
 			String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
 			if (server.equalsIgnoreCase("ALL") || Bukkit.getServerName().toUpperCase().contains(server)) {
 				String msg = String.valueOf(data.get(RedisArg.MESSAGE.getArg()));
-				Bukkit.broadcastMessage(StringUtils.msg("&7"));
-				Bukkit.broadcastMessage(StringUtils.msg("&7"));
-				Bukkit.broadcastMessage(StringUtils.msg("&8[&4&lALERT&8] &c" + msg));
-				Bukkit.broadcastMessage(StringUtils.msg("&7"));
-				Bukkit.broadcastMessage(StringUtils.msg("&7"));
+				Bukkit.broadcastMessage(CC.translate("&7"));
+				Bukkit.broadcastMessage(CC.translate("&7"));
+				Bukkit.broadcastMessage(CC.translate("&8[&4&lALERT&8] &c" + msg));
+				Bukkit.broadcastMessage(CC.translate("&7"));
+				Bukkit.broadcastMessage(CC.translate("&7"));
 				for (Player p : Bukkit.getOnlinePlayers()) {
 					p.playSound(p.getLocation(), Sound.ENDERDRAGON_GROWL, 1.0f, 1.0f);
 				}
@@ -275,11 +278,11 @@ public final class RedisHandler {
 			String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
 			if (server.equalsIgnoreCase(Bukkit.getServerName())) {
 				String msg = String.valueOf(data.get(RedisArg.MESSAGE.getArg()));
-				Bukkit.broadcastMessage(StringUtils.msg("&7"));
-				Bukkit.broadcastMessage(StringUtils.msg("&7"));
-				Bukkit.broadcastMessage(StringUtils.msg("&e&lSTOP &6■ &7Server restarting in &e15 &7seconds for reason: &e" + msg));
-				Bukkit.broadcastMessage(StringUtils.msg("&7"));
-				Bukkit.broadcastMessage(StringUtils.msg("&7"));
+				Bukkit.broadcastMessage(CC.translate("&7"));
+				Bukkit.broadcastMessage(CC.translate("&7"));
+				Bukkit.broadcastMessage(CC.translate("&e&lSTOP &6■ &7Server restarting in &e15 &7seconds for reason: &e" + msg));
+				Bukkit.broadcastMessage(CC.translate("&7"));
+				Bukkit.broadcastMessage(CC.translate("&7"));
 				Bukkit.getScheduler().runTask(main, new Runnable() {
 					@Override
 					public void run() {
@@ -297,13 +300,13 @@ public final class RedisHandler {
 									p.setGameMode(GameMode.SURVIVAL);
 									StaffmodeCommand.getStaffmode().remove(p.getUniqueId());
 									p.performCommand("spawn");
-									p.sendMessage(StringUtils.msg("&e&lSTOP &6■ &7Due to server restart you have been taken out of staffmode"));
+									p.sendMessage(CC.translate("&e&lSTOP &6■ &7Due to server restart you have been taken out of staffmode"));
 								}
 								if (tempData.isVanished() || tempData.isYtVanishEnabled()) {
 									PlayerUtils.showPlayerSpectator(p);
 									tempData.setVanished(false);
 									tempData.setYtVanishEnabled(false);
-									p.sendMessage(StringUtils.msg("&e&lSTOP &6■ &7Due to server restart you have been taken out of vanish"));
+									p.sendMessage(CC.translate("&e&lSTOP &6■ &7Due to server restart you have been taken out of vanish"));
 								}
 							}
 							p.playSound(p.getLocation(), Sound.ANVIL_USE, 1.0f, 1.0f);
@@ -314,7 +317,7 @@ public final class RedisHandler {
 					@Override
 					public void run() {
 						Bukkit.shutdown();
-						Bukkit.broadcastMessage(StringUtils.msg("&e&lSTOP &6■ &7Server restarting for reason: &e" + msg));
+						Bukkit.broadcastMessage(CC.translate("&e&lSTOP &6■ &7Server restarting for reason: &e" + msg));
 					}
 				}, 15 * 20L);
 			}
@@ -338,18 +341,18 @@ public final class RedisHandler {
 				String onoff = String.valueOf(data.get(RedisArg.ONOFF.getArg()));
 				String msg = String.valueOf(data.get(RedisArg.MESSAGE.getArg()));
 				if (onoff.equalsIgnoreCase("ON")) {
-					Bukkit.broadcastMessage(StringUtils.msg("&e&lWHITELIST &6■ &7Whitelist has been enabled for reason: &e" + msg));
+					Bukkit.broadcastMessage(CC.translate("&e&lWHITELIST &6■ &7Whitelist has been enabled for reason: &e" + msg));
 					ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
 					Bukkit.dispatchCommand(console, "minecraft:whitelist on");
 					for (Player p : Bukkit.getOnlinePlayers()) {
 						OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(p.getName());
-						main.setWhitelistMessage(StringUtils.msg(msg));
+						main.setWhitelistMessage(CC.translate(msg));
 						if (!PlayerUtils.isEqualOrHigherThen(p, Rank.MANAGER) && !Bukkit.getWhitelistedPlayers().contains(offlinePlayer)) {
-							p.kickPlayer(StringUtils.msg("&7Whitelist enabled \n&e" + msg));
+							p.kickPlayer(CC.translate("&7Whitelist enabled \n&e" + msg));
 						}
 					}
 				} else {
-					Bukkit.broadcastMessage(StringUtils.msg("&e&lWHITELIST &6■ &7Whitelist has been disabled for reason: &e" + msg));
+					Bukkit.broadcastMessage(CC.translate("&e&lWHITELIST &6■ &7Whitelist has been disabled for reason: &e" + msg));
 					ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
 					Bukkit.dispatchCommand(console, "minecraft:whitelist off");
 				}
@@ -368,14 +371,14 @@ public final class RedisHandler {
 			main.getReportManager().registerReport(report);
 			for (Player player : Bukkit.getOnlinePlayers()) {
 				if (PlayerUtils.isEqualOrHigherThen(player, Rank.MOD)) {
-					player.sendMessage(StringUtils.msg("&8&m---------------&8[ &6&lREPORT &8]&8&m---------------"));
+					player.sendMessage(CC.translate("&8&m---------------&8[ &6&lREPORT &8]&8&m---------------"));
 					player.sendMessage(" ");
-					player.sendMessage(StringUtils.msg("&eReport by: &7" + report.getReporter()));
-					player.sendMessage(StringUtils.msg("&eReported player: &7" + report.getUsername()));
-					player.sendMessage(StringUtils.msg("&7Reported player is currently on &e" + report.getServer()));
+					player.sendMessage(CC.translate("&eReport by: &7" + report.getReporter()));
+					player.sendMessage(CC.translate("&eReported player: &7" + report.getUsername()));
+					player.sendMessage(CC.translate("&7Reported player is currently on &e" + report.getServer()));
 					player.spigot().sendMessage(StringUtils.getHoverMessage("&8(Click to view reports)", "&7Click to view reports", "/reports"));
 					player.sendMessage(" ");
-					player.sendMessage(StringUtils.msg("&8&m---------------&8[ &6&lREPORT &8]&8&m---------------"));
+					player.sendMessage(CC.translate("&8&m---------------&8[ &6&lREPORT &8]&8&m---------------"));
 				}
 			}
 		} else if (channel.equalsIgnoreCase(RedisChannels.CLOSED_REPORTS.getChannelName())) {
@@ -414,13 +417,13 @@ public final class RedisHandler {
 					String count = String.valueOf(data.get(RedisArg.COUNT.getArg()));
 					String regex = "[ ]+";
 					String[] tokens = proxies.split(regex);
-					p.sendMessage(StringUtils.msg("&7"));
+					p.sendMessage(CC.translate("&7"));
 					for (String s : tokens) {
-						p.sendMessage(StringUtils.msg(s));
+						p.sendMessage(CC.translate(s));
 					}
-					p.sendMessage(StringUtils.msg("&7"));
-					p.sendMessage(StringUtils.msg("&e" + count + "&8/&e4000 &7Online globally"));
-					p.sendMessage(StringUtils.msg("&7"));
+					p.sendMessage(CC.translate("&7"));
+					p.sendMessage(CC.translate("&e" + count + "&8/&e4000 &7Online globally"));
+					p.sendMessage(CC.translate("&7"));
 				}
 			}
 		} else if (channel.equalsIgnoreCase(RedisChannels.MONITOR_INFO.getChannelName())) {
@@ -433,30 +436,30 @@ public final class RedisHandler {
 				for (Player player : Bukkit.getOnlinePlayers()) {
 					if (PlayerUtils.isEqualOrHigherThen(player, Rank.ADMIN) && main.getTempDataManager().getTempData(player.getUniqueId()).isMonitor()) {
 						if (!tps.equalsIgnoreCase("null") && Double.valueOf(tps) > 15.0) {
-							player.sendMessage(StringUtils.msg("&8&m-------------------------------------------------"));
-							player.sendMessage(StringUtils.msg("&6&l[MONITOR REPORT] &f" + server + " &7" + count + "&8/&7200"));
-							player.sendMessage(StringUtils.msg("&7"));
-							player.sendMessage(StringUtils.msg(msg));
-							player.sendMessage(StringUtils.msg("&7Uptime = &e" + uptime));
-							player.sendMessage(StringUtils.msg("&8&m-------------------------------------------------"));
+							player.sendMessage(CC.translate("&8&m-------------------------------------------------"));
+							player.sendMessage(CC.translate("&6&l[MONITOR REPORT] &f" + server + " &7" + count + "&8/&7200"));
+							player.sendMessage(CC.translate("&7"));
+							player.sendMessage(CC.translate(msg));
+							player.sendMessage(CC.translate("&7Uptime = &e" + uptime));
+							player.sendMessage(CC.translate("&8&m-------------------------------------------------"));
 						} else {
-							player.sendMessage(StringUtils.msg("&8&m-------------------------------------------------"));
-							player.sendMessage(StringUtils.msg("&6&l[MONITOR REPORT] &f" + server + " &cBelow 15 TPS!"));
-							player.sendMessage(StringUtils.msg("&7"));
-							player.sendMessage(StringUtils.msg(msg));
-							player.sendMessage(StringUtils.msg("&7Uptime = &e" + uptime));
-							player.sendMessage(StringUtils.msg("&8&m-------------------------------------------------"));
+							player.sendMessage(CC.translate("&8&m-------------------------------------------------"));
+							player.sendMessage(CC.translate("&6&l[MONITOR REPORT] &f" + server + " &cBelow 15 TPS!"));
+							player.sendMessage(CC.translate("&7"));
+							player.sendMessage(CC.translate(msg));
+							player.sendMessage(CC.translate("&7Uptime = &e" + uptime));
+							player.sendMessage(CC.translate("&8&m-------------------------------------------------"));
 						}
 					}
 				}
 			} else {
 				for (Player player : Bukkit.getOnlinePlayers()) {
 					if (PlayerUtils.isEqualOrHigherThen(player, Rank.ADMIN) && main.getTempDataManager().getTempData(player.getUniqueId()).isMonitor()) {
-						player.sendMessage(StringUtils.msg("&8&m-------------------------------------------------"));
-						player.sendMessage(StringUtils.msg("&6&l[MONITOR REPORT] &f" + server + " &7" + count + "&8/&7200"));
-						player.sendMessage(StringUtils.msg("&7"));
-						player.sendMessage(StringUtils.msg(msg));
-						player.sendMessage(StringUtils.msg("&8&m-------------------------------------------------"));
+						player.sendMessage(CC.translate("&8&m-------------------------------------------------"));
+						player.sendMessage(CC.translate("&6&l[MONITOR REPORT] &f" + server + " &7" + count + "&8/&7200"));
+						player.sendMessage(CC.translate("&7"));
+						player.sendMessage(CC.translate(msg));
+						player.sendMessage(CC.translate("&8&m-------------------------------------------------"));
 					}
 				}
 			}
@@ -503,7 +506,7 @@ public final class RedisHandler {
 						if (p.getName().equalsIgnoreCase(name)) {
 							OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(String.valueOf(data.get(RedisArg.ORIGIN_PLAYER.getArg())));
 							main.getFriends().get(p.getUniqueId()).remove(offlinePlayer.getUniqueId().toString());
-							p.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &d" + offlinePlayer.getName() + " &7has removed you as a friend"));
+							p.sendMessage(CC.translate("&d&lFRIENDS &5■ &d" + offlinePlayer.getName() + " &7has removed you as a friend"));
 							try (Jedis jedis = main.getPool().getResource()) {
 								JedisTask.withName(UUID.randomUUID().toString())
 										.withArg(RedisArg.SERVER.getArg(), String.valueOf(data.get(RedisArg.SERVER.getArg())))
@@ -569,7 +572,7 @@ public final class RedisHandler {
 			OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(player);
 			for (Player p : Bukkit.getOnlinePlayers()) {
 				if (main.getFriends() != null && main.getFriends().get(p.getUniqueId()) != null && main.getFriends().get(p.getUniqueId()).contains(offlinePlayer.getUniqueId().toString())) {
-					p.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &d" + player + " &7has logged in!"));
+					p.sendMessage(CC.translate("&d&lFRIENDS &5■ &d" + player + " &7has logged in!"));
 				}
 			}
 		} else if (channel.equalsIgnoreCase(RedisChannels.LEAVE.getChannelName())) {
@@ -577,7 +580,7 @@ public final class RedisHandler {
 			OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(player);
 			for (Player p : Bukkit.getOnlinePlayers()) {
 				if (main.getFriends() != null && main.getFriends().get(p.getUniqueId()) != null && main.getFriends().get(p.getUniqueId()).contains(offlinePlayer.getUniqueId().toString())) {
-					p.sendMessage(StringUtils.msg("&d&lFRIENDS &5■ &d" + player + " &7has logged out!"));
+					p.sendMessage(CC.translate("&d&lFRIENDS &5■ &d" + player + " &7has logged out!"));
 				}
 			}
 		}

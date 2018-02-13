@@ -3,7 +3,7 @@ package me.thesquadmc.commands;
 import me.thesquadmc.Main;
 import me.thesquadmc.utils.PlayerUtils;
 import me.thesquadmc.utils.enums.Rank;
-import me.thesquadmc.utils.StringUtils;
+import me.thesquadmc.utils.msgs.CC;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -24,7 +24,7 @@ public final class FreezePanelCommand implements CommandExecutor {
 			Player player = (Player) sender;
 			if (PlayerUtils.isEqualOrHigherThen(player, Rank.MOD)) {
 				if (Bukkit.getServerName().toUpperCase().contains("HUB")) {
-					player.sendMessage(StringUtils.msg("&cYou are not allowed to use this command here!"));
+					player.sendMessage(CC.translate("&cYou are not allowed to use this command here!"));
 					return true;
 				}
 				if (args.length == 1) {
@@ -34,16 +34,16 @@ public final class FreezePanelCommand implements CommandExecutor {
 							main.getFrozenInventory().buildStaffGUI(player, t);
 							main.getFrozenInventory().getViewing().put(player.getUniqueId(), t.getUniqueId());
 						} else {
-							player.sendMessage(StringUtils.msg("&cThat player is not frozen!"));
+							player.sendMessage(CC.translate("&cThat player is not frozen!"));
 						}
 					} else {
-						player.sendMessage(StringUtils.msg("&cThat player does not exist or is offline!"));
+						player.sendMessage(CC.translate("&cThat player does not exist or is offline!"));
 					}
 				} else {
-					player.sendMessage(StringUtils.msg("&cUsage: /freezepanel <player>"));
+					player.sendMessage(CC.translate("&cUsage: /freezepanel <player>"));
 				}
 			} else {
-				player.sendMessage(StringUtils.msg("&cYou do not have permission to use this command!"));
+				player.sendMessage(CC.translate("&cYou do not have permission to use this command!"));
 			}
 		}
 		return true;

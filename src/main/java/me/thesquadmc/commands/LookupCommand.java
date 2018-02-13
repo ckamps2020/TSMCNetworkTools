@@ -7,7 +7,7 @@ import me.lucko.luckperms.api.caching.UserData;
 import me.thesquadmc.Main;
 import me.thesquadmc.utils.PlayerUtils;
 import me.thesquadmc.utils.enums.Rank;
-import me.thesquadmc.utils.StringUtils;
+import me.thesquadmc.utils.msgs.CC;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -35,19 +35,19 @@ public final class LookupCommand implements CommandExecutor {
 						Contexts contexts = Contexts.allowAll();
 						MetaData metaData = cachedData.getMetaData(contexts);
 						player.sendMessage(" ");
-						player.sendMessage(StringUtils.msg("&6&l" + name));
-						player.sendMessage(StringUtils.msg("&8■ &7Rank: &f" + metaData.getPrefix()));
+						player.sendMessage(CC.translate("&6&l" + name));
+						player.sendMessage(CC.translate("&8■ &7Rank: &f" + metaData.getPrefix()));
 						if (Bukkit.getServerName().toUpperCase().contains("SKYBLOCK") || Bukkit.getServerName().toUpperCase().contains("FACTIONS")) {
-							player.sendMessage(StringUtils.msg("&8■ &7Has Flight: &f" + PlayerUtils.hasPermission(main.getLuckPermsApi().getGroup(u.getPrimaryGroup()), "essentials.fly")));
+							player.sendMessage(CC.translate("&8■ &7Has Flight: &f" + PlayerUtils.hasPermission(main.getLuckPermsApi().getGroup(u.getPrimaryGroup()), "essentials.fly")));
 						}
 					} else {
-						player.sendMessage(StringUtils.msg("&e&lLOOKUP&6■ &7That player is not online"));
+						player.sendMessage(CC.translate("&e&lLOOKUP&6■ &7That player is not online"));
 					}
 				} else {
-					player.sendMessage(StringUtils.msg("&cUsage: /lookup <player>"));
+					player.sendMessage(CC.translate("&cUsage: /lookup <player>"));
 				}
 			} else {
-				player.sendMessage(StringUtils.msg("&cYou do not have permission to use this command!"));
+				player.sendMessage(CC.translate("&cYou do not have permission to use this command!"));
 			}
 		}
 		return true;

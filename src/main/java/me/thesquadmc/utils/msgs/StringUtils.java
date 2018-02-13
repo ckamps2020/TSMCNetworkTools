@@ -1,5 +1,6 @@
-package me.thesquadmc.utils;
+package me.thesquadmc.utils.msgs;
 
+import me.thesquadmc.utils.msgs.CC;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -9,6 +10,8 @@ import net.md_5.bungee.api.chat.TextComponent;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,10 +20,6 @@ public final class StringUtils {
 
 	public StringUtils() {
 		populate();
-	}
-
-	public static String msg(String message) {
-		return ChatColor.translateAlternateColorCodes('&', message);
 	}
 
 	public static String getDate() {
@@ -48,8 +47,8 @@ public final class StringUtils {
 	}
 
 	public static BaseComponent[] getHoverMessage(String message, String hoverMessage) {
-		BaseComponent[] components = TextComponent.fromLegacyText(msg(message));
-		BaseComponent[] hoverText = TextComponent.fromLegacyText(msg(hoverMessage));
+		BaseComponent[] components = TextComponent.fromLegacyText(CC.translate(message));
+		BaseComponent[] hoverText = TextComponent.fromLegacyText(CC.translate(hoverMessage));
 		HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText);
 		for (BaseComponent component : components) {
 			component.setHoverEvent(hoverEvent);
@@ -67,6 +66,59 @@ public final class StringUtils {
 			component.setHoverEvent(hoverEvent);
 		}
 		return components;
+	}
+
+	private static final String MAX_LENGTH = "11111111111111111111111111111111111111111111111111111";
+	private static final String SPLIT_PATTERN = Pattern.compile("\\s").pattern();
+
+	private static final String VOWELS = "aeiou";
+
+	public static List<String> splitString(String message) {
+		List<String> strings = new ArrayList<>();
+		for (String string : message.split("(?<=\\G.{30})")) {
+			strings.add(string);
+		}
+		return strings;
+	}
+
+	public static String toNiceString(String string) {
+		string = org.bukkit.ChatColor.stripColor(string).replace('_', ' ').toLowerCase();
+
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < string.toCharArray().length; i++) {
+			char c = string.toCharArray()[i];
+			if (i > 0) {
+				char prev = string.toCharArray()[i - 1];
+				if (prev == ' ' || prev == '[' || prev == '(') {
+					if (i == string.toCharArray().length - 1 || c != 'x' ||
+							!Character.isDigit(string.toCharArray()[i + 1])) {
+						c = Character.toUpperCase(c);
+					}
+				}
+			} else {
+				if (c != 'x' || !Character.isDigit(string.toCharArray()[i + 1])) {
+					c = Character.toUpperCase(c);
+				}
+			}
+			sb.append(c);
+		}
+
+		return sb.toString();
+	}
+
+	public static String buildMessage(String[] args, int start) {
+		if (start >= args.length) {
+			return "";
+		}
+		return org.bukkit.ChatColor.stripColor(String.join(" ", Arrays.copyOfRange(args, start, args.length)));
+	}
+
+	public static String getFirstSplit(String s) {
+		return s.split(SPLIT_PATTERN)[0];
+	}
+
+	public static String getAOrAn(String input) {
+		return ((VOWELS.contains(input.substring(0, 1).toLowerCase())) ? "an" : "a");
 	}
 
 	public static String fixStringForCaps(String message) {

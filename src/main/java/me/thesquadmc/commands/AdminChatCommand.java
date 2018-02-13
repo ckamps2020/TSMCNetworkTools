@@ -11,6 +11,7 @@ import me.thesquadmc.utils.*;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.enums.RedisArg;
 import me.thesquadmc.utils.enums.RedisChannels;
+import me.thesquadmc.utils.msgs.CC;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -38,14 +39,14 @@ public final class AdminChatCommand implements CommandExecutor {
 				if (args.length == 0) {
 					if (!tempData.isAdminchatEnabled()) {
 						tempData.setAdminchatEnabled(true);
-						player.sendMessage(StringUtils.msg("&e&lADMIN CHAT &6■ &7You toggled Admin Chat &eon&7!"));
+						player.sendMessage(CC.translate("&e&lADMIN CHAT &6■ &7You toggled Admin Chat &eon&7!"));
 					} else {
 						tempData.setAdminchatEnabled(false);
-						player.sendMessage(StringUtils.msg("&e&lADMIN CHAT &6■ &7You toggled Admin Chat &eoff&7!"));
+						player.sendMessage(CC.translate("&e&lADMIN CHAT &6■ &7You toggled Admin Chat &eoff&7!"));
 					}
 				} else {
 					if (!tempData.isAdminchatEnabled()) {
-						player.sendMessage(StringUtils.msg("&cPlease enable adminchat first!"));
+						player.sendMessage(CC.translate("&cPlease enable adminchat first!"));
 						return true;
 					}
 					StringBuilder stringBuilder = new StringBuilder();
@@ -68,7 +69,7 @@ public final class AdminChatCommand implements CommandExecutor {
 					});
 				}
 			} else {
-				player.sendMessage(StringUtils.msg("&cYou do not have permission to use this command!"));
+				player.sendMessage(CC.translate("&cYou do not have permission to use this command!"));
 			}
 		}
 		return true;

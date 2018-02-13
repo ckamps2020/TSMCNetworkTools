@@ -3,7 +3,7 @@ package me.thesquadmc.commands;
 import me.thesquadmc.Main;
 import me.thesquadmc.utils.PlayerUtils;
 import me.thesquadmc.utils.enums.Rank;
-import me.thesquadmc.utils.StringUtils;
+import me.thesquadmc.utils.msgs.CC;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -28,22 +28,22 @@ public final class ChatSlowCommand implements CommandExecutor {
 						int i = Integer.valueOf(args[0]);
 						if (i == 0) {
 							Bukkit.broadcastMessage(" ");
-							Bukkit.broadcastMessage(StringUtils.msg("&e&lCHAT &6■ &7Chat delay has been disabled"));
+							Bukkit.broadcastMessage(CC.translate("&e&lCHAT &6■ &7Chat delay has been disabled"));
 							Bukkit.broadcastMessage(" ");
 						} else {
 							Bukkit.broadcastMessage(" ");
-							Bukkit.broadcastMessage(StringUtils.msg("&e&lCHAT &6■ &7Chat delay set to &e" + i));
+							Bukkit.broadcastMessage(CC.translate("&e&lCHAT &6■ &7Chat delay set to &e" + i));
 							Bukkit.broadcastMessage(" ");
 						}
 						main.setChatslow(i);
 					} catch (Exception e) {
-						player.sendMessage(StringUtils.msg("&cThat is not a valid number!"));
+						player.sendMessage(CC.translate("&cThat is not a valid number!"));
 					}
 				} else {
-					player.sendMessage(StringUtils.msg("&cUsage: /chatslow <time in seconds>"));
+					player.sendMessage(CC.translate("&cUsage: /chatslow <time in seconds>"));
 				}
 			} else {
-				player.sendMessage(StringUtils.msg("&cYou do not have permission to use this command!"));
+				player.sendMessage(CC.translate("&cYou do not have permission to use this command!"));
 			}
 		}
 		return true;

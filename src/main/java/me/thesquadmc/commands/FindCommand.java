@@ -6,6 +6,7 @@ import me.thesquadmc.utils.*;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.enums.RedisArg;
 import me.thesquadmc.utils.enums.RedisChannels;
+import me.thesquadmc.utils.msgs.CC;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -36,7 +37,7 @@ public final class FindCommand implements CommandExecutor {
 					Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
 						@Override
 						public void run() {
-							player.sendMessage(StringUtils.msg("&e&lFIND&6■ &7Trying to find &e" + name + "&7..."));
+							player.sendMessage(CC.translate("&e&lFIND&6■ &7Trying to find &e" + name + "&7..."));
 							stillLooking.add(player.getName());
 							try (Jedis jedis = main.getPool().getResource()) {
 								JedisTask.withName(UUID.randomUUID().toString())
@@ -49,7 +50,7 @@ public final class FindCommand implements CommandExecutor {
 									public void run() {
 										if (stillLooking.contains(player.getName())) {
 											stillLooking.remove(player.getName());
-											player.sendMessage(StringUtils.msg("&e&lFIND&6■ &7Unable to find player &e" + name));
+											player.sendMessage(CC.translate("&e&lFIND&6■ &7Unable to find player &e" + name));
 										}
 									}
 								}, 5 * 20L);
@@ -57,10 +58,10 @@ public final class FindCommand implements CommandExecutor {
 						}
 					});
 				} else {
-					player.sendMessage(StringUtils.msg("&cUsage: /find <player>"));
+					player.sendMessage(CC.translate("&cUsage: /find <player>"));
 				}
 			} else {
-				player.sendMessage(StringUtils.msg("&cYou do not have permission to use this command!"));
+				player.sendMessage(CC.translate("&cYou do not have permission to use this command!"));
 			}
 		}
 		return true;

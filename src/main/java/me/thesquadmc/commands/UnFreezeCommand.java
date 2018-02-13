@@ -3,7 +3,7 @@ package me.thesquadmc.commands;
 import me.thesquadmc.Main;
 import me.thesquadmc.utils.PlayerUtils;
 import me.thesquadmc.utils.enums.Rank;
-import me.thesquadmc.utils.StringUtils;
+import me.thesquadmc.utils.msgs.CC;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -38,22 +38,22 @@ public final class UnFreezeCommand implements CommandExecutor {
 								main.getFrozenInventory().getScreenshare().remove(player.getUniqueId());
 								FreezeCommand.getFrozen().remove(t.getUniqueId());
 								t.closeInventory();
-								t.sendMessage(StringUtils.msg("&e&lFREEZE &6■ &7You have been &eunfrozen&7. Thank you for your &epatience&7"));
-								player.sendMessage(StringUtils.msg("&e&lFREEZE &6■ &7You have unfrozen &e" + t.getName() + "&7!"));
+								t.sendMessage(CC.translate("&e&lFREEZE &6■ &7You have been &eunfrozen&7. Thank you for your &epatience&7"));
+								player.sendMessage(CC.translate("&e&lFREEZE &6■ &7You have unfrozen &e" + t.getName() + "&7!"));
 							} else {
-								player.sendMessage(StringUtils.msg("&cThat player is not frozen!"));
+								player.sendMessage(CC.translate("&cThat player is not frozen!"));
 							}
 						} else {
-							player.sendMessage(StringUtils.msg("&cYou are not allowed to freeze another staff member!"));
+							player.sendMessage(CC.translate("&cYou are not allowed to freeze another staff member!"));
 						}
 					} else {
-						player.sendMessage(StringUtils.msg("&cYou do not have permission to use this command!"));
+						player.sendMessage(CC.translate("&cYou do not have permission to use this command!"));
 					}
 				} else {
-					player.sendMessage(StringUtils.msg("&cUsage: /freeze <player>"));
+					player.sendMessage(CC.translate("&cUsage: /freeze <player>"));
 				}
 			} else {
-				player.sendMessage(StringUtils.msg("&cYou do not have permission to use this command!"));
+				player.sendMessage(CC.translate("&cYou do not have permission to use this command!"));
 			}
 		}
 		return true;

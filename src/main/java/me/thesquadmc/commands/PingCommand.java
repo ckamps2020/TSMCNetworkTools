@@ -1,7 +1,7 @@
 package me.thesquadmc.commands;
 
 import me.thesquadmc.Main;
-import me.thesquadmc.utils.StringUtils;
+import me.thesquadmc.utils.msgs.CC;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -26,11 +26,11 @@ public final class PingCommand implements CommandExecutor {
 				Player t = Bukkit.getPlayer(name);
 				if (t != null) {
 					int ping = ((CraftPlayer)t).getHandle().ping;
-					player.sendMessage(StringUtils.msg("&e&lPING &6■ &e" + t.getName() + "&7's ping is currently &e" + ping + "&7ms"));
+					player.sendMessage(CC.translate("&e&lPING &6■ &e" + t.getName() + "&7's ping is currently &e" + ping + "&7ms"));
 				}
 			} else {
 				int ping = ((CraftPlayer)player).getHandle().ping;
-				player.sendMessage(StringUtils.msg("&e&lPING &6■ &7Your ping is currently &e" + ping + "&7ms"));
+				player.sendMessage(CC.translate("&e&lPING &6■ &7Your ping is currently &e" + ping + "&7ms"));
 			}
 		}
 		return true;

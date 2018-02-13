@@ -1,4 +1,4 @@
-package me.thesquadmc.utils.handlers;
+package me.thesquadmc.utils.enums;
 
 import me.thesquadmc.utils.TimeUtils;
 

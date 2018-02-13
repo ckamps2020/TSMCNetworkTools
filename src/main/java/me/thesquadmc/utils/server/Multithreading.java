@@ -1,4 +1,4 @@
-package me.thesquadmc.utils;
+package me.thesquadmc.utils.server;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

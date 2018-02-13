@@ -3,7 +3,8 @@ package me.thesquadmc.listeners;
 import me.thesquadmc.Main;
 import me.thesquadmc.utils.PlayerUtils;
 import me.thesquadmc.utils.enums.Rank;
-import me.thesquadmc.utils.StringUtils;
+import me.thesquadmc.utils.msgs.CC;
+import me.thesquadmc.utils.msgs.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -36,7 +37,7 @@ public final class FilterListener implements Listener {
 						e.setMessage(message);
 						if (StringUtils.shouldFilter(msg)) {
 							e.setCancelled(true);
-							player.sendMessage(StringUtils.msg("&e&lFILTER &6■ &7You are not allowed to say that!"));
+							player.sendMessage(CC.translate("&e&lFILTER &6■ &7You are not allowed to say that!"));
 						}
 						slowchat.add(player.getUniqueId());
 						Bukkit.getScheduler().runTaskLater(main, new Runnable() {
@@ -47,7 +48,7 @@ public final class FilterListener implements Listener {
 						}, main.getChatslow() * 20L);
 					} else {
 						e.setCancelled(true);
-						player.sendMessage(StringUtils.msg("&e&lCHAT &6■ &7Please slow down your chatting!"));
+						player.sendMessage(CC.translate("&e&lCHAT &6■ &7Please slow down your chatting!"));
 					}
 				} else {
 					String msg = e.getMessage();
@@ -55,12 +56,12 @@ public final class FilterListener implements Listener {
 					e.setMessage(message);
 					if (StringUtils.shouldFilter(msg)) {
 						e.setCancelled(true);
-						player.sendMessage(StringUtils.msg("&e&lFILTER &6■ &7You are not allowed to say that!"));
+						player.sendMessage(CC.translate("&e&lFILTER &6■ &7You are not allowed to say that!"));
 					}
 				}
 			} else {
 				e.setCancelled(true);
-				player.sendMessage(StringUtils.msg("&e&lCHAT &6■ &7The chat is currently silenced!"));
+				player.sendMessage(CC.translate("&e&lCHAT &6■ &7The chat is currently silenced!"));
 			}
 		}
 	}

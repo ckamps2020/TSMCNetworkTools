@@ -1,5 +1,6 @@
 package me.thesquadmc.utils.handlers;
 
+import me.thesquadmc.utils.enums.UpdateType;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class UpdateHandler implements Runnable {

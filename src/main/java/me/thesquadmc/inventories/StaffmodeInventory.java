@@ -1,8 +1,8 @@
 package me.thesquadmc.inventories;
 
 import me.thesquadmc.Main;
-import me.thesquadmc.utils.enums.InventorySize;
-import me.thesquadmc.utils.ItemBuilder;
+import me.thesquadmc.utils.inventory.InventorySize;
+import me.thesquadmc.utils.inventory.ItemBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -18,7 +18,7 @@ public final class StaffmodeInventory {
 	}
 
 	public void buildStaffpanel(Player player) {
-		Inventory inventory = Bukkit.createInventory(null, InventorySize.THREE_LINE.getSize(), "CONTROL PANEL");
+		Inventory inventory = Bukkit.createInventory(null, InventorySize.THREE_LINE, "CONTROL PANEL");
 		if (player.getGameMode() == GameMode.SPECTATOR) {
 			inventory.setItem(4, new ItemBuilder(Material.COOKED_BEEF).name("&e&lSURVIVAL MODE").build());
 		} else {

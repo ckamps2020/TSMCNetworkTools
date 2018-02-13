@@ -3,7 +3,7 @@ package me.thesquadmc.commands;
 import me.thesquadmc.Main;
 import me.thesquadmc.utils.PlayerUtils;
 import me.thesquadmc.utils.enums.Rank;
-import me.thesquadmc.utils.StringUtils;
+import me.thesquadmc.utils.msgs.CC;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -31,7 +31,7 @@ public final class DisguisePlayerCommand implements CommandExecutor {
 						Bukkit.getScheduler().runTaskLater(main, new Runnable() {
 							@Override
 							public void run() {
-								player.sendMessage(StringUtils.msg("&e&lDISGUISE &6■ &7You have disguised the entire server to &e" + name));
+								player.sendMessage(CC.translate("&e&lDISGUISE &6■ &7You have disguised the entire server to &e" + name));
 								for (Player p : Bukkit.getOnlinePlayers()) {
 									PlayerUtils.setSameSkin(p);
 								}
@@ -42,14 +42,14 @@ public final class DisguisePlayerCommand implements CommandExecutor {
 						if (t != null) {
 							PlayerUtils.setSkin(t, name);
 						} else {
-							player.sendMessage(StringUtils.msg("&cThat player is offline or doesnt exist!"));
+							player.sendMessage(CC.translate("&cThat player is offline or doesnt exist!"));
 						}
 					}
 				} else {
-					player.sendMessage(StringUtils.msg("&cUsage: /disguiseplayer <player/all> <name>"));
+					player.sendMessage(CC.translate("&cUsage: /disguiseplayer <player/all> <name>"));
 				}
 			} else {
-				player.sendMessage(StringUtils.msg("&cYou do not have permission to use this command!"));
+				player.sendMessage(CC.translate("&cYou do not have permission to use this command!"));
 			}
 		}
 		return true;
