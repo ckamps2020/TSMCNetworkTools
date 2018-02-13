@@ -54,6 +54,8 @@ public final class Hologram {
 		armorStand.setCustomNameVisible(true);
 	}
 
+	//TODO: Make multi-line
+
 	public void updateText(String message) {
 		ArmorStand armorStand = (ArmorStand) entity;
 		text = message;

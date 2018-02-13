@@ -383,11 +383,13 @@ public final class StaffmodeListener implements Listener {
 						player.performCommand("freeze " + target.getName());
 					} else if (stack.getItemMeta() != null && stack.getItemMeta().getDisplayName().toUpperCase().contains("CPS CHECKER")) {
 						if (!cps.containsKey(player.getUniqueId())) {
-							player.sendMessage(CC.translate("&e&lSTAFF &6■ &7Calculating… printing CPS in &e5&7"));
-							timeRemaining.put(player.getUniqueId(), 5);
-							Map<UUID, Integer> map = new HashMap<>();
-							map.put(target.getUniqueId(), 0);
-							cps.put(player.getUniqueId(), map);
+							if (target.getUniqueId() != null && target.getName() != null) {
+								player.sendMessage(CC.translate("&e&lSTAFF &6■ &7Calculating… printing CPS in &e5&7"));
+								timeRemaining.put(player.getUniqueId(), 5);
+								Map<UUID, Integer> map = new HashMap<>();
+								map.put(target.getUniqueId(), 0);
+								cps.put(player.getUniqueId(), map);
+							}
 						} else {
 							player.sendMessage(CC.translate("&cYou are already calculating someones CPS!"));
 						}

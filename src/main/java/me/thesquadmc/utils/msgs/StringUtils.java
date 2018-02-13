@@ -1,7 +1,5 @@
 package me.thesquadmc.utils.msgs;
 
-import me.thesquadmc.utils.msgs.CC;
-import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -10,8 +8,6 @@ import net.md_5.bungee.api.chat.TextComponent;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -155,18 +151,7 @@ public final class StringUtils {
 				.replace("0", "o")
 				.replace("5", "s")
 				.replace("8", "b")
-				.replace("(dot)", ".")
-				.replace("[dot]", ".")
-				.replace(",", ".")
-				.replace("[.]", ".")
-				.replace("{.}", ".")
-				.replace("{dot}", ".")
-				.replace("[,]", ".")
 				.trim();
-
-		if (msg.startsWith("/")) {
-			return false;
-		}
 
 		for (String word : message.trim().split(" ")) {
 			boolean continueIt = false;
@@ -1110,7 +1095,7 @@ public final class StringUtils {
 		curses.add(".org");
 		curses.add("mc-");
 		curses.add("us.");
-		curses.add("us.");
+		curses.add(".us");
 		curses.add("pixel.");
 		curses.add("jogar.");
 		curses.add("gg.");
@@ -1122,6 +1107,40 @@ public final class StringUtils {
 		curses.add(".eu");
 		curses.add("sb-");
 		curses.add(".cz");
+		curses.add("play,");
+		curses.add("pvp,");
+		curses.add("mc,");
+		curses.add(",net");
+		curses.add(",nu");
+		curses.add(",me");
+		curses.add(",uk");
+		curses.add(",org");
+		curses.add("mc-");
+		curses.add("us,");
+		curses.add(",us");
+		curses.add("pixel,");
+		curses.add("jogar,");
+		curses.add("gg,");
+		curses.add(",gg");
+		curses.add("na,");
+		curses.add(",na");
+		curses.add(",na");
+		curses.add(",gs");
+		curses.add(",eu");
+		curses.add("sb-");
+		curses.add(",cz");
+
+		curses.add("(dot)");
+		curses.add("[dot]");
+		curses.add("{.}");
+		curses.add("{dot}");
+		curses.add(",com");
+		curses.add("mc,");
+		curses.add("[,]");
+		curses.add(">>>");
+		curses.add("<<<");
+		curses.add("mc_");
+		curses.add("_net");
 	}
 
 }
