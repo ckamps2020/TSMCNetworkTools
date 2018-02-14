@@ -7,6 +7,7 @@ import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.enums.RedisArg;
 import me.thesquadmc.utils.enums.RedisChannels;
 import me.thesquadmc.utils.msgs.CC;
+import me.thesquadmc.utils.server.Multithreading;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -36,10 +37,10 @@ public final class StopCommand implements CommandExecutor {
 						stringBuilder.append(args[i] + " ");
 					}
 					player.sendMessage(CC.translate("&e&lSTOP &6■ &7You have stopped &e" + server + " &7for &e" + stringBuilder.toString() + "&7"));
-					Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
+					Multithreading.runAsync(new Runnable() {
 						@Override
 						public void run() {
-							try (Jedis jedis = main.getPool().getResource()) {
+							try (Jedis jedis = Main.getMain().getPool().getResource()) {
 								JedisTask.withName(UUID.randomUUID().toString())
 										.withArg(RedisArg.SERVER.getArg(), server.toUpperCase())
 										.withArg(RedisArg.MESSAGE.getArg(), stringBuilder.toString())

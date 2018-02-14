@@ -20,7 +20,7 @@ public class RestartTimeCommand implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (sender instanceof Player) {
 			Player player = (Player) sender;
-			int i = 720 / main.getRestartTime();
+			int i = 720 - main.getRestartTime();
 			player.sendMessage(CC.translate("&e&lRESTART &6■ &7Server restarts in &e" + TimeUtils.convertPlaytime(i)));
 		}
 		return true;

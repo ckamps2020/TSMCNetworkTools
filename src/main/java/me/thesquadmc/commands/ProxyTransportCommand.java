@@ -30,13 +30,15 @@ public final class ProxyTransportCommand implements CommandExecutor {
 			if (PlayerUtils.isEqualOrHigherThen(player, Rank.TRAINEE)) {
 				if (args.length == 1) {
 					String server = args[0];
-					player.sendMessage(CC.translate("&e&lREPORT &6■ &7Attempting to send you to &e" + server + "&7..."));
+					player.sendMessage(CC.translate("&e&lTRANSPORT &6■ &7Attempting to send you to &e" + server + "&7..."));
 					try (Jedis jedis = main.getPool().getResource()) {
 						JedisTask.withName(UUID.randomUUID().toString())
 								.withArg(RedisArg.PLAYER.getArg(), player.getName())
 								.withArg(RedisArg.SERVER.getArg(), server)
 								.send(RedisChannels.TRANSPORT.getChannelName(), jedis);
 					}
+				} else {
+					player.sendMessage(CC.translate("&cUsage: /proxytransport <server>"));
 				}
 			} else {
 				player.sendMessage(CC.translate("&cYou do not have permission to use this command!"));

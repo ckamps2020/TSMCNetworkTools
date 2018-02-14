@@ -11,6 +11,7 @@ import me.thesquadmc.utils.msgs.CC;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -62,12 +63,18 @@ public final class ReportListener implements Listener {
 					Bukkit.broadcastMessage(CC.translate("&e&lRESTART &6■ &7Daily server restart in &e5&7min"));
 					Bukkit.broadcastMessage(" ");
 					Bukkit.broadcastMessage(" ");
+					for (Player player : Bukkit.getOnlinePlayers()) {
+						player.playSound(player.getLocation(), Sound.NOTE_PLING, 1.0f, 1.0f);
+					}
 				} else if (main.getRestartTime() == 719) {
 					Bukkit.broadcastMessage(" ");
 					Bukkit.broadcastMessage(" ");
 					Bukkit.broadcastMessage(CC.translate("&e&lRESTART &6■ &7Daily server restart in &e1&7min"));
 					Bukkit.broadcastMessage(" ");
 					Bukkit.broadcastMessage(" ");
+					for (Player player : Bukkit.getOnlinePlayers()) {
+						player.playSound(player.getLocation(), Sound.NOTE_PLING, 1.0f, 1.0f);
+					}
 				}
 			}
 		}
