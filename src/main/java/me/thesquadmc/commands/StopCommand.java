@@ -48,7 +48,7 @@ public final class StopCommand implements CommandExecutor {
 						}
 					});
 				} else {
-					player.sendMessage(CC.translate("&cUsage: /stop <servername> <reason>"));
+					player.sendMessage(CC.translate("&cUsage: /stop <servertype|server|all> <reason>"));
 				}
 			} else {
 				player.sendMessage(CC.translate("&cYou do not have permission to use this command!"));

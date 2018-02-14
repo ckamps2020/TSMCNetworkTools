@@ -276,7 +276,7 @@ public final class RedisHandler {
 			}
 		} else if (channel.equalsIgnoreCase(RedisChannels.STOP.getChannelName())) {
 			String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
-			if (server.equalsIgnoreCase(Bukkit.getServerName())) {
+			if (server.equalsIgnoreCase("ALL") || Bukkit.getServerName().toUpperCase().contains(server)) {
 				String msg = String.valueOf(data.get(RedisArg.MESSAGE.getArg()));
 				Bukkit.broadcastMessage(CC.translate("&7"));
 				Bukkit.broadcastMessage(CC.translate("&7"));

@@ -136,6 +136,7 @@ public final class Main extends JavaPlugin {
 		getCommand("ping").setExecutor(new PingCommand(this));
 		getCommand("status").setExecutor(new StatusCommand(this));
 		getCommand("proxytransport").setExecutor(new ProxyTransportCommand(this));
+		getCommand("restarttime").setExecutor(new RestartTimeCommand(this));
 		getServer().getPluginManager().registerEvents(new ChatListener(), this);
 		getServer().getPluginManager().registerEvents(new SettingsListener(), this);
 		getServer().getPluginManager().registerEvents(new LaunchListener(), this);
@@ -237,7 +238,7 @@ public final class Main extends JavaPlugin {
 				}
 			}
 		});
-		ServerUtils.updateServerState(ServerState.ONLINE);
+		//ServerUtils.updateServerState(ServerState.ONLINE);
 		System.out.println("[NetworkTools] Plugin started up and ready to go!");
 	}
 
