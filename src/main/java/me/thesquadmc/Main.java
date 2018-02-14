@@ -52,6 +52,7 @@ public final class Main extends JavaPlugin {
 	private Jedis j;
 	private DatabaseManager MySQL;
 	private ThreadPoolExecutor threadPoolExecutor;
+	private int restartTime = 0;
 
 	private int chatslow = 0;
 	private boolean chatSilenced = false;
@@ -246,6 +247,14 @@ public final class Main extends JavaPlugin {
 		pool.getResource().disconnect();
 		j.disconnect();
 		System.out.println("[NetworkTools] Shut down! Cya :D");
+	}
+
+	public int getRestartTime() {
+		return restartTime;
+	}
+
+	public void setRestartTime(int restartTime) {
+		this.restartTime = restartTime;
 	}
 
 	public HologramManager getHologramManager() {

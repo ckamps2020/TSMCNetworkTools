@@ -44,6 +44,32 @@ public final class ReportListener implements Listener {
 					}
 				}
 			}
+		} else if (e.getUpdateType() == UpdateType.MIN) {
+			if (Bukkit.getServerName().toUpperCase().contains("HUB")
+					|| Bukkit.getServerName().toUpperCase().contains("SKYBLOCK")
+					|| Bukkit.getServerName().toUpperCase().contains("FACTIONS")
+					|| Bukkit.getServerName().toUpperCase().contains("PRISON")
+					|| Bukkit.getServerName().toUpperCase().contains("TROLLWARS")) {
+				main.setRestartTime(main.getRestartTime() + 1);
+				if (main.getRestartTime() == 720) {
+					for (Player player : Bukkit.getOnlinePlayers()) {
+						player.kickPlayer(CC.translate("&e&lRESTART &6■ &7Daily server restart"));
+					}
+					Bukkit.shutdown();
+				} else if (main.getRestartTime() == 715) {
+					Bukkit.broadcastMessage(" ");
+					Bukkit.broadcastMessage(" ");
+					Bukkit.broadcastMessage(CC.translate("&e&lRESTART &6■ &7Daily server restart in &e5&7min"));
+					Bukkit.broadcastMessage(" ");
+					Bukkit.broadcastMessage(" ");
+				} else if (main.getRestartTime() == 719) {
+					Bukkit.broadcastMessage(" ");
+					Bukkit.broadcastMessage(" ");
+					Bukkit.broadcastMessage(CC.translate("&e&lRESTART &6■ &7Daily server restart in &e1&7min"));
+					Bukkit.broadcastMessage(" ");
+					Bukkit.broadcastMessage(" ");
+				}
+			}
 		}
 	}
 
