@@ -137,6 +137,7 @@ public final class Main extends JavaPlugin {
 		getCommand("status").setExecutor(new StatusCommand(this));
 		getCommand("proxytransport").setExecutor(new ProxyTransportCommand(this));
 		getCommand("restarttime").setExecutor(new RestartTimeCommand(this));
+		getCommand("apply").setExecutor(new ApplyCommand(this));
 		getServer().getPluginManager().registerEvents(new ChatListener(), this);
 		getServer().getPluginManager().registerEvents(new SettingsListener(), this);
 		getServer().getPluginManager().registerEvents(new LaunchListener(), this);

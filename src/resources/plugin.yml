@@ -64,3 +64,4 @@ commands:
         aliases: [pt, ptransport, takemethere]
     restarttime:
         aliases: [rt]
+    apply:

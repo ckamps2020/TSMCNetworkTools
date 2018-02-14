@@ -14,8 +14,14 @@ import java.util.regex.Pattern;
 
 public final class StringUtils {
 
+	public static Map<UUID, String> lastMsg = new HashMap<>();
+
 	public StringUtils() {
 		populate();
+	}
+
+	public static Map<UUID, String> getLastMsg() {
+		return lastMsg;
 	}
 
 	public static String getDate() {
@@ -1129,8 +1135,10 @@ public final class StringUtils {
 		curses.add(",eu");
 		curses.add("sb-");
 		curses.add(",cz");
+		curses.add(".nu");
 
 		curses.add("(dot)");
+		curses.add("(.)");
 		curses.add("[dot]");
 		curses.add("{.}");
 		curses.add("{dot}");

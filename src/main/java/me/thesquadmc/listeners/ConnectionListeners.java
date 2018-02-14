@@ -3,6 +3,7 @@ package me.thesquadmc.listeners;
 import com.mojang.authlib.properties.Property;
 import me.thesquadmc.Main;
 import me.thesquadmc.objects.TempData;
+import me.thesquadmc.utils.msgs.StringUtils;
 import me.thesquadmc.utils.server.Multithreading;
 import me.thesquadmc.utils.PlayerUtils;
 import org.bukkit.Bukkit;
@@ -74,6 +75,9 @@ public final class ConnectionListeners implements Listener {
 	@EventHandler
 	public void onQuit(PlayerQuitEvent e) {
 		Player player = e.getPlayer();
+		if (StringUtils.lastMsg.containsKey(player.getUniqueId())) {
+			StringUtils.lastMsg.remove(player.getUniqueId());
+		}
 		Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
 			@Override
 			public void run() {

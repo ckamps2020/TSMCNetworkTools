@@ -33,12 +33,21 @@ public final class FilterListener implements Listener {
 				if (main.getChatslow() != 0) {
 					if (!slowchat.contains(player.getUniqueId())) {
 						String msg = e.getMessage();
+						if (StringUtils.lastMsg.containsKey(player.getUniqueId())) {
+							if (msg.equalsIgnoreCase(StringUtils.lastMsg.get(player.getUniqueId()))) {
+								e.setCancelled(true);
+								player.sendMessage(CC.translate("&e&lFILTER &6■ &7You are not allowed to send the same message twice!"));
+								return;
+							}
+						}
 						String message = StringUtils.fixStringForCaps(msg);
 						e.setMessage(message);
 						if (StringUtils.shouldFilter(msg)) {
 							e.setCancelled(true);
 							player.sendMessage(CC.translate("&e&lFILTER &6■ &7You are not allowed to say that!"));
+							return;
 						}
+						StringUtils.lastMsg.put(player.getUniqueId(), message);
 						slowchat.add(player.getUniqueId());
 						Bukkit.getScheduler().runTaskLater(main, new Runnable() {
 							@Override
