@@ -542,14 +542,18 @@ public final class StringUtils {
 		curses.add("mutherfucker");
 		curses.add("n1gga");
 		curses.add("n1gger");
+		curses.add("niga");
 		curses.add("nazi");
 		curses.add("nigg3r");
 		curses.add("nigg4h");
 		curses.add("nigga");
+		curses.add("nigg");
 		curses.add("niggah");
 		curses.add("niggas");
 		curses.add("niggaz");
 		curses.add("nigger");
+		curses.add("niggger");
+		curses.add("nigggger");
 		curses.add("niggre");
 		curses.add("niggers");
 
