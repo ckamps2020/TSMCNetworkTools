@@ -49,10 +49,10 @@ public final class StopCommand implements CommandExecutor {
 						}
 					});
 				} else {
-					player.sendMessage(CC.translate("&cUsage: /stop <servertype|server|all> <reason>"));
+					player.sendMessage(CC.translate("&e&lSTOP &6■ &7Usage: /stop <servertype|server|all> <reason>"));
 				}
 			} else {
-				player.sendMessage(CC.translate("&cYou do not have permission to use this command!"));
+				player.sendMessage(CC.translate("&e&lPERMISSIONS &6■ &7You do not have permission to use this command!"));
 			}
 		} else {
 			Bukkit.shutdown();

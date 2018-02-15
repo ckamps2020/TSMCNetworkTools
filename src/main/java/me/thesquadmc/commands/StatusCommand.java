@@ -11,6 +11,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.io.File;
+
 public final class StatusCommand implements CommandExecutor {
 
 
@@ -36,10 +38,13 @@ public final class StatusCommand implements CommandExecutor {
 				player.sendMessage(CC.translate("&e&lSTATUS &6■ &7Largest Pool Size: &e" + ServerUtils.getLargestPoolSize()));
 				player.sendMessage(CC.translate("&e&lSTATUS &6■ &7Process CPU Load: &e" + ServerUtils.getProcessCpuLoadFormatted()));
 				player.sendMessage(CC.translate("&e&lSTATUS &6■ &7System CPU Load: &e" + ServerUtils.getSystemCpuLoadFormatted()));
+				player.sendMessage(CC.translate("&e&lSTATUS &6■ &7Available Logical Processors: &e" + Runtime.getRuntime().availableProcessors()));
+				player.sendMessage(CC.translate("&e&lSTATUS &6■ &7Available Hard Drive Space: &e" + Math.round(new File("/").getTotalSpace() / (1024.0 * 1024.0 * 1024.0)) + "GB"));
+				player.sendMessage(CC.translate("&e&lSTATUS &6■ &7Request Was Served On Thread: &e" + Thread.currentThread().getName()));
 				player.sendMessage(CC.translate("&e&lSTATUS &6■ &7Uptime: &e" + TimeUtils.millisToRoundedTime(System.currentTimeMillis() - main.getStartup())));
 				player.sendMessage(" ");
 			} else {
-				player.sendMessage(CC.translate("&cYou do not have permission to use this command!"));
+				player.sendMessage(CC.translate("&e&lPERMISSIONS &6■ &7You do not have permission to use this command!"));
 			}
 		}
 		return false;

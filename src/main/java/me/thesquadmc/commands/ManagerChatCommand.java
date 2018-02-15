@@ -46,7 +46,7 @@ public final class ManagerChatCommand implements CommandExecutor {
 					}
 				} else {
 					if (!tempData.isManagerchatEnabled()) {
-						player.sendMessage(CC.translate("&cPlease enable managerchat first!"));
+						player.sendMessage(CC.translate("&e&lMANAGER CHAT &6■ &7Please enable managerchat first!"));
 						return true;
 					}
 					StringBuilder stringBuilder = new StringBuilder();
@@ -69,7 +69,7 @@ public final class ManagerChatCommand implements CommandExecutor {
 					});
 				}
 			} else {
-				player.sendMessage(CC.translate("&cYou do not have permission to use this command!"));
+				player.sendMessage(CC.translate("&e&lPERMISSIONS &6■ &7You do not have permission to use this command!"));
 			}
 		}
 		return true;

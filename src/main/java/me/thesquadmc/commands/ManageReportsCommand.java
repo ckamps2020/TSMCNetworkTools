@@ -36,13 +36,13 @@ public final class ManageReportsCommand implements CommandExecutor {
 						tempData.setReportsEnabled(false);
 						player.sendMessage(CC.translate("&e&lREPORT &6■ &7You have toggle reports &eoff"));
 					} else {
-						player.sendMessage(CC.translate("&cUsage: /reports (on/off)"));
+						player.sendMessage(CC.translate("&e&lREPORT &6■ &7Usage: /reports (on/off)"));
 					}
 				} else {
-					player.sendMessage(CC.translate("&cUsage: /reports (on/off)"));
+					player.sendMessage(CC.translate("&e&lREPORT &6■ &7Usage: /reports (on/off)"));
 				}
 			} else {
-				player.sendMessage(CC.translate("&cYou do not have permission to use this command!"));
+				player.sendMessage(CC.translate("&e&lPERMISSIONS &6■ &7You do not have permission to use this command!"));
 			}
 		}
 		return true;

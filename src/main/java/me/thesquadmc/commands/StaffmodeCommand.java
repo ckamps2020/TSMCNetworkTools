@@ -33,7 +33,7 @@ public final class StaffmodeCommand implements CommandExecutor {
 			TempData tempData = main.getTempDataManager().getTempData(player.getUniqueId());
 			if (PlayerUtils.isEqualOrHigherThen(player, Rank.MOD)) {
 				if (Bukkit.getServerName().toUpperCase().contains("HUB")) {
-					player.sendMessage(CC.translate("&cYou are not allowed to use this command here!"));
+					player.sendMessage(CC.translate("&e&lSTAFFMODE &6■ &7You are not allowed to use this command here!"));
 					return true;
 				}
 				if (!staffmode.containsKey(player.getUniqueId())) {
@@ -47,7 +47,7 @@ public final class StaffmodeCommand implements CommandExecutor {
 					player.getInventory().setItem(4, new ItemBuilder(Material.INK_SACK, 10).name("&e&lToggle Vanish &7off").lore("&7Toggle vanish on or off").build());
 					player.getInventory().setItem(6, new ItemBuilder(Material.DIAMOND_SWORD).name("&e&lCPS Checker").lore("&7Right-Click the target to check their CPS").build());
 					player.getInventory().setItem(8, new ItemBuilder(Material.CHEST).name("&e&lPlace Chest").lore("&7Place a chest down at location").build());
-					player.sendMessage(CC.translate("&e&lSTAFF &6■  &7Staff mode has been &eenabled&7"));
+					player.sendMessage(CC.translate("&e&lSTAFFMODE &6■  &7Staff mode has been &eenabled&7"));
 				} else {
 					player.getInventory().clear();
 					for (ItemStack itemStack : staffmode.get(player.getUniqueId())) {
@@ -60,10 +60,10 @@ public final class StaffmodeCommand implements CommandExecutor {
 					tempData.setVanished(false);
 					player.sendMessage(CC.translate("&e&lVANISH &6■ &7You toggled vanish &eoff&7! Everyone will be able to see you"));
 					player.setGameMode(GameMode.SURVIVAL);
-					player.sendMessage(CC.translate("&e&lSTAFF &6■  &7Staff mode has been &edisabled&7"));
+					player.sendMessage(CC.translate("&e&lSTAFFMODE &6■  &7Staff mode has been &edisabled&7"));
 				}
 			} else {
-				player.sendMessage(CC.translate("&cYou do not have permission to use this command!"));
+				player.sendMessage(CC.translate("&e&lPERMISSIONS &6■ &7You do not have permission to use this command!"));
 			}
 		}
 		return true;

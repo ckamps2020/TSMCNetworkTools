@@ -29,7 +29,7 @@ public final class InvseeCommand implements CommandExecutor {
 			Player player = (Player) sender;
 			if (PlayerUtils.isEqualOrHigherThen(player, Rank.MOD)) {
 				if (Bukkit.getServerName().toUpperCase().contains("HUB")) {
-					player.sendMessage(CC.translate("&cYou are not allowed to use this command here!"));
+					player.sendMessage(CC.translate("&e&lINVSEE &6■ &7You are not allowed to use this command here!"));
 					return true;
 				}
 				if (args.length == 1) {
@@ -37,13 +37,13 @@ public final class InvseeCommand implements CommandExecutor {
 					if (t != null) {
 						player.openInventory(t.getInventory());
 					} else {
-						player.sendMessage(CC.translate("&cThat player is offline or does not exist!"));
+						player.sendMessage(CC.translate("&e&lINVSEE &6■ &7That player is offline or does not exist!"));
 					}
 				} else {
-					player.sendMessage(CC.translate("&cUsage: /invsee <player>"));
+					player.sendMessage(CC.translate("&e&lINVSEE &6■ &7Usage: /invsee <player>"));
 				}
 			} else {
-				player.sendMessage(CC.translate("&cYou do not have permission to use this command!"));
+				player.sendMessage(CC.translate("&e&lPERMISSIONS &6■ &7You do not have permission to use this command!"));
 			}
 		}
 		return true;

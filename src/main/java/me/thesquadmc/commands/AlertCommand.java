@@ -50,10 +50,10 @@ public final class AlertCommand implements CommandExecutor {
 						}
 					});
 				} else {
-					player.sendMessage(CC.translate("&cUsage: /alert <servertype|server|all> <message>"));
+					player.sendMessage(CC.translate("&e&lALERT &6■ &7Usage: /alert <servertype|server|all> <message>"));
 				}
 			} else {
-				player.sendMessage(CC.translate("&cYou do not have permission to use this command!"));
+				player.sendMessage(CC.translate("&e&lPERMISSIONS &6■ &7You do not have permission to use this command!"));
 			}
 		}
 		return true;

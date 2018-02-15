@@ -38,10 +38,10 @@ public final class WhitelistCommand implements CommandExecutor {
 						}
 						player.sendMessage(CC.translate("&e&lWhitelisted users &7(" + Bukkit.getWhitelistedPlayers().size() + "): &f" + stringBuilder.toString()));
 					} else {
-						player.sendMessage(CC.translate("&cUsage: /whitelist <servertype|server|all> <on|off> <reason>"));
-						player.sendMessage(CC.translate("&cUsage: /whitelist add <player> <servertype|server|all>"));
-						player.sendMessage(CC.translate("&cUsage: /whitelist remove <player> <servertype|server|all>"));
-						player.sendMessage(CC.translate("&cUsage: /whitelist list"));
+						player.sendMessage(CC.translate("&e&lWHITELIST &6■ &7Usage: /whitelist <servertype|server|all> <on|off> <reason>"));
+						player.sendMessage(CC.translate("&e&lWHITELIST &6■ &7Usage: /whitelist add <player> <servertype|server|all>"));
+						player.sendMessage(CC.translate("&e&lWHITELIST &6■ &7Usage: /whitelist remove <player> <servertype|server|all>"));
+						player.sendMessage(CC.translate("&e&lWHITELIST &6■ &7Usage: /whitelist list"));
 					}
 				} else if (args.length >= 3) {
 					String a = args[0];
@@ -112,13 +112,13 @@ public final class WhitelistCommand implements CommandExecutor {
 						});
 					}
 				} else {
-					player.sendMessage(CC.translate("&cUsage: /whitelist <servertype|server|all> <on|off> <reason>"));
-					player.sendMessage(CC.translate("&cUsage: /whitelist add <player> <servertype|server|all>"));
-					player.sendMessage(CC.translate("&cUsage: /whitelist remove <player> <servertype|server|all>"));
-					player.sendMessage(CC.translate("&cUsage: /whitelist list"));
+					player.sendMessage(CC.translate("&e&lWHITELIST &6■ &7Usage: /whitelist <servertype|server|all> <on|off> <reason>"));
+					player.sendMessage(CC.translate("&e&lWHITELIST &6■ &7Usage: /whitelist add <player> <servertype|server|all>"));
+					player.sendMessage(CC.translate("&e&lWHITELIST &6■ &7Usage: /whitelist remove <player> <servertype|server|all>"));
+					player.sendMessage(CC.translate("&e&lWHITELIST &6■ &7Usage: /whitelist list"));
 				}
 			} else {
-				player.sendMessage(CC.translate("&cYou do not have permission to use this command!"));
+				player.sendMessage(CC.translate("&e&lPERMISSIONS &6■ &7You do not have permission to use this command!"));
 			}
 		}
 		return true;

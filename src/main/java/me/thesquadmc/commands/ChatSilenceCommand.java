@@ -35,7 +35,7 @@ public final class ChatSilenceCommand implements CommandExecutor {
 					Bukkit.broadcastMessage(" ");
 				}
 			} else {
-				player.sendMessage(CC.translate("&cYou do not have permission to use this command!"));
+				player.sendMessage(CC.translate("&e&lPERMISSIONS &6■ &7You do not have permission to use this command!"));
 			}
 		}
 		return true;

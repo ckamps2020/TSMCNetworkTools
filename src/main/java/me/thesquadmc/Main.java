@@ -138,6 +138,7 @@ public final class Main extends JavaPlugin {
 		getCommand("proxytransport").setExecutor(new ProxyTransportCommand(this));
 		getCommand("restarttime").setExecutor(new RestartTimeCommand(this));
 		getCommand("apply").setExecutor(new ApplyCommand(this));
+		getCommand("discord").setExecutor(new DiscordCommand(this));
 		getServer().getPluginManager().registerEvents(new ChatListener(), this);
 		getServer().getPluginManager().registerEvents(new SettingsListener(), this);
 		getServer().getPluginManager().registerEvents(new LaunchListener(), this);

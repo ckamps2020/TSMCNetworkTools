@@ -46,7 +46,7 @@ public final class StaffChatCommand implements CommandExecutor {
 					}
 				} else {
 					if (!tempData.isStaffchatEnabled()) {
-						player.sendMessage(CC.translate("&cPlease enable staffchat first!"));
+						player.sendMessage(CC.translate("&e&lSTAFF CHAT &6■ &7Please enable staffchat first!"));
 						return true;
 					}
 					StringBuilder stringBuilder = new StringBuilder();
@@ -70,7 +70,7 @@ public final class StaffChatCommand implements CommandExecutor {
 					});
 				}
 			} else {
-				player.sendMessage(CC.translate("&cYou do not have permission to use this command!"));
+				player.sendMessage(CC.translate("&e&lPERMISSIONS &6■ &7You do not have permission to use this command!"));
 			}
 		}
 		return true;

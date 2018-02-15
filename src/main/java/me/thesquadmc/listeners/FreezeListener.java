@@ -91,7 +91,7 @@ public final class FreezeListener implements Listener {
 				t.closeInventory();
 				main.getFrozenInventory().getScreenshare().put(t.getUniqueId(), discordName);
 				main.getFrozenInventory().buildScreenshareInventory(t, discordName);
-				e.getPlayer().sendMessage(CC.translate("&9Thanks! Informing the frozen player now"));
+				e.getPlayer().sendMessage(CC.translate("&e&lFREEZE &6■ &7Thanks! Informing the frozen player now"));
 			} else {
 				main.getFrozenInventory().getTyping().remove(e.getPlayer().getUniqueId());
 			}
@@ -111,7 +111,7 @@ public final class FreezeListener implements Listener {
 			}
 			if (e.getSlot() == 11) {
 				player.closeInventory();
-				player.sendMessage(CC.translate("&ePlease enter your discord name in chat now:"));
+				player.sendMessage(CC.translate("&e&lFREEZE &6■ &7Please enter your discord name in chat now:"));
 				main.getFrozenInventory().getTyping().put(player.getUniqueId(), t);
 			} else if (e.getSlot() == 13) {
 				PlayerUtils.unfreezePlayer(t);

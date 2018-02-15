@@ -44,10 +44,10 @@ public final class LookupCommand implements CommandExecutor {
 						player.sendMessage(CC.translate("&e&lLOOKUP&6■ &7That player is not online"));
 					}
 				} else {
-					player.sendMessage(CC.translate("&cUsage: /lookup <player>"));
+					player.sendMessage(CC.translate("&e&lLOOKUP &6■ &7Usage: /lookup <player>"));
 				}
 			} else {
-				player.sendMessage(CC.translate("&cYou do not have permission to use this command!"));
+				player.sendMessage(CC.translate("&e&lPERMISSIONS &6■ &7You do not have permission to use this command!"));
 			}
 		}
 		return true;

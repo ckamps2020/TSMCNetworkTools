@@ -32,7 +32,7 @@ public final class MonitorCommand implements CommandExecutor {
 					player.sendMessage(CC.translate("&e&lMONITOR &6■ &7You toggled Network Monitor &eoff&7!"));
 				}
 			} else {
-				player.sendMessage(CC.translate("&cYou do not have permission to use this command!"));
+				player.sendMessage(CC.translate("&e&lPERMISSIONS &6■ &7You do not have permission to use this command!"));
 			}
 		}
 		return true;

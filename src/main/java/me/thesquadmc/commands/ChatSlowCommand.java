@@ -37,13 +37,13 @@ public final class ChatSlowCommand implements CommandExecutor {
 						}
 						main.setChatslow(i);
 					} catch (Exception e) {
-						player.sendMessage(CC.translate("&cThat is not a valid number!"));
+						player.sendMessage(CC.translate("&e&lCHAT &6■ &7That is not a valid number!"));
 					}
 				} else {
-					player.sendMessage(CC.translate("&cUsage: /chatslow <time in seconds>"));
+					player.sendMessage(CC.translate("&e&lCHAT &6■ &7Usage: /chatslow <time in seconds>"));
 				}
 			} else {
-				player.sendMessage(CC.translate("&cYou do not have permission to use this command!"));
+				player.sendMessage(CC.translate("&e&lPERMISSIONS &6■ &7You do not have permission to use this command!"));
 			}
 		}
 		return true;

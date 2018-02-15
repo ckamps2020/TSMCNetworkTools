@@ -26,7 +26,7 @@ public final class XrayVerboseCommand implements CommandExecutor {
 			TempData tempData = main.getTempDataManager().getTempData(player.getUniqueId());
 			if (PlayerUtils.isEqualOrHigherThen(player, Rank.TRAINEE)) {
 				if (Bukkit.getServerName().toUpperCase().contains("HUB")) {
-					player.sendMessage(CC.translate("&cYou are not allowed to use this command here!"));
+					player.sendMessage(CC.translate("&8[&4&lAntiCheat&8] &4[XRAY] &fYou are not allowed to use this command here!"));
 					return true;
 				}
 				if (!tempData.isXray()) {
@@ -37,7 +37,7 @@ public final class XrayVerboseCommand implements CommandExecutor {
 					player.sendMessage(CC.translate("&8[&4&lAntiCheat&8] &4[XRAY] &fYou disabled Xray Verbose"));
 				}
 			} else {
-				player.sendMessage(CC.translate("&cYou do not have permission to use this command!"));
+				player.sendMessage(CC.translate("&e&lPERMISSIONS &6■ &7You do not have permission to use this command!"));
 			}
 		}
 		return true;

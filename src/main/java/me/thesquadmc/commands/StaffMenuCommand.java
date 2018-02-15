@@ -25,10 +25,10 @@ public final class StaffMenuCommand implements CommandExecutor {
 				if (StaffmodeCommand.getStaffmode().containsKey(player.getUniqueId())) {
 					main.getStaffmodeInventory().buildStaffpanel(player);
 				} else {
-					player.sendMessage(CC.translate("&cYou are not in staffmode!"));
+					player.sendMessage(CC.translate("&e&lSTAFFMODE &6■ &7You are not in staffmode!"));
 				}
 			} else {
-				player.sendMessage(CC.translate("&cYou do not have permission to use this command!"));
+				player.sendMessage(CC.translate("&e&lPERMISSIONS &6■ &7You do not have permission to use this command!"));
 			}
 		}
 		return true;

@@ -27,7 +27,7 @@ public final class FreezeCommand implements CommandExecutor {
 			Player player = (Player) sender;
 			if (PlayerUtils.isEqualOrHigherThen(player, Rank.MOD)) {
 				if (Bukkit.getServerName().toUpperCase().contains("HUB")) {
-					player.sendMessage(CC.translate("&cYou are not allowed to use this command here!"));
+					player.sendMessage(CC.translate("&e&lFREEZE &6■ &7You are not allowed to use this command here!"));
 					return true;
 				}
 				if (args.length == 1) {
@@ -44,19 +44,19 @@ public final class FreezeCommand implements CommandExecutor {
 								main.getFrozenInventory().getViewing().put(player.getUniqueId(), t.getUniqueId());
 								player.sendMessage(CC.translate("&e&lFREEZE &6■ &7You have frozen &e" + t.getName() + "&7!"));
 							} else {
-								player.sendMessage(CC.translate("&cThat player is already frozen!"));
+								player.sendMessage(CC.translate("&e&lFREEZE &6■ &7That player is already frozen!"));
 							}
 						} else {
-							player.sendMessage(CC.translate("&cYou are not allowed to freeze another staff member!"));
+							player.sendMessage(CC.translate("&e&lFREEZE &6■ &7You are not allowed to freeze another staff member!"));
 						}
 					} else {
-						player.sendMessage(CC.translate("&cThat player does not exist or is offline!"));
+						player.sendMessage(CC.translate("&e&lFREEZE &6■ &7That player does not exist or is offline!"));
 					}
 				} else {
-					player.sendMessage(CC.translate("&cUsage: /freeze <player>"));
+					player.sendMessage(CC.translate("&e&lFREEZE &6■ &7Usage: /freeze <player>"));
 				}
 			} else {
-				player.sendMessage(CC.translate("&cYou do not have permission to use this command!"));
+				player.sendMessage(CC.translate("&e&lPERMISSIONS &6■ &7You do not have permission to use this command!"));
 			}
 		}
 		return true;

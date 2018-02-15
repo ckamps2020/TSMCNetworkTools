@@ -42,14 +42,14 @@ public final class DisguisePlayerCommand implements CommandExecutor {
 						if (t != null) {
 							PlayerUtils.setSkin(t, name);
 						} else {
-							player.sendMessage(CC.translate("&cThat player is offline or doesnt exist!"));
+							player.sendMessage(CC.translate("&e&lDISGUISE &6■ &7That player is offline or doesnt exist!"));
 						}
 					}
 				} else {
-					player.sendMessage(CC.translate("&cUsage: /disguiseplayer <player/all> <name>"));
+					player.sendMessage(CC.translate("&e&lDISGUISE &6■ &7Usage: /disguiseplayer <player/all> <name>"));
 				}
 			} else {
-				player.sendMessage(CC.translate("&cYou do not have permission to use this command!"));
+				player.sendMessage(CC.translate("&e&lPERMISSIONS &6■ &7You do not have permission to use this command!"));
 			}
 		}
 		return true;

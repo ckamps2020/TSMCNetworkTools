@@ -23,22 +23,25 @@ public final class SmiteCommand implements CommandExecutor {
 		if (sender instanceof Player) {
 			Player player = (Player) sender;
 			if (PlayerUtils.isEqualOrHigherThen(player, Rank.YOUTUBE)) {
-				if (args.length == 1) {
+				if (args.length == 0) {
+					player.getWorld().strikeLightning(PlayerUtils.getTargetBlock(player, 10).getLocation());
+					player.sendMessage(CC.translate("&e&lSMITE &6■ &c&lKABOOM!"));
+				} else if (args.length == 1) {
 					String first = args[0];
 					if (first.equalsIgnoreCase("all")) {
 						for (Player t : Bukkit.getOnlinePlayers()) {
 							t.getLocation().getWorld().strikeLightning(t.getLocation());
 						}
-						player.sendMessage(CC.translate("&aYou stuck everyone with lightning!"));
+						player.sendMessage(CC.translate("&e&lSMITE &6■ &7You stuck everyone with lightning!"));
 					} else {
 						Player t = Bukkit.getPlayer(first);
 						if (t != null) {
 							t.getLocation().getWorld().strikeLightning(t.getLocation());
-							player.sendMessage(CC.translate("&aYou stuck " + t.getName() + " with lightning!"));
+							player.sendMessage(CC.translate("&e&lSMITE &6■ &7You stuck " + t.getName() + " with lightning!"));
 						}
 					}
 				} else {
-					player.sendMessage(CC.translate("&cUsage: /smite <player/all>"));
+					player.sendMessage(CC.translate("&e&lSMITE &6■ &7Usage: /smite (player/all)"));
 				}
 			} else {
 				player.sendMessage(CC.translate("&cYou do not have permission to use this command!"));

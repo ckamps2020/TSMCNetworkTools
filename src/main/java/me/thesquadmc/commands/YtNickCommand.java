@@ -26,7 +26,7 @@ public final class YtNickCommand implements CommandExecutor {
 			if (PlayerUtils.isEqualOrHigherThen(player, Rank.YOUTUBE)) {
 				boolean t = true;
 				if (t) {
-					player.sendMessage(CC.translate("&cCommand disabled for the moment!"));
+					player.sendMessage(CC.translate("&e&lYT NICK &6■ &7Command disabled for the moment!"));
 					return true;
 				}
 				if (!tempData.isNicknamed()) {
@@ -36,7 +36,7 @@ public final class YtNickCommand implements CommandExecutor {
 						tempData.setNickname(true);
 						PlayerUtils.setName(player, name);
 					} else {
-						player.sendMessage(CC.translate("&cUsage: /ytnick (name)"));
+						player.sendMessage(CC.translate("&e&lYT NICK &6■ &7Usage: /ytnick (name)"));
 					}
 				} else {
 					player.sendMessage(CC.translate("&e&lYT NICK &6■ &7You are &eno longer &7nicked"));
@@ -44,7 +44,7 @@ public final class YtNickCommand implements CommandExecutor {
 					PlayerUtils.setName(player, tempData.getRealname());
 				}
 			} else {
-				player.sendMessage(CC.translate("&cYou do not have permission to use this command!"));
+				player.sendMessage(CC.translate("&e&lPERMISSIONS &6■ &7You do not have permission to use this command!"));
 			}
 		}
 		return true;

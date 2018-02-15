@@ -45,7 +45,7 @@ public final class LaunchCommand implements CommandExecutor {
 					} else {
 						Player t = Bukkit.getPlayer(args[0]);
 						if (t != null) {
-							player.sendMessage(CC.translate("&cYou launched " + t.getName()));
+							player.sendMessage(CC.translate("&e&lLAUNCH &6■ &7You launched " + t.getName()));
 							t.setVelocity(new Vector(0, 10, 0));
 							t.sendMessage(CC.translate("&c&lWHOOSH!"));
 							launched.add(t.getUniqueId());
@@ -56,7 +56,7 @@ public final class LaunchCommand implements CommandExecutor {
 								}
 							}, 8 * 20L);
 						} else {
-							player.sendMessage(CC.translate("&cThat player is offline or does not exist!"));
+							player.sendMessage(CC.translate("&e&lLAUNCH &6■ &7That player is offline or does not exist!"));
 						}
 					}
 				} else {
@@ -73,7 +73,7 @@ public final class LaunchCommand implements CommandExecutor {
 					}
 				}
 			} else {
-				player.sendMessage(CC.translate("&cYou do not have permission to use this command!"));
+				player.sendMessage(CC.translate("&e&lPERMISSIONS &6■ &7You do not have permission to use this command!"));
 			}
 		}
 		return true;

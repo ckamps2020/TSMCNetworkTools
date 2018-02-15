@@ -58,10 +58,10 @@ public final class FindCommand implements CommandExecutor {
 						}
 					});
 				} else {
-					player.sendMessage(CC.translate("&cUsage: /find <player>"));
+					player.sendMessage(CC.translate("&e&lFIND &6■ &7Usage: /find <player>"));
 				}
 			} else {
-				player.sendMessage(CC.translate("&cYou do not have permission to use this command!"));
+				player.sendMessage(CC.translate("&e&lPERMISSIONS &6■ &7You do not have permission to use this command!"));
 			}
 		}
 		return true;

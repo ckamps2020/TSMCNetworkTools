@@ -51,12 +51,12 @@ public final class UndisguisePlayerCommand implements CommandExecutor {
 							player.sendMessage(CC.translate("&e&lDISGUISE &6■ &7You have undisguised &e" + t.getName()));
 							PlayerUtils.restorePlayerTextures(t);
 						} else {
-							player.sendMessage(CC.translate("&cThat player is offline or doesnt exist!"));
+							player.sendMessage(CC.translate("&e&lDISGUISE &6■ &7That player is offline or doesnt exist!"));
 						}
 					}
 				}
 			} else {
-				player.sendMessage(CC.translate("&cYou do not have permission to use this command!"));
+				player.sendMessage(CC.translate("&e&lPERMISSIONS &6■ &7You do not have permission to use this command!"));
 			}
 		}
 		return true;

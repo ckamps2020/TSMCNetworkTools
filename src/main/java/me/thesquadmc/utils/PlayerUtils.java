@@ -8,16 +8,20 @@ import me.lucko.luckperms.api.User;
 import me.thesquadmc.Main;
 import me.thesquadmc.objects.TempData;
 import me.thesquadmc.utils.enums.Rank;
-import net.minecraft.server.v1_8_R3.*;
+import net.minecraft.server.v1_8_R3.EntityPlayer;
+import net.minecraft.server.v1_8_R3.PacketPlayOutWorldBorder;
+import net.minecraft.server.v1_8_R3.WorldBorder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.BlockIterator;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -49,6 +53,19 @@ public final class PlayerUtils {
 			}
 		}
 		return found;
+	}
+
+	public static Block getTargetBlock(Player player, int range) {
+		BlockIterator iter = new BlockIterator(player, range);
+		Block lastBlock = iter.next();
+		while (iter.hasNext()) {
+			lastBlock = iter.next();
+			if (lastBlock.getType() == Material.AIR) {
+				continue;
+			}
+			break;
+		}
+		return lastBlock;
 	}
 
 	public static void sendWorldBorderPacket(Player player, int warningBlocks) {

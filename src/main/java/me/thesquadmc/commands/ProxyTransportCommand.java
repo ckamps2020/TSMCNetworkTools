@@ -38,10 +38,10 @@ public final class ProxyTransportCommand implements CommandExecutor {
 								.send(RedisChannels.TRANSPORT.getChannelName(), jedis);
 					}
 				} else {
-					player.sendMessage(CC.translate("&cUsage: /proxytransport <server>"));
+					player.sendMessage(CC.translate("&e&lTRANSPORT &6■ &7Usage: /proxytransport <server>"));
 				}
 			} else {
-				player.sendMessage(CC.translate("&cYou do not have permission to use this command!"));
+				player.sendMessage(CC.translate("&e&lPERMISSIONS &6■ &7You do not have permission to use this command!"));
 			}
 		}
 		return true;
