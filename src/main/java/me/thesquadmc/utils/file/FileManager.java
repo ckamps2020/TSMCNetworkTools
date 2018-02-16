@@ -56,8 +56,8 @@ public final class FileManager {
 			networkingConfig.set("redis.password", "");
 			networkingConfig.set("mysql.host", "localhost");
 			networkingConfig.set("mysql.port", "3306");
-			networkingConfig.set("mysql.dbpassword", "password");
-			networkingConfig.set("mysql.dbname", "global");
+			networkingConfig.set("mysql.dbpassword", "");
+			networkingConfig.set("mysql.dbname", "friends");
 			networkingConfig.set("mysql.dbuser", "root");
 			System.out.println("[NetworkTools] Default networking created!");
 			System.out.println("[NetworkTools] Saving networking file...");

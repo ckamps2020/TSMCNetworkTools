@@ -11,6 +11,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,20 @@ public final class FilterListener implements Listener {
 
 	public FilterListener(Main main) {
 		this.main = main;
+	}
+
+	@EventHandler
+	public void onCommand(PlayerCommandPreprocessEvent e) {
+		Player player = e.getPlayer();
+		if (!PlayerUtils.isEqualOrHigherThen(player, Rank.TRAINEE)) {
+			String msg = e.getMessage();
+			String message = msg.toLowerCase();
+			e.setMessage(message);
+			if (StringUtils.shouldFilter(msg)) {
+				e.setCancelled(true);
+				player.sendMessage(CC.translate("&e&lFILTER &6■ &7You are not allowed to say that!"));
+			}
+		}
 	}
 
 	@EventHandler (priority = EventPriority.HIGHEST)
@@ -47,7 +62,7 @@ public final class FilterListener implements Listener {
 							player.sendMessage(CC.translate("&e&lFILTER &6■ &7You are not allowed to say that!"));
 							return;
 						}
-						StringUtils.lastMsg.put(player.getUniqueId(), message);
+						StringUtils.lastMsg.put(player.getUniqueId(), msg);
 						slowchat.add(player.getUniqueId());
 						Bukkit.getScheduler().runTaskLater(main, new Runnable() {
 							@Override

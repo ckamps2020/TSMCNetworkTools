@@ -1096,6 +1096,14 @@ public final class StringUtils {
 		curses.add("hivemc");
 		curses.add("exoticraids");
 		curses.add("bladecade");
+		curses.add("hytpixel");
+		curses.add("highpickle");
+		curses.add("highpickel");
+		curses.add("hypickle");
+		curses.add("hipickle");
+		curses.add("hipickel");
+		curses.add("hipixel");
+		curses.add("highpixel");
 
 		curses.add("[need staff]");
 		curses.add("message id");
