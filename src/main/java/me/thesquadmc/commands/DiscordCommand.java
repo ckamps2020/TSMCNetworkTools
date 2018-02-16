@@ -7,7 +7,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class DiscordCommand implements CommandExecutor {
+public final class DiscordCommand implements CommandExecutor {
 
 	private final Main main;
 

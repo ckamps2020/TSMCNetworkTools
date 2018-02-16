@@ -20,7 +20,7 @@ commands:
     randomtp:
         aliases: [rtp]
     staffchat:
-        aliases: [sc]
+        aliases: [sc, schat]
     staffmode:
         aliases: [mod]
     staff:
@@ -63,6 +63,5 @@ commands:
     proxytransport:
         aliases: [pt, ptransport, takemethere]
     restarttime:
-        aliases: [rt]
     apply:
     discord:

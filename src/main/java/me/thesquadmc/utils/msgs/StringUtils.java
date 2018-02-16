@@ -1104,6 +1104,7 @@ public final class StringUtils {
 		curses.add("hipickel");
 		curses.add("hipixel");
 		curses.add("highpixel");
+		curses.add("arcade wars");
 
 		curses.add("[need staff]");
 		curses.add("message id");
