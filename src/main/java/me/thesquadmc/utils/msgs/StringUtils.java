@@ -1105,10 +1105,12 @@ public final class StringUtils {
 		curses.add("hipixel");
 		curses.add("highpixel");
 		curses.add("arcade wars");
+		curses.add("factionpvp");
 
 		curses.add("[need staff]");
 		curses.add("message id");
 
+		curses.add("\"./");
 		curses.add("play.");
 		curses.add("pvp.");
 		curses.add("mc.");

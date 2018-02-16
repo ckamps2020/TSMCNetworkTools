@@ -361,19 +361,6 @@ public final class FriendCommand implements CommandExecutor {
 		Player t = Bukkit.getPlayer(target);
 		return t != null;
 	}
-
-	private BaseComponent[] getHoverMessage(String message, String hoverMessage, String command) {
-		BaseComponent[] components = TextComponent.fromLegacyText(ChatColor.translateAlternateColorCodes('&', message));
-		BaseComponent[] hoverText = TextComponent.fromLegacyText(ChatColor.translateAlternateColorCodes('&', hoverMessage));
-		ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.RUN_COMMAND, command);
-		HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText);
-		for (BaseComponent component : components) {
-			component.setClickEvent(clickEvent);
-			component.setHoverEvent(hoverEvent);
-		}
-		return components;
-	}
-
 	public static List<String> getStillLooking() {
 		return stillLooking;
 	}
