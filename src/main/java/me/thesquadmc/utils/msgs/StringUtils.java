@@ -1085,16 +1085,21 @@ public final class StringUtils {
 		curses.add("killurself");
 		curses.add("kill urself");
 		curses.add("k y s");
+
 		curses.add("hypixel");
 		curses.add("hypickle");
 		curses.add("hyp1xel");
 		curses.add("hypix3l");
 		curses.add("mineplex");
 		curses.add("cubecraft");
-
 		curses.add("hive");
 		curses.add("hivemc");
 		curses.add("exoticraids");
+		curses.add("bladecade");
+
+		curses.add("[need staff]");
+		curses.add("message id");
+
 		curses.add("play.");
 		curses.add("pvp.");
 		curses.add("mc.");
