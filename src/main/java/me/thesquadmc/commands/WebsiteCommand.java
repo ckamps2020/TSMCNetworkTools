@@ -7,11 +7,11 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public final class DiscordCommand implements CommandExecutor {
+public final class WebsiteCommand implements CommandExecutor {
 
 	private final Main main;
 
-	public DiscordCommand(Main main) {
+	public WebsiteCommand(Main main) {
 		this.main = main;
 	}
 
@@ -19,7 +19,7 @@ public final class DiscordCommand implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (sender instanceof Player) {
 			Player player = (Player) sender;
-			player.sendMessage(CC.translate("&b&lDISCORD &3■ &7discord.thesquadmc.net"));
+			player.sendMessage(CC.translate("&a&lWEBSITE &2■ &7www.thesquadmc.net"));
 		}
 		return true;
 	}

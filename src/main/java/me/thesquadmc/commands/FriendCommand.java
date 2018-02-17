@@ -89,7 +89,7 @@ public final class FriendCommand implements CommandExecutor {
 									player.sendMessage(CC.translate("&8&m---------------&8[ &d&lFRIENDS &8]&8&m---------------"));
 									if (!strings.isEmpty()) {
 										for (String s : strings) {
-											if (s.equalsIgnoreCase(" ") || s.equalsIgnoreCase("")) {
+											if (s.equalsIgnoreCase(" ") || s.equalsIgnoreCase("") || s.equalsIgnoreCase("null")) {
 												continue;
 											}
 											if (UUID.fromString(s) == null || Bukkit.getOfflinePlayer(UUID.fromString(s)) == null) {
@@ -255,43 +255,17 @@ public final class FriendCommand implements CommandExecutor {
 								if (main.getFriends().get(player.getUniqueId()).contains(offlinePlayer.getUniqueId().toString())) {
 									main.getFriends().get(player.getUniqueId()).remove(offlinePlayer.getUniqueId().toString());
 									player.sendMessage(CC.translate("&d&lFRIENDS &5■ &d" + name + " &7is no longer a friend"));
-									stillLooking.add(player.getName());
-									try (Jedis jedis = main.getPool().getResource()) {
-										JedisTask.withName(UUID.randomUUID().toString())
-												.withArg(RedisArg.SERVER.getArg(), Bukkit.getServerName())
-												.withArg(RedisArg.PLAYER.getArg(), name)
-												.withArg(RedisArg.ORIGIN_PLAYER.getArg(), player.getName())
-												.send(RedisChannels.FRIEND_REMOVE_OUTBOUND.getChannelName(), jedis);
-									}
 									Multithreading.runAsync(new Runnable() {
 										@Override
 										public void run() {
 											try {
 												main.getMySQL().saveFriendAccount(player.getUniqueId().toString());
+												main.getMySQL().newRemoval(offlinePlayer.getUniqueId().toString(), player.getUniqueId().toString());
 											} catch (Exception e) {
 												System.out.println("[NetworkTools] Unable to execute mysql operation");
 											}
 										}
 									});
-
-									Bukkit.getScheduler().runTaskLater(main, new Runnable() {
-										@Override
-										public void run() {
-											Multithreading.runAsync(new Runnable() {
-												@Override
-												public void run() {
-													try {
-														if (stillLooking.contains(player.getName())) {
-															stillLooking.remove(player.getName());
-															main.getMySQL().newRemoval(offlinePlayer.getUniqueId().toString(), player.getUniqueId().toString());
-														}
-													} catch (Exception e) {
-														System.out.println("[NetworkTools] Unable to execute mysql operation");
-													}
-												}
-											});
-										}
-									}, 7L);
 								} else {
 									player.sendMessage(CC.translate("&d&lFRIENDS &5■ &d" + name + " is not on your friends list!"));
 								}

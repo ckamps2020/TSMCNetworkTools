@@ -37,13 +37,14 @@ commands:
         aliases: [global, announce]
     stop:
     whitelist:
+        aliases: [wl]
     launch:
     forcefield:
         aliases: [ff]
     ytvanish:
     staffmenu:
     proxylist:
-        aliases: [bungeelist]
+        aliases: [bungeelist, glist, globallist, playercount, counts]
     monitor:
         aliases: [monitorreport]
     ytnick:
@@ -65,3 +66,5 @@ commands:
     restarttime:
     apply:
     discord:
+    store:
+    website:

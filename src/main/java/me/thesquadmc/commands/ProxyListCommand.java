@@ -28,7 +28,7 @@ public final class ProxyListCommand implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (sender instanceof Player) {
 			Player player = (Player) sender;
-			if (PlayerUtils.isEqualOrHigherThen(player, Rank.MANAGER)) {
+			if (PlayerUtils.isEqualOrHigherThen(player, Rank.TRAINEE)) {
 				Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
 					@Override
 					public void run() {
