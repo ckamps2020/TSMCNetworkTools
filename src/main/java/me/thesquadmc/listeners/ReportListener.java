@@ -8,6 +8,7 @@ import me.thesquadmc.utils.enums.RedisChannels;
 import me.thesquadmc.utils.handlers.UpdateEvent;
 import me.thesquadmc.utils.enums.UpdateType;
 import me.thesquadmc.utils.msgs.CC;
+import me.thesquadmc.utils.server.Multithreading;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -157,29 +158,34 @@ public final class ReportListener implements Listener {
 							Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
 								@Override
 								public void run() {
-									List<String> lore = stack.getItemMeta().getLore();
-									Report report = null;
-									for (String s : lore) {
-										String ss = ChatColor.stripColor(s);
-										if (ss.toUpperCase().startsWith("ID")) {
-											String regex = "[ ]+";
-											String[] tokens = s.split(regex);
-											if (tokens.length == 2) {
-												report = main.getReportManager().getReportFromUUID(tokens[1]);
-												break;
+									Multithreading.runAsync(new Runnable() {
+										@Override
+										public void run() {
+											List<String> lore = stack.getItemMeta().getLore();
+											Report report = null;
+											for (String s : lore) {
+												String ss = ChatColor.stripColor(s);
+												if (ss.toUpperCase().startsWith("ID")) {
+													String regex = "[ ]+";
+													String[] tokens = s.split(regex);
+													if (tokens.length == 2) {
+														report = main.getReportManager().getReportFromUUID(tokens[1]);
+														break;
+													}
+												}
+											}
+											if (report != null) {
+												player.closeInventory();
+												player.sendMessage(CC.translate("&e&lREPORT &6■ &7Sending you to &e" + report.getServer() + "..."));
+												try (Jedis jedis = main.getPool().getResource()) {
+													JedisTask.withName(UUID.randomUUID().toString())
+															.withArg(RedisArg.PLAYER.getArg(), player.getName())
+															.withArg(RedisArg.SERVER.getArg(), report.getServer())
+															.send(RedisChannels.TRANSPORT.getChannelName(), jedis);
+												}
 											}
 										}
-									}
-									if (report != null) {
-										player.closeInventory();
-										player.sendMessage(CC.translate("&e&lREPORT &6■ &7Sending you to &e" + report.getServer() + "..."));
-										try (Jedis jedis = main.getPool().getResource()) {
-											JedisTask.withName(UUID.randomUUID().toString())
-													.withArg(RedisArg.PLAYER.getArg(), player.getName())
-													.withArg(RedisArg.SERVER.getArg(), report.getServer())
-													.send(RedisChannels.TRANSPORT.getChannelName(), jedis);
-										}
-									}
+									});
 								}
 							});
 						}

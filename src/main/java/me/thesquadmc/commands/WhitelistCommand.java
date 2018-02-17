@@ -7,6 +7,7 @@ import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.enums.RedisArg;
 import me.thesquadmc.utils.enums.RedisChannels;
 import me.thesquadmc.utils.msgs.CC;
+import me.thesquadmc.utils.server.Multithreading;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -52,12 +53,17 @@ public final class WhitelistCommand implements CommandExecutor {
 						Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
 							@Override
 							public void run() {
-								try (Jedis jedis = main.getPool().getResource()) {
-									JedisTask.withName(UUID.randomUUID().toString())
-											.withArg(RedisArg.SERVER.getArg(), server.toUpperCase())
-											.withArg(RedisArg.PLAYER.getArg(), name)
-											.send(RedisChannels.WHITELIST_ADD.getChannelName(), jedis);
-								}
+								Multithreading.runAsync(new Runnable() {
+									@Override
+									public void run() {
+										try (Jedis jedis = main.getPool().getResource()) {
+											JedisTask.withName(UUID.randomUUID().toString())
+													.withArg(RedisArg.SERVER.getArg(), server.toUpperCase())
+													.withArg(RedisArg.PLAYER.getArg(), name)
+													.send(RedisChannels.WHITELIST_ADD.getChannelName(), jedis);
+										}
+									}
+								});
 							}
 						});
 					} else if (a.equalsIgnoreCase("remove")) {
@@ -67,12 +73,17 @@ public final class WhitelistCommand implements CommandExecutor {
 						Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
 							@Override
 							public void run() {
-								try (Jedis jedis = main.getPool().getResource()) {
-									JedisTask.withName(UUID.randomUUID().toString())
-											.withArg(RedisArg.SERVER.getArg(), server.toUpperCase())
-											.withArg(RedisArg.PLAYER.getArg(), name)
-											.send(RedisChannels.WHITELIST_REMOVE.getChannelName(), jedis);
-								}
+								Multithreading.runAsync(new Runnable() {
+									@Override
+									public void run() {
+										try (Jedis jedis = main.getPool().getResource()) {
+											JedisTask.withName(UUID.randomUUID().toString())
+													.withArg(RedisArg.SERVER.getArg(), server.toUpperCase())
+													.withArg(RedisArg.PLAYER.getArg(), name)
+													.send(RedisChannels.WHITELIST_REMOVE.getChannelName(), jedis);
+										}
+									}
+								});
 							}
 						});
 					} else {
@@ -101,13 +112,18 @@ public final class WhitelistCommand implements CommandExecutor {
 						Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
 							@Override
 							public void run() {
-								try (Jedis jedis = main.getPool().getResource()) {
-									JedisTask.withName(UUID.randomUUID().toString())
-											.withArg(RedisArg.SERVER.getArg(), server.toUpperCase())
-											.withArg(RedisArg.ONOFF.getArg(), onoff)
-											.withArg(RedisArg.MESSAGE.getArg(), stringBuilder.toString())
-											.send(RedisChannels.WHITELIST.getChannelName(), jedis);
-								}
+								Multithreading.runAsync(new Runnable() {
+									@Override
+									public void run() {
+										try (Jedis jedis = main.getPool().getResource()) {
+											JedisTask.withName(UUID.randomUUID().toString())
+													.withArg(RedisArg.SERVER.getArg(), server.toUpperCase())
+													.withArg(RedisArg.ONOFF.getArg(), onoff)
+													.withArg(RedisArg.MESSAGE.getArg(), stringBuilder.toString())
+													.send(RedisChannels.WHITELIST.getChannelName(), jedis);
+										}
+									}
+								});
 							}
 						});
 					}

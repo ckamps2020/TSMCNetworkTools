@@ -11,6 +11,7 @@ import me.thesquadmc.utils.*;
 import me.thesquadmc.utils.enums.*;
 import me.thesquadmc.utils.msgs.CC;
 import me.thesquadmc.utils.msgs.StringUtils;
+import me.thesquadmc.utils.server.Multithreading;
 import me.thesquadmc.utils.server.ServerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -69,15 +70,20 @@ public final class RedisHandler {
 					for (Player p : Bukkit.getOnlinePlayers()) {
 						if (p.getName().equalsIgnoreCase(name)) {
 							TempData tempData = main.getTempDataManager().getTempData(p.getUniqueId());
-							try (Jedis jedis = main.getPool().getResource()) {
-								JedisTask.withName(UUID.randomUUID().toString())
-										.withArg(RedisArg.SERVER.getArg(), String.valueOf(data.get(RedisArg.SERVER.getArg())))
-										.withArg(RedisArg.ORIGIN_SERVER.getArg(), Bukkit.getServerName())
-										.withArg(RedisArg.PLAYER.getArg(), name)
-										.withArg(RedisArg.ORIGIN_PLAYER.getArg(), String.valueOf(data.get(RedisArg.ORIGIN_PLAYER.getArg())))
-										.withArg(RedisArg.LOGIN.getArg(), tempData.getLoginTime())
-										.send(RedisChannels.FOUND.getChannelName(), jedis);
-							}
+							Multithreading.runAsync(new Runnable() {
+								@Override
+								public void run() {
+									try (Jedis jedis = main.getPool().getResource()) {
+										JedisTask.withName(UUID.randomUUID().toString())
+												.withArg(RedisArg.SERVER.getArg(), String.valueOf(data.get(RedisArg.SERVER.getArg())))
+												.withArg(RedisArg.ORIGIN_SERVER.getArg(), Bukkit.getServerName())
+												.withArg(RedisArg.PLAYER.getArg(), name)
+												.withArg(RedisArg.ORIGIN_PLAYER.getArg(), String.valueOf(data.get(RedisArg.ORIGIN_PLAYER.getArg())))
+												.withArg(RedisArg.LOGIN.getArg(), tempData.getLoginTime())
+												.send(RedisChannels.FOUND.getChannelName(), jedis);
+									}
+								}
+							});
 							return;
 						}
 					}
@@ -186,20 +192,25 @@ public final class RedisHandler {
 							oSB.append(" " + s);
 						}
 					}
-					try (Jedis jedis = main.getPool().getResource()) {
-						JedisTask.withName(UUID.randomUUID().toString())
-								.withArg(RedisArg.SERVER.getArg(), String.valueOf(data.get(RedisArg.SERVER.getArg())))
-								.withArg(RedisArg.PLAYER.getArg(), String.valueOf(data.get(RedisArg.PLAYER.getArg())))
-								.withArg(RedisArg.TRAINEE.getArg(), tSB.toString())
-								.withArg(RedisArg.HELPER.getArg(), hSB.toString())
-								.withArg(RedisArg.MOD.getArg(), mSB.toString())
-								.withArg(RedisArg.SRMOD.getArg(), srSB.toString())
-								.withArg(RedisArg.ADMIN.getArg(), aSB.toString())
-								.withArg(RedisArg.MANAGER.getArg(), manSB.toString())
-								.withArg(RedisArg.DEVELOPER.getArg(), dSB.toString())
-								.withArg(RedisArg.OWNER.getArg(), oSB.toString())
-								.send(RedisChannels.RETURN_REQUEST_LIST.getChannelName(), jedis);
-					}
+					Multithreading.runAsync(new Runnable() {
+						@Override
+						public void run() {
+							try (Jedis jedis = main.getPool().getResource()) {
+								JedisTask.withName(UUID.randomUUID().toString())
+										.withArg(RedisArg.SERVER.getArg(), String.valueOf(data.get(RedisArg.SERVER.getArg())))
+										.withArg(RedisArg.PLAYER.getArg(), String.valueOf(data.get(RedisArg.PLAYER.getArg())))
+										.withArg(RedisArg.TRAINEE.getArg(), tSB.toString())
+										.withArg(RedisArg.HELPER.getArg(), hSB.toString())
+										.withArg(RedisArg.MOD.getArg(), mSB.toString())
+										.withArg(RedisArg.SRMOD.getArg(), srSB.toString())
+										.withArg(RedisArg.ADMIN.getArg(), aSB.toString())
+										.withArg(RedisArg.MANAGER.getArg(), manSB.toString())
+										.withArg(RedisArg.DEVELOPER.getArg(), dSB.toString())
+										.withArg(RedisArg.OWNER.getArg(), oSB.toString())
+										.send(RedisChannels.RETURN_REQUEST_LIST.getChannelName(), jedis);
+							}
+						}
+					});
 				}
 			});
 		} else if (channel.equalsIgnoreCase(RedisChannels.RETURN_REQUEST_LIST.getChannelName())) {
@@ -394,15 +405,23 @@ public final class RedisHandler {
 		} else if (channel.equalsIgnoreCase(RedisChannels.MONITOR_REQUEST.getChannelName())) {
 			String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
 			if (server.equalsIgnoreCase(Bukkit.getServerName())) {
-				Bukkit.getScheduler().runTaskAsynchronously(main, () -> {
-					try (Jedis jedis = Main.getMain().getPool().getResource()) {
-						JedisTask.withName(UUID.randomUUID().toString())
-								.withArg(RedisArg.SERVER.getArg(), server)
-								.withArg(RedisArg.UPTIME.getArg(), TimeUtils.millisToRoundedTime(System.currentTimeMillis() - main.getStartup()))
-								.withArg(RedisArg.COUNT.getArg(), String.valueOf(Bukkit.getOnlinePlayers().size()))
-								.withArg(RedisArg.TPS.getArg(), ServerUtils.getTPS(0))
-								.withArg(RedisArg.MESSAGE.getArg(), "&7TPS = &e" + ServerUtils.getTPS(0) + "&7, &7Memory = &e" + ServerUtils.getUsedMemory() + "&8/&e" + ServerUtils.getTotalMemory() + "&7")
-								.send(RedisChannels.MONITOR_RETURN.getChannelName(), jedis);
+				Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
+					@Override
+					public void run() {
+						Multithreading.runAsync(new Runnable() {
+							@Override
+							public void run() {
+								try (Jedis jedis = Main.getMain().getPool().getResource()) {
+									JedisTask.withName(UUID.randomUUID().toString())
+											.withArg(RedisArg.SERVER.getArg(), server)
+											.withArg(RedisArg.UPTIME.getArg(), TimeUtils.millisToRoundedTime(System.currentTimeMillis() - main.getStartup()))
+											.withArg(RedisArg.COUNT.getArg(), String.valueOf(Bukkit.getOnlinePlayers().size()))
+											.withArg(RedisArg.TPS.getArg(), ServerUtils.getTPS(0))
+											.withArg(RedisArg.MESSAGE.getArg(), "&7TPS = &e" + ServerUtils.getTPS(0) + "&7, &7Memory = &e" + ServerUtils.getUsedMemory() + "&8/&e" + ServerUtils.getTotalMemory() + "&7")
+											.send(RedisChannels.MONITOR_RETURN.getChannelName(), jedis);
+								}
+							}
+						});
 					}
 				});
 			}
@@ -470,13 +489,18 @@ public final class RedisHandler {
 					String name = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
 					for (Player p : Bukkit.getOnlinePlayers()) {
 						if (p.getName().equalsIgnoreCase(name)) {
-							try (Jedis jedis = main.getPool().getResource()) {
-								JedisTask.withName(UUID.randomUUID().toString())
-										.withArg(RedisArg.SERVER.getArg(), String.valueOf(data.get(RedisArg.SERVER.getArg())))
-										.withArg(RedisArg.PLAYER.getArg(), name)
-										.withArg(RedisArg.ORIGIN_PLAYER.getArg(), String.valueOf(data.get(RedisArg.ORIGIN_PLAYER.getArg())))
-										.send(RedisChannels.FRIEND_RETURN_REQUEST.getChannelName(), jedis);
-							}
+							Multithreading.runAsync(new Runnable() {
+								@Override
+								public void run() {
+									try (Jedis jedis = main.getPool().getResource()) {
+										JedisTask.withName(UUID.randomUUID().toString())
+												.withArg(RedisArg.SERVER.getArg(), String.valueOf(data.get(RedisArg.SERVER.getArg())))
+												.withArg(RedisArg.PLAYER.getArg(), name)
+												.withArg(RedisArg.ORIGIN_PLAYER.getArg(), String.valueOf(data.get(RedisArg.ORIGIN_PLAYER.getArg())))
+												.send(RedisChannels.FRIEND_RETURN_REQUEST.getChannelName(), jedis);
+									}
+								}
+							});
 							return;
 						}
 					}
@@ -507,13 +531,18 @@ public final class RedisHandler {
 							OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(String.valueOf(data.get(RedisArg.ORIGIN_PLAYER.getArg())));
 							main.getFriends().get(p.getUniqueId()).remove(offlinePlayer.getUniqueId().toString());
 							p.sendMessage(CC.translate("&d&lFRIENDS &5■ &d" + offlinePlayer.getName() + " &7has removed you as a friend"));
-							try (Jedis jedis = main.getPool().getResource()) {
-								JedisTask.withName(UUID.randomUUID().toString())
-										.withArg(RedisArg.SERVER.getArg(), String.valueOf(data.get(RedisArg.SERVER.getArg())))
-										.withArg(RedisArg.PLAYER.getArg(), name)
-										.withArg(RedisArg.ORIGIN_PLAYER.getArg(), String.valueOf(data.get(RedisArg.ORIGIN_PLAYER.getArg())))
-										.send(RedisChannels.FRIEND_REMOVE_INBOUND.getChannelName(), jedis);
-							}
+							Multithreading.runAsync(new Runnable() {
+								@Override
+								public void run() {
+									try (Jedis jedis = main.getPool().getResource()) {
+										JedisTask.withName(UUID.randomUUID().toString())
+												.withArg(RedisArg.SERVER.getArg(), String.valueOf(data.get(RedisArg.SERVER.getArg())))
+												.withArg(RedisArg.PLAYER.getArg(), name)
+												.withArg(RedisArg.ORIGIN_PLAYER.getArg(), String.valueOf(data.get(RedisArg.ORIGIN_PLAYER.getArg())))
+												.send(RedisChannels.FRIEND_REMOVE_INBOUND.getChannelName(), jedis);
+									}
+								}
+							});
 							try {
 								main.getMySQL().saveFriendAccount(p.getUniqueId().toString());
 							} catch (Exception e) {
