@@ -556,6 +556,7 @@ public final class StringUtils {
 		curses.add("nigggger");
 		curses.add("niggre");
 		curses.add("niggers");
+		curses.add("ni gg er");
 
 		curses.add("nob jockey");
 		curses.add("nobhead");
