@@ -1106,10 +1106,13 @@ public final class StringUtils {
 		curses.add("highpixel");
 		curses.add("arcade wars");
 		curses.add("factionpvp");
+		curses.add("parmapvp");
 
 		curses.add("[need staff]");
 		curses.add("message id");
+		curses.add(" ip is ");
 
+		curses.add(":255");
 		curses.add("\"./");
 		curses.add("play.");
 		curses.add("pvp.");
@@ -1157,6 +1160,8 @@ public final class StringUtils {
 		curses.add(",cz");
 		curses.add(".nu");
 
+		curses.add(" , ");
+		curses.add(" . ");
 		curses.add("(dot)");
 		curses.add("(.)");
 		curses.add("[dot]");
@@ -1167,7 +1172,6 @@ public final class StringUtils {
 		curses.add("[,]");
 		curses.add(">>>");
 		curses.add("<<<");
-		curses.add("mc_");
 		curses.add("_net");
 	}
 

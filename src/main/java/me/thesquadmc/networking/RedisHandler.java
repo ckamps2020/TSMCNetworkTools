@@ -393,15 +393,22 @@ public final class RedisHandler {
 				}
 			}
 		} else if (channel.equalsIgnoreCase(RedisChannels.CLOSED_REPORTS.getChannelName())) {
-			String uuid = String.valueOf(data.get(RedisArg.UUID.getArg()));
-			String name = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
-			String date = String.valueOf(data.get(RedisArg.DATE.getArg()));
-			Report report = main.getReportManager().getReportFromUUID(uuid);
-			report.setTimeAlive(0);
-			report.setCloseDate(date);
-			report.setReportCloser(name);
-			main.getReportManager().removeReport(report);
-			main.getReportManager().registerClosedReport(report);
+			Multithreading.runAsync(new Runnable() {
+				@Override
+				public void run() {
+					String uuid = String.valueOf(data.get(RedisArg.UUID.getArg()));
+					String name = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
+					String date = String.valueOf(data.get(RedisArg.DATE.getArg()));
+					Report report = main.getReportManager().getReportFromUUID(uuid);
+					if (report != null) {
+						report.setTimeAlive(0);
+						report.setCloseDate(date);
+						report.setReportCloser(name);
+						main.getReportManager().removeReport(report);
+						main.getReportManager().registerClosedReport(report);
+					}
+				}
+			});
 		} else if (channel.equalsIgnoreCase(RedisChannels.MONITOR_REQUEST.getChannelName())) {
 			String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
 			if (server.equalsIgnoreCase(Bukkit.getServerName())) {
