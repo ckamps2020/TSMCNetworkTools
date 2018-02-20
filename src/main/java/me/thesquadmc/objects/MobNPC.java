@@ -17,14 +17,12 @@ public final class MobNPC {
 	private boolean ai;
 	private Entity entity;
 	private Hologram hologram;
-	private CraftEntity craftEntity;
 
-	public MobNPC(String name, String displayName, EntityType entityType, boolean ai, CraftEntity craftEntity) {
+	public MobNPC(String name, String displayName, EntityType entityType, boolean ai) {
 		this.name = name;
 		this.displayName = displayName;
 		this.entityType = entityType;
 		this.ai = ai;
-		this.craftEntity = craftEntity;
 	}
 
 	public void despawn() {

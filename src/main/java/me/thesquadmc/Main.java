@@ -54,7 +54,7 @@ public final class Main extends JavaPlugin {
 	private ThreadPoolExecutor threadPoolExecutor;
 	private int restartTime = 0;
 
-	private int chatslow = 0;
+	private int chatslow = 2;
 	private boolean chatSilenced = false;
 	private String serverState = ServerState.LOADING;
 
