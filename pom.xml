@@ -41,10 +41,10 @@
                         <configuration>
                             <relocations>
                                 <relocation>
-                                    <pattern>redis.clients.jedis</pattern>
-                                    <shadedPattern>co.thesquadmc.shaded.redis.clients.jedis</shadedPattern>
                                     <pattern>org.apache.commons</pattern>
                                     <shadedPattern>co.thesquadmc.shaded.org.apache.commons</shadedPattern>
+                                    <pattern>redis.clients.jedis</pattern>
+                                    <shadedPattern>co.thesquadmc.shaded.redis.clients.jedis</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>

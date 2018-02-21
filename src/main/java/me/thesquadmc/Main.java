@@ -101,6 +101,106 @@ public final class Main extends JavaPlugin {
 		tempDataManager = new TempDataManager();
 		hologramManager = new HologramManager();
 		npcManager = new NPCManager();
+		getServer().getPluginManager().registerEvents(new ChatListener(), this);
+		getServer().getPluginManager().registerEvents(new SettingsListener(), this);
+		getServer().getPluginManager().registerEvents(new LaunchListener(), this);
+		getServer().getPluginManager().registerEvents(new LightningListener(), this);
+		getServer().getPluginManager().registerEvents(new FilterListener(this), this);
+		getServer().getPluginManager().registerEvents(new ServerListener(), this);
+		getServer().getPluginManager().registerEvents(new ForceFieldListeners(this), this);
+		getServer().getPluginManager().registerEvents(new VanishListener(this), this);
+		getServer().getPluginManager().registerEvents(new WhitelistListener(this), this);
+		getServer().getPluginManager().registerEvents(new ReportListener(this), this);
+		getServer().getPluginManager().registerEvents(new ConnectionListeners(this), this);
+		getServer().getPluginManager().registerEvents(new XrayListener(this), this);
+		getServer().getPluginManager().registerEvents(new StaffmodeListener(this), this);
+		getServer().getPluginManager().registerEvents(new FreezeListener(this), this);
+		host = fileManager.getNetworkingConfig().getString("redis.host");
+		port = fileManager.getNetworkingConfig().getInt("redis.port");
+		password = fileManager.getNetworkingConfig().getString("redis.password");
+		mysqlhost = fileManager.getNetworkingConfig().getString("mysql.host");
+		mysqlport = fileManager.getNetworkingConfig().getString("mysql.port");
+		mysqlpassword = fileManager.getNetworkingConfig().getString("mysql.dbpassword");
+		mysqldb = fileManager.getNetworkingConfig().getString("mysql.dbname");
+		dbuser = fileManager.getNetworkingConfig().getString("mysql.dbuser");
+		System.out.println("[NetworkTools] Loading Redis PUB/SUB...");
+		redisHandler = new RedisHandler(this);
+		try {
+			ClassLoader previous = Thread.currentThread().getContextClassLoader();
+			Thread.currentThread().setContextClassLoader(main.getClassLoader());
+			poolConfig = new JedisPoolConfig();
+			poolConfig.setTestOnReturn(true);
+			poolConfig.setTestWhileIdle(true);
+			poolConfig.setMinIdle(20);
+			poolConfig.setMaxIdle(150);
+			poolConfig.setMaxTotal(150);
+			pool = new JedisPool(poolConfig, host, port, 40*1000, password);
+			//pool = new JedisPool(poolConfig, host, port, 40*1000);
+			jedis = pool.getResource();
+			Thread.currentThread().setContextClassLoader(previous);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		Multithreading.runAsync(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					j = new Jedis(host, port, 40 * 1000);
+					j.auth(password);
+					//j = new Jedis(host, port);
+					j.connect();
+					j.subscribe(new JedisPubSub() {
+						            @Override
+						            public void onMessage(String channel, String message) {
+							            JedisTask task = gson.fromJson(message, JedisTask.class);
+							            getRedisHandler().processRedisMessage(task, channel, message);
+						            }
+					            }, RedisChannels.ADMINCHAT.getChannelName(),
+							RedisChannels.REQUEST_LIST.getChannelName(),
+							RedisChannels.RETURN_REQUEST_LIST.getChannelName(),
+							RedisChannels.STAFFCHAT.getChannelName(),
+							RedisChannels.MANAGERCHAT.getChannelName(),
+							RedisChannels.FIND.getChannelName(),
+							RedisChannels.FOUND.getChannelName(),
+							RedisChannels.ANNOUNCEMENT.getChannelName(),
+							RedisChannels.STOP.getChannelName(),
+							RedisChannels.WHITELIST.getChannelName(),
+							RedisChannels.WHITELIST_ADD.getChannelName(),
+							RedisChannels.WHITELIST_REMOVE.getChannelName(),
+							RedisChannels.REPORTS.getChannelName(),
+							RedisChannels.CLOSED_REPORTS.getChannelName(),
+							RedisChannels.MONITOR_INFO.getChannelName(),
+							RedisChannels.PROXY_RETURN.getChannelName(),
+							RedisChannels.MONITOR_REQUEST.getChannelName(),
+							RedisChannels.HEARTBEAT.getChannelName(),
+							RedisChannels.FRIEND_ADD.getChannelName(),
+							RedisChannels.FRIEND_REMOVE_INBOUND.getChannelName(),
+							RedisChannels.FRIEND_REMOVE_OUTBOUND.getChannelName(),
+							RedisChannels.FRIEND_CHAT.getChannelName(),
+							RedisChannels.FRIEND_CHECK_REQUEST.getChannelName(),
+							RedisChannels.FRIEND_RETURN_REQUEST.getChannelName(),
+							RedisChannels.LEAVE.getChannelName(),
+							RedisChannels.LOGIN.getChannelName());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		System.out.println("[NetworkTools] Redis PUB/SUB setup!");
+		Multithreading.runAsync(new Runnable() {
+			@Override
+			public void run() {
+				System.out.println("[NetworkTools] Connecting to mysql database...");
+				try {
+					MySQL.setupDB();
+					System.out.println("[NetworkTools] Connected to mysql database!");
+				}
+				catch (ClassNotFoundException|SQLException e) {
+					e.printStackTrace();
+					System.out.println("[NetworkTools] Unable to connect to mysql database!");
+				}
+			}
+		});
 		getCommand("staffchat").setExecutor(new StaffChatCommand(this));
 		getCommand("adminchat").setExecutor(new AdminChatCommand(this));
 		getCommand("managerchat").setExecutor(new ManagerChatCommand(this));
@@ -141,107 +241,6 @@ public final class Main extends JavaPlugin {
 		getCommand("discord").setExecutor(new DiscordCommand(this));
 		getCommand("store").setExecutor(new StoreCommand(this));
 		getCommand("website").setExecutor(new WebsiteCommand(this));
-		getServer().getPluginManager().registerEvents(new ChatListener(), this);
-		getServer().getPluginManager().registerEvents(new SettingsListener(), this);
-		getServer().getPluginManager().registerEvents(new LaunchListener(), this);
-		getServer().getPluginManager().registerEvents(new LightningListener(), this);
-		getServer().getPluginManager().registerEvents(new FilterListener(this), this);
-		getServer().getPluginManager().registerEvents(new ServerListener(), this);
-		getServer().getPluginManager().registerEvents(new ForceFieldListeners(this), this);
-		getServer().getPluginManager().registerEvents(new VanishListener(this), this);
-		getServer().getPluginManager().registerEvents(new WhitelistListener(this), this);
-		getServer().getPluginManager().registerEvents(new ReportListener(this), this);
-		getServer().getPluginManager().registerEvents(new ConnectionListeners(this), this);
-		getServer().getPluginManager().registerEvents(new XrayListener(this), this);
-		getServer().getPluginManager().registerEvents(new StaffmodeListener(this), this);
-		getServer().getPluginManager().registerEvents(new FreezeListener(this), this);
-		host = fileManager.getNetworkingConfig().getString("redis.host");
-		port = fileManager.getNetworkingConfig().getInt("redis.port");
-		password = fileManager.getNetworkingConfig().getString("redis.password");
-		mysqlhost = fileManager.getNetworkingConfig().getString("mysql.host");
-		mysqlport = fileManager.getNetworkingConfig().getString("mysql.port");
-		mysqlpassword = fileManager.getNetworkingConfig().getString("mysql.dbpassword");
-		mysqldb = fileManager.getNetworkingConfig().getString("mysql.dbname");
-		dbuser = fileManager.getNetworkingConfig().getString("mysql.dbuser");
-		System.out.println("[NetworkTools] Loading Redis PUB/SUB...");
-		redisHandler = new RedisHandler(this);
-		ClassLoader previous = Thread.currentThread().getContextClassLoader();
-		Thread.currentThread().setContextClassLoader(this.getClassLoader());
-		poolConfig = new JedisPoolConfig();
-		poolConfig.setTestOnReturn(true);
-		poolConfig.setTestWhileIdle(true);
-		poolConfig.setMinIdle(20);
-		poolConfig.setMaxIdle(150);
-		poolConfig.setMaxTotal(150);
-		pool = new JedisPool(poolConfig, host, port, 40*1000, password);
-		//pool = new JedisPool(poolConfig, host, port, 40*1000);
-		jedis = pool.getResource();
-		Thread.currentThread().setContextClassLoader(previous);
-		Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable() {
-			@Override
-			public void run() {
-				Multithreading.runAsync(new Runnable() {
-					@Override
-					public void run() {
-						try {
-							j = new Jedis(host, port, 40 * 1000);
-							j.auth(password);
-							//j = new Jedis(host, port);
-							j.connect();
-							j.subscribe(new JedisPubSub() {
-								            @Override
-								            public void onMessage(String channel, String message) {
-									            JedisTask task = gson.fromJson(message, JedisTask.class);
-									            getRedisHandler().processRedisMessage(task, channel, message);
-								            }
-							            }, RedisChannels.ADMINCHAT.getChannelName(),
-									RedisChannels.REQUEST_LIST.getChannelName(),
-									RedisChannels.RETURN_REQUEST_LIST.getChannelName(),
-									RedisChannels.STAFFCHAT.getChannelName(),
-									RedisChannels.MANAGERCHAT.getChannelName(),
-									RedisChannels.FIND.getChannelName(),
-									RedisChannels.FOUND.getChannelName(),
-									RedisChannels.ANNOUNCEMENT.getChannelName(),
-									RedisChannels.STOP.getChannelName(),
-									RedisChannels.WHITELIST.getChannelName(),
-									RedisChannels.WHITELIST_ADD.getChannelName(),
-									RedisChannels.WHITELIST_REMOVE.getChannelName(),
-									RedisChannels.REPORTS.getChannelName(),
-									RedisChannels.CLOSED_REPORTS.getChannelName(),
-									RedisChannels.MONITOR_INFO.getChannelName(),
-									RedisChannels.PROXY_RETURN.getChannelName(),
-									RedisChannels.MONITOR_REQUEST.getChannelName(),
-									RedisChannels.HEARTBEAT.getChannelName(),
-									RedisChannels.FRIEND_ADD.getChannelName(),
-									RedisChannels.FRIEND_REMOVE_INBOUND.getChannelName(),
-									RedisChannels.FRIEND_REMOVE_OUTBOUND.getChannelName(),
-									RedisChannels.FRIEND_CHAT.getChannelName(),
-									RedisChannels.FRIEND_CHECK_REQUEST.getChannelName(),
-									RedisChannels.FRIEND_RETURN_REQUEST.getChannelName(),
-									RedisChannels.LEAVE.getChannelName(),
-									RedisChannels.LOGIN.getChannelName());
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
-				});
-			}
-		});
-		System.out.println("[NetworkTools] Redis PUB/SUB setup!");
-		Multithreading.runAsync(new Runnable() {
-			@Override
-			public void run() {
-				System.out.println("[NetworkTools] Connecting to mysql database...");
-				try {
-					MySQL.setupDB();
-					System.out.println("[NetworkTools] Connected to mysql database!");
-				}
-				catch (ClassNotFoundException|SQLException e) {
-					e.printStackTrace();
-					System.out.println("[NetworkTools] Unable to connect to mysql database!");
-				}
-			}
-		});
 		//ServerUtils.updateServerState(ServerState.ONLINE);
 		System.out.println("[NetworkTools] Plugin started up and ready to go!");
 	}
