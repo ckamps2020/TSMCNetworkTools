@@ -53,6 +53,7 @@ public final class Main extends JavaPlugin {
 	private DatabaseManager MySQL;
 	private ThreadPoolExecutor threadPoolExecutor;
 	private int restartTime = 0;
+	private String version = "1.0.1";
 
 	private int chatslow = 2;
 	private boolean chatSilenced = false;
@@ -249,6 +250,10 @@ public final class Main extends JavaPlugin {
 	public void onDisable() {
 		System.out.println("[NetworkTools] Shutting down...");
 		System.out.println("[NetworkTools] Shut down! Cya :D");
+	}
+
+	public String getVersion() {
+		return version;
 	}
 
 	public int getRestartTime() {

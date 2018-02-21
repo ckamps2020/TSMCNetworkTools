@@ -56,7 +56,7 @@ public final class ItemUtils {
 		return itemStack;
 	}
 
-	public ItemStack buildSkull(String user) {
+	public static ItemStack buildSkull(String user) {
 		ItemStack head = new ItemStack(Material.SKULL_ITEM, 1);
 		head.setDurability((short) 3);
 		SkullMeta skullMeta = (SkullMeta) head.getItemMeta();
@@ -65,7 +65,7 @@ public final class ItemUtils {
 		return head;
 	}
 
-	public ItemStack buildSkull(String user, String displayName) {
+	public static ItemStack buildSkull(String user, String displayName) {
 		ItemStack head = new ItemStack(Material.SKULL_ITEM, 1);
 		head.setDurability((short) 3);
 		SkullMeta skullMeta = (SkullMeta) head.getItemMeta();
@@ -75,7 +75,7 @@ public final class ItemUtils {
 		return head;
 	}
 
-	public ItemStack buildSkull(String user, String displayName, List<String> lore) {
+	public static ItemStack buildSkull(String user, String displayName, List<String> lore) {
 		ItemStack head = new ItemStack(Material.SKULL_ITEM, 1);
 		head.setDurability((short) 3);
 		SkullMeta skullMeta = (SkullMeta) head.getItemMeta();
@@ -90,7 +90,7 @@ public final class ItemUtils {
 		return head;
 	}
 
-	public ItemStack buildSkull(String user, String displayName, String... lore) {
+	public static ItemStack buildSkull(String user, String displayName, String... lore) {
 		ItemStack head = new ItemStack(Material.SKULL_ITEM, 1);
 		head.setDurability((short) 3);
 		SkullMeta skullMeta = (SkullMeta) head.getItemMeta();
