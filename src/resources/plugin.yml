@@ -1,5 +1,5 @@
 name: NetworkTools
-version: 1.0.2
+version: 1.0.3
 main: me.thesquadmc.Main
 author: ckamps
 depend: [LuckPerms]
@@ -68,3 +68,4 @@ commands:
     discord:
     store:
     website:
+    uniqueplayers:

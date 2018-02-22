@@ -53,8 +53,8 @@ public final class Main extends JavaPlugin {
 	private DatabaseManager MySQL;
 	private ThreadPoolExecutor threadPoolExecutor;
 	private int restartTime = 0;
-	private String version = "1.0.2";
-
+	private String version = "1.0.3";
+	private String serverType = "UNKNOWN";
 	private int chatslow = 2;
 	private boolean chatSilenced = false;
 	private String serverState = ServerState.LOADING;
@@ -242,6 +242,8 @@ public final class Main extends JavaPlugin {
 		getCommand("discord").setExecutor(new DiscordCommand(this));
 		getCommand("store").setExecutor(new StoreCommand(this));
 		getCommand("website").setExecutor(new WebsiteCommand(this));
+		getCommand("uniqueplayers").setExecutor(new UniquePlayersCommand(this));
+		ServerUtils.calculateServerType();
 		//ServerUtils.updateServerState(ServerState.ONLINE);
 		System.out.println("[NetworkTools] Plugin started up and ready to go!");
 	}
@@ -250,6 +252,14 @@ public final class Main extends JavaPlugin {
 	public void onDisable() {
 		System.out.println("[NetworkTools] Shutting down...");
 		System.out.println("[NetworkTools] Shut down! Cya :D");
+	}
+
+	public void setServerType(String serverType) {
+		this.serverType = serverType;
+	}
+
+	public String getServerType() {
+		return serverType;
 	}
 
 	public String getVersion() {

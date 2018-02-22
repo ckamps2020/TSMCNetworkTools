@@ -37,7 +37,7 @@ public final class LookupCommand implements CommandExecutor {
 						player.sendMessage(" ");
 						player.sendMessage(CC.translate("&6&l" + name));
 						player.sendMessage(CC.translate("&8■ &7Rank: &f" + metaData.getPrefix()));
-						if (Bukkit.getServerName().toUpperCase().contains("SKYBLOCK") || Bukkit.getServerName().toUpperCase().contains("FACTIONS")) {
+						if (Bukkit.getServerName().toUpperCase().contains("SKYBLOCK") || Bukkit.getServerName().toUpperCase().contains("FACTIONS") || Bukkit.getServerName().toUpperCase().contains("PRISON")) {
 							player.sendMessage(CC.translate("&8■ &7Has Flight: &f" + PlayerUtils.hasPermission(main.getLuckPermsApi().getGroup(u.getPrimaryGroup()), "essentials.fly")));
 						}
 					} else {

@@ -29,7 +29,6 @@ public final class DatabaseManager {
 		this.DB.openConnection();
 
 		Statement a = this.DB.getConnection().createStatement();
-
 		a.executeUpdate("CREATE TABLE IF NOT EXISTS `FRIENDS` (`UUID` MEDIUMTEXT, `FRIENDS` LONGTEXT);");
 		a.executeUpdate("CREATE TABLE IF NOT EXISTS `REMOVAL` (`UUID` MEDIUMTEXT, `REMOVAL` LONGTEXT);");
 		a.executeUpdate("CREATE TABLE IF NOT EXISTS `SETTINGS` (`UUID` MEDIUMTEXT, `NOTIFICATIONS` BOOLEAN, `PMS` BOOLEAN, `FRIENDCHAT` BOOLEAN, `REQUESTS` BOOLEAN);");
@@ -38,6 +37,22 @@ public final class DatabaseManager {
 
 	public void closeConnection() throws SQLException, ClassNotFoundException {
 		this.DB.closeConnection();
+	}
+
+	public int getTotalUniqueAccounts() throws Exception {
+		if (!this.DB.checkConnection()) {
+			this.DB.openConnection();
+		}
+		try {
+			Statement s = this.DB.getConnection().createStatement();
+			ResultSet resultSet = s.executeQuery("SELECT COUNT(*) FROM FRIENDS");
+			if (resultSet.next()) {
+				return resultSet.getInt(1);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return -1;
 	}
 
 	public void saveFriendAccount(String uuid) throws Exception {

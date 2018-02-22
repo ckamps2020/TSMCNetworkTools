@@ -5,6 +5,7 @@ import me.thesquadmc.Main;
 import me.thesquadmc.networking.JedisTask;
 import me.thesquadmc.utils.enums.RedisArg;
 import me.thesquadmc.utils.enums.RedisChannels;
+import me.thesquadmc.utils.msgs.ServerType;
 import org.bukkit.Bukkit;
 import redis.clients.jedis.Jedis;
 
@@ -22,6 +23,31 @@ public final class ServerUtils {
 	private static Object serverInstance;
 	private static Field tpsField;
 	private static final OperatingSystemMXBean OS = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
+
+	public static void calculateServerType() {
+		String m = Bukkit.getServerName().toUpperCase();
+		if (m.startsWith(ServerType.BEDWARS_DUOS)) {
+			Main.getMain().setServerType(ServerType.BEDWARS_DUOS);
+		} else if (m.startsWith(ServerType.BEDWARS_FOURS)) {
+			Main.getMain().setServerType(ServerType.BEDWARS_FOURS);
+		} else if (m.startsWith(ServerType.BEDWARS_SOLO)) {
+			Main.getMain().setServerType(ServerType.BEDWARS_SOLO);
+		} else if (m.startsWith(ServerType.BEDWARS_THREES)) {
+			Main.getMain().setServerType(ServerType.BEDWARS_THREES);
+		} else if (m.startsWith(ServerType.BEDWARS_HUB)) {
+			Main.getMain().setServerType(ServerType.BEDWARS_HUB);
+		} else if (m.startsWith(ServerType.FACTIONS)) {
+			Main.getMain().setServerType(ServerType.FACTIONS);
+		} else if (m.startsWith(ServerType.SKYBLOCK)) {
+			Main.getMain().setServerType(ServerType.SKYBLOCK);
+		} else if (m.startsWith(ServerType.PRISON)) {
+			Main.getMain().setServerType(ServerType.PRISON);
+		} else if (m.startsWith(ServerType.TROLLWARS)) {
+			Main.getMain().setServerType(ServerType.TROLLWARS);
+		} else if (m.startsWith(ServerType.HUB)) {
+			Main.getMain().setServerType(ServerType.HUB);
+		}
+	}
 
 	public static String getTPS(int time) {
 		try {

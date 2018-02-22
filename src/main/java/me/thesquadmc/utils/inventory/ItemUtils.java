@@ -25,8 +25,8 @@ import java.util.List;
 
 public final class ItemUtils {
 
-	public static void spawnItem(World world, ItemStack itemStack, Location location) {
-		world.dropItemNaturally(location, itemStack);
+	public static void spawnItem(ItemStack itemStack, Location location) {
+		location.getWorld().dropItemNaturally(location, itemStack);
 	}
 
 	public static void dropInventory(Player player) {
