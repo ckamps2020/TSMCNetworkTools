@@ -135,7 +135,7 @@ public final class ItemUtils {
 				}
 			}
 		}
-		return stacks >= 36;
+		return stacks < 36;
 	}
 
 	public static ItemStack setMonsterEggType(ItemStack item, EntityType type) {
