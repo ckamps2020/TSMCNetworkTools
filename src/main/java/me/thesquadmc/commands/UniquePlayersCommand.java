@@ -5,6 +5,7 @@ import me.thesquadmc.utils.PlayerUtils;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.msgs.CC;
 import me.thesquadmc.utils.server.Multithreading;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -23,16 +24,21 @@ public final class UniquePlayersCommand implements CommandExecutor {
 		if (sender instanceof Player) {
 			Player player = (Player) sender;
 			if (PlayerUtils.isEqualOrHigherThen(player, Rank.ADMIN)) {
-				Multithreading.runAsync(new Runnable() {
+				Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
 					@Override
 					public void run() {
-						try {
-							int i = main.getMySQL().getTotalUniqueAccounts();
-							player.sendMessage(CC.translate("&e&lACCOUNTS &6■ &7Total unique accounts: &e" + i));
-						} catch (Exception e) {
-							player.sendMessage(CC.translate("&e&lACCOUNTS &6■ &7Unable to fetch unique account count right now"));
-							e.printStackTrace();
-						}
+						Multithreading.runAsync(new Runnable() {
+							@Override
+							public void run() {
+								try {
+									int i = main.getMySQL().getTotalUniqueAccounts();
+									player.sendMessage(CC.translate("&e&lACCOUNTS &6■ &7Total unique accounts: &e" + i));
+								} catch (Exception e) {
+									player.sendMessage(CC.translate("&e&lACCOUNTS &6■ &7Unable to fetch unique account count right now"));
+									e.printStackTrace();
+								}
+							}
+						});
 					}
 				});
 			} else {

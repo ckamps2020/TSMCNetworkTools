@@ -5,7 +5,10 @@ import me.thesquadmc.Main;
 import me.thesquadmc.networking.JedisTask;
 import me.thesquadmc.utils.enums.RedisArg;
 import me.thesquadmc.utils.enums.RedisChannels;
+import me.thesquadmc.utils.enums.ServerProperty;
 import me.thesquadmc.utils.msgs.ServerType;
+import net.minecraft.server.v1_8_R3.DedicatedServer;
+import net.minecraft.server.v1_8_R3.MinecraftServer;
 import org.bukkit.Bukkit;
 import redis.clients.jedis.Jedis;
 
@@ -58,6 +61,14 @@ public final class ServerUtils {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	public static void savePropertiesFile() {
+		((DedicatedServer) MinecraftServer.getServer()).propertyManager.savePropertiesFile();
+	}
+
+	public static void setServerProperty(ServerProperty property, Object value) {
+		((DedicatedServer) MinecraftServer.getServer()).propertyManager.setProperty(property.getPropertyName(), value);
 	}
 
 	public static void updateServerState(String serverState) {

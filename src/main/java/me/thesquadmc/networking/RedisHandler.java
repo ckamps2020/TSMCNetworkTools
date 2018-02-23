@@ -35,33 +35,48 @@ public final class RedisHandler {
 	public void processRedisMessage(JedisTask task, String channel, String message) {
 		Map<String, Object> data = task.getData();
 		if (channel.equalsIgnoreCase(RedisChannels.STAFFCHAT.toString())) {
-			for (Player player : Bukkit.getOnlinePlayers()) {
-				TempData tempData = main.getTempDataManager().getTempData(player.getUniqueId());
-				if (PlayerUtils.isEqualOrHigherThen(player, Rank.TRAINEE)) {
-					if (tempData.isStaffchatEnabled() && tempData.getStaffchatSetting() == MessageSettings.GLOBAL) {
-						String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
-						player.spigot().sendMessage(StringUtils.getHoverMessage(String.valueOf(data.get(RedisArg.MESSAGE.getArg())), "&7Currently on &e" + server));
+			Multithreading.runAsync(new Runnable() {
+				@Override
+				public void run() {
+					for (Player player : Bukkit.getOnlinePlayers()) {
+						TempData tempData = main.getTempDataManager().getTempData(player.getUniqueId());
+						if (PlayerUtils.isEqualOrHigherThen(player, Rank.TRAINEE)) {
+							if (tempData.isStaffchatEnabled() && tempData.getStaffchatSetting() == MessageSettings.GLOBAL) {
+								String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
+								player.spigot().sendMessage(StringUtils.getHoverMessage(String.valueOf(data.get(RedisArg.MESSAGE.getArg())), "&7Currently on &e" + server));
+							}
+						}
 					}
 				}
-			}
+			});
 		} else if (channel.equalsIgnoreCase(RedisChannels.MANAGERCHAT.toString())) {
-			for (Player player : Bukkit.getOnlinePlayers()) {
-				TempData tempData = main.getTempDataManager().getTempData(player.getUniqueId());
-				if (PlayerUtils.isEqualOrHigherThen(player, Rank.MANAGER)) {
-					if (tempData.isManagerchatEnabled() && tempData.getStaffchatSetting() == MessageSettings.GLOBAL) {
-						player.sendMessage(CC.translate(String.valueOf(data.get(RedisArg.MESSAGE.getArg()))));
+			Multithreading.runAsync(new Runnable() {
+				@Override
+				public void run() {
+					for (Player player : Bukkit.getOnlinePlayers()) {
+						TempData tempData = main.getTempDataManager().getTempData(player.getUniqueId());
+						if (PlayerUtils.isEqualOrHigherThen(player, Rank.MANAGER)) {
+							if (tempData.isManagerchatEnabled() && tempData.getStaffchatSetting() == MessageSettings.GLOBAL) {
+								player.sendMessage(CC.translate(String.valueOf(data.get(RedisArg.MESSAGE.getArg()))));
+							}
+						}
 					}
 				}
-			}
+			});
 		} else if (channel.equalsIgnoreCase(RedisChannels.ADMINCHAT.toString())) {
-			for (Player player : Bukkit.getOnlinePlayers()) {
-				TempData tempData = main.getTempDataManager().getTempData(player.getUniqueId());
-				if (PlayerUtils.isEqualOrHigherThen(player, Rank.ADMIN)) {
-					if (tempData.isAdminchatEnabled() && tempData.getStaffchatSetting() == MessageSettings.GLOBAL) {
-						player.sendMessage(CC.translate(String.valueOf(data.get(RedisArg.MESSAGE.getArg()))));
+			Multithreading.runAsync(new Runnable() {
+				@Override
+				public void run() {
+					for (Player player : Bukkit.getOnlinePlayers()) {
+						TempData tempData = main.getTempDataManager().getTempData(player.getUniqueId());
+						if (PlayerUtils.isEqualOrHigherThen(player, Rank.ADMIN)) {
+							if (tempData.isAdminchatEnabled() && tempData.getStaffchatSetting() == MessageSettings.GLOBAL) {
+								player.sendMessage(CC.translate(String.valueOf(data.get(RedisArg.MESSAGE.getArg()))));
+							}
+						}
 					}
 				}
-			}
+			});
 		} else if (channel.equalsIgnoreCase(RedisChannels.FIND.getChannelName())) {
 			main.getServer().getScheduler().runTaskAsynchronously(main, new Runnable() {
 				@Override
@@ -369,29 +384,34 @@ public final class RedisHandler {
 				}
 			}
 		} else if (channel.equalsIgnoreCase(RedisChannels.REPORTS.getChannelName())) {
-			String uuid = String.valueOf(data.get(RedisArg.UUID.getArg()));
-			String name = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
-			String date = String.valueOf(data.get(RedisArg.DATE.getArg()));
-			String reporter = String.valueOf(data.get(RedisArg.ORIGIN_PLAYER.getArg()));
-			String reason = String.valueOf(data.get(RedisArg.REASON.getArg()));
-			String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
-			String regex = "[ ]+";
-			String[] tokens = reason.split(regex);
-			Report report = new Report(name, date, reporter, server, tokens);
-			report.setReportID(UUID.fromString(uuid));
-			main.getReportManager().registerReport(report);
-			for (Player player : Bukkit.getOnlinePlayers()) {
-				if (PlayerUtils.isEqualOrHigherThen(player, Rank.MOD)) {
-					player.sendMessage(CC.translate("&8&m---------------&8[ &6&lREPORT &8]&8&m---------------"));
-					player.sendMessage(" ");
-					player.sendMessage(CC.translate("&eReport by: &7" + report.getReporter()));
-					player.sendMessage(CC.translate("&eReported player: &7" + report.getUsername()));
-					player.sendMessage(CC.translate("&7Reported player is currently on &e" + report.getServer()));
-					player.spigot().sendMessage(StringUtils.getHoverMessage("&8(Click to view reports)", "&7Click to view reports", "/reports"));
-					player.sendMessage(" ");
-					player.sendMessage(CC.translate("&8&m---------------&8[ &6&lREPORT &8]&8&m---------------"));
+			Multithreading.runAsync(new Runnable() {
+				@Override
+				public void run() {
+					String uuid = String.valueOf(data.get(RedisArg.UUID.getArg()));
+					String name = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
+					String date = String.valueOf(data.get(RedisArg.DATE.getArg()));
+					String reporter = String.valueOf(data.get(RedisArg.ORIGIN_PLAYER.getArg()));
+					String reason = String.valueOf(data.get(RedisArg.REASON.getArg()));
+					String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
+					String regex = "[ ]+";
+					String[] tokens = reason.split(regex);
+					Report report = new Report(name, date, reporter, server, tokens);
+					report.setReportID(UUID.fromString(uuid));
+					main.getReportManager().registerReport(report);
+					for (Player player : Bukkit.getOnlinePlayers()) {
+						if (PlayerUtils.isEqualOrHigherThen(player, Rank.MOD)) {
+							player.sendMessage(CC.translate("&8&m---------------&8[ &6&lREPORT &8]&8&m---------------"));
+							player.sendMessage(" ");
+							player.sendMessage(CC.translate("&eReport by: &7" + report.getReporter()));
+							player.sendMessage(CC.translate("&eReported player: &7" + report.getUsername()));
+							player.sendMessage(CC.translate("&7Reported player is currently on &e" + report.getServer()));
+							player.spigot().sendMessage(StringUtils.getHoverMessage("&8(Click to view reports)", "&7Click to view reports", "/reports"));
+							player.sendMessage(" ");
+							player.sendMessage(CC.translate("&8&m---------------&8[ &6&lREPORT &8]&8&m---------------"));
+						}
+					}
 				}
-			}
+			});
 		} else if (channel.equalsIgnoreCase(RedisChannels.CLOSED_REPORTS.getChannelName())) {
 			Multithreading.runAsync(new Runnable() {
 				@Override
@@ -433,62 +453,72 @@ public final class RedisHandler {
 				});
 			}
 		} else if (channel.equalsIgnoreCase(RedisChannels.PROXY_RETURN.getChannelName())) {
-			String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
-			String player = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
-			if (server.equalsIgnoreCase(Bukkit.getServerName())) {
-				Player p = Bukkit.getPlayer(player);
-				if (p != null) {
+			Multithreading.runAsync(new Runnable() {
+				@Override
+				public void run() {
+					String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
+					String player = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
+					if (server.equalsIgnoreCase(Bukkit.getServerName())) {
+						Player p = Bukkit.getPlayer(player);
+						if (p != null) {
 
-					String proxies = String.valueOf(data.get(RedisArg.PROXIES.getArg()));
-					String count = String.valueOf(data.get(RedisArg.COUNT.getArg()));
-					String regex = "[ ]+";
-					String[] tokens = proxies.split(regex);
-					p.sendMessage(CC.translate("&7"));
-					for (String s : tokens) {
-						p.sendMessage(CC.translate(s));
-					}
-					p.sendMessage(CC.translate("&7"));
-					p.sendMessage(CC.translate("&e" + count + "&8/&e4000 &7Online globally"));
-					p.sendMessage(CC.translate("&7"));
-				}
-			}
-		} else if (channel.equalsIgnoreCase(RedisChannels.MONITOR_INFO.getChannelName())) {
-			String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
-			String count = String.valueOf(data.get(RedisArg.COUNT.getArg()));
-			String msg = String.valueOf(data.get(RedisArg.MESSAGE.getArg()));
-			String uptime = String.valueOf(data.get(RedisArg.UPTIME.getArg()));
-			String tps = String.valueOf(data.get(RedisArg.TPS.getArg()));
-			if (!uptime.equalsIgnoreCase("0")) {
-				for (Player player : Bukkit.getOnlinePlayers()) {
-					if (PlayerUtils.isEqualOrHigherThen(player, Rank.ADMIN) && main.getTempDataManager().getTempData(player.getUniqueId()).isMonitor()) {
-						if (!tps.equalsIgnoreCase("null") && Double.valueOf(tps) > 15.0) {
-							player.sendMessage(CC.translate("&8&m-------------------------------------------------"));
-							player.sendMessage(CC.translate("&6&l[MONITOR REPORT] &f" + server + " &7" + count + "&8/&7200"));
-							player.sendMessage(CC.translate("&7"));
-							player.sendMessage(CC.translate(msg));
-							player.sendMessage(CC.translate("&7Uptime = &e" + uptime));
-							player.sendMessage(CC.translate("&8&m-------------------------------------------------"));
-						} else {
-							player.sendMessage(CC.translate("&8&m-------------------------------------------------"));
-							player.sendMessage(CC.translate("&6&l[MONITOR REPORT] &f" + server + " &cBelow 15 TPS!"));
-							player.sendMessage(CC.translate("&7"));
-							player.sendMessage(CC.translate(msg));
-							player.sendMessage(CC.translate("&7Uptime = &e" + uptime));
-							player.sendMessage(CC.translate("&8&m-------------------------------------------------"));
+							String proxies = String.valueOf(data.get(RedisArg.PROXIES.getArg()));
+							String count = String.valueOf(data.get(RedisArg.COUNT.getArg()));
+							String regex = "[ ]+";
+							String[] tokens = proxies.split(regex);
+							p.sendMessage(CC.translate("&7"));
+							for (String s : tokens) {
+								p.sendMessage(CC.translate(s));
+							}
+							p.sendMessage(CC.translate("&7"));
+							p.sendMessage(CC.translate("&e" + count + "&8/&e4000 &7Online globally"));
+							p.sendMessage(CC.translate("&7"));
 						}
 					}
 				}
-			} else {
-				for (Player player : Bukkit.getOnlinePlayers()) {
-					if (PlayerUtils.isEqualOrHigherThen(player, Rank.ADMIN) && main.getTempDataManager().getTempData(player.getUniqueId()).isMonitor()) {
-						player.sendMessage(CC.translate("&8&m-------------------------------------------------"));
-						player.sendMessage(CC.translate("&6&l[MONITOR REPORT] &f" + server + " &7" + count + "&8/&7200"));
-						player.sendMessage(CC.translate("&7"));
-						player.sendMessage(CC.translate(msg));
-						player.sendMessage(CC.translate("&8&m-------------------------------------------------"));
+			});
+		} else if (channel.equalsIgnoreCase(RedisChannels.MONITOR_INFO.getChannelName())) {
+			Multithreading.runAsync(new Runnable() {
+				@Override
+				public void run() {
+					String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
+					String count = String.valueOf(data.get(RedisArg.COUNT.getArg()));
+					String msg = String.valueOf(data.get(RedisArg.MESSAGE.getArg()));
+					String uptime = String.valueOf(data.get(RedisArg.UPTIME.getArg()));
+					String tps = String.valueOf(data.get(RedisArg.TPS.getArg()));
+					if (!uptime.equalsIgnoreCase("0")) {
+						for (Player player : Bukkit.getOnlinePlayers()) {
+							if (PlayerUtils.isEqualOrHigherThen(player, Rank.ADMIN) && main.getTempDataManager().getTempData(player.getUniqueId()).isMonitor()) {
+								if (!tps.equalsIgnoreCase("null") && Double.valueOf(tps) > 15.0) {
+									player.sendMessage(CC.translate("&8&m-------------------------------------------------"));
+									player.sendMessage(CC.translate("&6&l[MONITOR REPORT] &f" + server + " &7" + count + "&8/&7200"));
+									player.sendMessage(CC.translate("&7"));
+									player.sendMessage(CC.translate(msg));
+									player.sendMessage(CC.translate("&7Uptime = &e" + uptime));
+									player.sendMessage(CC.translate("&8&m-------------------------------------------------"));
+								} else {
+									player.sendMessage(CC.translate("&8&m-------------------------------------------------"));
+									player.sendMessage(CC.translate("&6&l[MONITOR REPORT] &f" + server + " &cBelow 15 TPS!"));
+									player.sendMessage(CC.translate("&7"));
+									player.sendMessage(CC.translate(msg));
+									player.sendMessage(CC.translate("&7Uptime = &e" + uptime));
+									player.sendMessage(CC.translate("&8&m-------------------------------------------------"));
+								}
+							}
+						}
+					} else {
+						for (Player player : Bukkit.getOnlinePlayers()) {
+							if (PlayerUtils.isEqualOrHigherThen(player, Rank.ADMIN) && main.getTempDataManager().getTempData(player.getUniqueId()).isMonitor()) {
+								player.sendMessage(CC.translate("&8&m-------------------------------------------------"));
+								player.sendMessage(CC.translate("&6&l[MONITOR REPORT] &f" + server + " &7" + count + "&8/&7200"));
+								player.sendMessage(CC.translate("&7"));
+								player.sendMessage(CC.translate(msg));
+								player.sendMessage(CC.translate("&8&m-------------------------------------------------"));
+							}
+						}
 					}
 				}
-			}
+			});
 		} else if (channel.equalsIgnoreCase(RedisChannels.FRIEND_CHECK_REQUEST.getChannelName())) {
 			main.getServer().getScheduler().runTaskAsynchronously(main, new Runnable() {
 				@Override
@@ -517,15 +547,20 @@ public final class RedisHandler {
 			main.getServer().getScheduler().runTaskAsynchronously(main, new Runnable() {
 				@Override
 				public void run() {
-					String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
-					if (server.equalsIgnoreCase(Bukkit.getServerName())) {
-						String name = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
-						String origin = String.valueOf(data.get(RedisArg.ORIGIN_PLAYER.getArg()));
-						Player p = Bukkit.getPlayer(origin);
-						if (p != null) {
-							FriendCommand.online.get(p.getUniqueId()).add(name);
+					Multithreading.runAsync(new Runnable() {
+						@Override
+						public void run() {
+							String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
+							if (server.equalsIgnoreCase(Bukkit.getServerName())) {
+								String name = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
+								String origin = String.valueOf(data.get(RedisArg.ORIGIN_PLAYER.getArg()));
+								Player p = Bukkit.getPlayer(origin);
+								if (p != null) {
+									FriendCommand.online.get(p.getUniqueId()).add(name);
+								}
+							}
 						}
-					}
+					});
 				}
 			});
 		} else if (channel.equalsIgnoreCase(RedisChannels.FRIEND_REMOVE_OUTBOUND.getChannelName())) {
@@ -579,46 +614,61 @@ public final class RedisHandler {
 			main.getServer().getScheduler().runTaskAsynchronously(main, new Runnable() {
 				@Override
 				public void run() {
-					String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
-					String friends = String.valueOf(data.get(RedisArg.FRIENDS.getArg()));
-					String player = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
-					String message = String.valueOf(data.get(RedisArg.MESSAGE.getArg()));
-					String ss = String.valueOf(data.get(RedisArg.SSMSG.getArg()));
-					List<String> f = new ArrayList<>();
-					String regex = "[ ]+";
-					String[] tokens = friends.split(regex);
-					for (String s : tokens) {
-						f.add(s);
-					}
-					for (Player p : Bukkit.getOnlinePlayers()) {
-						if (PlayerUtils.isEqualOrHigherThen(p, Rank.TRAINEE) && main.getSettings().get(p.getUniqueId()).get(Settings.SOCIALSPY)) {
-							p.spigot().sendMessage(StringUtils.getHoverMessage(ss, "&7Currently on &d" + server));
+					Multithreading.runAsync(new Runnable() {
+						@Override
+						public void run() {
+							String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
+							String friends = String.valueOf(data.get(RedisArg.FRIENDS.getArg()));
+							String player = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
+							String message = String.valueOf(data.get(RedisArg.MESSAGE.getArg()));
+							String ss = String.valueOf(data.get(RedisArg.SSMSG.getArg()));
+							List<String> f = new ArrayList<>();
+							String regex = "[ ]+";
+							String[] tokens = friends.split(regex);
+							for (String s : tokens) {
+								f.add(s);
+							}
+							for (Player p : Bukkit.getOnlinePlayers()) {
+								if (PlayerUtils.isEqualOrHigherThen(p, Rank.TRAINEE) && main.getSettings().get(p.getUniqueId()).get(Settings.SOCIALSPY)) {
+									p.spigot().sendMessage(StringUtils.getHoverMessage(ss, "&7Currently on &d" + server));
+								}
+							}
+							for (String s : f) {
+								Player t = Bukkit.getPlayer(UUID.fromString(s));
+								if (t != null) {
+									t.spigot().sendMessage(StringUtils.getHoverMessage(message, "&7Currently on &d" + server));
+								}
+							}
 						}
-					}
-					for (String s : f) {
-						Player t = Bukkit.getPlayer(UUID.fromString(s));
-						if (t != null) {
-							t.spigot().sendMessage(StringUtils.getHoverMessage(message, "&7Currently on &d" + server));
+					});
+				}
+			});
+		} else if (channel.equalsIgnoreCase(RedisChannels.LOGIN.getChannelName())) {
+			Multithreading.runAsync(new Runnable() {
+				@Override
+				public void run() {
+					String player = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
+					OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(player);
+					for (Player p : Bukkit.getOnlinePlayers()) {
+						if (main.getFriends() != null && main.getFriends().get(p.getUniqueId()) != null && main.getFriends().get(p.getUniqueId()).contains(offlinePlayer.getUniqueId().toString())) {
+							p.sendMessage(CC.translate("&d&lFRIENDS &5■ &d" + player + " &7has logged in!"));
 						}
 					}
 				}
 			});
-		} else if (channel.equalsIgnoreCase(RedisChannels.LOGIN.getChannelName())) {
-			String player = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
-			OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(player);
-			for (Player p : Bukkit.getOnlinePlayers()) {
-				if (main.getFriends() != null && main.getFriends().get(p.getUniqueId()) != null && main.getFriends().get(p.getUniqueId()).contains(offlinePlayer.getUniqueId().toString())) {
-					p.sendMessage(CC.translate("&d&lFRIENDS &5■ &d" + player + " &7has logged in!"));
-				}
-			}
 		} else if (channel.equalsIgnoreCase(RedisChannels.LEAVE.getChannelName())) {
-			String player = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
-			OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(player);
-			for (Player p : Bukkit.getOnlinePlayers()) {
-				if (main.getFriends() != null && main.getFriends().get(p.getUniqueId()) != null && main.getFriends().get(p.getUniqueId()).contains(offlinePlayer.getUniqueId().toString())) {
-					p.sendMessage(CC.translate("&d&lFRIENDS &5■ &d" + player + " &7has logged out!"));
+			Multithreading.runAsync(new Runnable() {
+				@Override
+				public void run() {
+					String player = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
+					OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(player);
+					for (Player p : Bukkit.getOnlinePlayers()) {
+						if (main.getFriends() != null && main.getFriends().get(p.getUniqueId()) != null && main.getFriends().get(p.getUniqueId()).contains(offlinePlayer.getUniqueId().toString())) {
+							p.sendMessage(CC.translate("&d&lFRIENDS &5■ &d" + player + " &7has logged out!"));
+						}
+					}
 				}
-			}
+			});
 		}
 	}
 
