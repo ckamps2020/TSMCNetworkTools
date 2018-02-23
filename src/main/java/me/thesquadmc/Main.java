@@ -53,7 +53,7 @@ public final class Main extends JavaPlugin {
 	private DatabaseManager MySQL;
 	private ThreadPoolExecutor threadPoolExecutor;
 	private int restartTime = 0;
-	private String version = "1.0.3";
+	private String version = "1.0.4";
 	private String serverType = "UNKNOWN";
 	private int chatslow = 2;
 	private boolean chatSilenced = false;
@@ -135,8 +135,8 @@ public final class Main extends JavaPlugin {
 			poolConfig.setMinIdle(20);
 			poolConfig.setMaxIdle(150);
 			poolConfig.setMaxTotal(150);
-			//pool = new JedisPool(poolConfig, host, port, 40*1000, password);
-			pool = new JedisPool(poolConfig, host, port, 40*1000);
+			pool = new JedisPool(poolConfig, host, port, 40*1000, password);
+			//pool = new JedisPool(poolConfig, host, port, 40*1000);
 			jedis = pool.getResource();
 			Thread.currentThread().setContextClassLoader(previous);
 		} catch (Exception e) {
@@ -146,9 +146,9 @@ public final class Main extends JavaPlugin {
 			@Override
 			public void run() {
 				try {
-					//j = new Jedis(host, port, 40 * 1000);
-					//j.auth(password);
-					j = new Jedis(host, port);
+					j = new Jedis(host, port, 40 * 1000);
+					j.auth(password);
+					//j = new Jedis(host, port);
 					j.connect();
 					j.subscribe(new JedisPubSub() {
 						            @Override

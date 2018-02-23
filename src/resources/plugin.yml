@@ -1,5 +1,5 @@
 name: NetworkTools
-version: 1.0.3
+version: 1.0.4
 main: me.thesquadmc.Main
 author: ckamps
 depend: [LuckPerms]
