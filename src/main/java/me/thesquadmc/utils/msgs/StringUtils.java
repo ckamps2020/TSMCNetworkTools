@@ -1165,6 +1165,8 @@ public final class StringUtils {
 		curses.add(",cz");
 		curses.add(".nu");
 
+		curses.add("[{");
+		curses.add("}]");
 		curses.add(" , ");
 		curses.add(" . ");
 		curses.add("(dot)");
