@@ -55,9 +55,7 @@ public final class FilterListener implements Listener {
 								return;
 							}
 						}
-						String message = StringUtils.fixStringForCaps(msg);
-						e.setMessage(message);
-						if (StringUtils.shouldFilter(msg)) {
+						if (StringUtils.isFiltered(msg)) {
 							e.setCancelled(true);
 							player.sendMessage(CC.translate("&e&lFILTER &6■ &7You are not allowed to say that!"));
 							return;
@@ -76,12 +74,19 @@ public final class FilterListener implements Listener {
 					}
 				} else {
 					String msg = e.getMessage();
-					String message = msg.toLowerCase();
-					e.setMessage(message);
-					if (StringUtils.shouldFilter(msg)) {
+					e.setMessage(msg);
+					if (StringUtils.lastMsg.containsKey(player.getUniqueId())) {
+						if (msg.equalsIgnoreCase(StringUtils.lastMsg.get(player.getUniqueId()))) {
+							e.setCancelled(true);
+							player.sendMessage(CC.translate("&e&lFILTER &6■ &7You are not allowed to send the same message twice!"));
+							return;
+						}
+					}
+					if (StringUtils.isFiltered(msg)) {
 						e.setCancelled(true);
 						player.sendMessage(CC.translate("&e&lFILTER &6■ &7You are not allowed to say that!"));
 					}
+					StringUtils.lastMsg.put(player.getUniqueId(), msg);
 				}
 			} else {
 				e.setCancelled(true);

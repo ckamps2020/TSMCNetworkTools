@@ -24,14 +24,18 @@ public final class YtVanishCommand implements CommandExecutor {
 			Player player = (Player) sender;
 			TempData tempData = main.getTempDataManager().getTempData(player.getUniqueId());
 			if (PlayerUtils.isEqualOrHigherThen(player, Rank.YOUTUBE)) {
-				if (!tempData.isYtVanishEnabled()) {
-					player.sendMessage(CC.translate("&e&lYT VANISH &6■ &7Vanish has been &eenabled"));
-					tempData.setYtVanishEnabled(true);
-					PlayerUtils.hidePlayerSpectatorYT(player);
+				if (!tempData.isVanished()) {
+					if (!tempData.isYtVanishEnabled()) {
+						player.sendMessage(CC.translate("&e&lYT VANISH &6■ &7Vanish has been &eenabled"));
+						tempData.setYtVanishEnabled(true);
+						PlayerUtils.hidePlayerSpectatorYT(player);
+					} else {
+						player.sendMessage(CC.translate("&e&lYT VANISH &6■ &7Vanish has been &edisabled"));
+						tempData.setYtVanishEnabled(false);
+						PlayerUtils.showPlayerSpectator(player);
+					}
 				} else {
-					player.sendMessage(CC.translate("&e&lYT VANISH &6■ &7Vanish has been &edisabled"));
-					tempData.setYtVanishEnabled(false);
-					PlayerUtils.showPlayerSpectator(player);
+					player.sendMessage(CC.translate("&e&lYT VANISH &6■ &7Please disable normal vanish first!"));
 				}
 			} else {
 				player.sendMessage(CC.translate("&e&lPERMISSIONS &6■ &7You do not have permission to use this command!"));

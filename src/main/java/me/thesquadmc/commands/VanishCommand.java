@@ -26,20 +26,24 @@ public final class VanishCommand implements CommandExecutor {
 			Player player = (Player) sender;
 			TempData tempData = main.getTempDataManager().getTempData(player.getUniqueId());
 			if (PlayerUtils.isEqualOrHigherThen(player, Rank.HELPER)) {
-				if (!tempData.isVanished()) {
-					PlayerUtils.hidePlayerSpectatorStaff(player);
-					tempData.setVanished(true);
-					if (StaffmodeCommand.getStaffmode().containsKey(player.getUniqueId())) {
-						player.getInventory().setItem(4, new ItemBuilder(Material.INK_SACK, 10).name("&e&lToggle Vanish &7off").lore("&7Toggle vanish on or off").build());
+				if (!tempData.isYtVanishEnabled()) {
+					if (!tempData.isVanished()) {
+						PlayerUtils.hidePlayerSpectatorStaff(player);
+						tempData.setVanished(true);
+						if (StaffmodeCommand.getStaffmode().containsKey(player.getUniqueId())) {
+							player.getInventory().setItem(4, new ItemBuilder(Material.INK_SACK, 10).name("&e&lToggle Vanish &7off").lore("&7Toggle vanish on or off").build());
+						}
+						player.sendMessage(CC.translate("&e&lVANISH &6■ &7You toggled vanish &eon&7! No one will be able to see you"));
+					} else {
+						PlayerUtils.showPlayerSpectator(player);
+						tempData.setVanished(false);
+						if (StaffmodeCommand.getStaffmode().containsKey(player.getUniqueId())) {
+							player.getInventory().setItem(4, new ItemBuilder(Material.INK_SACK, 8).name("&e&lToggle Vanish &7on").lore("&7Toggle vanish on or off").build());
+						}
+						player.sendMessage(CC.translate("&e&lVANISH &6■ &7You toggled vanish &eoff&7! Everyone will be able to see you"));
 					}
-					player.sendMessage(CC.translate("&e&lVANISH &6■ &7You toggled vanish &eon&7! No one will be able to see you"));
 				} else {
-					PlayerUtils.showPlayerSpectator(player);
-					tempData.setVanished(false);
-					if (StaffmodeCommand.getStaffmode().containsKey(player.getUniqueId())) {
-						player.getInventory().setItem(4, new ItemBuilder(Material.INK_SACK, 8).name("&e&lToggle Vanish &7on").lore("&7Toggle vanish on or off").build());
-					}
-					player.sendMessage(CC.translate("&e&lVANISH &6■ &7You toggled vanish &eoff&7! Everyone will be able to see you"));
+					player.sendMessage(CC.translate("&e&lVANISH &6■ &7Please disabled YT Vanish first!"));
 				}
 			} else {
 				player.sendMessage(CC.translate("&e&lPERMISSIONS &6■ &7You do not have permission to use this command!"));

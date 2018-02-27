@@ -1,6 +1,7 @@
 package me.thesquadmc.listeners;
 
 import me.thesquadmc.Main;
+import me.thesquadmc.commands.StaffmodeCommand;
 import me.thesquadmc.objects.TempData;
 import me.thesquadmc.utils.PlayerUtils;
 import me.thesquadmc.utils.handlers.UpdateEvent;
@@ -32,6 +33,10 @@ public final class VanishListener implements Listener {
 					}
 				} else if (tempData.isNicknamed()) {
 					TitleUtils.sendActionBarToPlayer("&7Nicked as &e&l" + player.getName() + "&7", player);
+				} else if (StaffmodeCommand.getStaffmode().containsKey(player.getUniqueId())) {
+					TitleUtils.sendActionBarToPlayer("&7Staffmode is &e&lenabled", player);
+				} else if (tempData.isVanished()) {
+					TitleUtils.sendActionBarToPlayer("&7Vanish is &e&lenabled", player);
 				}
 			}
 		}

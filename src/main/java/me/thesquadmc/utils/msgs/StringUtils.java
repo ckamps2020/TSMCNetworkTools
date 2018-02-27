@@ -186,7 +186,7 @@ public final class StringUtils {
 		return isFiltered(msg);
 	}
 
-	private static boolean isFiltered(String message) {
+	public static boolean isFiltered(String message) {
 		return containsCurses(message);
 	}
 
@@ -1077,6 +1077,8 @@ public final class StringUtils {
 
 		curses.add("tosser");
 
+		curses.add("fcuk");
+
 		curses.add(" kys ");
 		curses.add("killyourself");
 		curses.add("kill your self");
@@ -1113,6 +1115,8 @@ public final class StringUtils {
 		curses.add("message id");
 		curses.add(" ip is ");
 
+		curses.add(" . com");
+		curses.add(". com");
 		curses.add(":255");
 		curses.add("\"./");
 		curses.add("play.");
