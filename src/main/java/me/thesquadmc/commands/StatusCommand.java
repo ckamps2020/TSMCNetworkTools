@@ -33,9 +33,6 @@ public final class StatusCommand implements CommandExecutor {
 				player.sendMessage(CC.translate("&e&lSTATUS &6■ &7Total Memory: &e" + ServerUtils.getTotalMemory()));
 				player.sendMessage(CC.translate("&e&lSTATUS &6■ &7Used Memory: &e" + ServerUtils.getMemoryPercentageUsed()));
 				player.sendMessage(CC.translate("&e&lSTATUS &6■ &7Recent TPS: &e" + ServerUtils.getTPS(0)));
-				player.sendMessage(CC.translate("&e&lSTATUS &6■ &7Active Thread Count: &e" + ServerUtils.getActiveThreadCount()));
-				player.sendMessage(CC.translate("&e&lSTATUS &6■ &7Thread Pool Size: &e" + ServerUtils.getThreadPoolSize()));
-				player.sendMessage(CC.translate("&e&lSTATUS &6■ &7Largest Pool Size: &e" + ServerUtils.getLargestPoolSize()));
 				player.sendMessage(CC.translate("&e&lSTATUS &6■ &7Process CPU Load: &e" + ServerUtils.getProcessCpuLoadFormatted()));
 				player.sendMessage(CC.translate("&e&lSTATUS &6■ &7System CPU Load: &e" + ServerUtils.getSystemCpuLoadFormatted()));
 				player.sendMessage(CC.translate("&e&lSTATUS &6■ &7Available Logical Processors: &e" + Runtime.getRuntime().availableProcessors()));

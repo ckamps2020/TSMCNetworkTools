@@ -32,7 +32,7 @@ public final class StaffmodeCommand implements CommandExecutor {
 			Player player = (Player) sender;
 			TempData tempData = main.getTempDataManager().getTempData(player.getUniqueId());
 			if (PlayerUtils.isEqualOrHigherThen(player, Rank.MOD)) {
-				if (Bukkit.getServerName().toUpperCase().contains("HUB")) {
+				if (Bukkit.getServerName().toUpperCase().contains("HUB") || Bukkit.getServerName().toUpperCase().startsWith("BW")) {
 					player.sendMessage(CC.translate("&e&lSTAFFMODE &6■ &7You are not allowed to use this command here!"));
 					return true;
 				}

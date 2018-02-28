@@ -1,5 +1,5 @@
 name: NetworkTools
-version: 1.0.10
+version: 1.0.11
 main: me.thesquadmc.Main
 author: ckamps
 depend: [LuckPerms]
@@ -70,3 +70,4 @@ commands:
     website:
     uniqueplayers:
     title:
+    queuerestart:
