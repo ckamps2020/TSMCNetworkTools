@@ -59,8 +59,6 @@ public final class Main extends JavaPlugin {
 	private boolean chatSilenced = false;
 	private String serverState = ServerState.LOADING;
 
-	//test
-
 	private FileManager fileManager;
 	private TempDataManager tempDataManager;
 	private RedisHandler redisHandler;
