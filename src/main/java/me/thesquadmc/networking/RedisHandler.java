@@ -146,25 +146,22 @@ public final class RedisHandler {
 					StringBuilder dSB = new StringBuilder();
 					StringBuilder oSB = new StringBuilder();
 					for (Player p : Bukkit.getOnlinePlayers()) {
-						TempData tempData = main.getTempDataManager().getTempData(p.getUniqueId());
-						if (!tempData.isVanished() && !tempData.isYtVanishEnabled()) {
-							if (PlayerUtils.doesRankMatch(p, Rank.TRAINEE)) {
-								trainee.add(p.getName());
-							} else if (PlayerUtils.doesRankMatch(p, Rank.HELPER)) {
-								helper.add(p.getName());
-							} else if (PlayerUtils.doesRankMatch(p, Rank.MOD)) {
-								mod.add(p.getName());
-							} else if (PlayerUtils.doesRankMatch(p, Rank.SRMOD)) {
-								srmod.add(p.getName());
-							} else if (PlayerUtils.doesRankMatch(p, Rank.ADMIN)) {
-								admin.add(p.getName());
-							} else if (PlayerUtils.doesRankMatch(p, Rank.MANAGER)) {
-								manager.add(p.getName());
-							} else if (PlayerUtils.doesRankMatch(p, Rank.DEVELOPER)) {
-								developer.add(p.getName());
-							} else if (PlayerUtils.doesRankMatch(p, Rank.OWNER)) {
-								owner.add(p.getName());
-							}
+						if (PlayerUtils.doesRankMatch(p, Rank.TRAINEE)) {
+							trainee.add(p.getName());
+						} else if (PlayerUtils.doesRankMatch(p, Rank.HELPER)) {
+							helper.add(p.getName());
+						} else if (PlayerUtils.doesRankMatch(p, Rank.MOD)) {
+							mod.add(p.getName());
+						} else if (PlayerUtils.doesRankMatch(p, Rank.SRMOD)) {
+							srmod.add(p.getName());
+						} else if (PlayerUtils.doesRankMatch(p, Rank.ADMIN)) {
+							admin.add(p.getName());
+						} else if (PlayerUtils.doesRankMatch(p, Rank.MANAGER)) {
+							manager.add(p.getName());
+						} else if (PlayerUtils.doesRankMatch(p, Rank.DEVELOPER)) {
+							developer.add(p.getName());
+						} else if (PlayerUtils.doesRankMatch(p, Rank.OWNER)) {
+							owner.add(p.getName());
 						}
 					}
 					if (!trainee.isEmpty()) {
