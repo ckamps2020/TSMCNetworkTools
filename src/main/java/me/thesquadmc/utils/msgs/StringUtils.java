@@ -1110,8 +1110,10 @@ public final class StringUtils {
 		curses.add("arcade wars");
 		curses.add("factionpvp");
 		curses.add("parmapvp");
+		curses.add("pixelcraftmc");
 
-		curses.add("[need staff]");
+		curses.add("free rank");
+		curses.add("need staff");
 		curses.add("message id");
 		curses.add(" ip is ");
 
