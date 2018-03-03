@@ -6,17 +6,17 @@
 
     <groupId>me.thesquadmc</groupId>
     <artifactId>StaffTools</artifactId>
-    <version>1.0.14</version>
+    <version>1.1.0</version>
     <packaging>jar</packaging>
 
-    <name>StaffTools</name>
+    <name>NetworkTools</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <build>
-        <finalName>NetworkTools</finalName>
+        <finalName>TSMCNetworkTools</finalName>
         <defaultGoal>clean package</defaultGoal>
         <plugins>
             <plugin>

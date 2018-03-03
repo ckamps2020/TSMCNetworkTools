@@ -32,6 +32,7 @@ public enum RedisArg {
 	SSMSG("SSMSG"),
 
 	SERVER_STATE("SERVER_STATE"),
+	NEW_SERVER("NEW_SERVER"),
 	;
 
 	private String arg;

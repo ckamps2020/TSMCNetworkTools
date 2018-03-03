@@ -11,6 +11,7 @@ import org.bukkit.material.MaterialData;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public final class ItemBuilder {
 
@@ -121,6 +122,21 @@ public final class ItemBuilder {
 		} else {
 			throw new IllegalArgumentException("color() only applicable for leather armor!");
 		}
+	}
+
+	public ItemBuilder unbreakable(boolean unbreakable){
+		ItemMeta meta = itemStack.getItemMeta();
+		meta.spigot().setUnbreakable(unbreakable);
+		itemStack.setItemMeta(meta);
+		return this;
+	}
+
+	public <T extends ItemMeta> ItemBuilder customMeta(Class<T> metaType, Consumer<T> metaFunction) {
+		if (!metaType.isInstance(metaType)) return this;
+		ItemMeta meta = itemStack.getItemMeta();
+		metaFunction.accept(metaType.cast(meta));
+		itemStack.setItemMeta(meta);
+		return this;
 	}
 
 	public ItemStack build() {

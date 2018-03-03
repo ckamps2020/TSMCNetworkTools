@@ -10,7 +10,9 @@ import me.thesquadmc.objects.TempData;
 import me.thesquadmc.utils.*;
 import me.thesquadmc.utils.enums.*;
 import me.thesquadmc.utils.msgs.CC;
+import me.thesquadmc.utils.msgs.GameMsgs;
 import me.thesquadmc.utils.msgs.StringUtils;
+import me.thesquadmc.utils.server.ConnectionUtils;
 import me.thesquadmc.utils.server.Multithreading;
 import me.thesquadmc.utils.server.ServerUtils;
 import org.bukkit.Bukkit;
@@ -34,6 +36,8 @@ public final class RedisHandler {
 
 	public void processRedisMessage(JedisTask task, String channel, String message) {
 		Map<String, Object> data = task.getData();
+		System.out.println("got return");
+		System.out.println(data);
 		if (channel.equalsIgnoreCase(RedisChannels.STAFFCHAT.toString())) {
 			Multithreading.runAsync(new Runnable() {
 				@Override
@@ -664,6 +668,35 @@ public final class RedisHandler {
 							p.sendMessage(CC.translate("&d&lFRIENDS &5■ &d" + player + " &7has logged out!"));
 						}
 					}
+				}
+			});
+		} else if (channel.equalsIgnoreCase(RedisChannels.RETURN_SERVER.getChannelName())) {
+			Multithreading.runAsync(new Runnable() {
+				@Override
+				public void run() {
+					String server = String.valueOf(data.get(RedisArg.ORIGIN_SERVER.getArg()));
+					if (Bukkit.getServerName().equalsIgnoreCase(server)) {
+						String player = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
+						String newServer = String.valueOf(data.get(RedisArg.SERVER.getArg()));
+						if (newServer.equalsIgnoreCase("none")) {
+							if (Bukkit.getPlayer(player) != null) {
+								Player p = Bukkit.getPlayer(player);
+								p.sendMessage(CC.translate(GameMsgs.GAME_PREFIX + "Unable to find an open server right now! Please try again"));
+							}
+						} else {
+							if (Bukkit.getPlayer(player) != null) {
+								Player p = Bukkit.getPlayer(player);
+								ConnectionUtils.sendPlayer(p, newServer);
+							}
+						}
+					}
+				}
+			});
+		} else if (channel.equalsIgnoreCase(RedisChannels.STARTUP_REQUEST.getChannelName())) {
+			Multithreading.runAsync(new Runnable() {
+				@Override
+				public void run() {
+					ServerUtils.updateServerState(main.getServerState());
 				}
 			});
 		}

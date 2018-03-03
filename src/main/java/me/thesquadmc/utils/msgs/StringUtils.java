@@ -70,6 +70,18 @@ public final class StringUtils {
 		return components;
 	}
 
+	public static BaseComponent[] getSuggestiveMessage(String message, String hoverMessage, String suggestion) {
+		BaseComponent[] components = TextComponent.fromLegacyText(org.bukkit.ChatColor.translateAlternateColorCodes('&', message));
+		BaseComponent[] hoverText = TextComponent.fromLegacyText(org.bukkit.ChatColor.translateAlternateColorCodes('&', hoverMessage));
+		ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, suggestion);
+		HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText);
+		for (BaseComponent component : components) {
+			component.setClickEvent(clickEvent);
+			component.setHoverEvent(hoverEvent);
+		}
+		return components;
+	}
+
 	private static final String MAX_LENGTH = "11111111111111111111111111111111111111111111111111111";
 	private static final String SPLIT_PATTERN = Pattern.compile("\\s").pattern();
 

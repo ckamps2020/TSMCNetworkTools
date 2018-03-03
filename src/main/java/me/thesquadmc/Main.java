@@ -15,6 +15,7 @@ import me.thesquadmc.managers.TempDataManager;
 import me.thesquadmc.networking.JedisTask;
 import me.thesquadmc.networking.RedisHandler;
 import me.thesquadmc.networking.mysql.DatabaseManager;
+import me.thesquadmc.utils.enums.RedisArg;
 import me.thesquadmc.utils.enums.RedisChannels;
 import me.thesquadmc.utils.enums.Settings;
 import me.thesquadmc.utils.file.FileManager;
@@ -53,7 +54,7 @@ public final class Main extends JavaPlugin {
 	private DatabaseManager MySQL;
 	private ThreadPoolExecutor threadPoolExecutor;
 	private int restartTime = 0;
-	private String version = "1.0.14";
+	private String version = "1.1.0";
 	private String serverType = "UNKNOWN";
 	private int chatslow = 2;
 	private boolean chatSilenced = false;
@@ -181,7 +182,9 @@ public final class Main extends JavaPlugin {
 							RedisChannels.FRIEND_CHECK_REQUEST.getChannelName(),
 							RedisChannels.FRIEND_RETURN_REQUEST.getChannelName(),
 							RedisChannels.LEAVE.getChannelName(),
-							RedisChannels.LOGIN.getChannelName());
+							RedisChannels.LOGIN.getChannelName(),
+							RedisChannels.RETURN_SERVER.getChannelName(),
+							RedisChannels.STARTUP_REQUEST.getChannelName());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -248,6 +251,24 @@ public final class Main extends JavaPlugin {
 		getCommand("vanishlist").setExecutor(new VanishListCommand(this));
 		getCommand("ntversion").setExecutor(new NTVersionCommand(this));
 		ServerUtils.calculateServerType();
+		if (serverType.startsWith("BW")) {
+			Bukkit.getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
+				@Override
+				public void run() {
+					Multithreading.runAsync(new Runnable() {
+						@Override
+						public void run() {
+							try (Jedis jedis = Main.getMain().getPool().getResource()) {
+								JedisTask.withName(UUID.randomUUID().toString())
+										.withArg(RedisArg.SERVER.getArg(), Bukkit.getServerName())
+										.withArg(RedisArg.COUNT.getArg(), Bukkit.getOnlinePlayers().size())
+										.send(RedisChannels.PLAYER_COUNT.getChannelName(), jedis);
+							}
+						}
+					});
+				}
+			}, 1, 1 * 20L);
+		}
 		//ServerUtils.updateServerState(ServerState.ONLINE);
 		System.out.println("[NetworkTools] Plugin started up and ready to go!");
 	}

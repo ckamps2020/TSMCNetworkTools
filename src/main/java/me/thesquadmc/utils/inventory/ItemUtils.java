@@ -196,7 +196,6 @@ public final class ItemUtils {
 		int rest = amount;
 		for (int i = 0; i < player.getInventory().getSize(); i++) {
 			ItemStack stack = player.getInventory().getItem(i);
-
 			if (stack == null || stack.getType() != material)
 				continue;
 			if (stack.getData().getData() != data)
@@ -230,6 +229,33 @@ public final class ItemUtils {
 				break;
 			}
 		}
+	}
+
+	public static boolean removePlayerItems(Player p, ItemStack itemStack) {
+		return removePlayerItems(p, itemStack, 1);
+	}
+
+	private static final int[] REMOVE_ORDER = {9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 8, 7, 6, 5, 4, 3, 2, 1, 0};
+
+	public static boolean removePlayerItems(Player player, ItemStack itemStack, int amount) {
+		Inventory inv = player.getInventory();
+		itemStack = itemStack.clone();
+		for (int i : REMOVE_ORDER) {
+			ItemStack cur = inv.getItem(i);
+			if (cur != null && cur.isSimilar(itemStack)) {
+				if (cur.getAmount() >= amount) {
+					cur.setAmount(cur.getAmount() - amount);
+					if (cur.getAmount() <= 0) {
+						cur = null;
+					}
+					inv.setItem(i, cur);
+					player.updateInventory();
+					return true;
+				}
+				return false;
+			}
+		}
+		return false;
 	}
 
 }

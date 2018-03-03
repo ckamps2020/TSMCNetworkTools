@@ -83,6 +83,11 @@ public final class PlayerUtils {
 		nmsPlayer.playerConnection.sendPacket(worldBorder);
 	}
 
+	public int convertExpToLevelLogin(Player player, int exp) {
+		Double level = Math.max( Math.floor(8.7 * Math.log(exp + 111) + -40), 1);
+		return level.intValue();
+	}
+
 	public static void hidePlayerSpectatorStaff(Player player) {
 		for (Player p : Bukkit.getServer().getOnlinePlayers()) {
 			if (!isEqualOrHigherThen(p, Rank.TRAINEE)) {

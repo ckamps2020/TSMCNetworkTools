@@ -17,6 +17,10 @@ public final class MathUtils {
 		return true;
 	}
 
+	public static double clamp(double value, double min, double max) {
+		return (value < min ? min : (value > max ? max : value));
+	}
+
 	public static double percentage(double part, double total) {
 		return percentage(part, total, 1);
 	}

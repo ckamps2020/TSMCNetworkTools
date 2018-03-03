@@ -7,6 +7,7 @@ import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.enums.RedisArg;
 import me.thesquadmc.utils.enums.RedisChannels;
 import me.thesquadmc.utils.msgs.CC;
+import me.thesquadmc.utils.server.ConnectionUtils;
 import me.thesquadmc.utils.server.Multithreading;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -32,23 +33,7 @@ public final class ProxyTransportCommand implements CommandExecutor {
 			if (PlayerUtils.isEqualOrHigherThen(player, Rank.TRAINEE)) {
 				if (args.length == 1) {
 					String server = args[0];
-					player.sendMessage(CC.translate("&e&lTRANSPORT &6■ &7Attempting to send you to &e" + server + "&7..."));
-					Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
-						@Override
-						public void run() {
-							Multithreading.runAsync(new Runnable() {
-								@Override
-								public void run() {
-									try (Jedis jedis = main.getPool().getResource()) {
-										JedisTask.withName(UUID.randomUUID().toString())
-												.withArg(RedisArg.PLAYER.getArg(), player.getName())
-												.withArg(RedisArg.SERVER.getArg(), server)
-												.send(RedisChannels.TRANSPORT.getChannelName(), jedis);
-									}
-								}
-							});
-						}
-					});
+					ConnectionUtils.sendPlayer(player, server);
 				} else {
 					player.sendMessage(CC.translate("&e&lTRANSPORT &6■ &7Usage: /proxytransport <server>"));
 				}
