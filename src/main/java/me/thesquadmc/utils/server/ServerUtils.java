@@ -37,8 +37,8 @@ public final class ServerUtils {
 			Main.getMain().setServerType(ServerType.BEDWARS_SOLO);
 		} else if (m.startsWith(ServerType.BEDWARS_THREES)) {
 			Main.getMain().setServerType(ServerType.BEDWARS_THREES);
-		} else if (m.startsWith(ServerType.BEDWARS_HUB)) {
-			Main.getMain().setServerType(ServerType.BEDWARS_HUB);
+		} else if (m.startsWith(ServerType.MINIGAME_HUB)) {
+			Main.getMain().setServerType(ServerType.MINIGAME_HUB);
 		} else if (m.startsWith(ServerType.FACTIONS)) {
 			Main.getMain().setServerType(ServerType.FACTIONS);
 		} else if (m.startsWith(ServerType.SKYBLOCK)) {

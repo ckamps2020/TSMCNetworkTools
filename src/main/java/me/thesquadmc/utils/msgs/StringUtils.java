@@ -1129,7 +1129,8 @@ public final class StringUtils {
 		curses.add("message id");
 		curses.add(" ip is ");
 
-		curses.add(" com ");
+		curses.add(" us");
+		curses.add(" com");
 		curses.add(" . com");
 		curses.add(". com");
 		curses.add(":255");

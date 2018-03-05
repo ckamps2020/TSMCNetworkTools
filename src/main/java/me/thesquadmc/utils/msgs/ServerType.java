@@ -8,7 +8,6 @@ public final class ServerType {
 	public static final String HUB = "HUB";
 	public static final String TROLLWARS = "TROLLWARS";
 	public static final String MINIGAME_HUB = "MG-HUB";
-	public static final String BEDWARS_HUB = "BW-HUB";
 	public static final String BEDWARS_SOLO = "BW-SOLO";
 	public static final String BEDWARS_DUOS = "BW-DUOS";
 	public static final String BEDWARS_THREES = "BW-THREES";
