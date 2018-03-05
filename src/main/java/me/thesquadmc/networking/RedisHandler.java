@@ -11,9 +11,11 @@ import me.thesquadmc.utils.*;
 import me.thesquadmc.utils.enums.*;
 import me.thesquadmc.utils.msgs.CC;
 import me.thesquadmc.utils.msgs.GameMsgs;
+import me.thesquadmc.utils.msgs.ServerType;
 import me.thesquadmc.utils.msgs.StringUtils;
 import me.thesquadmc.utils.server.ConnectionUtils;
 import me.thesquadmc.utils.server.Multithreading;
+import me.thesquadmc.utils.server.ServerState;
 import me.thesquadmc.utils.server.ServerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -36,8 +38,6 @@ public final class RedisHandler {
 
 	public void processRedisMessage(JedisTask task, String channel, String message) {
 		Map<String, Object> data = task.getData();
-		System.out.println("got return");
-		System.out.println(data);
 		if (channel.equalsIgnoreCase(RedisChannels.STAFFCHAT.toString())) {
 			Multithreading.runAsync(new Runnable() {
 				@Override
@@ -697,6 +697,25 @@ public final class RedisHandler {
 				@Override
 				public void run() {
 					ServerUtils.updateServerState(main.getServerState());
+				}
+			});
+		} else if (channel.equalsIgnoreCase(RedisChannels.SERVER_STATE.getChannelName())) {
+			Multithreading.runAsync(new Runnable() {
+				@Override
+				public void run() {
+					if (Bukkit.getServerName().toUpperCase().startsWith(ServerType.MINIGAME_HUB)) {
+						String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
+						String state = String.valueOf(data.get(RedisArg.SERVER_STATE.getArg()));
+						if (server.toUpperCase().startsWith(ServerType.BEDWARS_SOLO)) {
+							if (main.getQueueManager().getSoloBW().contains(server)) {
+								if (!state.equalsIgnoreCase(ServerState.ONLINE)) {
+									main.getQueueManager().getSoloBW().remove(server);
+								}
+							} else {
+								main.getQueueManager().getSoloBW().add(server);
+							}
+						}
+					}
 				}
 			});
 		}

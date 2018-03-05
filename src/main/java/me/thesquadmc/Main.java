@@ -8,10 +8,7 @@ import me.thesquadmc.inventories.FrozenInventory;
 import me.thesquadmc.inventories.ReportInventory;
 import me.thesquadmc.inventories.StaffmodeInventory;
 import me.thesquadmc.listeners.*;
-import me.thesquadmc.managers.HologramManager;
-import me.thesquadmc.managers.NPCManager;
-import me.thesquadmc.managers.ReportManager;
-import me.thesquadmc.managers.TempDataManager;
+import me.thesquadmc.managers.*;
 import me.thesquadmc.networking.JedisTask;
 import me.thesquadmc.networking.RedisHandler;
 import me.thesquadmc.networking.mysql.DatabaseManager;
@@ -20,6 +17,7 @@ import me.thesquadmc.utils.enums.RedisChannels;
 import me.thesquadmc.utils.enums.Settings;
 import me.thesquadmc.utils.file.FileManager;
 import me.thesquadmc.utils.handlers.UpdateHandler;
+import me.thesquadmc.utils.msgs.ServerType;
 import me.thesquadmc.utils.msgs.StringUtils;
 import me.thesquadmc.utils.server.Multithreading;
 import me.thesquadmc.utils.server.ServerState;
@@ -54,7 +52,7 @@ public final class Main extends JavaPlugin {
 	private DatabaseManager MySQL;
 	private ThreadPoolExecutor threadPoolExecutor;
 	private int restartTime = 0;
-	private String version = "1.1.0";
+	private String version = "1.1.1";
 	private String serverType = "UNKNOWN";
 	private int chatslow = 2;
 	private boolean chatSilenced = false;
@@ -70,6 +68,8 @@ public final class Main extends JavaPlugin {
 	private ReportInventory reportInventory;
 	private HologramManager hologramManager;
 	private NPCManager npcManager;
+	private QueueManager queueManager;
+	private BootManager bootManager;
 
 	private String host;
 	private int port;
@@ -103,6 +103,11 @@ public final class Main extends JavaPlugin {
 		tempDataManager = new TempDataManager();
 		hologramManager = new HologramManager();
 		npcManager = new NPCManager();
+		queueManager = new QueueManager();
+		bootManager = new BootManager();
+		if (Bukkit.getServerName().startsWith("BW")) {
+			bootManager.bootBedwars();
+		}
 		getServer().getPluginManager().registerEvents(new ChatListener(), this);
 		getServer().getPluginManager().registerEvents(new SettingsListener(), this);
 		getServer().getPluginManager().registerEvents(new LaunchListener(), this);
@@ -184,7 +189,8 @@ public final class Main extends JavaPlugin {
 							RedisChannels.LEAVE.getChannelName(),
 							RedisChannels.LOGIN.getChannelName(),
 							RedisChannels.RETURN_SERVER.getChannelName(),
-							RedisChannels.STARTUP_REQUEST.getChannelName());
+							RedisChannels.STARTUP_REQUEST.getChannelName(),
+							RedisChannels.SERVER_STATE.getChannelName());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -250,6 +256,7 @@ public final class Main extends JavaPlugin {
 		getCommand("queuerestart").setExecutor(new QueueRestartCommand(this));
 		getCommand("vanishlist").setExecutor(new VanishListCommand(this));
 		getCommand("ntversion").setExecutor(new NTVersionCommand(this));
+		getCommand("mg").setExecutor(new MGCommand(this));
 		ServerUtils.calculateServerType();
 		if (serverType.startsWith("BW")) {
 			Bukkit.getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
@@ -269,6 +276,18 @@ public final class Main extends JavaPlugin {
 				}
 			}, 1, 1 * 20L);
 		}
+		if (serverType.startsWith(ServerType.MINIGAME_HUB)) {
+			Multithreading.runAsync(new Runnable() {
+				@Override
+				public void run() {
+					try (Jedis jedis = Main.getMain().getPool().getResource()) {
+						JedisTask.withName(UUID.randomUUID().toString())
+								.withArg(RedisArg.SERVER.getArg(), "ALL")
+								.send(RedisChannels.STARTUP_REQUEST.getChannelName(), jedis);
+					}
+				}
+			});
+		}
 		//ServerUtils.updateServerState(ServerState.ONLINE);
 		System.out.println("[NetworkTools] Plugin started up and ready to go!");
 	}
@@ -277,6 +296,14 @@ public final class Main extends JavaPlugin {
 	public void onDisable() {
 		System.out.println("[NetworkTools] Shutting down...");
 		System.out.println("[NetworkTools] Shut down! Cya :D");
+	}
+
+	public BootManager getBootManager() {
+		return bootManager;
+	}
+
+	public QueueManager getQueueManager() {
+		return queueManager;
 	}
 
 	public void setServerType(String serverType) {

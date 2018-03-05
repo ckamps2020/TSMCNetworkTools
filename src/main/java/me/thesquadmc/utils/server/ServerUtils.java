@@ -76,12 +76,17 @@ public final class ServerUtils {
 		Bukkit.getScheduler().runTaskAsynchronously(Main.getMain(), new Runnable() {
 			@Override
 			public void run() {
-				try (Jedis jedis = Main.getMain().getPool().getResource()) {
-					JedisTask.withName(UUID.randomUUID().toString())
-							.withArg(RedisArg.SERVER.getArg(), Bukkit.getServerName())
-							.withArg(RedisArg.SERVER_STATE.getArg(), serverState)
-							.send(RedisChannels.SERVER_STATE.getChannelName(), jedis);
-				}
+				Multithreading.runAsync(new Runnable() {
+					@Override
+					public void run() {
+						try (Jedis jedis = Main.getMain().getPool().getResource()) {
+							JedisTask.withName(UUID.randomUUID().toString())
+									.withArg(RedisArg.SERVER.getArg(), Bukkit.getServerName())
+									.withArg(RedisArg.SERVER_STATE.getArg(), serverState)
+									.send(RedisChannels.SERVER_STATE.getChannelName(), jedis);
+						}
+					}
+				});
 			}
 		});
 	}

@@ -1,5 +1,5 @@
 name: TSMCNetworkTools
-version: 1.1.0
+version: 1.1.1
 main: me.thesquadmc.Main
 author: ckamps
 depend: [LuckPerms]
@@ -74,3 +74,4 @@ commands:
     vanishlist:
         aliases: [vlist]
     ntversion:
+    mg:
