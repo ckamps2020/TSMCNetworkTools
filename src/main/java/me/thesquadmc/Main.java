@@ -47,7 +47,6 @@ public final class Main extends JavaPlugin {
 	private String sig = "NONE";
 	private Jedis jedis;
 	private JedisPoolConfig poolConfig;
-	private JedisPubSub jedisPubSub;
 	private Jedis j;
 	private DatabaseManager MySQL;
 	private ThreadPoolExecutor threadPoolExecutor;
@@ -380,10 +379,6 @@ public final class Main extends JavaPlugin {
 
 	public Map<UUID, Map<Settings, Boolean>> getSettings() {
 		return settings;
-	}
-
-	public JedisPubSub getJedisPubSub() {
-		return jedisPubSub;
 	}
 
 	public Jedis getJedis() {
