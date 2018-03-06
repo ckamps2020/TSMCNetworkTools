@@ -710,8 +710,18 @@ public final class RedisHandler {
 							if (main.getQueueManager().getSoloBW().contains(server)) {
 								if (!state.equalsIgnoreCase(ServerState.ONLINE)) {
 									main.getQueueManager().getSoloBW().remove(server);
+									main.getQueueManager().getPriority().remove(server);
+									main.getQueueManager().getSoloStandby().remove(server);
+									if (state.equalsIgnoreCase(ServerState.ONLINE_MAX_PLAYERS)) {
+										main.getQueueManager().getSoloStandby().add(server);
+									}
 								}
 							} else {
+								if (main.getQueueManager().getSoloStandby().contains(server)) {
+									main.getQueueManager().getPriority().add(server);
+									main.getQueueManager().getSoloStandby().remove(server);
+									return;
+								}
 								main.getQueueManager().getSoloBW().add(server);
 							}
 						}
