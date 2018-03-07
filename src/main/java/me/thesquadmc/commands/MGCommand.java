@@ -4,6 +4,8 @@ import me.thesquadmc.Main;
 import me.thesquadmc.utils.math.MathUtils;
 import me.thesquadmc.utils.msgs.ServerType;
 import me.thesquadmc.utils.server.ConnectionUtils;
+import me.thesquadmc.utils.server.Multithreading;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -20,10 +22,20 @@ public final class MGCommand implements CommandExecutor {
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (sender instanceof Player) {
-			Player player = (Player) sender;
-			int i = MathUtils.random(1, 5);
-			String s = ServerType.MINIGAME_HUB + "-" + i;
-			ConnectionUtils.sendPlayer(player, s);
+			Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
+				@Override
+				public void run() {
+					Multithreading.runAsync(new Runnable() {
+						@Override
+						public void run() {
+							Player player = (Player) sender;
+							int i = MathUtils.random(1, 5);
+							String s = ServerType.MINIGAME_HUB + "-" + i;
+							ConnectionUtils.sendPlayer(player, s);
+						}
+					});
+				}
+			});
 		}
 		return true;
 	}

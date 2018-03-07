@@ -1,9 +1,14 @@
 package me.thesquadmc.utils;
 
+import org.apache.commons.lang.math.NumberUtils;
+
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.time.Year;
+import java.time.YearMonth;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -39,6 +44,49 @@ public final class TimeUtils {
 		} else {
 			return seconds + " second" + (seconds == 1 ? "" : "s");
 		}
+	}
+
+	private static final Pattern TIME_PARSE_PATTERN = Pattern.compile("([0-9]+)([smhdwMy]{1})");
+
+	public static long getTimeFromString(String timeString) {
+		long time = 0L;
+		if (timeString == null || timeString.isEmpty()) return time;
+
+		Matcher matcher = TIME_PARSE_PATTERN.matcher(timeString);
+		while (matcher.find()) {
+			int count = NumberUtils.toInt(matcher.group(1), 0);
+			char unit = matcher.group(2).charAt(0); // Only 1 char anyways
+
+			switch (unit) {
+				case 's': // Seconds
+					time += TimeUnit.SECONDS.toMillis(count);
+					break;
+				case 'm': // Minutes
+					time += TimeUnit.MINUTES.toMillis(count);
+					break;
+				case 'h': // Hours
+					time += TimeUnit.HOURS.toMillis(count);
+					break;
+				case 'd': // Days
+					time += TimeUnit.DAYS.toMillis(count);
+					break;
+				case 'w': // Weeks
+					time += TimeUnit.DAYS.toMillis(7 * count);
+					break;
+				case 'M': // Months
+					for (int m = 0; m < count; m++) {
+						time += TimeUnit.DAYS.toMillis(YearMonth.now().plusMonths(m).lengthOfMonth());
+					}
+					break;
+				case 'y': // Years
+					for (int y = 0; y < count; y++) {
+						time += TimeUnit.DAYS.toMillis(Year.now().plusYears(y).length());
+					}
+					break;
+			}
+		}
+
+		return time;
 	}
 
 	public static String convertTime(int totalSecs) {

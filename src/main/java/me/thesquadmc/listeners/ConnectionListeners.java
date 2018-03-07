@@ -3,6 +3,7 @@ package me.thesquadmc.listeners;
 import com.mojang.authlib.properties.Property;
 import me.thesquadmc.Main;
 import me.thesquadmc.objects.TempData;
+import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.msgs.StringUtils;
 import me.thesquadmc.utils.server.Multithreading;
 import me.thesquadmc.utils.PlayerUtils;
@@ -58,6 +59,11 @@ public final class ConnectionListeners implements Listener {
 		TempData td = main.getTempDataManager().getTempData(player.getUniqueId());
 		td.setRealname(player.getName());
 		Bukkit.getScheduler().runTaskLater(main, () -> {
+			if (Bukkit.getServerName().toUpperCase().startsWith("MG")
+					|| Bukkit.getServerName().toUpperCase().startsWith("FACTIONS")
+					|| Bukkit.getServerName().toUpperCase().startsWith("HUB")) {
+				player.chat("/ev");
+			}
 			if (!Main.getMain().getSig().equalsIgnoreCase("NONE")) {
 				PlayerUtils.setSameSkin(player);
 			}

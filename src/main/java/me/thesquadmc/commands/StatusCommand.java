@@ -15,7 +15,6 @@ import java.io.File;
 
 public final class StatusCommand implements CommandExecutor {
 
-
 	private final Main main;
 
 	public StatusCommand(Main main) {
