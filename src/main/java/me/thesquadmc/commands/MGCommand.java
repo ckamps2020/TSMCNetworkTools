@@ -21,7 +21,7 @@ public final class MGCommand implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (sender instanceof Player) {
 			Player player = (Player) sender;
-			int i = MathUtils.random(1, 6);
+			int i = MathUtils.random(1, 5);
 			String s = ServerType.MINIGAME_HUB + "-" + i;
 			ConnectionUtils.sendPlayer(player, s);
 		}

@@ -105,7 +105,7 @@ public final class Main extends JavaPlugin {
 		queueManager = new QueueManager();
 		bootManager = new BootManager();
 		if (Bukkit.getServerName().startsWith("BW")) {
-			bootManager.bootBedwars();
+			//bootManager.bootBedwars();
 		}
 		getServer().getPluginManager().registerEvents(new ChatListener(), this);
 		getServer().getPluginManager().registerEvents(new SettingsListener(), this);
@@ -140,8 +140,8 @@ public final class Main extends JavaPlugin {
 			poolConfig.setMinIdle(20);
 			poolConfig.setMaxIdle(150);
 			poolConfig.setMaxTotal(150);
-			//pool = new JedisPool(poolConfig, host, port, 40*1000, password);
-			pool = new JedisPool(poolConfig, host, port, 40*1000);
+			pool = new JedisPool(poolConfig, host, port, 40*1000, password);
+			//pool = new JedisPool(poolConfig, host, port, 40*1000);
 			jedis = pool.getResource();
 			Thread.currentThread().setContextClassLoader(previous);
 		} catch (Exception e) {
@@ -151,9 +151,9 @@ public final class Main extends JavaPlugin {
 			@Override
 			public void run() {
 				try {
-					//j = new Jedis(host, port, 40 * 1000);
-					//j.auth(password);
-					j = new Jedis(host, port);
+					j = new Jedis(host, port, 40 * 1000);
+					j.auth(password);
+					//j = new Jedis(host, port);
 					j.connect();
 					j.subscribe(new JedisPubSub() {
 						            @Override

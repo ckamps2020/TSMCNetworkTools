@@ -1123,14 +1123,16 @@ public final class StringUtils {
 		curses.add("factionpvp");
 		curses.add("parmapvp");
 		curses.add("pixelcraftmc");
+		curses.add("wynn craft");
+		curses.add("wynncraft");
 
 		curses.add("free rank");
 		curses.add("need staff");
 		curses.add("message id");
 		curses.add(" ip is ");
 
-		curses.add(" us");
-		curses.add(" com");
+		curses.add(" us ");
+		curses.add(" com ");
 		curses.add(" . com");
 		curses.add(". com");
 		curses.add(":255");

@@ -27,7 +27,7 @@ commands:
         aliases: [onlinestaff, liststaff, online, onlineplayers, list, listplayers, eonline, elist]
     unfreeze:
     vanish:
-        aliases: [v]
+        aliases: [v, iv]
     xray:
     report:
         aliases: [reporthacks]
