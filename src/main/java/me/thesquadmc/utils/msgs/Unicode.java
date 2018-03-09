@@ -20,9 +20,6 @@ public final class Unicode {
 	public static final String WARNING = "⚠";
 	public static final String SCALES = "⚖";
 	public static final String LIGHTNING_BOLT = "⚡";
-	public static final String DOT = "●";
-	public static final String HEART = "❤";
-	public static final String SNOWFLAKE = "❄";
 	public static final String ACCENTED_E_LOWER = "é";
 	public static final String ACCENTED_E_UPPER = "É";
 	public static final String DOUBLE_ARROW_LEFT = "«";

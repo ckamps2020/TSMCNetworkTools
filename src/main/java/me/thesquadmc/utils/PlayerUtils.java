@@ -8,13 +8,12 @@ import me.lucko.luckperms.api.User;
 import me.thesquadmc.Main;
 import me.thesquadmc.objects.TempData;
 import me.thesquadmc.utils.enums.Rank;
-import net.minecraft.server.v1_8_R3.EntityPlayer;
-import net.minecraft.server.v1_8_R3.PacketPlayOutWorldBorder;
-import net.minecraft.server.v1_8_R3.WorldBorder;
+import net.minecraft.server.v1_8_R3.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -29,10 +28,40 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Stream;
 
 public final class PlayerUtils {
+
+	private static HashMap<Player, Integer> horses = new HashMap<>();
+
+	public void sit(Player p) {
+		Location l = p.getLocation();
+		EntityHorse horse = new EntityHorse(((CraftWorld)l.getWorld()).getHandle());
+
+		horse.setLocation(l.getX(), l.getY(), l.getZ(), 0, 0);
+		horse.setInvisible(true);
+
+		PacketPlayOutSpawnEntityLiving packet = new PacketPlayOutSpawnEntityLiving(horse);
+		((CraftPlayer)p).getHandle().playerConnection.sendPacket(packet);
+
+		horses.put(p, horse.getId());
+
+		PacketPlayOutAttachEntity sit = new PacketPlayOutAttachEntity(0, (net.minecraft.server.v1_8_R3.Entity)((CraftPlayer) p).getHandle(), horse);
+		((CraftPlayer)p).getHandle().playerConnection.sendPacket(sit);
+	}
+
+	public void standup(Player p) {
+		if (horses.get(p) != null) {
+			PacketPlayOutEntityDestroy packet = new PacketPlayOutEntityDestroy(horses.get(p));
+			((CraftPlayer)p).getHandle().playerConnection.sendPacket(packet);
+		}
+	}
+
+	public static HashMap<Player, Integer> getSitting() {
+		return horses;
+	}
 
 	private static boolean isInBorder(Location center, Location notCenter, int range) {
 		int x = center.getBlockX(), z = center.getBlockZ();

@@ -1,7 +1,7 @@
 package me.thesquadmc.commands;
 
 import me.thesquadmc.Main;
-import me.thesquadmc.utils.TimeUtils;
+import me.thesquadmc.utils.time.TimeUtils;
 import me.thesquadmc.utils.msgs.CC;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

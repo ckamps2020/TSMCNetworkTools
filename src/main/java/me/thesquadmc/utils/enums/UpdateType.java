@@ -1,6 +1,6 @@
 package me.thesquadmc.utils.enums;
 
-import me.thesquadmc.utils.TimeUtils;
+import me.thesquadmc.utils.time.TimeUtils;
 
 public enum UpdateType {
 

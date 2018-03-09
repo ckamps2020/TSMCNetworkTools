@@ -6,7 +6,7 @@ import me.thesquadmc.utils.enums.RedisArg;
 import me.thesquadmc.utils.enums.RedisChannels;
 import me.thesquadmc.utils.server.Multithreading;
 import me.thesquadmc.utils.server.ServerUtils;
-import me.thesquadmc.utils.TimeUtils;
+import me.thesquadmc.utils.time.TimeUtils;
 import me.thesquadmc.utils.handlers.UpdateEvent;
 import me.thesquadmc.utils.enums.UpdateType;
 import org.bukkit.Bukkit;

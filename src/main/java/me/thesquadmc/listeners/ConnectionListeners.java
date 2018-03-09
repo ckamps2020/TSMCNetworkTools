@@ -4,6 +4,7 @@ import com.mojang.authlib.properties.Property;
 import me.thesquadmc.Main;
 import me.thesquadmc.objects.TempData;
 import me.thesquadmc.utils.enums.Rank;
+import me.thesquadmc.utils.msgs.CC;
 import me.thesquadmc.utils.msgs.StringUtils;
 import me.thesquadmc.utils.server.Multithreading;
 import me.thesquadmc.utils.PlayerUtils;
@@ -58,11 +59,30 @@ public final class ConnectionListeners implements Listener {
 		main.getTempDataManager().registerNewData(player.getUniqueId(), tempData);
 		TempData td = main.getTempDataManager().getTempData(player.getUniqueId());
 		td.setRealname(player.getName());
+		Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
+			@Override
+			public void run() {
+				Multithreading.runAsync(new Runnable() {
+					@Override
+					public void run() {
+						if (main.getMcLeaksAPI().checkAccount(player.getUniqueId()).isMCLeaks()) {
+							for (Player player1 : Bukkit.getOnlinePlayers()) {
+								if (PlayerUtils.isEqualOrHigherThen(player1, Rank.MOD)) {
+									player1.sendMessage(CC.translate("&8[&4&lAnitCheat&8] &4[MCLEAKS] &f" + player.getName() + " is registered as an MCLeaks account!"));
+								}
+							}
+						}
+					}
+				});
+			}
+		});
 		Bukkit.getScheduler().runTaskLater(main, () -> {
 			if (Bukkit.getServerName().toUpperCase().startsWith("MG")
 					|| Bukkit.getServerName().toUpperCase().startsWith("FACTIONS")
 					|| Bukkit.getServerName().toUpperCase().startsWith("HUB")) {
-				player.chat("/ev");
+				if (PlayerUtils.isEqualOrHigherThen(player, Rank.ADMIN)) {
+					player.chat("/ev");
+				}
 			}
 			if (!Main.getMain().getSig().equalsIgnoreCase("NONE")) {
 				PlayerUtils.setSameSkin(player);

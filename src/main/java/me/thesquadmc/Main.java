@@ -1,6 +1,7 @@
 package me.thesquadmc;
 
 import com.google.gson.Gson;
+import me.gong.mcleaks.MCLeaksAPI;
 import me.lucko.luckperms.LuckPerms;
 import me.lucko.luckperms.api.LuckPermsApi;
 import me.thesquadmc.commands.*;
@@ -12,18 +13,22 @@ import me.thesquadmc.managers.*;
 import me.thesquadmc.networking.JedisTask;
 import me.thesquadmc.networking.RedisHandler;
 import me.thesquadmc.networking.mysql.DatabaseManager;
+import me.thesquadmc.utils.command.CommandManager;
 import me.thesquadmc.utils.enums.RedisArg;
 import me.thesquadmc.utils.enums.RedisChannels;
 import me.thesquadmc.utils.enums.Settings;
 import me.thesquadmc.utils.file.FileManager;
 import me.thesquadmc.utils.handlers.UpdateHandler;
+import me.thesquadmc.utils.inventory.builder.AbstractGUI;
 import me.thesquadmc.utils.msgs.ServerType;
 import me.thesquadmc.utils.msgs.StringUtils;
+import me.thesquadmc.utils.nms.BarUtils;
 import me.thesquadmc.utils.server.Multithreading;
 import me.thesquadmc.utils.server.ServerState;
 import me.thesquadmc.utils.server.ServerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import redis.clients.jedis.*;
 
@@ -34,6 +39,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public final class Main extends JavaPlugin {
 
@@ -51,7 +57,7 @@ public final class Main extends JavaPlugin {
 	private DatabaseManager MySQL;
 	private ThreadPoolExecutor threadPoolExecutor;
 	private int restartTime = 0;
-	private String version = "1.1.5";
+	private String version = "1.2.0";
 	private String serverType = "UNKNOWN";
 	private int chatslow = 2;
 	private boolean chatSilenced = false;
@@ -69,6 +75,8 @@ public final class Main extends JavaPlugin {
 	private NPCManager npcManager;
 	private QueueManager queueManager;
 	private BootManager bootManager;
+	private CommandManager commandManager;
+	private MCLeaksAPI mcLeaksAPI;
 
 	private String host;
 	private int port;
@@ -88,6 +96,7 @@ public final class Main extends JavaPlugin {
 		System.out.println("[NetworkTools] Starting the plugin up...");
 		main = this;
 		luckPermsApi = LuckPerms.getApi();
+		mcLeaksAPI =  MCLeaksAPI.builder().threadCount(2).expireAfter(10, TimeUnit.MINUTES).build();
 		fileManager = new FileManager(this);
 		threadPoolExecutor = (ThreadPoolExecutor) Executors.newCachedThreadPool();
 		MySQL = new DatabaseManager(this, this);
@@ -104,9 +113,11 @@ public final class Main extends JavaPlugin {
 		npcManager = new NPCManager();
 		queueManager = new QueueManager();
 		bootManager = new BootManager();
+		commandManager = new CommandManager(this);
 		if (Bukkit.getServerName().startsWith("BW")) {
 			//bootManager.bootBedwars();
 		}
+		AbstractGUI.initializeListeners(this);
 		getServer().getPluginManager().registerEvents(new ChatListener(), this);
 		getServer().getPluginManager().registerEvents(new SettingsListener(), this);
 		getServer().getPluginManager().registerEvents(new LaunchListener(), this);
@@ -288,14 +299,31 @@ public final class Main extends JavaPlugin {
 				}
 			});
 		}
-		//ServerUtils.updateServerState(ServerState.ONLINE);
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+			@Override
+			public void run() {
+				for (String s : BarUtils.getPlayers()) {
+					Player o = Bukkit.getPlayer(s);
+					if(o != null) BarUtils.teleportBar(o);
+				}
+			}
+		}, 1, 20L);
 		System.out.println("[NetworkTools] Plugin started up and ready to go!");
 	}
 
 	@Override
 	public void onDisable() {
 		System.out.println("[NetworkTools] Shutting down...");
+		mcLeaksAPI.shutdown();
 		System.out.println("[NetworkTools] Shut down! Cya :D");
+	}
+
+	public MCLeaksAPI getMcLeaksAPI() {
+		return mcLeaksAPI;
+	}
+
+	public CommandManager getCommandManager() {
+		return commandManager;
 	}
 
 	public BootManager getBootManager() {

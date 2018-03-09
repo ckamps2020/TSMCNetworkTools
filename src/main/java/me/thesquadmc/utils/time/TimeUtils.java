@@ -1,4 +1,4 @@
-package me.thesquadmc.utils;
+package me.thesquadmc.utils.time;
 
 import org.apache.commons.lang.math.NumberUtils;
 

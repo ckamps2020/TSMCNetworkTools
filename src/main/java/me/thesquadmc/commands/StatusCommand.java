@@ -3,7 +3,7 @@ package me.thesquadmc.commands;
 import me.thesquadmc.Main;
 import me.thesquadmc.utils.PlayerUtils;
 import me.thesquadmc.utils.server.ServerUtils;
-import me.thesquadmc.utils.TimeUtils;
+import me.thesquadmc.utils.time.TimeUtils;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.msgs.CC;
 import org.bukkit.command.Command;

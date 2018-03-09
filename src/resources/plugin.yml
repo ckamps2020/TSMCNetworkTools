@@ -1,5 +1,5 @@
 name: TSMCNetworkTools
-version: 1.1.5
+version: 1.2.0
 main: me.thesquadmc.Main
 author: ckamps
 depend: [LuckPerms]

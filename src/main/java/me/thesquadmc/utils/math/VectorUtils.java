@@ -37,6 +37,22 @@ public final class VectorUtils {
 		return v;
 	}
 
+	public static Vector rotateAroundVector(Vector toRotate, Vector around, double angle) {
+		if (angle == 0) {
+			return toRotate;
+		}
+
+		double vx = around.getX(), vy = around.getY(), vz = around.getZ();
+		double x = toRotate.getX(), y = toRotate.getY(), z = toRotate.getZ();
+		double sinA = Math.sin(Math.toRadians(angle)), cosA = Math.cos(Math.toRadians(angle));
+
+		double x1 = x * ((vx * vx) * (1 - cosA) + cosA) + y * ((vx * vy) * (1 - cosA) - vz * sinA) + z * ((vx * vz) * (1 - cosA) + vy * sinA);
+		double y1 = x * ((vy * vx) * (1 - cosA) + vz * sinA) + y * ((vy * vy) * (1 - cosA) + cosA) + z * ((vy * vz) * (1 - cosA) - vx * sinA);
+		double z1 = x * ((vz * vx) * (1 - cosA) - vy * sinA) + y * ((vz * vy) * (1 - cosA) + vx * sinA) + z * ((vz * vz) * (1 - cosA) + cosA);
+
+		return new Vector(x1, y1, z1);
+	}
+
 	public static final double angleToXAxis(Vector vector) {
 		return Math.atan2(vector.getX(), vector.getY());
 	}

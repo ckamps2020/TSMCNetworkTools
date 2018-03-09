@@ -1,13 +1,14 @@
 package me.thesquadmc.utils.inventory;
 
 import me.thesquadmc.utils.msgs.StringUtils;
-import me.thesquadmc.utils.TimeUtils;
+import me.thesquadmc.utils.time.TimeUtils;
 import me.thesquadmc.utils.msgs.CC;
+import net.minecraft.server.v1_8_R3.NBTCompressedStreamTools;
 import net.minecraft.server.v1_8_R3.NBTTagCompound;
+import net.minecraft.server.v1_8_R3.NBTTagList;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -19,6 +20,8 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionType;
 
+import java.io.*;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -35,6 +38,36 @@ public final class ItemUtils {
 				Bukkit.getWorld(player.getWorld().getName()).dropItemNaturally(player.getLocation(), s);
 			}
 		}
+	}
+
+	private String toBase64(ItemStack item) {
+		try {
+			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+			DataOutputStream dataOutput = new DataOutputStream(outputStream);
+			NBTTagList nbtTagListItems = new NBTTagList();
+			NBTTagCompound nbtTagCompoundItem = new NBTTagCompound();
+			net.minecraft.server.v1_8_R3.ItemStack nmsItem = CraftItemStack.asNMSCopy(item);
+			nmsItem.save(nbtTagCompoundItem);
+			nbtTagListItems.add(nbtTagCompoundItem);
+			NBTCompressedStreamTools.a(nbtTagCompoundItem, (DataOutput) dataOutput);
+			return new BigInteger(1, outputStream.toByteArray()).toString(32);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	private ItemStack fromBase64(String data) {
+		try {
+			ByteArrayInputStream inputStream = new ByteArrayInputStream(new BigInteger(data, 32).toByteArray());
+			NBTTagCompound nbtTagCompoundRoot = NBTCompressedStreamTools.a(new DataInputStream(inputStream));
+			net.minecraft.server.v1_8_R3.ItemStack nmsItem = net.minecraft.server.v1_8_R3.ItemStack.createStack(nbtTagCompoundRoot);
+			ItemStack item = (ItemStack) CraftItemStack.asBukkitCopy(nmsItem);
+			return item;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	public static ItemStack createPotion(String name, PotionType type, int level, int duration) {
