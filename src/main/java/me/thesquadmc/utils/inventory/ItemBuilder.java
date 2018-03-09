@@ -4,6 +4,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
@@ -127,6 +128,13 @@ public final class ItemBuilder {
 	public ItemBuilder unbreakable(boolean unbreakable){
 		ItemMeta meta = itemStack.getItemMeta();
 		meta.spigot().setUnbreakable(unbreakable);
+		itemStack.setItemMeta(meta);
+		return this;
+	}
+
+	public ItemBuilder flags(ItemFlag... flags) {
+		ItemMeta meta = itemStack.getItemMeta();
+		meta.addItemFlags(flags);
 		itemStack.setItemMeta(meta);
 		return this;
 	}

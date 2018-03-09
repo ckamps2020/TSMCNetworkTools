@@ -57,7 +57,7 @@ public final class Main extends JavaPlugin {
 	private DatabaseManager MySQL;
 	private ThreadPoolExecutor threadPoolExecutor;
 	private int restartTime = 0;
-	private String version = "1.2.0";
+	private String version = "1.2.1";
 	private String serverType = "UNKNOWN";
 	private int chatslow = 2;
 	private boolean chatSilenced = false;
@@ -77,6 +77,7 @@ public final class Main extends JavaPlugin {
 	private BootManager bootManager;
 	private CommandManager commandManager;
 	private MCLeaksAPI mcLeaksAPI;
+	private CountManager countManager;
 
 	private String host;
 	private int port;
@@ -114,6 +115,7 @@ public final class Main extends JavaPlugin {
 		queueManager = new QueueManager();
 		bootManager = new BootManager();
 		commandManager = new CommandManager(this);
+		countManager = new CountManager();
 		if (Bukkit.getServerName().startsWith("BW")) {
 			//bootManager.bootBedwars();
 		}
@@ -200,7 +202,8 @@ public final class Main extends JavaPlugin {
 							RedisChannels.LOGIN.getChannelName(),
 							RedisChannels.RETURN_SERVER.getChannelName(),
 							RedisChannels.STARTUP_REQUEST.getChannelName(),
-							RedisChannels.SERVER_STATE.getChannelName());
+							RedisChannels.SERVER_STATE.getChannelName(),
+							RedisChannels.PLAYER_COUNT.getChannelName());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -269,24 +272,22 @@ public final class Main extends JavaPlugin {
 		getCommand("mg").setExecutor(new MGCommand(this));
 		getCommand("queuemanager").setExecutor(new QueueManagerCommand(this));
 		ServerUtils.calculateServerType();
-		if (serverType.startsWith("BW")) {
-			Bukkit.getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
-				@Override
-				public void run() {
-					Multithreading.runAsync(new Runnable() {
-						@Override
-						public void run() {
-							try (Jedis jedis = Main.getMain().getPool().getResource()) {
-								JedisTask.withName(UUID.randomUUID().toString())
-										.withArg(RedisArg.SERVER.getArg(), Bukkit.getServerName())
-										.withArg(RedisArg.COUNT.getArg(), Bukkit.getOnlinePlayers().size())
-										.send(RedisChannels.PLAYER_COUNT.getChannelName(), jedis);
-							}
+		Bukkit.getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
+			@Override
+			public void run() {
+				Multithreading.runAsync(new Runnable() {
+					@Override
+					public void run() {
+						try (Jedis jedis = Main.getMain().getPool().getResource()) {
+							JedisTask.withName(UUID.randomUUID().toString())
+									.withArg(RedisArg.SERVER.getArg(), Bukkit.getServerName())
+									.withArg(RedisArg.COUNT.getArg(), Bukkit.getOnlinePlayers().size())
+									.send(RedisChannels.PLAYER_COUNT.getChannelName(), jedis);
 						}
-					});
-				}
-			}, 1, 1 * 20L);
-		}
+					}
+				});
+			}
+		}, 1, 1 * 20L);
 		if (serverType.startsWith(ServerType.MINIGAME_HUB)) {
 			Multithreading.runAsync(new Runnable() {
 				@Override
@@ -314,8 +315,18 @@ public final class Main extends JavaPlugin {
 	@Override
 	public void onDisable() {
 		System.out.println("[NetworkTools] Shutting down...");
+		try (Jedis jedis = Main.getMain().getPool().getResource()) {
+			JedisTask.withName(UUID.randomUUID().toString())
+					.withArg(RedisArg.SERVER.getArg(), Bukkit.getServerName())
+					.withArg(RedisArg.COUNT.getArg(), Bukkit.getOnlinePlayers().size())
+					.send(RedisChannels.PLAYER_COUNT.getChannelName(), jedis);
+		}
 		mcLeaksAPI.shutdown();
 		System.out.println("[NetworkTools] Shut down! Cya :D");
+	}
+
+	public CountManager getCountManager() {
+		return countManager;
 	}
 
 	public MCLeaksAPI getMcLeaksAPI() {

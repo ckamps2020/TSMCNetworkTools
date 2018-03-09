@@ -714,39 +714,63 @@ public final class RedisHandler {
 				}
 			});
 		} else if (channel.equalsIgnoreCase(RedisChannels.STARTUP_REQUEST.getChannelName())) {
-			Multithreading.runAsync(new Runnable() {
+			Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
 				@Override
 				public void run() {
-					ServerUtils.updateServerState(main.getServerState());
+					Multithreading.runAsync(new Runnable() {
+						@Override
+						public void run() {
+							ServerUtils.updateServerState(main.getServerState());
+						}
+					});
 				}
 			});
 		} else if (channel.equalsIgnoreCase(RedisChannels.SERVER_STATE.getChannelName())) {
-			Multithreading.runAsync(new Runnable() {
+			Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
 				@Override
 				public void run() {
-					if (Bukkit.getServerName().toUpperCase().startsWith(ServerType.MINIGAME_HUB)) {
-						String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
-						String state = String.valueOf(data.get(RedisArg.SERVER_STATE.getArg()));
-						if (server.toUpperCase().startsWith(ServerType.BEDWARS_SOLO)) {
-							if (main.getQueueManager().getSoloBW().contains(server)) {
-								if (!state.equalsIgnoreCase(ServerState.ONLINE)) {
-									main.getQueueManager().getSoloBW().remove(server);
-									main.getQueueManager().getPriority().remove(server);
-									main.getQueueManager().getSoloStandby().remove(server);
-									if (state.equalsIgnoreCase(ServerState.ONLINE_MAX_PLAYERS)) {
-										main.getQueueManager().getSoloStandby().add(server);
+					Multithreading.runAsync(new Runnable() {
+						@Override
+						public void run() {
+							if (Bukkit.getServerName().toUpperCase().startsWith(ServerType.MINIGAME_HUB)) {
+								String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
+								String state = String.valueOf(data.get(RedisArg.SERVER_STATE.getArg()));
+								if (server.toUpperCase().startsWith(ServerType.BEDWARS_SOLO)) {
+									if (main.getQueueManager().getSoloBW().contains(server)) {
+										if (!state.equalsIgnoreCase(ServerState.ONLINE)) {
+											main.getQueueManager().getSoloBW().remove(server);
+											main.getQueueManager().getPriority().remove(server);
+											main.getQueueManager().getSoloStandby().remove(server);
+											if (state.equalsIgnoreCase(ServerState.ONLINE_MAX_PLAYERS)) {
+												main.getQueueManager().getSoloStandby().add(server);
+											}
+										}
+									} else {
+										if (main.getQueueManager().getSoloStandby().contains(server)) {
+											main.getQueueManager().getPriority().add(server);
+											main.getQueueManager().getSoloStandby().remove(server);
+											return;
+										}
+										main.getQueueManager().getSoloBW().add(server);
 									}
 								}
-							} else {
-								if (main.getQueueManager().getSoloStandby().contains(server)) {
-									main.getQueueManager().getPriority().add(server);
-									main.getQueueManager().getSoloStandby().remove(server);
-									return;
-								}
-								main.getQueueManager().getSoloBW().add(server);
 							}
 						}
-					}
+					});
+				}
+			});
+		} else if (channel.equalsIgnoreCase(RedisChannels.PLAYER_COUNT.getChannelName())) {
+			Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
+				@Override
+				public void run() {
+					Multithreading.runAsync(new Runnable() {
+						@Override
+						public void run() {
+							String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
+							int count = Integer.valueOf(String.valueOf(data.get(RedisArg.COUNT.getArg())));
+							main.getCountManager().getCount().put(server, count);
+						}
+					});
 				}
 			});
 		}
