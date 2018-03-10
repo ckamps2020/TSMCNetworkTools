@@ -62,7 +62,10 @@ public final class CountManager {
 	}
 
 	public int getCount(String string) {
-		return count.get(string);
+		if (doesCountExist(string)) {
+			return count.get(string);
+		}
+		return 0;
 	}
 
 	public Map<String, Integer> getCount() {
