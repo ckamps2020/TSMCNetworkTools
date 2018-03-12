@@ -269,6 +269,10 @@ public final class StaffmodeListener implements Listener {
 
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent e) {
+		if (e.getInventory() != null && e.getInventory().getName().equalsIgnoreCase("LOGS")) {
+			e.setCancelled(true);
+			return;
+		}
 		if (e.getInventory() != null && e.getInventory().getName().equalsIgnoreCase("CONTROL PANEL")) {
 			Player player = (Player) e.getWhoClicked();
 			e.setCancelled(true);

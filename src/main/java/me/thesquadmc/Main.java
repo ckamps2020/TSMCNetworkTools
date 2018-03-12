@@ -57,7 +57,7 @@ public final class Main extends JavaPlugin {
 	private DatabaseManager MySQL;
 	private ThreadPoolExecutor threadPoolExecutor;
 	private int restartTime = 0;
-	private String version = "1.2.1";
+	private String version = "1.2.2";
 	private String serverType = "UNKNOWN";
 	private int chatslow = 2;
 	private boolean chatSilenced = false;
@@ -271,6 +271,9 @@ public final class Main extends JavaPlugin {
 		getCommand("ntversion").setExecutor(new NTVersionCommand(this));
 		getCommand("mg").setExecutor(new MGCommand(this));
 		getCommand("queuemanager").setExecutor(new QueueManagerCommand(this));
+		getCommand("staffalert").setExecutor(new StaffAlertCommand(this));
+		getCommand("onlinecount").setExecutor(new OnlineCountCommand(this));
+		getCommand("logs").setExecutor(new LogsCommand(this));
 		ServerUtils.calculateServerType();
 		Bukkit.getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
 			@Override

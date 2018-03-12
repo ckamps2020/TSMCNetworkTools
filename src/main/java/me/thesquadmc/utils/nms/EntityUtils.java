@@ -1,6 +1,5 @@
 package me.thesquadmc.utils.nms;
 
-import me.thesquadmc.Main;
 import net.minecraft.server.v1_8_R3.EntityHuman;
 import net.minecraft.server.v1_8_R3.EntityLiving;
 import org.bukkit.Color;

@@ -7,6 +7,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -169,9 +170,18 @@ public abstract class AbstractGUI implements GUI {
 				Inventory inventory = event.getClickedInventory();
 				AbstractGUI gui = (AbstractGUI) getGUIFromInventory(inventory);
 				if (gui == null) return;
-
+				event.setCancelled(true);
 				gui.invokeClickAction((Player) event.getWhoClicked(), inventory, event.getCursor(),
 						event.getRawSlot(), event.isLeftClick(), event.isRightClick(), event.isShiftClick());
+			}
+
+			@EventHandler
+			public void onOpenGUI(InventoryOpenEvent event) {
+				Inventory inventory = event.getInventory();
+				AbstractGUI gui = (AbstractGUI) getGUIFromInventory(inventory);
+				if (gui == null) return;
+
+				gui.onGUIOpen((Player) event.getPlayer());
 			}
 
 			@EventHandler

@@ -1,5 +1,5 @@
 name: TSMCNetworkTools
-version: 1.2.1
+version: 1.2.2
 main: me.thesquadmc.Main
 author: ckamps
 depend: [LuckPerms]
@@ -77,3 +77,7 @@ commands:
     mg:
     queuemanager:
         aliases: [qm]
+    staffalert:
+    onlinecount:
+    logs:
+        aliases: [chatlogs, clogs]

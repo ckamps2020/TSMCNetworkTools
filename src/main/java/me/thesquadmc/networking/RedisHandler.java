@@ -767,8 +767,8 @@ public final class RedisHandler {
 						@Override
 						public void run() {
 							String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
-							int count = Integer.valueOf(String.valueOf(data.get(RedisArg.COUNT.getArg())));
-							main.getCountManager().getCount().put(server, count);
+							Double count = Double.valueOf(String.valueOf(data.get(RedisArg.COUNT.getArg())));
+							main.getCountManager().getCount().put(server, count.intValue());
 						}
 					});
 				}

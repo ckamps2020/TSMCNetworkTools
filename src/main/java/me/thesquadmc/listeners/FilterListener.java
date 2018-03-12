@@ -43,7 +43,7 @@ public final class FilterListener implements Listener {
 	@EventHandler (priority = EventPriority.HIGHEST)
 	public void onChat(AsyncPlayerChatEvent e) {
 		Player player = e.getPlayer();
-		if (!PlayerUtils.isEqualOrHigherThen(player, Rank.TRAINEE)) {
+		if (!PlayerUtils.isEqualOrHigherThen(player, Rank.MOD)) {
 			if (!main.isChatSilenced()) {
 				if (main.getChatslow() != 0) {
 					if (!slowchat.contains(player.getUniqueId())) {
@@ -61,6 +61,18 @@ public final class FilterListener implements Listener {
 							return;
 						}
 						StringUtils.lastMsg.put(player.getUniqueId(), msg);
+						if (StringUtils.getLogs().containsKey(player.getName())) {
+							if (StringUtils.getLogs().get(player.getName()).size() >= 50) {
+								for (int i = 0; i < 5; i++) {
+									StringUtils.getLogs().get(player.getName()).remove(0);
+								}
+							}
+							StringUtils.getLogs().get(player.getName()).add(msg);
+						} else {
+							ArrayList<String> list = new ArrayList<>();
+							list.add(msg);
+							StringUtils.getLogs().put(player.getName(), list);
+						}
 						slowchat.add(player.getUniqueId());
 						Bukkit.getScheduler().runTaskLater(main, new Runnable() {
 							@Override
@@ -87,6 +99,18 @@ public final class FilterListener implements Listener {
 						player.sendMessage(CC.translate("&e&lFILTER &6■ &7You are not allowed to say that!"));
 					}
 					StringUtils.lastMsg.put(player.getUniqueId(), msg);
+					if (StringUtils.getLogs().containsKey(player.getName())) {
+						if (StringUtils.getLogs().get(player.getName()).size() >= 50) {
+							for (int i = 0; i < 5; i++) {
+								StringUtils.getLogs().get(player.getName()).remove(0);
+							}
+						}
+						StringUtils.getLogs().get(player.getName()).add(msg);
+					} else {
+						ArrayList<String> list = new ArrayList<>();
+						list.add(msg);
+						StringUtils.getLogs().put(player.getName(), list);
+					}
 				}
 			} else {
 				e.setCancelled(true);

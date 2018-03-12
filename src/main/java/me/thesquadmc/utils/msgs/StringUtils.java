@@ -15,9 +15,14 @@ import java.util.regex.Pattern;
 public final class StringUtils {
 
 	public static Map<UUID, String> lastMsg = new HashMap<>();
+	public static Map<String, ArrayList<String>> logs = new HashMap<>();
 
 	public StringUtils() {
 		populate();
+	}
+
+	public static Map<String, ArrayList<String>> getLogs() {
+		return logs;
 	}
 
 	public static Map<UUID, String> getLastMsg() {
@@ -28,24 +33,6 @@ public final class StringUtils {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		Date date = new Date();
 		return dateFormat.format(date);
-	}
-
-	public static String formatTime(long time) {
-		DecimalFormat decimalFormat = new DecimalFormat("0.0");
-		double secs = time / 1000L;
-		double mins = secs / 60.0D;
-		double hours = mins / 60.0D;
-		double days = hours / 24.0D;
-		if (mins < 1.0D) {
-			return decimalFormat.format(secs) + " Seconds";
-		}
-		if (hours < 1.0D) {
-			return decimalFormat.format(mins % 60.0D) + " Minutes";
-		}
-		if (days < 1.0D) {
-			return decimalFormat.format(hours % 24.0D) + " Hours";
-		}
-		return decimalFormat.format(days) + " Days";
 	}
 
 	public static BaseComponent[] getHoverMessage(String message, String hoverMessage) {
@@ -554,7 +541,6 @@ public final class StringUtils {
 		curses.add("mutherfucker");
 		curses.add("n1gga");
 		curses.add("n1gger");
-		curses.add("niga");
 		curses.add("nazi");
 		curses.add("nigg3r");
 		curses.add("nigg4h");

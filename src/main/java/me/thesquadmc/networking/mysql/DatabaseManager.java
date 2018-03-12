@@ -29,6 +29,7 @@ public final class DatabaseManager {
 		this.DB.openConnection();
 
 		Statement a = this.DB.getConnection().createStatement();
+		a.executeUpdate("CREATE TABLE IF NOT EXISTS `DISGUISE` (`UUID` MEDIUMTEXT, `DISGUISENAME` MEDIUMTEXT);");
 		a.executeUpdate("CREATE TABLE IF NOT EXISTS `FRIENDS` (`UUID` MEDIUMTEXT, `FRIENDS` LONGTEXT);");
 		a.executeUpdate("CREATE TABLE IF NOT EXISTS `REMOVAL` (`UUID` MEDIUMTEXT, `REMOVAL` LONGTEXT);");
 		a.executeUpdate("CREATE TABLE IF NOT EXISTS `SETTINGS` (`UUID` MEDIUMTEXT, `NOTIFICATIONS` BOOLEAN, `PMS` BOOLEAN, `FRIENDCHAT` BOOLEAN, `REQUESTS` BOOLEAN);");
@@ -75,6 +76,30 @@ public final class DatabaseManager {
 				Statement s = this.DB.getConnection().createStatement();
 				s.executeUpdate("UPDATE `FRIENDS` SET `FRIENDS` = '" + stringBuilder.toString() + "' WHERE `UUID` = '" + uuid + "'");
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void updateDisguise(String uuid, String name) throws Exception {
+		if (!this.DB.checkConnection()) {
+			this.DB.openConnection();
+		}
+		try {
+			Statement s = this.DB.getConnection().createStatement();
+			s.executeUpdate("UPDATE `DISGUISE` SET `DISGUISENAME` = '" + name + "' WHERE `UUID` = '" + uuid + "'");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void newDisguiseAccount(String uuid) throws Exception {
+		if (!this.DB.checkConnection()) {
+			this.DB.openConnection();
+		}
+		try {
+			Statement s = this.DB.getConnection().createStatement();
+			s.executeUpdate("INSERT INTO `DISGUISE` (`UUID`, `DISGUISENAME`) VALUES ('" + uuid + "', 'NONE');");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
