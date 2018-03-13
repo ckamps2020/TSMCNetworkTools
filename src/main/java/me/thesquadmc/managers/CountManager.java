@@ -50,7 +50,27 @@ public final class CountManager {
 	public int getMinigameCount() {
 		int i = 0;
 		for (Map.Entry<String, Integer> map : count.entrySet()) {
-			if (map.getKey().toUpperCase().startsWith("MG")) {
+			if (map.getKey().toUpperCase().startsWith("MG") || map.getKey().toUpperCase().startsWith("BW")) {
+				i = i + map.getValue();
+			}
+		}
+		return i;
+	}
+
+	public int getBWCount() {
+		int i = 0;
+		for (Map.Entry<String, Integer> map : count.entrySet()) {
+			if (map.getKey().toUpperCase().startsWith("BW")) {
+				i = i + map.getValue();
+			}
+		}
+		return i;
+	}
+
+	public int getHubCount() {
+		int i = 0;
+		for (Map.Entry<String, Integer> map : count.entrySet()) {
+			if (map.getKey().toUpperCase().startsWith("HUB")) {
 				i = i + map.getValue();
 			}
 		}
