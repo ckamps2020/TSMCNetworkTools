@@ -66,10 +66,8 @@ public final class ConnectionListeners implements Listener {
 					@Override
 					public void run() {
 						if (main.getMcLeaksAPI().checkAccount(player.getUniqueId()).isMCLeaks()) {
-							for (Player player1 : Bukkit.getOnlinePlayers()) {
-								if (PlayerUtils.isEqualOrHigherThen(player1, Rank.MOD)) {
-									player1.sendMessage(CC.translate("&8[&4&lAnitCheat&8] &4[MCLEAKS] &f" + player.getName() + " is registered as an MCLeaks account!"));
-								}
+							if (PlayerUtils.isEqualOrHigherThen(player, Rank.MOD)) {
+								Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "ban " + player.getName() + " Compromised Account");
 							}
 						}
 					}
@@ -82,6 +80,15 @@ public final class ConnectionListeners implements Listener {
 					|| Bukkit.getServerName().toUpperCase().startsWith("HUB")) {
 				if (PlayerUtils.isEqualOrHigherThen(player, Rank.ADMIN)) {
 					player.chat("/ev");
+				}
+			}
+			if (Bukkit.getServerName().toUpperCase().startsWith("MG")
+					|| Bukkit.getServerName().toUpperCase().startsWith("FACTIONS")
+					|| Bukkit.getServerName().toUpperCase().startsWith("HUB")
+					|| Bukkit.getServerName().toUpperCase().startsWith("PRISON")
+					|| Bukkit.getServerName().toUpperCase().startsWith("SKYBLOCK")) {
+				if (PlayerUtils.isEqualOrHigherThen(player, Rank.ADMIN)) {
+					player.chat("/vanish");
 				}
 			}
 			if (!Main.getMain().getSig().equalsIgnoreCase("NONE")) {
