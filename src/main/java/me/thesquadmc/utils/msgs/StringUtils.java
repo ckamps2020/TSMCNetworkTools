@@ -1,5 +1,6 @@
 package me.thesquadmc.utils.msgs;
 
+import com.google.common.collect.Lists;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -33,6 +34,22 @@ public final class StringUtils {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		Date date = new Date();
 		return dateFormat.format(date);
+	}
+
+	/**
+	 * Merge multiple BaseComponent arrays into one
+	 * @param baseComponents components to merge
+	 * @return the merged component
+	 */
+	public static BaseComponent[] mergeComponents(BaseComponent[]... baseComponents) {
+		List<BaseComponent> list = Lists.newLinkedList(); //We must keep the order so we use a linked list
+
+		for (BaseComponent[] array : baseComponents) {
+			int len = array.length;
+			list.addAll(Arrays.asList(array).subList(0, len));
+		}
+
+		return list.toArray(new BaseComponent[list.size()]);
 	}
 
 	public static BaseComponent[] getHoverMessage(String message, String hoverMessage) {

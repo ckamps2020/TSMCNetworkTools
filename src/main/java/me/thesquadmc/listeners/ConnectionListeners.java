@@ -66,9 +66,7 @@ public final class ConnectionListeners implements Listener {
 					@Override
 					public void run() {
 						if (main.getMcLeaksAPI().checkAccount(player.getUniqueId()).isMCLeaks()) {
-							if (PlayerUtils.isEqualOrHigherThen(player, Rank.MOD)) {
-								Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "ban " + player.getName() + " Compromised Account");
-							}
+							player.sendMessage(CC.translate("&8[&4&lAnitCheat&8] &4[XRAY] &f" + player.getName() + " is a verified MCLeaks account!"));
 						}
 					}
 				});

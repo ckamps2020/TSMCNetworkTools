@@ -656,9 +656,11 @@ public final class RedisHandler {
 								}
 							}
 							for (String s : f) {
-								Player t = Bukkit.getPlayer(UUID.fromString(s));
-								if (t != null) {
-									t.spigot().sendMessage(StringUtils.getHoverMessage(message, "&7Currently on &d" + server));
+								if (UUID.fromString(s) != null) {
+									Player t = Bukkit.getPlayer(UUID.fromString(s));
+									if (t != null) {
+										t.spigot().sendMessage(StringUtils.getHoverMessage(message, "&7Currently on &d" + server));
+									}
 								}
 							}
 						}
