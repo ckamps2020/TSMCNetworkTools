@@ -66,7 +66,11 @@ public final class ConnectionListeners implements Listener {
 					@Override
 					public void run() {
 						if (main.getMcLeaksAPI().checkAccount(player.getUniqueId()).isMCLeaks()) {
-							player.sendMessage(CC.translate("&8[&4&lAnitCheat&8] &4[XRAY] &f" + player.getName() + " is a verified MCLeaks account!"));
+							for (Player p : Bukkit.getOnlinePlayers()) {
+								if (PlayerUtils.isEqualOrHigherThen(p, Rank.TRAINEE)) {
+									p.sendMessage(CC.translate("&8[&4&lAnitCheat&8] &4[XRAY] &f" + player.getName() + " is a verified MCLeaks account!"));
+								}
+							}
 						}
 					}
 				});
