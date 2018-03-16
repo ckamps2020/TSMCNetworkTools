@@ -59,7 +59,7 @@ public final class Main extends JavaPlugin {
 	private int restartTime = 0;
 	private String version = "1.2.6";
 	private String serverType = "UNKNOWN";
-	private int chatslow = 2;
+	private int chatslow = 0;
 	private boolean chatSilenced = false;
 	private String serverState = ServerState.LOADING;
 
