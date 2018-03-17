@@ -45,6 +45,7 @@ public final class ServerProperty<T> {
 	public static final ServerProperty<Boolean> PREVENT_PROXY_CONNECTIONS = new ServerProperty<>(Boolean.class, "prevent-proxy-connections", false);
 	public static final ServerProperty<String> MOTD = new ServerProperty<>(String.class, "motd", "A Minecraft Server");
 	public static final ServerProperty<Boolean> ENABLE_RCON = new ServerProperty<>(Boolean.class, "enable-rcon", false);
+	public static final ServerProperty<Boolean> ANNOUNCE_PLAYER_ACHIEVEMENTS = new ServerProperty<>(Boolean.class, "announce-player-achievements", true);
 
 
 	private final Class<T> type;
