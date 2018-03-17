@@ -188,7 +188,7 @@ public class NMSAbstract1_8_R3 implements NMSAbstract {
 	@Override
 	public void sendTitle(Player player, String title, String subtitle, int in, int stay, int out) {
 		PacketPlayOutTitle titlePacket = new PacketPlayOutTitle(EnumTitleAction.TITLE, IChatBaseComponent.ChatSerializer.a("{\"text\": \"\"}").a(CC.translate(title)));
-		PacketPlayOutTitle subtitlePacket = new PacketPlayOutTitle(EnumTitleAction.SUBTITLE, IChatBaseComponent.ChatSerializer.a("{\"text\": \"\"}").a(CC.translate(title)));
+		PacketPlayOutTitle subtitlePacket = new PacketPlayOutTitle(EnumTitleAction.SUBTITLE, IChatBaseComponent.ChatSerializer.a("{\"text\": \"\"}").a(CC.translate(subtitle)));
 		PacketPlayOutTitle timingsPacket = new PacketPlayOutTitle(in, stay, out);
 		
 		PlayerConnection connection = ((CraftPlayer) player).getHandle().playerConnection;
@@ -200,7 +200,7 @@ public class NMSAbstract1_8_R3 implements NMSAbstract {
 	@Override
 	public void broadcastTitle(String title, String subtitle, int in, int stay, int out) {
 		PacketPlayOutTitle titlePacket = new PacketPlayOutTitle(EnumTitleAction.TITLE, IChatBaseComponent.ChatSerializer.a("{\"text\": \"\"}").a(CC.translate(title)));
-		PacketPlayOutTitle subtitlePacket = new PacketPlayOutTitle(EnumTitleAction.SUBTITLE, IChatBaseComponent.ChatSerializer.a("{\"text\": \"\"}").a(CC.translate(title)));
+		PacketPlayOutTitle subtitlePacket = new PacketPlayOutTitle(EnumTitleAction.SUBTITLE, IChatBaseComponent.ChatSerializer.a("{\"text\": \"\"}").a(CC.translate(subtitle)));
 		PacketPlayOutTitle timingsPacket = new PacketPlayOutTitle(in, stay, out);
 		
 		for (Player player : Bukkit.getOnlinePlayers()) {
