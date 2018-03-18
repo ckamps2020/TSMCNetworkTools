@@ -63,6 +63,9 @@ public final class DatabaseManager {
 		try {
 			List<String> friends = main.getFriends().get(UUID.fromString(uuid));
 			StringBuilder stringBuilder = new StringBuilder();
+			if (friends == null) {
+				return;
+			}
 			for (String s : friends) {
 				if (s.equalsIgnoreCase("[]") || s.equalsIgnoreCase(" ") || s.equalsIgnoreCase("")) {
 					continue;

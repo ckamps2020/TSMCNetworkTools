@@ -751,6 +751,14 @@ public final class RedisHandler {
 										if (main.getQueueManager().getSoloStandby().contains(server)) {
 											main.getQueueManager().getPriority().add(server);
 											main.getQueueManager().getSoloStandby().remove(server);
+											Bukkit.getScheduler().runTaskLater(main, new Runnable() {
+												@Override
+												public void run() {
+													if (main.getQueueManager().getPriority().contains(server)) {
+														main.getQueueManager().getPriority().remove(server);
+													}
+												}
+											}, 60 * 20L);
 											return;
 										}
 										main.getQueueManager().getSoloBW().add(server);
