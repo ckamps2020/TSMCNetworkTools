@@ -43,6 +43,8 @@ public enum RedisChannels {
 	PLAYER_COUNT("PLAYER_COUNT"),
 	RETURN_SERVER("RETURN_SERVER"),
 	STARTUP_REQUEST("STARTUP_REQUEST"),
+
+	SLACK_STAFFCHAT("SLACK_STAFFCHAT"),
 	;
 
 	private String channelName;

@@ -23,6 +23,7 @@ import org.bukkit.util.BlockIterator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 public final class PlayerUtils {
 
@@ -117,6 +118,20 @@ public final class PlayerUtils {
 
 	public static boolean isEqualOrHigherThen(Player player, Rank rank) {
 		User user = Main.getMain().getLuckPermsApi().getUser(player.getUniqueId());
+		if (user.getPrimaryGroup() != null) {
+			for (Rank r : Rank.values()) {
+				if (r.getName().equalsIgnoreCase(user.getPrimaryGroup())) {
+					if (r.getPriority() >= rank.getPriority()) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	public static boolean isEqualOrHigherThen(UUID uuid, Rank rank) {
+		User user = Main.getMain().getLuckPermsApi().getUser(uuid);
 		if (user.getPrimaryGroup() != null) {
 			for (Rank r : Rank.values()) {
 				if (r.getName().equalsIgnoreCase(user.getPrimaryGroup())) {

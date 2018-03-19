@@ -74,6 +74,22 @@ public final class StaffChatCommand implements CommandExecutor {
 							});
 						}
 					});
+					Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
+						@Override
+						public void run() {
+							Multithreading.runAsync(new Runnable() {
+								@Override
+								public void run() {
+									try (Jedis jedis = main.getPool().getResource()) {
+										JedisTask.withName(UUID.randomUUID().toString())
+												.withArg(RedisArg.PLAYER.getArg(), player.getName())
+												.withArg(RedisArg.MESSAGE.getArg(), stringBuilder.toString())
+												.send(RedisChannels.SLACK_STAFFCHAT.getChannelName(), jedis);
+									}
+								}
+							});
+						}
+					});
 				}
 			} else {
 				player.sendMessage(CC.translate("&e&lPERMISSIONS &6■ &7You do not have permission to use this command!"));
