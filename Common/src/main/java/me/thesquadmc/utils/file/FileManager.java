@@ -59,6 +59,11 @@ public final class FileManager {
 			networkingConfig.set("mysql.dbpassword", "");
 			networkingConfig.set("mysql.dbname", "friends");
 			networkingConfig.set("mysql.dbuser", "root");
+			networkingConfig.set("mongo.host", "0.0.0.0");
+			networkingConfig.set("mongo.port", 6379);
+			networkingConfig.set("mongo.password", "password");
+			networkingConfig.set("mongo.user", "user");
+			networkingConfig.set("mongo.database", "database");
 			System.out.println("[NetworkTools] Default networking created!");
 			System.out.println("[NetworkTools] Saving networking file...");
 			saveNetworkingConfig();

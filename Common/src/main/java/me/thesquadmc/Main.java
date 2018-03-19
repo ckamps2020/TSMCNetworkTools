@@ -17,6 +17,7 @@ import me.thesquadmc.listeners.*;
 import me.thesquadmc.managers.*;
 import me.thesquadmc.networking.JedisTask;
 import me.thesquadmc.networking.RedisHandler;
+import me.thesquadmc.networking.mongo.Mongo;
 import me.thesquadmc.networking.mysql.DatabaseManager;
 import me.thesquadmc.utils.command.CommandManager;
 import me.thesquadmc.utils.enums.RedisArg;
@@ -89,6 +90,7 @@ public final class Main extends JavaPlugin {
 	private MCLeaksAPI mcLeaksAPI;
 	private CountManager countManager;
 	private NMSAbstract nmsAbstract;
+	private Mongo mongo;
 
 	private String host;
 	private int port;
@@ -113,7 +115,7 @@ public final class Main extends JavaPlugin {
 			Bukkit.getPluginManager().disablePlugin(this);
 			return;
 		}
-		this.getLogger().info("Server implementation set for " + nmsAbstract.getVersionMin() + " - " + nmsAbstract.getVersionMax());
+		this.getLogger().info("[NetworkTools] Server implementation set for " + nmsAbstract.getVersionMin() + " - " + nmsAbstract.getVersionMax());
 		
 		luckPermsApi = LuckPerms.getApi();
 		mcLeaksAPI =  MCLeaksAPI.builder().threadCount(2).expireAfter(10, TimeUnit.MINUTES).build();
@@ -243,6 +245,12 @@ public final class Main extends JavaPlugin {
 				}
 			}
 		});
+		Multithreading.runAsync(new Runnable() {
+			@Override
+			public void run() {
+				//mongo = new Mongo();
+			}
+		});
 		getCommand("staffchat").setExecutor(new StaffChatCommand(this));
 		getCommand("adminchat").setExecutor(new AdminChatCommand(this));
 		getCommand("managerchat").setExecutor(new ManagerChatCommand(this));
@@ -337,6 +345,10 @@ public final class Main extends JavaPlugin {
 		}
 		mcLeaksAPI.shutdown();
 		System.out.println("[NetworkTools] Shut down! Cya :D");
+	}
+
+	public Mongo getMongo() {
+		return mongo;
 	}
 
 	public CountManager getCountManager() {
