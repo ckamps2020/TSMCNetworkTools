@@ -694,25 +694,32 @@ public final class RedisHandler {
 				}
 			});
 		} else if (channel.equalsIgnoreCase(RedisChannels.RETURN_SERVER.getChannelName())) {
-			Multithreading.runAsync(new Runnable() {
+			Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
 				@Override
 				public void run() {
-					String server = String.valueOf(data.get(RedisArg.ORIGIN_SERVER.getArg()));
-					if (Bukkit.getServerName().equalsIgnoreCase(server)) {
-						String player = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
-						String newServer = String.valueOf(data.get(RedisArg.SERVER.getArg()));
-						if (newServer.equalsIgnoreCase("none")) {
-							if (Bukkit.getPlayer(player) != null) {
-								Player p = Bukkit.getPlayer(player);
-								p.sendMessage(CC.translate(GameMsgs.GAME_PREFIX + "Unable to find an open server right now! Please try again"));
-							}
-						} else {
-							if (Bukkit.getPlayer(player) != null) {
-								Player p = Bukkit.getPlayer(player);
-								ConnectionUtils.sendPlayer(p, newServer);
+					Multithreading.runAsync(new Runnable() {
+						@Override
+						public void run() {
+							String server = String.valueOf(data.get(RedisArg.ORIGIN_SERVER.getArg()));
+							if (Bukkit.getServerName().equalsIgnoreCase(server)) {
+								String player = String.valueOf(data.get(RedisArg.ORIGIN_PLAYER.getArg()));
+								String newServer = String.valueOf(data.get(RedisArg.SERVER.getArg()));
+								if (newServer.equalsIgnoreCase("NONE")) {
+									if (Bukkit.getPlayer(player) != null) {
+										Player p = Bukkit.getPlayer(player);
+										ConnectionUtils.getFetching().remove(p.getUniqueId());
+										p.sendMessage(CC.translate(GameMsgs.GAME_PREFIX + "Unable to find an open server right now! Please try again"));
+									}
+								} else {
+									if (Bukkit.getPlayer(player) != null) {
+										Player p = Bukkit.getPlayer(player);
+										ConnectionUtils.getFetching().remove(p.getUniqueId());
+										ConnectionUtils.sendPlayer(p, newServer);
+									}
+								}
 							}
 						}
-					}
+					});
 				}
 			});
 		} else if (channel.equalsIgnoreCase(RedisChannels.STARTUP_REQUEST.getChannelName())) {
@@ -723,48 +730,6 @@ public final class RedisHandler {
 						@Override
 						public void run() {
 							ServerUtils.updateServerState(main.getServerState());
-						}
-					});
-				}
-			});
-		} else if (channel.equalsIgnoreCase(RedisChannels.SERVER_STATE.getChannelName())) {
-			Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
-				@Override
-				public void run() {
-					Multithreading.runAsync(new Runnable() {
-						@Override
-						public void run() {
-							if (Bukkit.getServerName().toUpperCase().startsWith(ServerType.MINIGAME_HUB)) {
-								String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
-								String state = String.valueOf(data.get(RedisArg.SERVER_STATE.getArg()));
-								if (server.toUpperCase().startsWith(ServerType.BEDWARS_SOLO)) {
-									if (main.getQueueManager().getSoloBW().contains(server)) {
-										if (!state.equalsIgnoreCase(ServerState.ONLINE)) {
-											main.getQueueManager().getSoloBW().remove(server);
-											main.getQueueManager().getPriority().remove(server);
-											main.getQueueManager().getSoloStandby().remove(server);
-											if (state.equalsIgnoreCase(ServerState.ONLINE_MAX_PLAYERS)) {
-												main.getQueueManager().getSoloStandby().add(server);
-											}
-										}
-									} else {
-										if (main.getQueueManager().getSoloStandby().contains(server)) {
-											main.getQueueManager().getPriority().add(server);
-											main.getQueueManager().getSoloStandby().remove(server);
-											Bukkit.getScheduler().runTaskLater(main, new Runnable() {
-												@Override
-												public void run() {
-													if (main.getQueueManager().getPriority().contains(server)) {
-														main.getQueueManager().getPriority().remove(server);
-													}
-												}
-											}, 60 * 20L);
-											return;
-										}
-										main.getQueueManager().getSoloBW().add(server);
-									}
-								}
-							}
 						}
 					});
 				}
