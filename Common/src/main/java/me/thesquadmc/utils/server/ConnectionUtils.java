@@ -38,6 +38,27 @@ public final class ConnectionUtils {
 		});
 	}
 
+	public static void sendPlayerGameServer(Player player, String server) {
+		player.sendMessage(CC.translate(GameMsgs.GAME_PREFIX + "Sending you to &e" + server + "&7..."));
+		//send all party members as well
+		Bukkit.getScheduler().runTaskAsynchronously(Main.getMain(), new Runnable() {
+			@Override
+			public void run() {
+				Multithreading.runAsync(new Runnable() {
+					@Override
+					public void run() {
+						try (Jedis jedis = Main.getMain().getPool().getResource()) {
+							JedisTask.withName(UUID.randomUUID().toString())
+									.withArg(RedisArg.PLAYER.getArg(), player.getName())
+									.withArg(RedisArg.SERVER.getArg(), server)
+									.send(RedisChannels.TRANSPORT.getChannelName(), jedis);
+						}
+					}
+				});
+			}
+		});
+	}
+
 	public static void fetchGameServer(Player player, String serverType) {
 		if (!fetching.contains(player.getUniqueId())) {
 			//TODO: Check here if they are in a party to respect counts

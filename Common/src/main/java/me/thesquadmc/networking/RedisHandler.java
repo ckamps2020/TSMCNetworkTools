@@ -714,7 +714,7 @@ public final class RedisHandler {
 									if (Bukkit.getPlayer(player) != null) {
 										Player p = Bukkit.getPlayer(player);
 										ConnectionUtils.getFetching().remove(p.getUniqueId());
-										ConnectionUtils.sendPlayer(p, newServer);
+										ConnectionUtils.sendPlayerGameServer(p, newServer);
 									}
 								}
 							}
