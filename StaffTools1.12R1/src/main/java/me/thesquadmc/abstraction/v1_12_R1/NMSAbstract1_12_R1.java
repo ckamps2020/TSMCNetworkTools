@@ -181,13 +181,13 @@ public class NMSAbstract1_12_R1 implements NMSAbstract {
 
 	@Override
 	public void sendTitle(Player player, String title, String subtitle, int in, int stay, int out) {
-		player.sendTitle(title, subtitle, in, stay, out);
+		player.sendTitle(CC.translate(title), CC.translate(subtitle), in, stay, out);
 	}
 
 	@Override
 	public void broadcastTitle(String title, String subtitle, int in, int stay, int out) {
 		for (Player player : Bukkit.getOnlinePlayers()) {
-			player.sendTitle(title, subtitle, in, stay, out);
+			player.sendTitle(CC.translate(title), CC.translate(subtitle), in, stay, out);
 		}
 	}
 
