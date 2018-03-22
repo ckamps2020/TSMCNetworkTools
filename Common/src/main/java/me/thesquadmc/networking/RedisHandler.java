@@ -344,6 +344,14 @@ public final class RedisHandler {
 				Bukkit.getScheduler().runTaskLater(main, new Runnable() {
 					@Override
 					public void run() {
+						for (Player player : Bukkit.getOnlinePlayers()) {
+							player.kickPlayer(CC.translate("&e&lSTOP &6■ &7Server restarting for reason: &e" + msg));
+						}
+					}
+				}, 10 * 20);
+				Bukkit.getScheduler().runTaskLater(main, new Runnable() {
+					@Override
+					public void run() {
 						Bukkit.shutdown();
 						Bukkit.broadcastMessage(CC.translate("&e&lSTOP &6■ &7Server restarting for reason: &e" + msg));
 					}

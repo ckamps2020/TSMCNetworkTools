@@ -8,6 +8,7 @@ import me.thesquadmc.utils.enums.RedisArg;
 import me.thesquadmc.utils.enums.RedisChannels;
 import me.thesquadmc.utils.msgs.CC;
 import me.thesquadmc.utils.server.Multithreading;
+import me.thesquadmc.utils.server.ServerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -55,7 +56,7 @@ public final class StopCommand implements CommandExecutor {
 				player.sendMessage(CC.translate("&e&lPERMISSIONS &6■ &7You do not have permission to use this command!"));
 			}
 		} else {
-			Bukkit.shutdown();
+			ServerUtils.safeShutdown();
 		}
 		return true;
 	}

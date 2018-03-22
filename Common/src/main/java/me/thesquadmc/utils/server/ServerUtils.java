@@ -5,8 +5,10 @@ import me.thesquadmc.Main;
 import me.thesquadmc.networking.JedisTask;
 import me.thesquadmc.utils.enums.RedisArg;
 import me.thesquadmc.utils.enums.RedisChannels;
+import me.thesquadmc.utils.msgs.CC;
 import me.thesquadmc.utils.msgs.ServerType;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import redis.clients.jedis.Jedis;
 
 import java.lang.management.ManagementFactory;
@@ -47,6 +49,19 @@ public final class ServerUtils {
 		} else if (m.startsWith(ServerType.HUB)) {
 			Main.getMain().setServerType(ServerType.HUB);
 		}
+	}
+
+	public static void safeShutdown() {
+		System.out.println("[NetworkTools] Server restarting in 3 seconds...");
+		for (Player player : Bukkit.getOnlinePlayers()) {
+			player.kickPlayer(CC.translate("&e&lSTOP &6■ &7Server restarting!"));
+		}
+		Bukkit.getScheduler().runTaskLater(Main.getMain(), new Runnable() {
+			@Override
+			public void run() {
+				Bukkit.shutdown();
+			}
+		}, 3 * 20);
 	}
 
 	public static String getTPS(int time) {
