@@ -28,9 +28,11 @@ public final class MGCommand implements CommandExecutor {
 			
 			// Party check
 			Party party = main.getPartyManager().getParty(player);
-			if (!party.isOwner(player)) {
-				player.sendMessage(CC.translate("&e&lPARTY &6■ &7You can't join this &eserver &7as you are not the owner of your &eparty&7!"));
-				return true;
+			if (party != null) {
+				if (!party.isOwner(player)) {
+					player.sendMessage(CC.translate("&e&lPARTY &6■ &7You can't join this &eserver &7as you are not the owner of your &eparty&7!"));
+					return true;
+				}
 			}
 			
 			int i = MathUtils.random(1, 5);
