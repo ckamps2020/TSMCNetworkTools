@@ -66,7 +66,6 @@ public final class ConnectionUtils {
 
 	public static void fetchGameServer(Player player, String serverType) {
 		if (!fetching.contains(player.getUniqueId())) {
-			//TODO: Check here if they are in a party to respect counts
 			player.sendMessage(CC.translate(GameMsgs.GAME_PREFIX + "Finding you an open " + serverType + " server..."));
 			Bukkit.getScheduler().runTaskAsynchronously(Main.getMain(), new Runnable() {
 				@Override
@@ -74,10 +73,14 @@ public final class ConnectionUtils {
 					Multithreading.runAsync(new Runnable() {
 						@Override
 						public void run() {
+							int i = 1;
+							if (Main.getMain().getPartyManager().hasParty(player.getUniqueId())) {
+								i = Main.getMain().getPartyManager().getParty(player.getUniqueId()).getMemberCount();
+							}
 							fetching.add(player.getUniqueId());
 							try (Jedis jedis = Main.getMain().getPool().getResource()) {
 								JedisTask.withName(UUID.randomUUID().toString())
-										.withArg(RedisArg.COUNT.getArg(), "1")
+										.withArg(RedisArg.COUNT.getArg(), String.valueOf(i))
 										.withArg(RedisArg.ORIGIN_PLAYER.getArg(), player.getName())
 										.withArg(RedisArg.ORIGIN_SERVER.getArg(), Bukkit.getServerName())
 										.withArg(RedisArg.SERVER.getArg(), serverType)

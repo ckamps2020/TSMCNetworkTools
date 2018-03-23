@@ -25,7 +25,7 @@ import me.thesquadmc.objects.Party;
 import me.thesquadmc.utils.msgs.CC;
 import me.thesquadmc.utils.msgs.Unicode;
 
-public class PartyCommand implements CommandExecutor {
+public final class PartyCommand implements CommandExecutor {
 	
 	private final Multimap<UUID, UUID> partyRequests = HashMultimap.create();
 	private final Main main;
