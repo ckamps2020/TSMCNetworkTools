@@ -68,7 +68,7 @@ public final class Main extends JavaPlugin {
 	private DatabaseManager MySQL;
 	private ThreadPoolExecutor threadPoolExecutor;
 	private int restartTime = 0;
-	private String version = "1.2.6";
+	private String version = "1.3.0";
 	private String serverType = "UNKNOWN";
 	private int chatslow = 0;
 	private boolean chatSilenced = false;
