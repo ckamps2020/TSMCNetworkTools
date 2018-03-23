@@ -81,3 +81,4 @@ commands:
     onlinecount:
     logs:
         aliases: [chatlogs, clogs]
+    party:
