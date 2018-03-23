@@ -87,6 +87,7 @@ public final class Main extends JavaPlugin {
 	private QueueManager queueManager;
 	private BootManager bootManager;
 	private CommandManager commandManager;
+	private PartyManager partyManager;
 	private MCLeaksAPI mcLeaksAPI;
 	private CountManager countManager;
 	private NMSAbstract nmsAbstract;
@@ -136,6 +137,7 @@ public final class Main extends JavaPlugin {
 		queueManager = new QueueManager();
 		bootManager = new BootManager();
 		commandManager = new CommandManager(this);
+		this.partyManager = new PartyManager();
 		countManager = new CountManager();
 		if (Bukkit.getServerName().startsWith("BW")) {
 			//bootManager.bootBedwars();
@@ -219,6 +221,7 @@ public final class Main extends JavaPlugin {
 							RedisChannels.FRIEND_CHAT.getChannelName(),
 							RedisChannels.FRIEND_CHECK_REQUEST.getChannelName(),
 							RedisChannels.FRIEND_RETURN_REQUEST.getChannelName(),
+							RedisChannels.PARTY_JOIN_SERVER.getChannelName(),
 							RedisChannels.LEAVE.getChannelName(),
 							RedisChannels.LOGIN.getChannelName(),
 							RedisChannels.RETURN_SERVER.getChannelName(),
@@ -301,6 +304,7 @@ public final class Main extends JavaPlugin {
 		getCommand("staffalert").setExecutor(new StaffAlertCommand(this));
 		getCommand("onlinecount").setExecutor(new OnlineCountCommand(this));
 		getCommand("logs").setExecutor(new LogsCommand(this));
+		getCommand("party").setExecutor(new PartyCommand(this));
 		ServerUtils.calculateServerType();
 		Bukkit.getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
 			@Override
@@ -358,6 +362,10 @@ public final class Main extends JavaPlugin {
 
 	public CommandManager getCommandManager() {
 		return commandManager;
+	}
+
+	public PartyManager getPartyManager() {
+		return partyManager;
 	}
 
 	public BootManager getBootManager() {
