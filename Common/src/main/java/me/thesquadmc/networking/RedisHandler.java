@@ -6,6 +6,7 @@ import me.thesquadmc.commands.FindCommand;
 import me.thesquadmc.commands.FriendCommand;
 import me.thesquadmc.commands.StafflistCommand;
 import me.thesquadmc.commands.StaffmodeCommand;
+import me.thesquadmc.objects.Party;
 import me.thesquadmc.objects.Report;
 import me.thesquadmc.objects.TempData;
 import me.thesquadmc.utils.*;
@@ -722,7 +723,7 @@ public final class RedisHandler {
 									if (Bukkit.getPlayer(player) != null) {
 										Player p = Bukkit.getPlayer(player);
 										ConnectionUtils.getFetching().remove(p.getUniqueId());
-										ConnectionUtils.sendPlayerGameServer(p, newServer);
+										ConnectionUtils.sendPlayer(p, newServer, true);
 									}
 								}
 							}
@@ -756,6 +757,13 @@ public final class RedisHandler {
 					});
 				}
 			});
+		} else if (channel.equalsIgnoreCase(RedisChannels.PARTY_JOIN_SERVER.getChannelName())) {
+			Bukkit.getScheduler().runTaskAsynchronously(main, () -> Multithreading.runAsync(() -> {
+				Party party = Main.getMain().getGson().fromJson(String.valueOf(data.get(RedisArg.PARTY.getArg())), Party.class);
+				if (party == null) return;
+				
+				Main.getMain().getPartyManager().addParty(party);
+			}));
 		}
 	}
 
