@@ -43,8 +43,6 @@ commands:
         aliases: [ff]
     ytvanish:
     staffmenu:
-    proxylist:
-        aliases: [bungeelist, glist, globallist, playercount, counts]
     monitor:
         aliases: [monitorreport]
     ytnick:
