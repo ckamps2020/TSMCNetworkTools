@@ -2,8 +2,6 @@ package me.thesquadmc.listeners;
 
 import me.thesquadmc.Main;
 import me.thesquadmc.abstraction.MojangGameProfile;
-import me.thesquadmc.managers.PartyManager;
-import me.thesquadmc.objects.Party;
 import me.thesquadmc.objects.TempData;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.msgs.CC;
@@ -11,7 +9,6 @@ import me.thesquadmc.utils.msgs.StringUtils;
 import me.thesquadmc.utils.server.Multithreading;
 import me.thesquadmc.utils.PlayerUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -115,21 +112,7 @@ public final class ConnectionListeners implements Listener {
 			StringUtils.lastMsg.remove(player.getUniqueId());
 		}
 		
-		// Leave party if in one
-		PartyManager partyManager = main.getPartyManager();
-		Party party = partyManager.getParty(player);
-		if (party != null && !party.isDestroyed()) {
-			boolean disbanded = party.isOwner(player);
-			if (disbanded) partyManager.removeParty(party);
-			else party.removeMember(player);
-			
-			for (OfflinePlayer member : party.getMembers()) {
-				if (!member.isOnline()) continue;
-				member.getPlayer().sendMessage(CC.translate("&e&lPARTY &6■ " + (disbanded
-						? "&7Your party has &edisbanded"
-						: "&e" + player.getName() + " &7has left your &eparty")));
-			}
-		}
+		player.performCommand("party leave");
 		
 		Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
 			@Override

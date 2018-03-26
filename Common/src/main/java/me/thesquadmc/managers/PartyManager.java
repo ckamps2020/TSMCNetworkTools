@@ -28,8 +28,8 @@ public class PartyManager {
 		this.parties.add(party);
 	}
 	
-	public void removeParty(Party party) {
-		this.parties.remove(party);
+	public boolean removeParty(Party party) {
+		return parties.remove(party);
 	}
 	
 	public Party getOwnedParty(OfflinePlayer owner) {

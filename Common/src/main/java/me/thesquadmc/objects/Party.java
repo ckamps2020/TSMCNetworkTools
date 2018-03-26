@@ -15,7 +15,7 @@ public class Party {
 	
 	private transient boolean destroyed = false;
 	
-	private final UUID owner;
+	private UUID owner;
 	private final Map<UUID, Long> members;
 	
 	public Party(UUID owner, UUID... members) {
@@ -38,6 +38,15 @@ public class Party {
 			if (member == null) continue;
 			this.members.put(member.getUniqueId(), now);
 		}
+	}
+	
+	public void setOwner(OfflinePlayer owner) {
+		this.setOwner(owner.getUniqueId());
+	}
+	
+	public void setOwner(UUID owner) {
+		this.owner = owner;
+		this.members.remove(owner);
 	}
 	
 	public OfflinePlayer getOwner() {
