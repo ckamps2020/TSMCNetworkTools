@@ -222,6 +222,8 @@ public final class Main extends JavaPlugin {
 							RedisChannels.FRIEND_CHECK_REQUEST.getChannelName(),
 							RedisChannels.FRIEND_RETURN_REQUEST.getChannelName(),
 							RedisChannels.PARTY_JOIN_SERVER.getChannelName(),
+							RedisChannels.PARTY_UPDATE.getChannelName(),
+							RedisChannels.PARTY_DISBAND.getChannelName(),
 							RedisChannels.LEAVE.getChannelName(),
 							RedisChannels.LOGIN.getChannelName(),
 							RedisChannels.RETURN_SERVER.getChannelName(),

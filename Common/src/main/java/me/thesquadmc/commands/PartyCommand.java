@@ -4,7 +4,22 @@ import java.util.Collection;
 import java.util.UUID;
 
 import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Multimap;
+
+import me.thesquadmc.Main;
+import me.thesquadmc.managers.PartyManager;
+import me.thesquadmc.networking.JedisTask;
+import me.thesquadmc.objects.Party;
+import me.thesquadmc.utils.enums.RedisArg;
+import me.thesquadmc.utils.enums.RedisChannels;
+import me.thesquadmc.utils.msgs.CC;
+import me.thesquadmc.utils.msgs.Unicode;
+
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ClickEvent.Action;
+import net.md_5.bungee.api.chat.ComponentBuilder;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
@@ -14,16 +29,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ClickEvent.Action;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-
-import me.thesquadmc.Main;
-import me.thesquadmc.managers.PartyManager;
-import me.thesquadmc.objects.Party;
-import me.thesquadmc.utils.msgs.CC;
-import me.thesquadmc.utils.msgs.Unicode;
+import redis.clients.jedis.Jedis;
 
 public final class PartyCommand implements CommandExecutor {
 	
@@ -81,11 +87,11 @@ public final class PartyCommand implements CommandExecutor {
 			player.sendMessage(CC.translate("&e&lPARTY &6■ &7You have invited &e" + target.getName() + "&7 to your &eparty&7!"));
 			
 			target.spigot().sendMessage(buildMessageWithPreparedCommand(
-					CC.translate("\"&e&lPARTY &6■ &7You have been invited to &e\" + player.getName() + \"&7's party! Use &e/party accept \" + player.getName() + \"&7 to accept!"),
+					CC.translate("&e&lPARTY &6■ &7You have been invited to &e\"" + player.getName() + "\"&7's party! Use &e/party accept \"" + player.getName() + "\"&7 to accept!"),
 					"/party accept " + player.getName()));
 		}
 		
-		else if (args[0].equalsIgnoreCase("accept")) {
+		else if (args[0].equalsIgnoreCase("accept") || args[0].equalsIgnoreCase("join")) {
 			Collection<UUID> requests = partyRequests.get(player.getUniqueId());
 			if (requests.isEmpty()) {
 				player.spigot().sendMessage(buildMessageWithPreparedCommand(
@@ -119,6 +125,14 @@ public final class PartyCommand implements CommandExecutor {
 			
 			player.sendMessage(CC.translate("&e&lPARTY &6■ &7You have joined &e" + target.getName() + "&e's party!"));
 			target.getPlayer().sendMessage(CC.translate("&e&lPARTY &6■ &e" + player.getName() + " &7has joined your party!"));
+			
+			// Update cross-server
+			try (Jedis jedis = Main.getMain().getPool().getResource()) {
+				JedisTask.withName(UUID.randomUUID().toString())
+					.withArg(RedisArg.PARTY.getArg(), party)
+					.withArg(RedisArg.REASON.getArg(), "JOIN")
+					.send(RedisChannels.PARTY_UPDATE.getChannelName(), jedis);
+			}
 		}
 		
 		else if (args[0].equalsIgnoreCase("kick") || args[0].equalsIgnoreCase("remove")) {
@@ -159,6 +173,52 @@ public final class PartyCommand implements CommandExecutor {
 			player.sendMessage(CC.translate("&e&lPARTY &6■ &e" + target.getName() + " &7has been kicked from your &eparty&7!"));
 			if (target.isOnline())
 				target.getPlayer().sendMessage(CC.translate("&e&lPARTY &6■ &7You have been &ekicked &7from &e" + player.getName() + "&7's party!"));
+			
+			// Update cross-server
+			try (Jedis jedis = Main.getMain().getPool().getResource()) {
+				JedisTask.withName(UUID.randomUUID().toString())
+					.withArg(RedisArg.PARTY.getArg(), party)
+					.withArg(RedisArg.REASON.getArg(), "KICK")
+					.send(RedisChannels.PARTY_UPDATE.getChannelName(), jedis);
+			}
+		}
+		
+		else if (args[0].equalsIgnoreCase("leave")) {
+			Party party = partyManager.getParty(player);
+			if (party == null) {
+				player.sendMessage(CC.translate("&e&lPARTY &6■ &7You do not have a &eparty &7to &eleave&7!"));
+				return true;
+			}
+
+			party.removeMember(player);
+			player.sendMessage(CC.translate("&e&lPARTY &6■ &7You have left your &eparty&7!"));
+			
+			// Update owner
+			if (party.isOwner(player) && party.getMemberCount(false) >= 1) {
+				party.setOwner(Iterables.get(party.getMembers(), 0));
+				
+				for (OfflinePlayer member : party.getMembers()) {
+					if (!member.isOnline()) continue;
+					member.getPlayer().sendMessage(CC.translate("&e&lPARTY &6■ &7" + player.getName() + " has left the &eparty&7, therefore "
+							+ "&e" + party.getOwner().getName() + " &7has become the new party &eleader&7!"));
+				}
+			}
+			
+			// Update party cross-server
+			try (Jedis jedis = Main.getMain().getPool().getResource()) {
+				if (party.getMemberCount(true) == 0) {
+					party.destroy();
+					JedisTask.withName(UUID.randomUUID().toString())
+						.withArg(RedisArg.PARTY.getArg(), party)
+						.send(RedisChannels.PARTY_DISBAND.getChannelName(), jedis);
+				}
+				else {
+					JedisTask.withName(UUID.randomUUID().toString())
+						.withArg(RedisArg.PARTY.getArg(), party)
+						.withArg(RedisArg.REASON.getArg(), "LEAVE")
+						.send(RedisChannels.PARTY_UPDATE.getChannelName(), jedis);
+				}
+			}
 		}
 		
 		else if (args[0].equalsIgnoreCase("disband") || args[0].equalsIgnoreCase("delete")) {
@@ -181,6 +241,13 @@ public final class PartyCommand implements CommandExecutor {
 			party.clearMembers();
 			partyManager.removeParty(party);
 			player.sendMessage(CC.translate("&e&lPARTY &6■ &7Your &eparty &7has been &edisbanded&7!"));
+			
+			// Update cross-server
+			try (Jedis jedis = Main.getMain().getPool().getResource()) {
+				JedisTask.withName(UUID.randomUUID().toString())
+					.withArg(RedisArg.PARTY.getArg(), party)
+					.send(RedisChannels.PARTY_DISBAND.getChannelName(), jedis);
+			}
 		}
 		
 		else if (args[0].equalsIgnoreCase("info")) {

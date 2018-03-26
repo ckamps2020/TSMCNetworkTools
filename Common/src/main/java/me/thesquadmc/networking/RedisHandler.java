@@ -6,6 +6,7 @@ import me.thesquadmc.commands.FindCommand;
 import me.thesquadmc.commands.FriendCommand;
 import me.thesquadmc.commands.StafflistCommand;
 import me.thesquadmc.commands.StaffmodeCommand;
+import me.thesquadmc.managers.PartyManager;
 import me.thesquadmc.objects.Party;
 import me.thesquadmc.objects.Report;
 import me.thesquadmc.objects.TempData;
@@ -13,11 +14,9 @@ import me.thesquadmc.utils.*;
 import me.thesquadmc.utils.enums.*;
 import me.thesquadmc.utils.msgs.CC;
 import me.thesquadmc.utils.msgs.GameMsgs;
-import me.thesquadmc.utils.msgs.ServerType;
 import me.thesquadmc.utils.msgs.StringUtils;
 import me.thesquadmc.utils.server.ConnectionUtils;
 import me.thesquadmc.utils.server.Multithreading;
-import me.thesquadmc.utils.server.ServerState;
 import me.thesquadmc.utils.server.ServerUtils;
 import me.thesquadmc.utils.time.TimeUtils;
 import org.bukkit.Bukkit;
@@ -763,6 +762,28 @@ public final class RedisHandler {
 				if (party == null) return;
 				
 				Main.getMain().getPartyManager().addParty(party);
+			}));
+		} else if (channel.equalsIgnoreCase(RedisChannels.PARTY_UPDATE.getChannelName())) {
+			Bukkit.getScheduler().runTaskAsynchronously(main, () -> Multithreading.runAsync(() -> {
+				Party party = Main.getMain().getGson().fromJson(String.valueOf(data.get(RedisArg.PARTY.getArg())), Party.class);
+				if (party == null) return;
+
+				// Looks ugly, but it works
+				PartyManager manager = Main.getMain().getPartyManager();
+				if (manager.removeParty(party)) {
+					manager.addParty(party);
+				}
+			}));
+		} else if (channel.equalsIgnoreCase(RedisChannels.PARTY_DISBAND.getChannelName())) {
+			Bukkit.getScheduler().runTaskAsynchronously(main, () -> Multithreading.runAsync(() -> {
+				Party party = Main.getMain().getGson().fromJson(String.valueOf(data.get(RedisArg.PARTY.getArg())), Party.class);
+				if (party == null) return;
+				
+				Main.getMain().getPartyManager().removeParty(party);
+				for (OfflinePlayer member : party.getMembers()) {
+					if (!member.isOnline()) return;
+					member.getPlayer().sendMessage(CC.translate("&e&lPARTY &6■ &7Your &eparty &7has been &edisbanded&7!"));
+				}
 			}));
 		}
 	}
