@@ -277,7 +277,6 @@ public final class Main extends JavaPlugin {
 		getCommand("ytvanish").setExecutor(new YtVanishCommand(this));
 		getCommand("forcefield").setExecutor(new ForceFieldCommand(this));
 		getCommand("staffmenu").setExecutor(new StaffMenuCommand(this));
-		getCommand("proxylist").setExecutor(new ProxyListCommand(this));
 		getCommand("monitor").setExecutor(new MonitorCommand(this));
 		getCommand("ytnick").setExecutor(new YtNickCommand(this));
 		getCommand("disguiseplayer").setExecutor(new DisguisePlayerCommand(this));
