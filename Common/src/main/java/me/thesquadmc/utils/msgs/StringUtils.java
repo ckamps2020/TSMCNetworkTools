@@ -1,10 +1,13 @@
 package me.thesquadmc.utils.msgs;
 
 import com.google.common.collect.Lists;
+import me.thesquadmc.utils.math.MathUtils;
+import me.thesquadmc.utils.server.ConnectionUtils;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.entity.Player;
 
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -151,6 +154,55 @@ public final class StringUtils {
 			return message.toLowerCase();
 		}
 		return message;
+	}
+
+	public static boolean serverCommand(Player player, String msg) {
+		switch (msg) {
+			case "/SKYBLOCK-1":
+				ConnectionUtils.sendPlayer(player, "SKYBLOCK-1", true);
+				return true;
+			case "/SKYBLOCK-2":
+				ConnectionUtils.sendPlayer(player, "SKYBLOCK-2", true);
+				return true;
+			case "/SKYBLOCK-3":
+				ConnectionUtils.sendPlayer(player, "SKYBLOCK-3", true);
+				return true;
+			case "/FACTIONS-1":
+				ConnectionUtils.sendPlayer(player, "FACTIONS-1", true);
+				return true;
+			case "/FACTIONS-2":
+				ConnectionUtils.sendPlayer(player, "FACTIONS-2", true);
+				return true;
+			case "/FACTIONS-3":
+				ConnectionUtils.sendPlayer(player, "FACTIONS-3", true);
+				return true;
+			case "/PRISON-1":
+				ConnectionUtils.sendPlayer(player, "PRISON-1", true);
+				return true;
+			case "/PRISON-2":
+				ConnectionUtils.sendPlayer(player, "PRISON-2", true);
+				return true;
+			case "/PRISON-3":
+				ConnectionUtils.sendPlayer(player, "PRISON-3", true);
+				return true;
+			case "/TROLLWARS":
+				ConnectionUtils.sendPlayer(player, "TROLLWARS", true);
+				return true;
+			case "/CREATIVE":
+				ConnectionUtils.sendPlayer(player, "CREATIVE", true);
+				return true;
+			case "/HUB":
+				int i = MathUtils.random(1, 12);
+				String s = "HUB-" + i;
+				ConnectionUtils.sendPlayer(player, s, true);
+				return true;
+			case "/LOBBY":
+				int h = MathUtils.random(1, 12);
+				String b = "HUB-" + h;
+				ConnectionUtils.sendPlayer(player, b, true);
+				return true;
+		}
+		return false;
 	}
 
 	private static final Set<String> curses = new HashSet<>();
