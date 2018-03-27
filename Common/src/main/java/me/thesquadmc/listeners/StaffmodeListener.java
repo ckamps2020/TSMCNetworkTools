@@ -182,16 +182,18 @@ public final class StaffmodeListener implements Listener {
 	@EventHandler
 	public void onBreak(BlockBreakEvent e) {
 		if (Bukkit.getServerName().toUpperCase().contains("SKYBLOCK")) {
-			if (blocksMined.containsKey(e.getPlayer().getUniqueId())) {
-				if (blocksMined.get(e.getPlayer().getUniqueId()) + 1 >= 3) {
-					if (!mining.contains(e.getPlayer().getUniqueId())) {
-						mining.add(e.getPlayer().getUniqueId());
+			if (!e.getBlock().getType().name().toUpperCase().contains("WOOD")) {
+				if (blocksMined.containsKey(e.getPlayer().getUniqueId())) {
+					if (blocksMined.get(e.getPlayer().getUniqueId()) + 1 >= 3) {
+						if (!mining.contains(e.getPlayer().getUniqueId())) {
+							mining.add(e.getPlayer().getUniqueId());
+						}
+					} else {
+						blocksMined.put(e.getPlayer().getUniqueId(), blocksMined.get(e.getPlayer().getUniqueId()) + 1);
 					}
 				} else {
-					blocksMined.put(e.getPlayer().getUniqueId(), blocksMined.get(e.getPlayer().getUniqueId()) + 1);
+					blocksMined.put(e.getPlayer().getUniqueId(), 1);
 				}
-			} else {
-				blocksMined.put(e.getPlayer().getUniqueId(), 1);
 			}
 		}
 	}
