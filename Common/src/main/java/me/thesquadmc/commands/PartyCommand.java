@@ -21,7 +21,7 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ClickEvent.Action;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -259,7 +259,7 @@ public final class PartyCommand implements CommandExecutor {
 				return true;
 			}
 
-			String lineBreak = CC.translate("&8&l&m" + StringUtils.repeat('-', 20));
+			String lineBreak = CC.translate("&8&l&m" + StringUtils.repeat("-", 20));
 			player.sendMessage(lineBreak);
 			player.sendMessage(CC.B_GOLD + "Party Owner: " + CC.GRAY + party.getOwner().getName());
 			player.sendMessage(CC.translate("&6■ &7Total members: &e" + party.getMemberCount(true)));
