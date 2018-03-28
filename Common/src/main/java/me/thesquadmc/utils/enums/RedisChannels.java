@@ -45,6 +45,7 @@ public enum RedisChannels {
 	STARTUP_REQUEST("STARTUP_REQUEST"),
 
 	SLACK_STAFFCHAT("SLACK_STAFFCHAT"),
+	MOTD("MOTD")
 	;
 
 	private String channelName;
