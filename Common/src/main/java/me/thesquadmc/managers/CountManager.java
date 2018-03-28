@@ -7,6 +7,14 @@ public final class CountManager {
 
 	private Map<String, Integer> count = new HashMap<>();
 
+	public int getTotalOnlineCount() {
+		int i = 0;
+		for (Map.Entry<String, Integer> map : count.entrySet()) {
+			i = i + map.getValue();
+		}
+		return i;
+	}
+
 	public int getFactionsCount() {
 		int i = 0;
 		for (Map.Entry<String, Integer> map : count.entrySet()) {

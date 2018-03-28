@@ -65,7 +65,7 @@ public final class Main extends JavaPlugin {
 	private DatabaseManager MySQL;
 	private ThreadPoolExecutor threadPoolExecutor;
 	private int restartTime = 0;
-	private String version = "1.2.6";
+	private String version = "1.3.0";
 	private String serverType = "UNKNOWN";
 	private int chatslow = 0;
 	private boolean chatSilenced = false;
@@ -84,6 +84,7 @@ public final class Main extends JavaPlugin {
 	private QueueManager queueManager;
 	private BootManager bootManager;
 	private CommandManager commandManager;
+	private PartyManager partyManager;
 	private MCLeaksAPI mcLeaksAPI;
 	private CountManager countManager;
 	private NMSAbstract nmsAbstract;
@@ -133,6 +134,7 @@ public final class Main extends JavaPlugin {
 		queueManager = new QueueManager();
 		bootManager = new BootManager();
 		commandManager = new CommandManager(this);
+		this.partyManager = new PartyManager();
 		countManager = new CountManager();
 		if (Bukkit.getServerName().startsWith("BW")) {
 			//bootManager.bootBedwars();
@@ -171,8 +173,8 @@ public final class Main extends JavaPlugin {
 			poolConfig.setMinIdle(20);
 			poolConfig.setMaxIdle(150);
 			poolConfig.setMaxTotal(150);
-			pool = new JedisPool(poolConfig, host, port, 40*1000, password);
-			//pool = new JedisPool(poolConfig, host, port, 40*1000);
+			//pool = new JedisPool(poolConfig, host, port, 40*1000, password);
+			pool = new JedisPool(poolConfig, host, port, 40*1000);
 			jedis = pool.getResource();
 			Thread.currentThread().setContextClassLoader(previous);
 		} catch (Exception e) {
@@ -182,9 +184,9 @@ public final class Main extends JavaPlugin {
 			@Override
 			public void run() {
 				try {
-					j = new Jedis(host, port, 40 * 1000);
-					j.auth(password);
-					//j = new Jedis(host, port);
+					//j = new Jedis(host, port, 40 * 1000);
+					//j.auth(password);
+					j = new Jedis(host, port);
 					j.connect();
 					j.subscribe(new JedisPubSub() {
 						            @Override
@@ -216,6 +218,9 @@ public final class Main extends JavaPlugin {
 							RedisChannels.FRIEND_CHAT.getChannelName(),
 							RedisChannels.FRIEND_CHECK_REQUEST.getChannelName(),
 							RedisChannels.FRIEND_RETURN_REQUEST.getChannelName(),
+							RedisChannels.PARTY_JOIN_SERVER.getChannelName(),
+							RedisChannels.PARTY_UPDATE.getChannelName(),
+							RedisChannels.PARTY_DISBAND.getChannelName(),
 							RedisChannels.LEAVE.getChannelName(),
 							RedisChannels.LOGIN.getChannelName(),
 							RedisChannels.RETURN_SERVER.getChannelName(),
@@ -271,7 +276,6 @@ public final class Main extends JavaPlugin {
 		getCommand("ytvanish").setExecutor(new YtVanishCommand(this));
 		getCommand("forcefield").setExecutor(new ForceFieldCommand(this));
 		getCommand("staffmenu").setExecutor(new StaffMenuCommand(this));
-		getCommand("proxylist").setExecutor(new ProxyListCommand(this));
 		getCommand("monitor").setExecutor(new MonitorCommand(this));
 		getCommand("ytnick").setExecutor(new YtNickCommand(this));
 		getCommand("disguiseplayer").setExecutor(new DisguisePlayerCommand(this));
@@ -300,6 +304,7 @@ public final class Main extends JavaPlugin {
 		getCommand("logs").setExecutor(new LogsCommand(this));
 		getCommand("l1").setExecutor(new MOTDCommand(main, 1));
 		getCommand("l2").setExecutor(new MOTDCommand(main, 2));
+		getCommand("party").setExecutor(new PartyCommand(this));
 		ServerUtils.calculateServerType();
 		Bukkit.getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
 			@Override
@@ -357,6 +362,10 @@ public final class Main extends JavaPlugin {
 
 	public CommandManager getCommandManager() {
 		return commandManager;
+	}
+
+	public PartyManager getPartyManager() {
+		return partyManager;
 	}
 
 	public BootManager getBootManager() {

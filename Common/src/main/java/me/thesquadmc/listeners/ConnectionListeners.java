@@ -111,6 +111,9 @@ public final class ConnectionListeners implements Listener {
 		if (StringUtils.lastMsg.containsKey(player.getUniqueId())) {
 			StringUtils.lastMsg.remove(player.getUniqueId());
 		}
+		
+		player.performCommand("party leave");
+		
 		Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
 			@Override
 			public void run() {

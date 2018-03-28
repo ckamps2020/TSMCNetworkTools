@@ -1,12 +1,15 @@
 package me.thesquadmc.utils.server;
 
 import me.thesquadmc.Main;
+import me.thesquadmc.managers.PartyManager;
 import me.thesquadmc.networking.JedisTask;
+import me.thesquadmc.objects.Party;
 import me.thesquadmc.utils.enums.RedisArg;
 import me.thesquadmc.utils.enums.RedisChannels;
 import me.thesquadmc.utils.msgs.CC;
 import me.thesquadmc.utils.msgs.GameMsgs;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import redis.clients.jedis.Jedis;
 
@@ -18,8 +21,8 @@ public final class ConnectionUtils {
 
 	private static List<UUID> fetching = new ArrayList<>();
 
-	public static void sendPlayer(Player player, String server) {
-		player.sendMessage(CC.translate("&e&lTRANSPORT &6■ &7Sending you to &e" + server + "&7..."));
+	public static void sendPlayer(Player player, String server, boolean sendParty) {
+		player.sendMessage(CC.translate("&e&lTRANSPORT &6■ &7Sending you to &e" + server + " &7..."));
 		Bukkit.getScheduler().runTaskAsynchronously(Main.getMain(), new Runnable() {
 			@Override
 			public void run() {
@@ -31,37 +34,38 @@ public final class ConnectionUtils {
 									.withArg(RedisArg.PLAYER.getArg(), player.getName())
 									.withArg(RedisArg.SERVER.getArg(), server)
 									.send(RedisChannels.TRANSPORT.getChannelName(), jedis);
+							
+							// Account for sending a party to a server
+							PartyManager partyManager = Main.getMain().getPartyManager();
+							Party party = partyManager.getOwnedParty(player);
+							if (sendParty && party != null) {
+								party.destroy();
+								
+								for (OfflinePlayer member : party.getMembers()) {
+									if (!member.isOnline()) continue;
+									ConnectionUtils.sendPlayer(member.getPlayer(), server); // WOO! Recursion!
+								}
+								
+								// Send message for party through server
+								JedisTask.withName(UUID.randomUUID().toString())
+									.withArg(RedisArg.PARTY.getArg(), party)
+									.send(RedisChannels.PARTY_JOIN_SERVER.getChannelName(), jedis);
+								
+								partyManager.removeParty(party); // Unregister the party from this instance of NetworkTools
+							}
 						}
 					}
 				});
 			}
 		});
 	}
-
-	public static void sendPlayerGameServer(Player player, String server) {
-		player.sendMessage(CC.translate(GameMsgs.GAME_PREFIX + "Sending you to &e" + server + "&7..."));
-		//send all party members as well
-		Bukkit.getScheduler().runTaskAsynchronously(Main.getMain(), new Runnable() {
-			@Override
-			public void run() {
-				Multithreading.runAsync(new Runnable() {
-					@Override
-					public void run() {
-						try (Jedis jedis = Main.getMain().getPool().getResource()) {
-							JedisTask.withName(UUID.randomUUID().toString())
-									.withArg(RedisArg.PLAYER.getArg(), player.getName())
-									.withArg(RedisArg.SERVER.getArg(), server)
-									.send(RedisChannels.TRANSPORT.getChannelName(), jedis);
-						}
-					}
-				});
-			}
-		});
+	
+	public static void sendPlayer(Player player, String server) {
+		sendPlayer(player, server, false);
 	}
 
 	public static void fetchGameServer(Player player, String serverType) {
 		if (!fetching.contains(player.getUniqueId())) {
-			//TODO: Check here if they are in a party to respect counts
 			player.sendMessage(CC.translate(GameMsgs.GAME_PREFIX + "Finding you an open " + serverType + " server..."));
 			Bukkit.getScheduler().runTaskAsynchronously(Main.getMain(), new Runnable() {
 				@Override
@@ -69,10 +73,14 @@ public final class ConnectionUtils {
 					Multithreading.runAsync(new Runnable() {
 						@Override
 						public void run() {
+							int i = 1;
+							if (Main.getMain().getPartyManager().hasParty(player.getUniqueId())) {
+								i = Main.getMain().getPartyManager().getParty(player.getUniqueId()).getMemberCount();
+							}
 							fetching.add(player.getUniqueId());
 							try (Jedis jedis = Main.getMain().getPool().getResource()) {
 								JedisTask.withName(UUID.randomUUID().toString())
-										.withArg(RedisArg.COUNT.getArg(), "1")
+										.withArg(RedisArg.COUNT.getArg(), String.valueOf(i))
 										.withArg(RedisArg.ORIGIN_PLAYER.getArg(), player.getName())
 										.withArg(RedisArg.ORIGIN_SERVER.getArg(), Bukkit.getServerName())
 										.withArg(RedisArg.SERVER.getArg(), serverType)

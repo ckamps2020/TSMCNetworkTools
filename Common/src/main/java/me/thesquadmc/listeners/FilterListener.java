@@ -29,10 +29,12 @@ public final class FilterListener implements Listener {
 	@EventHandler
 	public void onCommand(PlayerCommandPreprocessEvent e) {
 		Player player = e.getPlayer();
+		String msg = e.getMessage();
+		if (StringUtils.serverCommand(player, msg.toUpperCase())) {
+			e.setCancelled(true);
+			return;
+		}
 		if (!PlayerUtils.isEqualOrHigherThen(player, Rank.TRAINEE)) {
-			String msg = e.getMessage();
-			String message = msg.toLowerCase();
-			e.setMessage(message);
 			if (StringUtils.shouldFilter(msg)) {
 				e.setCancelled(true);
 				player.sendMessage(CC.translate("&e&lFILTER &6■ &7You are not allowed to say that!"));
