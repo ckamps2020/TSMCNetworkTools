@@ -16,7 +16,7 @@ import me.thesquadmc.networking.JedisTask;
 import me.thesquadmc.networking.RedisHandler;
 import me.thesquadmc.networking.mongo.Mongo;
 import me.thesquadmc.networking.mysql.DatabaseManager;
-import me.thesquadmc.utils.command.CommandManager;
+import me.thesquadmc.utils.command.CommandHandler;
 import me.thesquadmc.utils.enums.RedisArg;
 import me.thesquadmc.utils.enums.RedisChannels;
 import me.thesquadmc.utils.enums.Settings;
@@ -83,7 +83,7 @@ public final class Main extends JavaPlugin {
 	private NPCManager npcManager;
 	private QueueManager queueManager;
 	private BootManager bootManager;
-	private CommandManager commandManager;
+	private CommandHandler commandHandler;
 	private PartyManager partyManager;
 	private MCLeaksAPI mcLeaksAPI;
 	private CountManager countManager;
@@ -133,8 +133,8 @@ public final class Main extends JavaPlugin {
 		npcManager = new NPCManager();
 		queueManager = new QueueManager();
 		bootManager = new BootManager();
-		commandManager = new CommandManager(this);
-		this.partyManager = new PartyManager();
+		commandHandler = new CommandHandler(this);
+		partyManager = new PartyManager();
 		countManager = new CountManager();
 		if (Bukkit.getServerName().startsWith("BW")) {
 			//bootManager.bootBedwars();
@@ -154,6 +154,9 @@ public final class Main extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new XrayListener(this), this);
 		getServer().getPluginManager().registerEvents(new StaffmodeListener(this), this);
 		getServer().getPluginManager().registerEvents(new FreezeListener(this), this);
+
+		commandHandler.registerCommands(new CreativeCommand());
+
 		host = fileManager.getNetworkingConfig().getString("redis.host");
 		port = fileManager.getNetworkingConfig().getInt("redis.port");
 		password = fileManager.getNetworkingConfig().getString("redis.password");
@@ -173,8 +176,8 @@ public final class Main extends JavaPlugin {
 			poolConfig.setMinIdle(20);
 			poolConfig.setMaxIdle(150);
 			poolConfig.setMaxTotal(150);
-			//pool = new JedisPool(poolConfig, host, port, 40*1000, password);
-			pool = new JedisPool(poolConfig, host, port, 40*1000);
+			pool = new JedisPool(poolConfig, host, port, 40*1000, password);
+			//pool = new JedisPool(poolConfig, host, port, 40*1000);
 			jedis = pool.getResource();
 			Thread.currentThread().setContextClassLoader(previous);
 		} catch (Exception e) {
@@ -184,9 +187,9 @@ public final class Main extends JavaPlugin {
 			@Override
 			public void run() {
 				try {
-					//j = new Jedis(host, port, 40 * 1000);
-					//j.auth(password);
-					j = new Jedis(host, port);
+					j = new Jedis(host, port, 40 * 1000);
+					j.auth(password);
+					//j = new Jedis(host, port);
 					j.connect();
 					j.subscribe(new JedisPubSub() {
 						            @Override
@@ -336,6 +339,8 @@ public final class Main extends JavaPlugin {
 		}
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> BarUtils.getPlayers().forEach(nmsAbstract.getBossBarManager()::teleportBar), 1, 20L);
 		System.out.println("[NetworkTools] Plugin started up and ready to go!");
+
+		commandHandler.registerHelp();
 	}
 
 	@Override
@@ -358,10 +363,6 @@ public final class Main extends JavaPlugin {
 
 	public MCLeaksAPI getMcLeaksAPI() {
 		return mcLeaksAPI;
-	}
-
-	public CommandManager getCommandManager() {
-		return commandManager;
 	}
 
 	public PartyManager getPartyManager() {
@@ -454,6 +455,10 @@ public final class Main extends JavaPlugin {
 
 	public Jedis getJedis() {
 		return jedis;
+	}
+
+	public CommandHandler getCommandHandler() {
+		return commandHandler;
 	}
 
 	public int getChatslow() {
