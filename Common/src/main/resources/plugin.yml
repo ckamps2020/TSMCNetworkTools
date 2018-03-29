@@ -80,3 +80,5 @@ commands:
     logs:
         aliases: [chatlogs, clogs]
     party:
+    l1:
+    l2:

@@ -2,9 +2,6 @@ package me.thesquadmc;
 
 import com.google.gson.Gson;
 import me.gong.mcleaks.MCLeaksAPI;
-import me.gong.mcleaks.util.google.common.collect.ImmutableSet;
-import me.gong.mcleaks.util.google.common.reflect.ClassPath;
-import me.gong.mcleaks.util.google.common.reflect.ClassPath.ClassInfo;
 import me.lucko.luckperms.LuckPerms;
 import me.lucko.luckperms.api.LuckPermsApi;
 import me.thesquadmc.commands.*;
@@ -306,6 +303,8 @@ public final class Main extends JavaPlugin {
 		getCommand("onlinecount").setExecutor(new OnlineCountCommand(this));
 		getCommand("logs").setExecutor(new LogsCommand(this));
 		getCommand("party").setExecutor(new PartyCommand(this));
+		getCommand("l1").setExecutor(new MOTDCommand(main, 1));
+		getCommand("l2").setExecutor(new MOTDCommand(main, 2));
 		ServerUtils.calculateServerType();
 		Bukkit.getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
 			@Override

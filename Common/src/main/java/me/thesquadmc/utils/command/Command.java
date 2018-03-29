@@ -76,7 +76,6 @@ public class Command extends org.bukkit.command.Command {
 			}
 
 			if (defaultCommand != null) {
-				System.out.println("there is a def cmd");
 				defaultCommand.execute(sender, commandLabel, args);
 				return true;
 			}
