@@ -28,7 +28,7 @@ public final class NBTUtils {
 	static {
 		version = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
 
-		classCache = new HashMap< String, Class<?> >();
+		classCache = new HashMap<>();
 		try {
 			classCache.put( "NBTBase", Class.forName("net.minecraft.server." + version + "." + "NBTBase" ) );
 			classCache.put( "NBTTagCompound", Class.forName("net.minecraft.server." + version + "." + "NBTTagCompound" ) );
