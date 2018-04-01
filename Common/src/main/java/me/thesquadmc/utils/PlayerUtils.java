@@ -84,6 +84,11 @@ public final class PlayerUtils {
 		return level.intValue();
 	}
 
+	public static int convertExpToLevelLogin(int exp) {
+		Double level = Math.max( Math.floor(8.7 * Math.log(exp + 111) + -40), 1);
+		return level.intValue();
+	}
+
 	public static void hidePlayerSpectatorStaff(Player player) {
 		for (Player p : Bukkit.getServer().getOnlinePlayers()) {
 			if (!isEqualOrHigherThen(p, Rank.TRAINEE)) {

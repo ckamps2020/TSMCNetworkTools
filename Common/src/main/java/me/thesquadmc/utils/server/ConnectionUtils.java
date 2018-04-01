@@ -22,7 +22,7 @@ public final class ConnectionUtils {
 	private static List<UUID> fetching = new ArrayList<>();
 
 	public static void sendPlayer(Player player, String server, boolean sendParty) {
-		player.sendMessage(CC.translate("&e&lTRANSPORT &6■ &7Sending you to &e" + server + " &7..."));
+		player.sendMessage(CC.translate("&e&lTRANSPORT &6■ &7Sending you to &e" + server + "&7..."));
 		Bukkit.getScheduler().runTaskAsynchronously(Main.getMain(), new Runnable() {
 			@Override
 			public void run() {

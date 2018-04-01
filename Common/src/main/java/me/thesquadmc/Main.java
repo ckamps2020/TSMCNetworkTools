@@ -65,7 +65,7 @@ public final class Main extends JavaPlugin {
 	private DatabaseManager MySQL;
 	private ThreadPoolExecutor threadPoolExecutor;
 	private int restartTime = 0;
-	private String version = "1.3.0";
+	private String version = "1.3.1";
 	private String serverType = "UNKNOWN";
 	private int chatslow = 0;
 	private boolean chatSilenced = false;
@@ -270,7 +270,7 @@ public final class Main extends JavaPlugin {
 		getCommand("staffmode").setExecutor(new StaffmodeCommand(this));
 		getCommand("staff").setExecutor(new StafflistCommand(this));
 		getCommand("xray").setExecutor(new XrayVerboseCommand(this));
-		getCommand("report").setExecutor(new ReportCommand(this));
+		//getCommand("report").setExecutor(new ReportCommand(this));
 		getCommand("managereports").setExecutor(new ManageReportsCommand(this));
 		getCommand("alert").setExecutor(new AlertCommand(this));
 		getCommand("stop").setExecutor(new StopCommand(this));
