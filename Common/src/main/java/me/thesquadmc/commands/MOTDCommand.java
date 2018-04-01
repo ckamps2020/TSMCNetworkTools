@@ -14,7 +14,7 @@ import redis.clients.jedis.Jedis;
 
 import java.util.Arrays;
 
-public class MOTDCommand implements CommandExecutor {
+public final class MOTDCommand implements CommandExecutor {
 
     private final Main main;
     private final int line;

@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 import java.util.Arrays;
 import java.util.List;
 
-public class CreativeCommand {
+public final class CreativeCommand {
 
     @Completer(name = "gamemode", aliases = {"gm"})
     public List<String> complete(CommandArgs args) {
