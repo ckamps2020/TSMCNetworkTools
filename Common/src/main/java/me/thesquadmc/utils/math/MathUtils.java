@@ -1,12 +1,28 @@
 package me.thesquadmc.utils.math;
 
 import java.text.DecimalFormat;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 public final class MathUtils {
 
 	public static int getTotalPages(int amount) {
 		return (int) Math.ceil((double)amount / 52);
+	}
+
+	public static Map<UUID, Integer> sortByValue(Map<UUID, Integer> unsortMap) {
+		List<Map.Entry<UUID, Integer>> list = new LinkedList<Map.Entry<UUID, Integer>>(unsortMap.entrySet());
+		Collections.sort(list, new Comparator<Map.Entry<UUID, Integer>>() {
+			public int compare(Map.Entry<UUID, Integer> o1,
+			                   Map.Entry<UUID, Integer> o2) {
+				return (o1.getValue()).compareTo(o2.getValue());
+			}
+		});
+		Map<UUID, Integer> sortedMap = new LinkedHashMap<UUID, Integer>();
+		for (Map.Entry<UUID, Integer> entry : list) {
+			sortedMap.put(entry.getKey(), entry.getValue());
+		}
+		return sortedMap;
 	}
 
 	public static boolean canContinue(int amount) {
