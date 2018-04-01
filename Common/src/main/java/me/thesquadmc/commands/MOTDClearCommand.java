@@ -10,7 +10,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import redis.clients.jedis.Jedis;
 
-public class MOTDClearCommand implements CommandExecutor {
+public final class MOTDClearCommand implements CommandExecutor {
 
     private final Main main;
 
