@@ -8,7 +8,6 @@ import me.thesquadmc.commands.StafflistCommand;
 import me.thesquadmc.commands.StaffmodeCommand;
 import me.thesquadmc.managers.PartyManager;
 import me.thesquadmc.objects.Party;
-import me.thesquadmc.objects.Report;
 import me.thesquadmc.objects.TempData;
 import me.thesquadmc.utils.*;
 import me.thesquadmc.utils.enums.*;
@@ -413,52 +412,6 @@ public final class RedisHandler {
 					});
 				}
 			}
-		} else if (channel.equalsIgnoreCase(RedisChannels.REPORTS.getChannelName())) {
-			Multithreading.runAsync(new Runnable() {
-				@Override
-				public void run() {
-					String uuid = String.valueOf(data.get(RedisArg.UUID.getArg()));
-					String name = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
-					String date = String.valueOf(data.get(RedisArg.DATE.getArg()));
-					String reporter = String.valueOf(data.get(RedisArg.ORIGIN_PLAYER.getArg()));
-					String reason = String.valueOf(data.get(RedisArg.REASON.getArg()));
-					String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
-					String regex = "[ ]+";
-					String[] tokens = reason.split(regex);
-					Report report = new Report(name, date, reporter, server, tokens);
-					report.setReportID(UUID.fromString(uuid));
-					main.getReportManager().registerReport(report);
-					for (Player player : Bukkit.getOnlinePlayers()) {
-						if (PlayerUtils.isEqualOrHigherThen(player, Rank.MOD)) {
-							player.sendMessage(CC.translate("&8&m---------------&8[ &6&lREPORT &8]&8&m---------------"));
-							player.sendMessage(" ");
-							player.sendMessage(CC.translate("&eReport by: &7" + report.getReporter()));
-							player.sendMessage(CC.translate("&eReported player: &7" + report.getUsername()));
-							player.sendMessage(CC.translate("&7Reported player is currently on &e" + report.getServer()));
-							player.spigot().sendMessage(StringUtils.getHoverMessage("&8(Click to view reports)", "&7Click to view reports", "/reports"));
-							player.sendMessage(" ");
-							player.sendMessage(CC.translate("&8&m---------------&8[ &6&lREPORT &8]&8&m---------------"));
-						}
-					}
-				}
-			});
-		} else if (channel.equalsIgnoreCase(RedisChannels.CLOSED_REPORTS.getChannelName())) {
-			Multithreading.runAsync(new Runnable() {
-				@Override
-				public void run() {
-					String uuid = String.valueOf(data.get(RedisArg.UUID.getArg()));
-					String name = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
-					String date = String.valueOf(data.get(RedisArg.DATE.getArg()));
-					Report report = main.getReportManager().getReportFromUUID(uuid);
-					if (report != null) {
-						report.setTimeAlive(0);
-						report.setCloseDate(date);
-						report.setReportCloser(name);
-						main.getReportManager().removeReport(report);
-						main.getReportManager().registerClosedReport(report);
-					}
-				}
-			});
 		} else if (channel.equalsIgnoreCase(RedisChannels.MONITOR_REQUEST.getChannelName())) {
 			String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
 			if (server.equalsIgnoreCase(Bukkit.getServerName())) {

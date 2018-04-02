@@ -8,7 +8,6 @@ import me.thesquadmc.commands.*;
 import me.thesquadmc.abstraction.AbstractionModule;
 import me.thesquadmc.abstraction.NMSAbstract;
 import me.thesquadmc.inventories.FrozenInventory;
-import me.thesquadmc.inventories.ReportInventory;
 import me.thesquadmc.inventories.StaffmodeInventory;
 import me.thesquadmc.listeners.*;
 import me.thesquadmc.managers.*;
@@ -65,7 +64,7 @@ public final class Main extends JavaPlugin {
 	private DatabaseManager MySQL;
 	private ThreadPoolExecutor threadPoolExecutor;
 	private int restartTime = 0;
-	private String version = "1.3.1";
+	private String version = "1.3.2";
 	private String serverType = "UNKNOWN";
 	private int chatslow = 0;
 	private boolean chatSilenced = false;
@@ -77,8 +76,6 @@ public final class Main extends JavaPlugin {
 	private FrozenInventory frozenInventory;
 	private StaffmodeInventory staffmodeInventory;
 	private UpdateHandler updateHandler;
-	private ReportManager reportManager;
-	private ReportInventory reportInventory;
 	private HologramManager hologramManager;
 	private NPCManager npcManager;
 	private QueueManager queueManager;
@@ -124,8 +121,6 @@ public final class Main extends JavaPlugin {
 		frozenInventory = new FrozenInventory(this);
 		staffmodeInventory = new StaffmodeInventory(this);
 		updateHandler = new UpdateHandler(this);
-		reportManager = new ReportManager();
-		reportInventory = new ReportInventory(this);
 		fileManager.setup();
 		updateHandler.run();
 		tempDataManager = new TempDataManager();
@@ -136,9 +131,6 @@ public final class Main extends JavaPlugin {
 		commandHandler = new CommandHandler(this);
 		partyManager = new PartyManager();
 		countManager = new CountManager();
-		if (Bukkit.getServerName().startsWith("BW")) {
-			//bootManager.bootBedwars();
-		}
 		AbstractGUI.initializeListeners(this);
 		getServer().getPluginManager().registerEvents(new ChatListener(), this);
 		getServer().getPluginManager().registerEvents(new SettingsListener(), this);
@@ -149,7 +141,7 @@ public final class Main extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new ForceFieldListeners(this), this);
 		getServer().getPluginManager().registerEvents(new VanishListener(this), this);
 		getServer().getPluginManager().registerEvents(new WhitelistListener(this), this);
-		getServer().getPluginManager().registerEvents(new ReportListener(this), this);
+		getServer().getPluginManager().registerEvents(new TimedListener(this), this);
 		getServer().getPluginManager().registerEvents(new ConnectionListeners(this), this);
 		getServer().getPluginManager().registerEvents(new XrayListener(this), this);
 		getServer().getPluginManager().registerEvents(new StaffmodeListener(this), this);
@@ -270,8 +262,6 @@ public final class Main extends JavaPlugin {
 		getCommand("staffmode").setExecutor(new StaffmodeCommand(this));
 		getCommand("staff").setExecutor(new StafflistCommand(this));
 		getCommand("xray").setExecutor(new XrayVerboseCommand(this));
-		//getCommand("report").setExecutor(new ReportCommand(this));
-		getCommand("managereports").setExecutor(new ManageReportsCommand(this));
 		getCommand("alert").setExecutor(new AlertCommand(this));
 		getCommand("stop").setExecutor(new StopCommand(this));
 		getCommand("whitelist").setExecutor(new WhitelistCommand(this));
@@ -510,13 +500,6 @@ public final class Main extends JavaPlugin {
 		return whitelistMessage;
 	}
 
-	public ReportInventory getReportInventory() {
-		return reportInventory;
-	}
-
-	public ReportManager getReportManager() {
-		return reportManager;
-	}
 
 	public StaffmodeInventory getStaffmodeInventory() {
 		return staffmodeInventory;

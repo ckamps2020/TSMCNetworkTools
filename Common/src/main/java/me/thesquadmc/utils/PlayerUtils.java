@@ -1,8 +1,11 @@
 package me.thesquadmc.utils;
 
+import me.lucko.luckperms.api.Contexts;
 import me.lucko.luckperms.api.Group;
 import me.lucko.luckperms.api.Node;
 import me.lucko.luckperms.api.User;
+import me.lucko.luckperms.api.caching.MetaData;
+import me.lucko.luckperms.api.caching.UserData;
 import me.thesquadmc.Main;
 import me.thesquadmc.abstraction.MojangGameProfile;
 import me.thesquadmc.abstraction.NMSAbstract;
@@ -133,6 +136,22 @@ public final class PlayerUtils {
 			}
 		}
 		return false;
+	}
+
+	public static String getPlayerPrefix(Player player) {
+		User user = Main.getMain().getLuckPermsApi().getUser(player.getUniqueId());
+		UserData cachedData = user.getCachedData();
+		Contexts contexts = Contexts.allowAll();
+		MetaData metaData = cachedData.getMetaData(contexts);
+		return metaData.getPrefix();
+	}
+
+	public static String getPlayerSuffix(Player player) {
+		User user = Main.getMain().getLuckPermsApi().getUser(player.getUniqueId());
+		UserData cachedData = user.getCachedData();
+		Contexts contexts = Contexts.allowAll();
+		MetaData metaData = cachedData.getMetaData(contexts);
+		return metaData.getSuffix();
 	}
 
 	public static boolean isEqualOrHigherThen(UUID uuid, Rank rank) {

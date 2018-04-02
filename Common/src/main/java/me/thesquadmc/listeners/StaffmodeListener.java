@@ -288,13 +288,6 @@ public final class StaffmodeListener implements Listener {
 					player.setGameMode(GameMode.SPECTATOR);
 					player.sendMessage(CC.translate("&e&lGAMEMODE &6■ &7Gamemode updated to spectator"));
 				}
-			} else if (e.getSlot() == 11) {
-				if (!main.getReportManager().getReports().isEmpty()) {
-					main.getReportInventory().buildReportsMenu(player);
-				} else {
-					player.closeInventory();
-					player.sendMessage(CC.translate("&e&lREPORTS &6■ &7There are no active reports!"));
-				}
 			} else if (e.getSlot() == 13) {
 				player.performCommand("randomtp");
 			} else if (e.getSlot() == 15) {
