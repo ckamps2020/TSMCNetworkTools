@@ -11,7 +11,7 @@ import com.google.common.collect.Maps;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
-public class Party {
+public final class Party {
 	
 	private transient boolean destroyed = false;
 	

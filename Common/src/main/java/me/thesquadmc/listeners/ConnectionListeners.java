@@ -73,7 +73,9 @@ public final class ConnectionListeners implements Listener {
 			}
 		});
 		Bukkit.getScheduler().runTaskLater(main, () -> {
-			if (Bukkit.getServerName().toUpperCase().startsWith("HUB")
+			if (Bukkit.getServerName().toUpperCase().startsWith("MG")
+					|| Bukkit.getServerName().toUpperCase().startsWith("FACTIONS")
+					|| Bukkit.getServerName().toUpperCase().startsWith("HUB")
 					|| Bukkit.getServerName().toUpperCase().startsWith("CREATIVE")) {
 				if (PlayerUtils.isEqualOrHigherThen(player, Rank.ADMIN)) {
 					player.chat("/ev");
