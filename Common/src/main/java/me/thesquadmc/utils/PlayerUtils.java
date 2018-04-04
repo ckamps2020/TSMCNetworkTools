@@ -10,7 +10,7 @@ import me.thesquadmc.Main;
 import me.thesquadmc.abstraction.MojangGameProfile;
 import me.thesquadmc.abstraction.NMSAbstract;
 import me.thesquadmc.abstraction.ProfileProperty;
-import me.thesquadmc.objects.TempData;
+import me.thesquadmc.objects.TSMCUser;
 import me.thesquadmc.utils.enums.Rank;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -211,10 +211,10 @@ public final class PlayerUtils {
 
 	public static void restorePlayerTextures(Player player) {
 		hidePlayerSpectatorYT(player);
-		TempData tempData = Main.getMain().getTempDataManager().getTempData(player.getUniqueId());
 		removePlayerTextures(player);
 
-		ProfileProperty property = NMS_ABSTRACT.createNewProperty("textures", tempData.getSkinkey(), tempData.getSignature());
+		TSMCUser user = TSMCUser.fromPlayer(player);
+		ProfileProperty property = NMS_ABSTRACT.createNewProperty("textures", user.getSkinKey(), user.getSignature());
 		NMS_ABSTRACT.getGameProfile(player).addProperty("textures", property);
 
 		showPlayerSpectator(player);

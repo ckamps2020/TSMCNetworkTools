@@ -1,7 +1,6 @@
 package me.thesquadmc.commands;
 
-import me.thesquadmc.Main;
-import me.thesquadmc.objects.TempData;
+import me.thesquadmc.objects.TSMCUser;
 import me.thesquadmc.utils.inventory.ItemBuilder;
 import me.thesquadmc.utils.PlayerUtils;
 import me.thesquadmc.utils.enums.Rank;
@@ -19,26 +18,21 @@ import java.util.*;
 
 public final class StaffmodeCommand implements CommandExecutor {
 
-	private final Main main;
 	private static Map<UUID, ItemStack[]> staffmode = new HashMap<>();
-
-	public StaffmodeCommand(Main main) {
-		this.main = main;
-	}
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (sender instanceof Player) {
 			Player player = (Player) sender;
-			TempData tempData = main.getTempDataManager().getTempData(player.getUniqueId());
 			if (PlayerUtils.isEqualOrHigherThen(player, Rank.MOD)) {
+				TSMCUser user = TSMCUser.fromPlayer(player);
 				if (Bukkit.getServerName().toUpperCase().contains("HUB") || Bukkit.getServerName().toUpperCase().startsWith("BW") || Bukkit.getServerName().toUpperCase().startsWith("CREATIVE")) {
 					player.sendMessage(CC.translate("&e&lSTAFFMODE &6■ &7You are not allowed to use this command here!"));
 					return true;
 				}
 				if (!staffmode.containsKey(player.getUniqueId())) {
 					PlayerUtils.hidePlayerSpectatorStaff(player);
-					tempData.setVanished(true);
+					user.setVanished(true);
 					player.sendMessage(CC.translate("&e&lVANISH &6■ &7You toggled vanish &eon&7! No one will be able to see you"));
 					staffmode.put(player.getUniqueId(), player.getInventory().getContents());
 					player.getInventory().clear();
@@ -57,7 +51,7 @@ public final class StaffmodeCommand implements CommandExecutor {
 					}
 					staffmode.remove(player.getUniqueId());
 					PlayerUtils.showPlayerSpectator(player);
-					tempData.setVanished(false);
+					user.setVanished(false);
 					player.sendMessage(CC.translate("&e&lVANISH &6■ &7You toggled vanish &eoff&7! Everyone will be able to see you"));
 					player.setGameMode(GameMode.SURVIVAL);
 					player.sendMessage(CC.translate("&e&lSTAFFMODE &6■  &7Staff mode has been &edisabled&7"));

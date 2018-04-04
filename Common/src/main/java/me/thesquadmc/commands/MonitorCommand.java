@@ -1,7 +1,6 @@
 package me.thesquadmc.commands;
 
-import me.thesquadmc.Main;
-import me.thesquadmc.objects.TempData;
+import me.thesquadmc.objects.TSMCUser;
 import me.thesquadmc.utils.*;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.msgs.CC;
@@ -12,23 +11,17 @@ import org.bukkit.entity.Player;
 
 public final class MonitorCommand implements CommandExecutor {
 
-	private final Main main;
-
-	public MonitorCommand(Main main) {
-		this.main = main;
-	}
-
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (sender instanceof Player) {
 			Player player = (Player) sender;
 			if (PlayerUtils.isEqualOrHigherThen(player, Rank.ADMIN)) {
-				TempData tempData = main.getTempDataManager().getTempData(player.getUniqueId());
-				if (!tempData.isMonitor()) {
-					tempData.setMonitor(true);
+				TSMCUser user = TSMCUser.fromPlayer(player);
+				if (!user.hasMonitor()) {
+					user.setMonitor(true);
 					player.sendMessage(CC.translate("&e&lMONITOR &6■ &7You toggled Network Monitor &eon&7!"));
 				} else {
-					tempData.setMonitor(false);
+					user.setMonitor(false);
 					player.sendMessage(CC.translate("&e&lMONITOR &6■ &7You toggled Network Monitor &eoff&7!"));
 				}
 			} else {

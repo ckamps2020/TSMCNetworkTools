@@ -1,7 +1,6 @@
 package me.thesquadmc.commands;
 
-import me.thesquadmc.Main;
-import me.thesquadmc.objects.TempData;
+import me.thesquadmc.objects.TSMCUser;
 import me.thesquadmc.utils.PlayerUtils;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.msgs.CC;
@@ -12,26 +11,20 @@ import org.bukkit.entity.Player;
 
 public final class YtVanishCommand implements CommandExecutor {
 
-	private final Main main;
-
-	public YtVanishCommand(Main main) {
-		this.main = main;
-	}
-
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (sender instanceof Player) {
 			Player player = (Player) sender;
-			TempData tempData = main.getTempDataManager().getTempData(player.getUniqueId());
 			if (PlayerUtils.isEqualOrHigherThen(player, Rank.YOUTUBE)) {
-				if (!tempData.isVanished()) {
-					if (!tempData.isYtVanishEnabled()) {
+				TSMCUser user = TSMCUser.fromPlayer(player);
+				if (!user.isVanished()) {
+					if (!user.isYtVanished()) {
 						player.sendMessage(CC.translate("&e&lYT VANISH &6■ &7Vanish has been &eenabled"));
-						tempData.setYtVanishEnabled(true);
+						user.setYtVanished(true);
 						PlayerUtils.hidePlayerSpectatorYT(player);
 					} else {
 						player.sendMessage(CC.translate("&e&lYT VANISH &6■ &7Vanish has been &edisabled"));
-						tempData.setYtVanishEnabled(false);
+						user.setYtVanished(false);
 						PlayerUtils.showPlayerSpectator(player);
 					}
 				} else {

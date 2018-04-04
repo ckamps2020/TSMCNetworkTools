@@ -1,7 +1,6 @@
 package me.thesquadmc.commands;
 
-import me.thesquadmc.Main;
-import me.thesquadmc.objects.TempData;
+import me.thesquadmc.objects.TSMCUser;
 import me.thesquadmc.utils.PlayerUtils;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.msgs.CC;
@@ -12,24 +11,18 @@ import org.bukkit.entity.Player;
 
 public final class ForceFieldCommand implements CommandExecutor {
 
-	private final Main main;
-
-	public ForceFieldCommand(Main main) {
-		this.main = main;
-	}
-
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (sender instanceof Player) {
 			Player player = (Player) sender;
-			TempData tempData = main.getTempDataManager().getTempData(player.getUniqueId());
 			if (PlayerUtils.isEqualOrHigherThen(player, Rank.YOUTUBE)) {
-				if (!tempData.isForcefieldEnabled()) {
+				TSMCUser user = TSMCUser.fromPlayer(player);
+				if (!user.hasForcefield()) {
 					player.sendMessage(CC.translate("&e&lFORCEFIELD &6■ &7Forcefield has been &eenabled"));
-					tempData.setForcefieldEnabled(true);
+					user.setForcefield(true);
 				} else {
 					player.sendMessage(CC.translate("&e&lFORCEFIELD &6■ &7Forcefield has been &edisabled"));
-					tempData.setForcefieldEnabled(false);
+					user.setForcefield(false);
 				}
 			} else {
 				player.sendMessage(CC.translate("&e&lPERMISSIONS &6■ &7You do not have permission to use this command!"));

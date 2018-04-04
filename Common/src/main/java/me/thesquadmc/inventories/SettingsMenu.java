@@ -1,9 +1,9 @@
 package me.thesquadmc.inventories;
 
-import me.thesquadmc.Main;
+import me.thesquadmc.objects.PlayerSetting;
+import me.thesquadmc.objects.TSMCUser;
 import me.thesquadmc.utils.inventory.InventorySize;
 import me.thesquadmc.utils.inventory.ItemBuilder;
-import me.thesquadmc.utils.enums.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -41,38 +41,40 @@ public final class SettingsMenu {
 				"&7",
 				"&5&o**Click to toggle**"
 		).build());
-		for (Settings settings : Settings.values()) {
-			if (settings == Settings.NOTIFICATIONS) {
-				if (Main.getMain().getSettings().get(player.getUniqueId()).get(Settings.NOTIFICATIONS)) {
-					inventory.setItem(19, new ItemBuilder(Material.INK_SACK, 10).name("&a&l" + settings.name() + " On")
-							.lore("&7" + settings.name() + " are toggled on!", "&7Click to toggle off").build());
+		
+		TSMCUser user = TSMCUser.fromPlayer(player);
+		for (PlayerSetting<?> setting : PlayerSetting.values()) {
+			if (setting == PlayerSetting.NOTIFICATIONS) {
+				if (user.getSetting(PlayerSetting.NOTIFICATIONS)) {
+					inventory.setItem(19, new ItemBuilder(Material.INK_SACK, 10).name("&a&lNOTIFICATIONS On")
+							.lore("&7NOTIFICATIONS are toggled on!", "&7Click to toggle off").build());
 				} else {
-					inventory.setItem(19, new ItemBuilder(Material.INK_SACK, 8).name("&c&l" + settings.name() + " On")
-							.lore("&7" + settings.name() + " are toggled off!", "&7Click to toggle on").build());
+					inventory.setItem(19, new ItemBuilder(Material.INK_SACK, 8).name("&c&lNOTIFICATIONS On")
+							.lore("&7NOTIFICATIONS are toggled off!", "&7Click to toggle on").build());
 				}
-			} else if (settings == Settings.PMS) {
-				if (Main.getMain().getSettings().get(player.getUniqueId()).get(Settings.PMS)) {
-					inventory.setItem(21, new ItemBuilder(Material.INK_SACK, 10).name("&a&l" + settings.name() + " On")
-							.lore("&7" + settings.name() + " are toggled on!", "&7Click to toggle off").build());
+			} else if (setting == PlayerSetting.PRIVATE_MESSAGES) {
+				if (user.getSetting(PlayerSetting.PRIVATE_MESSAGES)) {
+					inventory.setItem(21, new ItemBuilder(Material.INK_SACK, 10).name("&a&lPRIVATE MESSAGES On")
+							.lore("&7PRIVATE MESSAGES are toggled on!", "&7Click to toggle off").build());
 				} else {
-					inventory.setItem(21, new ItemBuilder(Material.INK_SACK, 8).name("&c&l" + settings.name() + " On")
-							.lore("&7" + settings.name() + " are toggled off!", "&7Click to toggle on").build());
+					inventory.setItem(21, new ItemBuilder(Material.INK_SACK, 8).name("&c&lPRIVATE MESSAGES On")
+							.lore("&7PRIVATE MESSAGES are toggled off!", "&7Click to toggle on").build());
 				}
-			} else if (settings == Settings.FRIENDCHAT) {
-				if (Main.getMain().getSettings().get(player.getUniqueId()).get(Settings.FRIENDCHAT)) {
-					inventory.setItem(23, new ItemBuilder(Material.INK_SACK, 10).name("&a&l" + settings.name() + " On")
-							.lore("&7" + settings.name() + " are toggled on!", "&7Click to toggle off").build());
+			} else if (setting == PlayerSetting.FRIEND_CHAT) {
+				if (user.getSetting(PlayerSetting.FRIEND_CHAT)) {
+					inventory.setItem(23, new ItemBuilder(Material.INK_SACK, 10).name("&a&lFRIEND CHAT On")
+							.lore("&7FRIEND CHAT are toggled on!", "&7Click to toggle off").build());
 				} else {
-					inventory.setItem(23, new ItemBuilder(Material.INK_SACK, 8).name("&c&l" + settings.name() + " On")
-							.lore("&7" + settings.name() + " are toggled off!", "&7Click to toggle on").build());
+					inventory.setItem(23, new ItemBuilder(Material.INK_SACK, 8).name("&c&lFRIEND CHAT On")
+							.lore("&7FRIEND CHAT are toggled off!", "&7Click to toggle on").build());
 				}
-			} else if (settings == Settings.REQUESTS) {
-				if (Main.getMain().getSettings().get(player.getUniqueId()).get(Settings.REQUESTS)) {
-					inventory.setItem(25, new ItemBuilder(Material.INK_SACK, 10).name("&a&l" + settings.name() + " On")
-							.lore("&7" + settings.name() + " are toggled on!", "&7Click to toggle off").build());
+			} else if (setting == PlayerSetting.FRIEND_REQUESTS) {
+				if (user.getSetting(PlayerSetting.FRIEND_REQUESTS)) {
+					inventory.setItem(25, new ItemBuilder(Material.INK_SACK, 10).name("&a&lFRIEND REQUESTS On")
+							.lore("&7FRIEND REQUESTS are toggled on!", "&7Click to toggle off").build());
 				} else {
-					inventory.setItem(25, new ItemBuilder(Material.INK_SACK, 8).name("&c&l" + settings.name() + " On")
-							.lore("&7" + settings.name() + " are toggled off!", "&7Click to toggle on").build());
+					inventory.setItem(25, new ItemBuilder(Material.INK_SACK, 8).name("&c&lFRIEND REQUESTS On")
+							.lore("&7FRIEND REQUESTS are toggled off!", "&7Click to toggle on").build());
 				}
 			}
 		}
