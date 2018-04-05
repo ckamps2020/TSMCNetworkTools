@@ -2,7 +2,7 @@ package me.thesquadmc.listeners;
 
 import me.thesquadmc.Main;
 import me.thesquadmc.abstraction.Sounds;
-import me.thesquadmc.objects.TempData;
+import me.thesquadmc.objects.TSMCUser;
 import me.thesquadmc.utils.PlayerUtils;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.enums.UpdateType;
@@ -34,8 +34,7 @@ public final class ForceFieldListeners implements Listener {
 			}
 		} else if (e.getUpdateType() == UpdateType.HALF_SEC) {
 			for (Player player : Bukkit.getOnlinePlayers()) {
-				TempData tempData = main.getTempDataManager().getTempData(player.getUniqueId());
-				if (tempData.isForcefieldEnabled()) {
+				if (TSMCUser.fromPlayer(player).hasForcefield()) {
 					List<Player> players = PlayerUtils.getNearbyPlayers(player.getLocation(), 8);
 					for (Player p : players) {
 						if (p.getName() != null) {

@@ -2,7 +2,7 @@ package me.thesquadmc.listeners;
 
 import me.thesquadmc.Main;
 import me.thesquadmc.abstraction.MojangGameProfile;
-import me.thesquadmc.objects.TempData;
+import me.thesquadmc.objects.TSMCUser;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.msgs.CC;
 import me.thesquadmc.utils.msgs.StringUtils;
@@ -25,7 +25,6 @@ public final class ConnectionListeners implements Listener {
 
 	@EventHandler
 	public void onJoin(PlayerJoinEvent e) {
-		TempData tempData = new TempData();
 		Player player = e.getPlayer();
 		Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
 			@Override
@@ -45,16 +44,14 @@ public final class ConnectionListeners implements Listener {
 			}
 		});
 
+		TSMCUser user = TSMCUser.fromPlayer(player);
 		MojangGameProfile profile = main.getNMSAbstract().getGameProfile(player);
 		profile.getPropertyMap().values().forEach(p -> {
-			tempData.setSkinkey(p.getValue());
-			tempData.setSignature(p.getSignature());
+			user.setSkinKey(p.getValue());
+			user.setSignature(p.getSignature());
 		});
 		
 		PlayerUtils.unfreezePlayer(player);
-		main.getTempDataManager().registerNewData(player.getUniqueId(), tempData);
-		TempData td = main.getTempDataManager().getTempData(player.getUniqueId());
-		td.setRealname(player.getName());
 		Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
 			@Override
 			public void run() {
@@ -95,10 +92,10 @@ public final class ConnectionListeners implements Listener {
 				PlayerUtils.setSameSkin(player);
 			}
 			for (Player p : Bukkit.getOnlinePlayers()) {
-				TempData t = main.getTempDataManager().getTempData(p.getUniqueId());
-				if (t.isVanished()) {
+				TSMCUser targetUser = TSMCUser.fromPlayer(p);
+				if (targetUser.isVanished()) {
 					PlayerUtils.hidePlayerSpectatorStaff(p);
-				} else if (t.isYtVanishEnabled()) {
+				} else if (targetUser.isYtVanished()) {
 					PlayerUtils.hidePlayerSpectatorYT(p);
 				}
 			}
@@ -131,13 +128,12 @@ public final class ConnectionListeners implements Listener {
 				});
 			}
 		});
-		TempData tempData = main.getTempDataManager().getTempData(player.getUniqueId());
+		
 		for (Player p : Bukkit.getServer().getOnlinePlayers()) {
-			if (tempData.isYtVanishEnabled()) {
+			if (TSMCUser.fromPlayer(p).isYtVanished()) {
 				p.showPlayer(player);
 			}
 		}
-		main.getTempDataManager().unregisterNewData(player.getUniqueId());
 	}
 
 }

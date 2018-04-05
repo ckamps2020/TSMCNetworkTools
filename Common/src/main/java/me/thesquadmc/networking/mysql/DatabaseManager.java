@@ -1,7 +1,11 @@
 package me.thesquadmc.networking.mysql;
 
 import me.thesquadmc.Main;
+import me.thesquadmc.objects.PlayerSetting;
+import me.thesquadmc.objects.TSMCUser;
 import me.thesquadmc.utils.enums.Settings;
+
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
 import java.sql.ResultSet;
@@ -61,16 +65,10 @@ public final class DatabaseManager {
 			this.DB.openConnection();
 		}
 		try {
-			List<String> friends = main.getFriends().get(UUID.fromString(uuid));
+			List<UUID> friends = TSMCUser.fromUUID(UUID.fromString(uuid)).getFriends();
 			StringBuilder stringBuilder = new StringBuilder();
-			if (friends == null) {
-				return;
-			}
-			for (String s : friends) {
-				if (s.equalsIgnoreCase("[]") || s.equalsIgnoreCase(" ") || s.equalsIgnoreCase("")) {
-					continue;
-				}
-				stringBuilder.append(s + " ");
+			for (UUID friend : friends) {
+				stringBuilder.append(friend + " ");
 			}
 			if (friends.isEmpty()) {
 				Statement s = this.DB.getConnection().createStatement();
@@ -108,6 +106,10 @@ public final class DatabaseManager {
 		}
 	}
 
+	/**
+	 * @deprecated Legacy API. See {@link #updateSettings(PlayerSetting, int, String)}
+	 */
+	@Deprecated
 	public void updateSettings(Settings settings, int value, String uuid) throws Exception {
 		if (!this.DB.checkConnection()) {
 			this.DB.openConnection();
@@ -120,11 +122,27 @@ public final class DatabaseManager {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
+	public void updateSettings(PlayerSetting<?> setting, int value, String uuid) throws Exception {
+		if (!this.DB.checkConnection()) {
+			this.DB.openConnection();
+		}
+		try {
+			Statement s = this.DB.getConnection().createStatement();
+			s.executeUpdate("UPDATE `SETTINGS` SET `" + setting.getLegacyName() + "` = '" + value + "' WHERE `UUID` = '" + uuid + "'");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	public void loadFriendAccount(String uuid) throws Exception {
 		if (!this.DB.checkConnection()) {
 			this.DB.openConnection();
 		}
 		try {
+			UUID userUUID = UUID.fromString(uuid);
+			TSMCUser user = TSMCUser.fromUUID(userUUID);
+			
 			String f = "NONE";
 			if (getFriends(uuid) != null) {
 				f = getFriends(uuid);
@@ -132,8 +150,7 @@ public final class DatabaseManager {
 				newFriendAccount(uuid);
 			}
 			if (f.equalsIgnoreCase("NONE")) {
-				main.getFriends().put(UUID.fromString(uuid), new ArrayList<>());
-				main.getSettings().put(UUID.fromString(uuid), getSettings(uuid));
+				user.overrideSettings(getSettings(userUUID));
 			} else {
 				List<String> friends = new ArrayList<>();
 				String regex = "[ ]+";
@@ -173,8 +190,11 @@ public final class DatabaseManager {
 					}
 				}
 				resetRemovals(uuid);
-				main.getFriends().put(UUID.fromString(uuid), friends);
-				main.getSettings().put(UUID.fromString(uuid), getSettings(uuid));
+				
+				user.overrideSettings(getSettings(userUUID));
+				for (String friend : friends) {
+					user.addFriend(UUID.fromString(friend));
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -255,6 +275,10 @@ public final class DatabaseManager {
 		}
 	}
 
+	/**
+	 * @deprecated Legacy API. See {@link #getSettings(UUID)}
+	 */
+	@Deprecated
 	public Map<Settings, Boolean> getSettings(String uuid) throws Exception {
 		if (!this.DB.checkConnection()) {
 			this.DB.openConnection();
@@ -273,6 +297,30 @@ public final class DatabaseManager {
 			return settings;
 		} catch (Exception e) {
 			return null;
+		}
+	}
+	
+	public Map<PlayerSetting<?>, Object> getSettings(UUID uuid) throws Exception {
+		Map<PlayerSetting<?>, Object> settings = new HashMap<>();
+		
+		if (!this.DB.checkConnection()) {
+			this.DB.openConnection();
+		}
+		
+		try {
+			Statement s = this.DB.getConnection().createStatement();
+			ResultSet result = s.executeQuery("SELECT * FROM `SETTINGS` WHERE `UUID` = '" + uuid + "';");
+			
+			if (result.next()) {
+				settings.put(PlayerSetting.NOTIFICATIONS, result.getBoolean("NOTIFICATIONS"));
+				settings.put(PlayerSetting.PRIVATE_MESSAGES, result.getBoolean("PMS"));
+				settings.put(PlayerSetting.FRIEND_CHAT, result.getBoolean("FRIENDCHAT"));
+				settings.put(PlayerSetting.FRIEND_REQUESTS, result.getBoolean("REQUESTS"));
+			}
+			
+			return settings;
+		} catch (Exception e) {
+			return settings;
 		}
 	}
 

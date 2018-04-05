@@ -6,7 +6,8 @@ import me.lucko.luckperms.api.caching.MetaData;
 import me.lucko.luckperms.api.caching.UserData;
 import me.thesquadmc.Main;
 import me.thesquadmc.networking.JedisTask;
-import me.thesquadmc.objects.TempData;
+import me.thesquadmc.objects.PlayerSetting;
+import me.thesquadmc.objects.TSMCUser;
 import me.thesquadmc.utils.*;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.enums.RedisArg;
@@ -35,18 +36,18 @@ public final class StaffChatCommand implements CommandExecutor {
 		if (sender instanceof Player) {
 			Player player = (Player) sender;
 			User user = main.getLuckPermsApi().getUser(player.getUniqueId());
-			TempData tempData = main.getTempDataManager().getTempData(player.getUniqueId());
 			if (PlayerUtils.isEqualOrHigherThen(player, Rank.TRAINEE)) {
+				TSMCUser tsmcUser = TSMCUser.fromPlayer(player);
 				if (args.length == 0) {
-					if (!tempData.isStaffchatEnabled()) {
-						tempData.setStaffchatEnabled(true);
+					if (!tsmcUser.getSetting(PlayerSetting.STAFFCHAT_ENABLED)) {
+						tsmcUser.updateSetting(PlayerSetting.STAFFCHAT_ENABLED, true);
 						player.sendMessage(CC.translate("&e&lSTAFF CHAT &6■ &7You toggled Staff Chat &eon&7!"));
 					} else {
-						tempData.setStaffchatEnabled(false);
+						tsmcUser.updateSetting(PlayerSetting.STAFFCHAT_ENABLED, false);
 						player.sendMessage(CC.translate("&e&lSTAFF CHAT &6■ &7You toggled Staff Chat &eoff&7!"));
 					}
 				} else {
-					if (!tempData.isStaffchatEnabled()) {
+					if (!tsmcUser.getSetting(PlayerSetting.STAFFCHAT_ENABLED)) {
 						player.sendMessage(CC.translate("&e&lSTAFF CHAT &6■ &7Please enable staffchat first!"));
 						return true;
 					}

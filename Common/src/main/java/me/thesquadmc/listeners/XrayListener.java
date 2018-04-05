@@ -1,8 +1,6 @@
 package me.thesquadmc.listeners;
 
-import me.thesquadmc.Main;
-import me.thesquadmc.managers.TempDataManager;
-import me.thesquadmc.objects.TempData;
+import me.thesquadmc.objects.TSMCUser;
 import me.thesquadmc.utils.PlayerUtils;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.handlers.UpdateEvent;
@@ -23,21 +21,14 @@ import java.util.UUID;
 
 public final class XrayListener implements Listener {
 
-	private final Main main;
 	private final int diamondThreshhold = 13;
 	private final int spawnerThreshhold = 4;
 	private Map<UUID, Integer> diamondsMined = new HashMap<>();
 	private Map<UUID, Integer> spawnerMined = new HashMap<>();
 
-	public XrayListener(Main main) {
-		this.main = main;
-	}
-
 	@EventHandler
 	public void onUpdate(UpdateEvent e) {
 		if (e.getUpdateType() == UpdateType.MIN) {
-			TempDataManager dataManager = main.getTempDataManager();
-
 			// Compile list of all xrayers
 			Set<UUID> xrayers = new HashSet<>(diamondsMined.keySet());
 			xrayers.addAll(spawnerMined.keySet());
@@ -51,8 +42,7 @@ public final class XrayListener implements Listener {
 				int spawners = spawnerMined.getOrDefault(miner, 0);
 
 				for (Player staff : Bukkit.getOnlinePlayers()) {
-					TempData data = dataManager.getTempData(staff.getUniqueId());
-					if (PlayerUtils.isEqualOrHigherThen(staff, Rank.TRAINEE) && data.isXray()) {
+					if (PlayerUtils.isEqualOrHigherThen(staff, Rank.TRAINEE) && TSMCUser.fromPlayer(staff).isXray()) {
 						if (diamonds >= diamondThreshhold) {
 							staff.sendMessage(CC.translate("&8[&4&lAnitCheat&8] &4[XRAY] &f" + player.getName() + " is suspected for XRAY. Mined " + diamonds + " diamonds in the last MINUTE! World&4=&f" + player.getWorld().getName() + ""));
 						}

@@ -6,9 +6,10 @@ import me.lucko.luckperms.api.caching.MetaData;
 import me.lucko.luckperms.api.caching.UserData;
 import me.thesquadmc.Main;
 import me.thesquadmc.networking.JedisTask;
+import me.thesquadmc.objects.PlayerSetting;
+import me.thesquadmc.objects.TSMCUser;
 import me.thesquadmc.utils.enums.RedisArg;
 import me.thesquadmc.utils.enums.RedisChannels;
-import me.thesquadmc.utils.enums.Settings;
 import me.thesquadmc.utils.msgs.CC;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -25,16 +26,20 @@ public final class ChatListener implements Listener {
 	public void onChat(AsyncPlayerChatEvent e) {
 		String message = e.getMessage();
 		Player player = e.getPlayer();
-		if (Main.getMain().getSettings() != null && Main.getMain().getSettings().get(player.getUniqueId()) != null && Main.getMain().getSettings().get(player.getUniqueId()).get(Settings.FRIENDCHAT)) {
+		TSMCUser tsmcUser = TSMCUser.fromPlayer(player);
+		
+		if (tsmcUser.getSetting(PlayerSetting.FRIEND_CHAT)) {
 			e.setCancelled(true);
-			if (Main.getMain().getFriends() == null || Main.getMain().getFriends().get(player.getUniqueId()) == null || Main.getMain().getFriends().get(player.getUniqueId()).isEmpty()) {
+			if (!tsmcUser.hasFriends()) {
 				player.sendMessage(CC.translate("&d&lFRIENDS &5■ &7Add some friends before you use this!"));
 				return;
 			}
+			
 			StringBuilder stringBuilder = new StringBuilder();
-			for (String s : Main.getMain().getFriends().get(player.getUniqueId())) {
-				stringBuilder.append(s + " ");
+			for (UUID friend : tsmcUser.getFriends()) {
+				stringBuilder.append(friend + " ");
 			}
+			
 			User user = Main.getMain().getLuckPermsApi().getUser(player.getName());
 			UserData cachedData = user.getCachedData();
 			Contexts contexts = Contexts.allowAll();

@@ -15,6 +15,7 @@ import me.thesquadmc.networking.JedisTask;
 import me.thesquadmc.networking.RedisHandler;
 import me.thesquadmc.networking.mongo.Mongo;
 import me.thesquadmc.networking.mysql.DatabaseManager;
+import me.thesquadmc.objects.TSMCUser;
 import me.thesquadmc.utils.command.CommandHandler;
 import me.thesquadmc.utils.enums.RedisArg;
 import me.thesquadmc.utils.enums.RedisChannels;
@@ -139,11 +140,11 @@ public final class Main extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new FilterListener(this), this);
 		getServer().getPluginManager().registerEvents(new ServerListener(), this);
 		getServer().getPluginManager().registerEvents(new ForceFieldListeners(this), this);
-		getServer().getPluginManager().registerEvents(new VanishListener(this), this);
+		getServer().getPluginManager().registerEvents(new VanishListener(), this);
 		getServer().getPluginManager().registerEvents(new WhitelistListener(this), this);
 		getServer().getPluginManager().registerEvents(new TimedListener(this), this);
 		getServer().getPluginManager().registerEvents(new ConnectionListeners(this), this);
-		getServer().getPluginManager().registerEvents(new XrayListener(this), this);
+		getServer().getPluginManager().registerEvents(new XrayListener(), this);
 		getServer().getPluginManager().registerEvents(new StaffmodeListener(this), this);
 		getServer().getPluginManager().registerEvents(new FreezeListener(this), this);
 
@@ -253,24 +254,24 @@ public final class Main extends JavaPlugin {
 		getCommand("managerchat").setExecutor(new ManagerChatCommand(this));
 		getCommand("find").setExecutor(new FindCommand(this));
 		getCommand("lookup").setExecutor(new LookupCommand(this));
-		getCommand("vanish").setExecutor(new VanishCommand(this));
+		getCommand("vanish").setExecutor(new VanishCommand());
 		getCommand("freeze").setExecutor(new FreezeCommand(this));
 		getCommand("unfreeze").setExecutor(new UnFreezeCommand(this));
 		getCommand("freezepanel").setExecutor(new FreezePanelCommand(this));
 		getCommand("invsee").setExecutor(new InvseeCommand(this));
 		getCommand("randomtp").setExecutor(new RandomTPCommand(this));
-		getCommand("staffmode").setExecutor(new StaffmodeCommand(this));
+		getCommand("staffmode").setExecutor(new StaffmodeCommand());
 		getCommand("staff").setExecutor(new StafflistCommand(this));
-		getCommand("xray").setExecutor(new XrayVerboseCommand(this));
+		getCommand("xray").setExecutor(new XrayVerboseCommand());
 		getCommand("alert").setExecutor(new AlertCommand(this));
 		getCommand("stop").setExecutor(new StopCommand(this));
 		getCommand("whitelist").setExecutor(new WhitelistCommand(this));
 		getCommand("launch").setExecutor(new LaunchCommand(this));
-		getCommand("ytvanish").setExecutor(new YtVanishCommand(this));
-		getCommand("forcefield").setExecutor(new ForceFieldCommand(this));
+		getCommand("ytvanish").setExecutor(new YtVanishCommand());
+		getCommand("forcefield").setExecutor(new ForceFieldCommand());
 		getCommand("staffmenu").setExecutor(new StaffMenuCommand(this));
-		getCommand("monitor").setExecutor(new MonitorCommand(this));
-		getCommand("ytnick").setExecutor(new YtNickCommand(this));
+		getCommand("monitor").setExecutor(new MonitorCommand());
+		getCommand("ytnick").setExecutor(new YtNickCommand());
 		getCommand("disguiseplayer").setExecutor(new DisguisePlayerCommand(this));
 		getCommand("undisguiseplayer").setExecutor(new UndisguisePlayerCommand(this));
 		getCommand("silence").setExecutor(new ChatSilenceCommand(this));
@@ -288,16 +289,17 @@ public final class Main extends JavaPlugin {
 		getCommand("uniqueplayers").setExecutor(new UniquePlayersCommand(this));
 		getCommand("title").setExecutor(new TitleCommand(this));
 		getCommand("queuerestart").setExecutor(new QueueRestartCommand(this));
-		getCommand("vanishlist").setExecutor(new VanishListCommand(this));
+		getCommand("vanishlist").setExecutor(new VanishListCommand());
 		getCommand("ntversion").setExecutor(new NTVersionCommand(this));
 		getCommand("mg").setExecutor(new MGCommand(this));
 		getCommand("queuemanager").setExecutor(new QueueManagerCommand(this));
 		getCommand("staffalert").setExecutor(new StaffAlertCommand(this));
 		getCommand("onlinecount").setExecutor(new OnlineCountCommand(this));
 		getCommand("logs").setExecutor(new LogsCommand(this));
+		getCommand("party").setExecutor(new PartyCommand(this));
 		getCommand("l1").setExecutor(new MOTDCommand(main, 1));
 		getCommand("l2").setExecutor(new MOTDCommand(main, 2));
-		getCommand("party").setExecutor(new PartyCommand(this));
+		getCommand("motdclear").setExecutor(new MOTDClearCommand(main));
 		ServerUtils.calculateServerType();
 		Bukkit.getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
 			@Override
@@ -431,14 +433,25 @@ public final class Main extends JavaPlugin {
 		return dbuser;
 	}
 
+	/**
+	 * @deprecated Legacy API. See {@link TSMCUser#getFriends()}
+	 */
 	public Map<UUID, List<String>> getFriends() {
 		return friends;
 	}
 
+	/**
+	 * @deprecated Legacy API. See {@link TSMCUser#getRequests()}
+	 */
+	@Deprecated
 	public Map<UUID, List<String>> getRequests() {
 		return requests;
 	}
 
+	/**
+	 * @deprecated Legacy API. See {@link TSMCUser#getSetting(me.thesquadmc.objects.PlayerSetting)}
+	 */
+	@Deprecated
 	public Map<UUID, Map<Settings, Boolean>> getSettings() {
 		return settings;
 	}
@@ -516,6 +529,10 @@ public final class Main extends JavaPlugin {
 		return luckPermsApi;
 	}
 
+	/**
+	 * @deprecated Legacy API. See {@link TSMCUser}
+	 */
+	@Deprecated
 	public TempDataManager getTempDataManager() {
 		return tempDataManager;
 	}

@@ -167,14 +167,8 @@ public final class StringUtils {
 			case "/SKYBLOCK-3":
 				ConnectionUtils.sendPlayer(player, "SKYBLOCK-3", true);
 				return true;
-			case "/FACTIONS-1":
-				ConnectionUtils.sendPlayer(player, "FACTIONS-1", true);
-				return true;
-			case "/FACTIONS-2":
-				ConnectionUtils.sendPlayer(player, "FACTIONS-2", true);
-				return true;
-			case "/FACTIONS-3":
-				ConnectionUtils.sendPlayer(player, "FACTIONS-3", true);
+			case "/FACTIONS":
+				ConnectionUtils.sendPlayer(player, "FACTIONS-FIRE", true);
 				return true;
 			case "/PRISON-1":
 				ConnectionUtils.sendPlayer(player, "PRISON-1", true);

@@ -8,7 +8,8 @@ import me.thesquadmc.commands.StafflistCommand;
 import me.thesquadmc.commands.StaffmodeCommand;
 import me.thesquadmc.managers.PartyManager;
 import me.thesquadmc.objects.Party;
-import me.thesquadmc.objects.TempData;
+import me.thesquadmc.objects.PlayerSetting;
+import me.thesquadmc.objects.TSMCUser;
 import me.thesquadmc.utils.*;
 import me.thesquadmc.utils.enums.*;
 import me.thesquadmc.utils.msgs.CC;
@@ -43,9 +44,9 @@ public final class RedisHandler {
 				@Override
 				public void run() {
 					for (Player player : Bukkit.getOnlinePlayers()) {
-						TempData tempData = main.getTempDataManager().getTempData(player.getUniqueId());
 						if (PlayerUtils.isEqualOrHigherThen(player, Rank.TRAINEE)) {
-							if (tempData.isStaffchatEnabled() && tempData.getStaffchatSetting() == MessageSettings.GLOBAL) {
+							TSMCUser user = TSMCUser.fromPlayer(player);
+							if (user.getSetting(PlayerSetting.STAFFCHAT_ENABLED) && user.getSetting(PlayerSetting.STAFFCHAT_SCOPE) == MessageSettings.GLOBAL) {
 								String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
 								player.spigot().sendMessage(StringUtils.getHoverMessage(String.valueOf(data.get(RedisArg.MESSAGE.getArg())), "&7Currently on &e" + server));
 							}
@@ -58,9 +59,9 @@ public final class RedisHandler {
 				@Override
 				public void run() {
 					for (Player player : Bukkit.getOnlinePlayers()) {
-						TempData tempData = main.getTempDataManager().getTempData(player.getUniqueId());
 						if (PlayerUtils.isEqualOrHigherThen(player, Rank.MANAGER)) {
-							if (tempData.isManagerchatEnabled() && tempData.getStaffchatSetting() == MessageSettings.GLOBAL) {
+							TSMCUser user = TSMCUser.fromPlayer(player);
+							if (user.getSetting(PlayerSetting.MANAGERCHAT_ENABLED) && user.getSetting(PlayerSetting.MANAGERCHAT_SCOPE) == MessageSettings.GLOBAL) {
 								player.sendMessage(CC.translate(String.valueOf(data.get(RedisArg.MESSAGE.getArg()))));
 							}
 						}
@@ -72,9 +73,9 @@ public final class RedisHandler {
 				@Override
 				public void run() {
 					for (Player player : Bukkit.getOnlinePlayers()) {
-						TempData tempData = main.getTempDataManager().getTempData(player.getUniqueId());
 						if (PlayerUtils.isEqualOrHigherThen(player, Rank.ADMIN)) {
-							if (tempData.isAdminchatEnabled() && tempData.getStaffchatSetting() == MessageSettings.GLOBAL) {
+							TSMCUser user = TSMCUser.fromPlayer(player);
+							if (user.getSetting(PlayerSetting.ADMINCHAT_ENABLED) && user.getSetting(PlayerSetting.ADMINCHAT_SCOPE) == MessageSettings.GLOBAL) {
 								player.sendMessage(CC.translate(String.valueOf(data.get(RedisArg.MESSAGE.getArg()))));
 							}
 						}
@@ -88,7 +89,7 @@ public final class RedisHandler {
 					String name = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
 					for (Player p : Bukkit.getOnlinePlayers()) {
 						if (p.getName().equalsIgnoreCase(name)) {
-							TempData tempData = main.getTempDataManager().getTempData(p.getUniqueId());
+							TSMCUser user = TSMCUser.fromPlayer(p);
 							Multithreading.runAsync(new Runnable() {
 								@Override
 								public void run() {
@@ -98,7 +99,7 @@ public final class RedisHandler {
 												.withArg(RedisArg.ORIGIN_SERVER.getArg(), Bukkit.getServerName())
 												.withArg(RedisArg.PLAYER.getArg(), name)
 												.withArg(RedisArg.ORIGIN_PLAYER.getArg(), String.valueOf(data.get(RedisArg.ORIGIN_PLAYER.getArg())))
-												.withArg(RedisArg.LOGIN.getArg(), tempData.getLoginTime())
+												.withArg(RedisArg.LOGIN.getArg(), user.getLoginTime())
 												.send(RedisChannels.FOUND.getChannelName(), jedis);
 									}
 								}
@@ -315,7 +316,7 @@ public final class RedisHandler {
 					public void run() {
 						for (Player p : Bukkit.getOnlinePlayers()) {
 							if (PlayerUtils.isEqualOrHigherThen(p, Rank.MOD)) {
-								TempData tempData = main.getTempDataManager().getTempData(p.getUniqueId());
+								TSMCUser user = TSMCUser.fromPlayer(p);
 								if (StaffmodeCommand.getStaffmode().containsKey(p.getUniqueId())) {
 									p.getInventory().clear();
 									for (ItemStack itemStack : StaffmodeCommand.getStaffmode().get(p.getUniqueId())) {
@@ -329,10 +330,10 @@ public final class RedisHandler {
 									p.performCommand("spawn");
 									p.sendMessage(CC.translate("&e&lSTOP &6■ &7Due to server restart you have been taken out of staffmode"));
 								}
-								if (tempData.isVanished() || tempData.isYtVanishEnabled()) {
+								if (user.isVanished() || user.isYtVanished()) {
 									PlayerUtils.showPlayerSpectator(p);
-									tempData.setVanished(false);
-									tempData.setYtVanishEnabled(false);
+									user.setVanished(false);
+									user.setYtVanished(false);
 									p.sendMessage(CC.translate("&e&lSTOP &6■ &7Due to server restart you have been taken out of vanish"));
 								}
 							}
@@ -471,7 +472,7 @@ public final class RedisHandler {
 					String tps = String.valueOf(data.get(RedisArg.TPS.getArg()));
 					if (!uptime.equalsIgnoreCase("0")) {
 						for (Player player : Bukkit.getOnlinePlayers()) {
-							if (PlayerUtils.isEqualOrHigherThen(player, Rank.ADMIN) && main.getTempDataManager().getTempData(player.getUniqueId()).isMonitor()) {
+							if (PlayerUtils.isEqualOrHigherThen(player, Rank.ADMIN) && TSMCUser.fromPlayer(player).hasMonitor()) {
 								if (!tps.equalsIgnoreCase("null") && Double.valueOf(tps) > 15.0) {
 									player.sendMessage(CC.translate("&8&m-------------------------------------------------"));
 									player.sendMessage(CC.translate("&6&l[MONITOR REPORT] &f" + server + " &7" + count + "&8/&7200"));
@@ -491,7 +492,7 @@ public final class RedisHandler {
 						}
 					} else {
 						for (Player player : Bukkit.getOnlinePlayers()) {
-							if (PlayerUtils.isEqualOrHigherThen(player, Rank.ADMIN) && main.getTempDataManager().getTempData(player.getUniqueId()).isMonitor()) {
+							if (PlayerUtils.isEqualOrHigherThen(player, Rank.ADMIN) && TSMCUser.fromPlayer(player).hasMonitor()) {
 								player.sendMessage(CC.translate("&8&m-------------------------------------------------"));
 								player.sendMessage(CC.translate("&6&l[MONITOR REPORT] &f" + server + " &7" + count + "&8/&7200"));
 								player.sendMessage(CC.translate("&7"));
@@ -554,7 +555,7 @@ public final class RedisHandler {
 					for (Player p : Bukkit.getOnlinePlayers()) {
 						if (p.getName().equalsIgnoreCase(name)) {
 							OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(String.valueOf(data.get(RedisArg.ORIGIN_PLAYER.getArg())));
-							main.getFriends().get(p.getUniqueId()).remove(offlinePlayer.getUniqueId().toString());
+							TSMCUser.fromPlayer(p).removeFriend(offlinePlayer);
 							p.sendMessage(CC.translate("&d&lFRIENDS &5■ &d" + offlinePlayer.getName() + " &7has removed you as a friend"));
 							Multithreading.runAsync(new Runnable() {
 								@Override
@@ -612,7 +613,7 @@ public final class RedisHandler {
 								f.add(s);
 							}
 							for (Player p : Bukkit.getOnlinePlayers()) {
-								if (PlayerUtils.isEqualOrHigherThen(p, Rank.TRAINEE) && main.getSettings().get(p.getUniqueId()).get(Settings.SOCIALSPY)) {
+								if (PlayerUtils.isEqualOrHigherThen(p, Rank.TRAINEE) && TSMCUser.fromPlayer(p).getSetting(PlayerSetting.SOCIALSPY)) {
 									p.spigot().sendMessage(StringUtils.getHoverMessage(ss, "&7Currently on &d" + server));
 								}
 							}
@@ -635,7 +636,7 @@ public final class RedisHandler {
 					String player = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
 					OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(player);
 					for (Player p : Bukkit.getOnlinePlayers()) {
-						if (main.getFriends() != null && main.getFriends().get(p.getUniqueId()) != null && main.getFriends().get(p.getUniqueId()).contains(offlinePlayer.getUniqueId().toString())) {
+						if (TSMCUser.fromPlayer(p).isFriend(offlinePlayer)) {
 							p.sendMessage(CC.translate("&d&lFRIENDS &5■ &d" + player + " &7has logged in!"));
 						}
 					}
@@ -648,7 +649,7 @@ public final class RedisHandler {
 					String player = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
 					OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(player);
 					for (Player p : Bukkit.getOnlinePlayers()) {
-						if (main.getFriends() != null && main.getFriends().get(p.getUniqueId()) != null && main.getFriends().get(p.getUniqueId()).contains(offlinePlayer.getUniqueId().toString())) {
+						if (TSMCUser.fromPlayer(p).isFriend(offlinePlayer)) {
 							p.sendMessage(CC.translate("&d&lFRIENDS &5■ &d" + player + " &7has logged out!"));
 						}
 					}

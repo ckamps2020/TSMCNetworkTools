@@ -4,6 +4,10 @@ import me.thesquadmc.utils.enums.MessageSettings;
 import me.thesquadmc.utils.msgs.StringUtils;
 import org.bukkit.Bukkit;
 
+/**
+ * @deprecated Legacy API. See {@link TSMCUser}
+ */
+@Deprecated
 public final class TempData {
 
 	private String loginTime;

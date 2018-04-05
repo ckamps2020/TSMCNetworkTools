@@ -1,11 +1,16 @@
 package me.thesquadmc.managers;
 
+import me.thesquadmc.objects.TSMCUser;
 import me.thesquadmc.objects.TempData;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * @deprecated Legacy API. See {@link TSMCUser}
+ */
+@Deprecated
 public final class TempDataManager {
 
 	private Map<UUID, TempData> allTempData = new HashMap<>();

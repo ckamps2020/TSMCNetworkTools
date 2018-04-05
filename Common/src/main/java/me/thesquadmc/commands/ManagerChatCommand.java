@@ -6,7 +6,8 @@ import me.lucko.luckperms.api.caching.MetaData;
 import me.lucko.luckperms.api.caching.UserData;
 import me.thesquadmc.Main;
 import me.thesquadmc.networking.JedisTask;
-import me.thesquadmc.objects.TempData;
+import me.thesquadmc.objects.PlayerSetting;
+import me.thesquadmc.objects.TSMCUser;
 import me.thesquadmc.utils.*;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.enums.RedisArg;
@@ -35,18 +36,18 @@ public final class ManagerChatCommand implements CommandExecutor {
 		if (sender instanceof Player) {
 			Player player = (Player) sender;
 			User user = main.getLuckPermsApi().getUser(player.getUniqueId());
-			TempData tempData = main.getTempDataManager().getTempData(player.getUniqueId());
 			if (PlayerUtils.isEqualOrHigherThen(player, Rank.MANAGER)) {
+				TSMCUser tsmcUser = TSMCUser.fromPlayer(player);
 				if (args.length == 0) {
-					if (!tempData.isManagerchatEnabled()) {
-						tempData.setManagerchatEnabled(true);
+					if (!tsmcUser.getSetting(PlayerSetting.MANAGERCHAT_ENABLED)) {
+						tsmcUser.updateSetting(PlayerSetting.MANAGERCHAT_ENABLED, true);
 						player.sendMessage(CC.translate("&e&lMANAGER CHAT &6■ &7You toggled Manager Chat &eon&7!"));
 					} else {
-						tempData.setManagerchatEnabled(false);
+						tsmcUser.updateSetting(PlayerSetting.MANAGERCHAT_ENABLED, false);
 						player.sendMessage(CC.translate("&e&lMANAGER CHAT &6■ &7You toggled Manager Chat &eoff&7!"));
 					}
 				} else {
-					if (!tempData.isManagerchatEnabled()) {
+					if (!tsmcUser.getSetting(PlayerSetting.MANAGERCHAT_ENABLED)) {
 						player.sendMessage(CC.translate("&e&lMANAGER CHAT &6■ &7Please enable managerchat first!"));
 						return true;
 					}
