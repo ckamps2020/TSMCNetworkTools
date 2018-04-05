@@ -63,6 +63,7 @@ local.properties
 
 .idea/*
 *.iml
+dependency-reduced-pom.xml
 
 # User-specific stuff:
 .idea/**/workspace.xml
