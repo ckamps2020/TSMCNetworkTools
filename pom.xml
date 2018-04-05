@@ -4,8 +4,9 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<name>NetworkTools</name>
-	<groupId>me.thesquadmc</groupId>
-	<artifactId>StaffTools</artifactId>
+
+	<groupId>co.thesquadmc</groupId>
+	<artifactId>networktools-parent</artifactId>
 	<version>1.2.6</version>
 	<packaging>pom</packaging>
 

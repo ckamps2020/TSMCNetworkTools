@@ -1,15 +1,23 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>StaffTools1.8R3</artifactId>
+	<artifactId>networktools-1.8</artifactId>
 	<name>TSMCNetworkTools-1.8R3</name>
 	<description>The 1.8.4 - 1.8.8 abstract implementation of NetworkTools</description>
 
 	<parent>
-		<groupId>me.thesquadmc</groupId>
-		<artifactId>StaffTools</artifactId>
+		<groupId>co.thesquadmc</groupId>
+		<artifactId>networktools-parent</artifactId>
 		<version>1.2.6</version>
 	</parent>
+
+	<distributionManagement>
+		<repository>
+			<id>thesquadmc-repo</id>
+			<url>https://nexus.thesquadmc.net/repository/maven-releases/</url>
+			<layout>default</layout>
+		</repository>
+	</distributionManagement>
 
 	<build>
 		<plugins>
