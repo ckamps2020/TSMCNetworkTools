@@ -83,3 +83,5 @@ commands:
     l1:
     l2:
     motdclear:
+
+permissions:
