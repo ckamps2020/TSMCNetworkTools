@@ -8,7 +8,7 @@ import org.bukkit.OfflinePlayer;
 
 import me.thesquadmc.objects.Party;
 
-public class PartyManager {
+public final class PartyManager {
 	
 	private final Set<Party> parties = new HashSet<>();
 	

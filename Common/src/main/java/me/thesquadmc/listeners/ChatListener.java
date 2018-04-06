@@ -11,6 +11,7 @@ import me.thesquadmc.objects.TSMCUser;
 import me.thesquadmc.utils.enums.RedisArg;
 import me.thesquadmc.utils.enums.RedisChannels;
 import me.thesquadmc.utils.msgs.CC;
+import me.thesquadmc.utils.server.Multithreading;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -50,15 +51,20 @@ public final class ChatListener implements Listener {
 			Bukkit.getScheduler().runTaskAsynchronously(Main.getMain(), new Runnable() {
 				@Override
 				public void run() {
-					try (Jedis jedis = Main.getMain().getPool().getResource()) {
-						JedisTask.withName(UUID.randomUUID().toString())
-								.withArg(RedisArg.FRIENDS.getArg(), stringBuilder.toString())
-								.withArg(RedisArg.SERVER.getArg(), Bukkit.getServerName())
-								.withArg(RedisArg.PLAYER.getArg(), player.getName())
-								.withArg(RedisArg.MESSAGE.getArg(), formattedMsg)
-								.withArg(RedisArg.SSMSG.getArg(), ssMsg)
-								.send(RedisChannels.FRIEND_CHAT.getChannelName(), jedis);
-					}
+					Multithreading.runAsync(new Runnable() {
+						@Override
+						public void run() {
+							try (Jedis jedis = Main.getMain().getPool().getResource()) {
+								JedisTask.withName(UUID.randomUUID().toString())
+										.withArg(RedisArg.FRIENDS.getArg(), stringBuilder.toString())
+										.withArg(RedisArg.SERVER.getArg(), Bukkit.getServerName())
+										.withArg(RedisArg.PLAYER.getArg(), player.getName())
+										.withArg(RedisArg.MESSAGE.getArg(), formattedMsg)
+										.withArg(RedisArg.SSMSG.getArg(), ssMsg)
+										.send(RedisChannels.FRIEND_CHAT.getChannelName(), jedis);
+							}
+						}
+					});
 				}
 			});
 		}
