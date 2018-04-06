@@ -145,7 +145,7 @@ public final class Main extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new XrayListener(), this);
 		getServer().getPluginManager().registerEvents(new StaffmodeListener(this), this);
 		getServer().getPluginManager().registerEvents(new FreezeListener(this), this);
-
+		//test
 		commandHandler.registerCommands(new CreativeCommand());
 
 		host = fileManager.getNetworkingConfig().getString("redis.host");
