@@ -5,13 +5,17 @@ import me.thesquadmc.objects.PlayerSetting;
 import me.thesquadmc.objects.TSMCUser;
 import me.thesquadmc.utils.enums.Settings;
 
-import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 public final class DatabaseManager {
 
@@ -65,7 +69,7 @@ public final class DatabaseManager {
 			this.DB.openConnection();
 		}
 		try {
-			List<UUID> friends = TSMCUser.fromUUID(UUID.fromString(uuid)).getFriends();
+			Set<UUID> friends = TSMCUser.fromUUID(UUID.fromString(uuid)).getFriends();
 			StringBuilder stringBuilder = new StringBuilder();
 			for (UUID friend : friends) {
 				stringBuilder.append(friend + " ");

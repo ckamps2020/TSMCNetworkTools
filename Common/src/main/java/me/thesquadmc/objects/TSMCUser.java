@@ -1,11 +1,11 @@
 package me.thesquadmc.objects;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import com.google.common.base.Preconditions;
@@ -18,8 +18,8 @@ public class TSMCUser {
 	
 	private static final Map<UUID, TSMCUser> USERS = new HashMap<>();
 	
-	private final List<UUID> friends = new ArrayList<>();
-	private final List<UUID> requests = new ArrayList<>();
+	private final Set<UUID> friends = new HashSet<>();
+	private final Set<UUID> requests = new HashSet<>();
 	
 	private Map<PlayerSetting<?>, Object> settings = new HashMap<>();
 	
@@ -84,8 +84,8 @@ public class TSMCUser {
 		return !friends.isEmpty();
 	}
 	
-	public List<UUID> getFriends() {
-		return Collections.unmodifiableList(friends);
+	public Set<UUID> getFriends() {
+		return Collections.unmodifiableSet(friends);
 	}
 	
 	public void clearFriends() {
@@ -122,8 +122,8 @@ public class TSMCUser {
 		return !requests.isEmpty();
 	}
 	
-	public List<UUID> getRequests() {
-		return Collections.unmodifiableList(requests);
+	public Set<UUID> getRequests() {
+		return Collections.unmodifiableSet(requests);
 	}
 	
 	public void clearRequests() {

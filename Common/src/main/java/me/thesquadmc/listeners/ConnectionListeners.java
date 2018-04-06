@@ -134,6 +134,8 @@ public final class ConnectionListeners implements Listener {
 				p.showPlayer(player);
 			}
 		}
+		
+		TSMCUser.unloadUser(player);
 	}
 
 }
