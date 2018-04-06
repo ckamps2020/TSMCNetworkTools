@@ -133,8 +133,6 @@ public final class Main extends JavaPlugin {
 		partyManager = new PartyManager();
 		countManager = new CountManager();
 		AbstractGUI.initializeListeners(this);
-		getServer().getPluginManager().registerEvents(new ChatListener(), this);
-		getServer().getPluginManager().registerEvents(new SettingsListener(), this);
 		getServer().getPluginManager().registerEvents(new LaunchListener(), this);
 		getServer().getPluginManager().registerEvents(new LightningListener(), this);
 		getServer().getPluginManager().registerEvents(new FilterListener(this), this);
@@ -277,7 +275,6 @@ public final class Main extends JavaPlugin {
 		getCommand("silence").setExecutor(new ChatSilenceCommand(this));
 		getCommand("slowchat").setExecutor(new ChatSlowCommand(this));
 		getCommand("smite").setExecutor(new SmiteCommand(this));
-		getCommand("friend").setExecutor(new FriendCommand(this));
 		getCommand("ping").setExecutor(new PingCommand(this));
 		getCommand("status").setExecutor(new StatusCommand(this));
 		getCommand("proxytransport").setExecutor(new ProxyTransportCommand(this));

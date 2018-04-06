@@ -3,7 +3,6 @@ package me.thesquadmc.networking;
 import me.thesquadmc.Main;
 import me.thesquadmc.abstraction.Sounds;
 import me.thesquadmc.commands.FindCommand;
-import me.thesquadmc.commands.FriendCommand;
 import me.thesquadmc.commands.StafflistCommand;
 import me.thesquadmc.commands.StaffmodeCommand;
 import me.thesquadmc.managers.PartyManager;
@@ -436,31 +435,6 @@ public final class RedisHandler {
 					}
 				});
 			}
-		} else if (channel.equalsIgnoreCase(RedisChannels.PROXY_RETURN.getChannelName())) {
-			Multithreading.runAsync(new Runnable() {
-				@Override
-				public void run() {
-					String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
-					String player = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
-					if (server.equalsIgnoreCase(Bukkit.getServerName())) {
-						Player p = Bukkit.getPlayer(player);
-						if (p != null) {
-
-							String proxies = String.valueOf(data.get(RedisArg.PROXIES.getArg()));
-							String count = String.valueOf(data.get(RedisArg.COUNT.getArg()));
-							String regex = "[ ]+";
-							String[] tokens = proxies.split(regex);
-							p.sendMessage(CC.translate("&7"));
-							for (String s : tokens) {
-								p.sendMessage(CC.translate(s));
-							}
-							p.sendMessage(CC.translate("&7"));
-							p.sendMessage(CC.translate("&e" + count + "&8/&e4000 &7Online globally"));
-							p.sendMessage(CC.translate("&7"));
-						}
-					}
-				}
-			});
 		} else if (channel.equalsIgnoreCase(RedisChannels.MONITOR_INFO.getChannelName())) {
 			Multithreading.runAsync(new Runnable() {
 				@Override
@@ -499,145 +473,6 @@ public final class RedisHandler {
 								player.sendMessage(CC.translate(msg));
 								player.sendMessage(CC.translate("&8&m-------------------------------------------------"));
 							}
-						}
-					}
-				}
-			});
-		} else if (channel.equalsIgnoreCase(RedisChannels.FRIEND_CHECK_REQUEST.getChannelName())) {
-			main.getServer().getScheduler().runTaskAsynchronously(main, new Runnable() {
-				@Override
-				public void run() {
-					String name = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
-					for (Player p : Bukkit.getOnlinePlayers()) {
-						if (p.getName().equalsIgnoreCase(name)) {
-							Multithreading.runAsync(new Runnable() {
-								@Override
-								public void run() {
-									try (Jedis jedis = main.getPool().getResource()) {
-										JedisTask.withName(UUID.randomUUID().toString())
-												.withArg(RedisArg.SERVER.getArg(), String.valueOf(data.get(RedisArg.SERVER.getArg())))
-												.withArg(RedisArg.PLAYER.getArg(), name)
-												.withArg(RedisArg.ORIGIN_PLAYER.getArg(), String.valueOf(data.get(RedisArg.ORIGIN_PLAYER.getArg())))
-												.send(RedisChannels.FRIEND_RETURN_REQUEST.getChannelName(), jedis);
-									}
-								}
-							});
-							return;
-						}
-					}
-				}
-			});
-		} else if (channel.equalsIgnoreCase(RedisChannels.FRIEND_RETURN_REQUEST.getChannelName())) {
-			main.getServer().getScheduler().runTaskAsynchronously(main, new Runnable() {
-				@Override
-				public void run() {
-					Multithreading.runAsync(new Runnable() {
-						@Override
-						public void run() {
-							String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
-							if (server.equalsIgnoreCase(Bukkit.getServerName())) {
-								String name = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
-								String origin = String.valueOf(data.get(RedisArg.ORIGIN_PLAYER.getArg()));
-								Player p = Bukkit.getPlayer(origin);
-								if (p != null) {
-									FriendCommand.online.get(p.getUniqueId()).add(name);
-								}
-							}
-						}
-					});
-				}
-			});
-		} else if (channel.equalsIgnoreCase(RedisChannels.FRIEND_REMOVE_OUTBOUND.getChannelName())) {
-			main.getServer().getScheduler().runTaskAsynchronously(main, new Runnable() {
-				@Override
-				public void run() {
-					String name = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
-					for (Player p : Bukkit.getOnlinePlayers()) {
-						if (p.getName().equalsIgnoreCase(name)) {
-							OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(String.valueOf(data.get(RedisArg.ORIGIN_PLAYER.getArg())));
-							TSMCUser.fromPlayer(p).removeFriend(offlinePlayer);
-							p.sendMessage(CC.translate("&d&lFRIENDS &5■ &d" + offlinePlayer.getName() + " &7has removed you as a friend"));
-							Multithreading.runAsync(new Runnable() {
-								@Override
-								public void run() {
-									try (Jedis jedis = main.getPool().getResource()) {
-										JedisTask.withName(UUID.randomUUID().toString())
-												.withArg(RedisArg.SERVER.getArg(), String.valueOf(data.get(RedisArg.SERVER.getArg())))
-												.withArg(RedisArg.PLAYER.getArg(), name)
-												.withArg(RedisArg.ORIGIN_PLAYER.getArg(), String.valueOf(data.get(RedisArg.ORIGIN_PLAYER.getArg())))
-												.send(RedisChannels.FRIEND_REMOVE_INBOUND.getChannelName(), jedis);
-									}
-								}
-							});
-							try {
-								main.getMySQL().saveFriendAccount(p.getUniqueId().toString());
-							} catch (Exception e) {
-								System.out.println("[NetworkTools] Unable to execute mysql operation");
-							}
-							return;
-						}
-					}
-				}
-			});
-		} else if (channel.equalsIgnoreCase(RedisChannels.FRIEND_REMOVE_INBOUND.getChannelName())) {
-			main.getServer().getScheduler().runTaskAsynchronously(main, new Runnable() {
-				@Override
-				public void run() {
-					String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
-					if (server.equalsIgnoreCase(Bukkit.getServerName())) {
-						String name = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
-						String origin = String.valueOf(data.get(RedisArg.ORIGIN_PLAYER.getArg()));
-						Player p = Bukkit.getPlayer(origin);
-						if (p != null) {
-							FriendCommand.getStillLooking().remove(p.getName());
-						}
-					}
-				}
-			});
-		} else if (channel.equalsIgnoreCase(RedisChannels.FRIEND_CHAT.getChannelName())) {
-			main.getServer().getScheduler().runTaskAsynchronously(main, new Runnable() {
-				@Override
-				public void run() {
-					Multithreading.runAsync(new Runnable() {
-						@Override
-						public void run() {
-							String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
-							String friends = String.valueOf(data.get(RedisArg.FRIENDS.getArg()));
-							String player = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
-							String message = String.valueOf(data.get(RedisArg.MESSAGE.getArg()));
-							String ss = String.valueOf(data.get(RedisArg.SSMSG.getArg()));
-							List<String> f = new ArrayList<>();
-							String regex = "[ ]+";
-							String[] tokens = friends.split(regex);
-							for (String s : tokens) {
-								f.add(s);
-							}
-							for (Player p : Bukkit.getOnlinePlayers()) {
-								if (PlayerUtils.isEqualOrHigherThen(p, Rank.TRAINEE) && TSMCUser.fromPlayer(p).getSetting(PlayerSetting.SOCIALSPY)) {
-									p.spigot().sendMessage(StringUtils.getHoverMessage(ss, "&7Currently on &d" + server));
-								}
-							}
-							for (String s : f) {
-								if (UUID.fromString(s) != null) {
-									Player t = Bukkit.getPlayer(UUID.fromString(s));
-									if (t != null) {
-										t.spigot().sendMessage(StringUtils.getHoverMessage(message, "&7Currently on &d" + server));
-									}
-								}
-							}
-						}
-					});
-				}
-			});
-		} else if (channel.equalsIgnoreCase(RedisChannels.LOGIN.getChannelName())) {
-			Multithreading.runAsync(new Runnable() {
-				@Override
-				public void run() {
-					String player = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
-					OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(player);
-					for (Player p : Bukkit.getOnlinePlayers()) {
-						if (TSMCUser.fromPlayer(p).isFriend(offlinePlayer)) {
-							p.sendMessage(CC.translate("&d&lFRIENDS &5■ &d" + player + " &7has logged in!"));
 						}
 					}
 				}
@@ -711,34 +546,58 @@ public final class RedisHandler {
 				}
 			});
 		} else if (channel.equalsIgnoreCase(RedisChannels.PARTY_JOIN_SERVER.getChannelName())) {
-			Bukkit.getScheduler().runTaskAsynchronously(main, () -> Multithreading.runAsync(() -> {
-				Party party = Main.getMain().getGson().fromJson(String.valueOf(data.get(RedisArg.PARTY.getArg())), Party.class);
-				if (party == null) return;
-				
-				Main.getMain().getPartyManager().addParty(party);
-			}));
-		} else if (channel.equalsIgnoreCase(RedisChannels.PARTY_UPDATE.getChannelName())) {
-			Bukkit.getScheduler().runTaskAsynchronously(main, () -> Multithreading.runAsync(() -> {
-				Party party = Main.getMain().getGson().fromJson(String.valueOf(data.get(RedisArg.PARTY.getArg())), Party.class);
-				if (party == null) return;
+			Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
+				@Override
+				public void run() {
+					Multithreading.runAsync(new Runnable() {
+						@Override
+						public void run() {
+							Party party = Main.getMain().getGson().fromJson(String.valueOf(data.get(RedisArg.PARTY.getArg())), Party.class);
+							if (party == null) return;
 
-				// Looks ugly, but it works
-				PartyManager manager = Main.getMain().getPartyManager();
-				if (manager.removeParty(party)) {
-					manager.addParty(party);
+							Main.getMain().getPartyManager().addParty(party);
+						}
+					});
 				}
-			}));
+			});
+		} else if (channel.equalsIgnoreCase(RedisChannels.PARTY_UPDATE.getChannelName())) {
+			Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
+				@Override
+				public void run() {
+					Multithreading.runAsync(new Runnable() {
+						@Override
+						public void run() {
+							Party party = Main.getMain().getGson().fromJson(String.valueOf(data.get(RedisArg.PARTY.getArg())), Party.class);
+							if (party == null) return;
+
+							// Looks ugly, but it works
+							PartyManager manager = Main.getMain().getPartyManager();
+							if (manager.removeParty(party)) {
+								manager.addParty(party);
+							}
+						}
+					});
+				}
+			});
 		} else if (channel.equalsIgnoreCase(RedisChannels.PARTY_DISBAND.getChannelName())) {
-			Bukkit.getScheduler().runTaskAsynchronously(main, () -> Multithreading.runAsync(() -> {
-				Party party = Main.getMain().getGson().fromJson(String.valueOf(data.get(RedisArg.PARTY.getArg())), Party.class);
-				if (party == null) return;
-				
-				Main.getMain().getPartyManager().removeParty(party);
-				for (OfflinePlayer member : party.getMembers()) {
-					if (!member.isOnline()) return;
-					member.getPlayer().sendMessage(CC.translate("&e&lPARTY &6■ &7Your &eparty &7has been &edisbanded&7!"));
+			Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
+				@Override
+				public void run() {
+					Multithreading.runAsync(new Runnable() {
+						@Override
+						public void run() {
+							Party party = Main.getMain().getGson().fromJson(String.valueOf(data.get(RedisArg.PARTY.getArg())), Party.class);
+							if (party == null) return;
+
+							Main.getMain().getPartyManager().removeParty(party);
+							for (OfflinePlayer member : party.getMembers()) {
+								if (!member.isOnline()) return;
+								member.getPlayer().sendMessage(CC.translate("&e&lPARTY &6■ &7Your &eparty &7has been &edisbanded&7!"));
+							}
+						}
+					});
 				}
-			}));
+			});
 		}
 	}
 
