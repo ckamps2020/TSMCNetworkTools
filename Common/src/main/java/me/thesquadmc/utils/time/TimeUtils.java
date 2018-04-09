@@ -2,17 +2,30 @@ package me.thesquadmc.utils.time;
 
 import org.apache.commons.lang.math.NumberUtils;
 
+import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Year;
 import java.time.YearMonth;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class TimeUtils {
+
+	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-ddHH:mm:ssX", Locale.ENGLISH);;
+
+	public static Date parseDate(String string) {
+		try {
+			return DATE_FORMAT.parse(string.replace("T", ""));
+		} catch (ParseException e) {
+			return new Date(0);
+		}
+	}
 
 	public static boolean elapsed(long from, long required) {
 		return System.currentTimeMillis() - from > required;

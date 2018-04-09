@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import me.gong.mcleaks.MCLeaksAPI;
 import me.lucko.luckperms.LuckPerms;
 import me.lucko.luckperms.api.LuckPermsApi;
+import me.thesquadmc.buycraft.Buycraft;
 import me.thesquadmc.commands.*;
 import me.thesquadmc.abstraction.AbstractionModule;
 import me.thesquadmc.abstraction.NMSAbstract;
@@ -145,7 +146,7 @@ public final class Main extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new XrayListener(), this);
 		getServer().getPluginManager().registerEvents(new StaffmodeListener(this), this);
 		getServer().getPluginManager().registerEvents(new FreezeListener(this), this);
-		//test
+
 		commandHandler.registerCommands(new CreativeCommand());
 
 		host = fileManager.getNetworkingConfig().getString("redis.host");
@@ -239,6 +240,24 @@ public final class Main extends JavaPlugin {
 					e.printStackTrace();
 					System.out.println("[NetworkTools] Unable to connect to mysql database!");
 				}
+			}
+		});
+		System.out.println("[NetworkTools] Setting up BuycraftAPI...");
+		Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable() {
+			@Override
+			public void run() {
+				Multithreading.runAsync(new Runnable() {
+					@Override
+					public void run() {
+						try {
+							//Buycraft buycraft = new Buycraft(fileManager.getNetworkingConfig().getString("buycraft.secret"));
+							System.out.println("[NetworkTools] BuycraftAPI setup and ready to go!");
+						} catch (Exception e) {
+							e.printStackTrace();
+							System.out.println("[NetworkTools] Unable to set up BuycraftAPI");
+						}
+					}
+				});
 			}
 		});
 		Multithreading.runAsync(new Runnable() {
