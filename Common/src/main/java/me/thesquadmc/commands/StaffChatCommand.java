@@ -85,7 +85,8 @@ public final class StaffChatCommand implements CommandExecutor {
 										JedisTask.withName(UUID.randomUUID().toString())
 												.withArg(RedisArg.PLAYER.getArg(), player.getName())
 												.withArg(RedisArg.MESSAGE.getArg(), stringBuilder.toString())
-												.send(RedisChannels.SLACK_STAFFCHAT.getChannelName(), jedis);
+												.withArg(RedisArg.SERVER.getArg(), Bukkit.getServerName())
+												.send(RedisChannels.DISCORD_STAFFCHAT_DISCORD.getChannelName(), jedis);
 									}
 								}
 							});

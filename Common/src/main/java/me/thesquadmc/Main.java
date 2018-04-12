@@ -221,7 +221,8 @@ public final class Main extends JavaPlugin {
 							RedisChannels.RETURN_SERVER.getChannelName(),
 							RedisChannels.STARTUP_REQUEST.getChannelName(),
 							RedisChannels.SERVER_STATE.getChannelName(),
-							RedisChannels.PLAYER_COUNT.getChannelName());
+							RedisChannels.PLAYER_COUNT.getChannelName(),
+							RedisChannels.DISCORD_STAFFCHAT_SERVER.getChannelName());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

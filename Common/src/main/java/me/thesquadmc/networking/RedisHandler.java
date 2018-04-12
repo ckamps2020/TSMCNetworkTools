@@ -14,6 +14,7 @@ import me.thesquadmc.utils.enums.*;
 import me.thesquadmc.utils.msgs.CC;
 import me.thesquadmc.utils.msgs.GameMsgs;
 import me.thesquadmc.utils.msgs.StringUtils;
+import me.thesquadmc.utils.msgs.Unicode;
 import me.thesquadmc.utils.server.ConnectionUtils;
 import me.thesquadmc.utils.server.Multithreading;
 import me.thesquadmc.utils.server.ServerUtils;
@@ -593,6 +594,28 @@ public final class RedisHandler {
 							for (OfflinePlayer member : party.getMembers()) {
 								if (!member.isOnline()) return;
 								member.getPlayer().sendMessage(CC.translate("&e&lPARTY &6■ &7Your &eparty &7has been &edisbanded&7!"));
+							}
+						}
+					});
+				}
+			});
+		} else if (channel.equalsIgnoreCase(RedisChannels.DISCORD_STAFFCHAT_SERVER.getChannelName())) {
+			Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
+				@Override
+				public void run() {
+					Multithreading.runAsync(new Runnable() {
+						@Override
+						public void run() {
+							String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
+							String p = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
+							String message = String.valueOf(data.get(RedisArg.MESSAGE.getArg()));
+							for (Player player : Bukkit.getOnlinePlayers()) {
+								if (PlayerUtils.isEqualOrHigherThen(player, Rank.TRAINEE)) {
+									TSMCUser user = TSMCUser.fromPlayer(player);
+									if (user.getSetting(PlayerSetting.STAFFCHAT_ENABLED) && user.getSetting(PlayerSetting.STAFFCHAT_SCOPE) == MessageSettings.GLOBAL) {
+										player.spigot().sendMessage(StringUtils.getHoverMessage("&8[&a&lSTAFFCHAT&8] &7" + p + " &8" + Unicode.DOUBLE_ARROW_RIGHT + " &a" + message, "&7Currently on &e" + server));
+									}
+								}
 							}
 						}
 					});
