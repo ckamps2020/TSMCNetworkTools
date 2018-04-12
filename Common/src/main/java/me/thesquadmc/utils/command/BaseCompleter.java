@@ -35,7 +35,7 @@ public class BaseCompleter implements TabCompleter {
 			if (completers.containsKey(cmdLabel)) {
 				Entry<Method, Object> entry = completers.get(cmdLabel);
 				try {
-					return (List<String>) entry.getKey().invoke(entry.getValue(), new CommandArgs(sender, command, label, args, cmdLabel. split("\\.").length - 1));
+					return (List<String>) entry.getKey().invoke(entry.getValue(), new CommandArgs(sender, command, label, args, cmdLabel. split(" ").length - 1));
 				} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
 					e.printStackTrace();
 				}

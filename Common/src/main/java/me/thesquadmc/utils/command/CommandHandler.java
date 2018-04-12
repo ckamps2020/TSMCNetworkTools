@@ -71,11 +71,13 @@ public class CommandHandler implements CommandExecutor {
 			for (int x = 0; x < i; x++) {
 				builder.append(".").append(args[x].toLowerCase());
 			}
+
 			String cmdLabel = builder.toString();
 			if (commandMap.containsKey(cmdLabel)) {
 				Method method = commandMap.get(cmdLabel).getKey();
 				Object methodObject = commandMap.get(cmdLabel).getValue();
 				Command command = method.getAnnotation(Command.class);
+
 				if (!command.permission().equals("") && !sender.hasPermission(command.permission())) {
 					sender.sendMessage(CC.translate(command.noPermission()));
 					return true;
@@ -88,13 +90,14 @@ public class CommandHandler implements CommandExecutor {
 
 				try {
 					method.invoke(methodObject, new CommandArgs(sender, cmd, label, args,
-							cmdLabel. split("\\.").length - 1));
+							cmdLabel.split("\\.").length - 1));
 				} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
 					e.printStackTrace();
 				}
 				return true;
 			}
 		}
+
 		defaultCommand(new CommandArgs(sender, cmd, label, args, 0));
 		return true;
 	}
@@ -115,9 +118,9 @@ public class CommandHandler implements CommandExecutor {
 					System.out.println("Unable to register command " + m.getName() + ". Unexpected method arguments");
 					continue;
 				}
-				registerCommand(command, command.name(), m, obj);
-				for (String alias : command.aliases()) {
-					registerCommand(command, alias, m, obj);
+
+				for (String alias : command.name()) {
+					registerCommand(command, alias.replaceAll(" ", "."), m, obj);
 				}
 
 			// Look for command completion
@@ -135,9 +138,8 @@ public class CommandHandler implements CommandExecutor {
 					continue;
 				}
 
-				registerCompleter(comp.name(), m, obj);
-				for (String alias : comp.aliases()) {
-					registerCompleter(alias, m, obj);
+				for (String alias : comp.name()) {
+					registerCompleter(alias.replaceAll(" ", "."), m, obj);
 				}
 			}
 		}
@@ -149,7 +151,7 @@ public class CommandHandler implements CommandExecutor {
 	public void registerHelp() {
 		Set<HelpTopic> help = new TreeSet<>(HelpTopicComparator.helpTopicComparatorInstance());
 		for (String s : commandMap.keySet()) {
-			if (!s.contains(".")) {
+			if (!s.contains(" ")) {
 				org.bukkit.command.Command cmd = map.getCommand(s);
 				HelpTopic topic = new GenericCommandHelpTopic(cmd);
 				help.add(topic);
@@ -163,21 +165,24 @@ public class CommandHandler implements CommandExecutor {
 	private void registerCommand(Command command, String label, Method m, Object obj) {
 		commandMap.put(label.toLowerCase(), new AbstractMap.SimpleEntry<>(m, obj));
 		commandMap.put(this.plugin.getName() + ':' + label.toLowerCase(), new AbstractMap.SimpleEntry<>(m, obj));
-		String cmdLabel = label. split("\\.")[0].toLowerCase();
+
+		String cmdLabel = label.split(" ")[0].toLowerCase();
 		if (map.getCommand(cmdLabel) == null) {
 			org.bukkit.command.Command cmd = new BaseCommand(cmdLabel, this, plugin);
 			map.register(plugin.getName(), cmd);
 		}
+
 		if (!command.description().equalsIgnoreCase("") && cmdLabel.equals(label)) {
 			map.getCommand(cmdLabel).setDescription(command.description());
 		}
+
 		if (!command.usage().equalsIgnoreCase("") && cmdLabel.equals(label)) {
 			map.getCommand(cmdLabel).setUsage(command.usage());
 		}
 	}
 
 	private void registerCompleter(String label, Method m, Object obj) {
-		String cmdLabel = label. split("\\.")[0].toLowerCase();
+		String cmdLabel = label. split(" ")[0].toLowerCase();
 
 		if (map.getCommand(cmdLabel) == null) {
 			org.bukkit.command.Command command = new BaseCommand(cmdLabel, this, plugin);

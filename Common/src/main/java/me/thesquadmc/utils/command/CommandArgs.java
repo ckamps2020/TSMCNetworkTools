@@ -3,6 +3,8 @@ package me.thesquadmc.utils.command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.Arrays;
+
 public class CommandArgs {
 
 	private CommandSender sender;
@@ -10,15 +12,14 @@ public class CommandArgs {
 	private String label;
 	private String[] args;
 
-	protected CommandArgs(CommandSender sender, org.bukkit.command.Command command, String label, String[] args,
-			int subCommand) {
+	protected CommandArgs(CommandSender sender, org.bukkit.command.Command command, String label, String[] args, int subCommand) {
 		String[] modArgs = new String[args.length - subCommand];
 		System.arraycopy(args, subCommand, modArgs, 0, args.length - subCommand);
 
 		StringBuilder builder = new StringBuilder();
 		builder.append(label);
 		for (int x = 0; x < subCommand; x++) {
-			builder.append(".").append(args[x]);
+			builder.append(" ").append(args[x]);
 		}
 
 		String cmdLabel = builder.toString();
@@ -82,11 +83,7 @@ public class CommandArgs {
 	}
 
 	public Player getPlayer() {
-		if (sender instanceof Player) {
-			return (Player) sender;
-		} else {
-			return null;
-		}
+		return isPlayer() ? (Player) sender : null;
 	}
 
 }

@@ -48,6 +48,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.stream.Stream;
 
 public final class Main extends JavaPlugin {
 
@@ -148,7 +149,10 @@ public final class Main extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new StaffmodeListener(this), this);
 		getServer().getPluginManager().registerEvents(new FreezeListener(this), this);
 
-		commandHandler.registerCommands(new CreativeCommand());
+		Stream.of(
+				new CreativeCommand(),
+				new HealCommand()
+		).forEach(o -> commandHandler.registerCommands(o));
 
 		host = fileManager.getNetworkingConfig().getString("redis.host");
 		port = fileManager.getNetworkingConfig().getInt("redis.port");

@@ -47,7 +47,7 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>me.thesquadmc</groupId>
+			<groupId>co.thesquadmc</groupId>
 			<artifactId>StaffTools-Common</artifactId>
 			<version>${project.parent.version}</version>
 			<scope>compile</scope>
