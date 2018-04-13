@@ -138,6 +138,11 @@ public final class PlayerUtils {
 		return false;
 	}
 
+	public static void addPlayerPermission(Player player, String perm) {
+		User user = Main.getMain().getLuckPermsApi().getUser(player.getUniqueId());
+		user.setPermission(Main.getMain().getLuckPermsApi().getNodeFactory().newBuilder(perm).setValue(true).build());
+	}
+
 	public static String getPlayerPrefix(Player player) {
 		User user = Main.getMain().getLuckPermsApi().getUser(player.getUniqueId());
 		UserData cachedData = user.getCachedData();
