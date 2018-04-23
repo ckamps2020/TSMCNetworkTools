@@ -5,9 +5,9 @@
 
 	<name>NetworkTools</name>
 
-	<groupId>co.thesquadmc</groupId>
+	<groupId>com.thesquadmc</groupId>
 	<artifactId>networktools-parent</artifactId>
-	<version>1.2.6</version>
+	<version>1.3.2</version>
 	<packaging>pom</packaging>
 
 	<modules>
@@ -40,9 +40,9 @@
 							<relocations>
 								<relocation>
 									<pattern>org.apache.commons</pattern>
-									<shadedPattern>co.thesquadmc.shaded.org.apache.commons</shadedPattern>
+									<shadedPattern>com.thesquadmc.shaded.org.apache.commons</shadedPattern>
 									<pattern>redis.clients.jedis</pattern>
-									<shadedPattern>co.thesquadmc.shaded.redis.clients.jedis</shadedPattern>
+									<shadedPattern>com.thesquadmc.shaded.redis.clients.jedis</shadedPattern>
 								</relocation>
 							</relocations>
 						</configuration>
