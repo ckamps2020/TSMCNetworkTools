@@ -33,7 +33,9 @@ public final class ServerListener implements Listener {
 											.withArg(RedisArg.SERVER.getArg(), Bukkit.getServerName() + " ")
 											.withArg(RedisArg.UPTIME.getArg(), TimeUtils.millisToRoundedTime(System.currentTimeMillis() - Main.getMain().getStartup()))
 											.withArg(RedisArg.COUNT.getArg(), String.valueOf(Bukkit.getOnlinePlayers().size()))
-											.withArg(RedisArg.MESSAGE.getArg(), "&7TPS = &e" + ServerUtils.getTPS(0) + "&7, &7Memory = &e" + ServerUtils.getUsedMemory() + "&8/&e" + ServerUtils.getFreeMemory() + "&7")
+											.withArg(RedisArg.MESSAGE.getArg(), "&7TPS = &e" + ServerUtils.getTPS(0) + "&7, &7Memory = &e" + ServerUtils.getUsedMemory() + "&8/&e" + ServerUtils.getTotalMemory() + "&7")
+											.withArg(RedisArg.TPS.getArg(), ServerUtils.getTPS(0))
+											.withArg(RedisArg.MEMORY.getArg(), ServerUtils.getUsedMemory() + "/" + ServerUtils.getTotalMemory())
 											.send(RedisChannels.MONITOR_INFO.getChannelName(), jedis);
 								}
 							}
