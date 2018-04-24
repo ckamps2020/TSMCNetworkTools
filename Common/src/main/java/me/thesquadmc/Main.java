@@ -32,6 +32,7 @@ import me.thesquadmc.utils.server.ServerState;
 import me.thesquadmc.utils.server.ServerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.Configuration;
 import org.bukkit.plugin.java.JavaPlugin;
 import redis.clients.jedis.*;
 
@@ -263,7 +264,15 @@ public final class Main extends JavaPlugin {
 		Multithreading.runAsync(new Runnable() {
 			@Override
 			public void run() {
-				//mongo = new Mongo();
+				Configuration conf = fileManager.getNetworkingConfig();
+				String user = conf.getString("mongo.user");
+                String db = conf.getString("mongo.database");
+                String host = conf.getString("mongo.host");
+                String password = conf.getString("mongo.password");
+                int port = conf.getInt("mongo.port");
+
+				mongo = new Mongo(user, db, password, host, port);
+				System.out.println("[NetworkTools] Setup MongoDB connection!");
 			}
 		});
 		getCommand("staffchat").setExecutor(new StaffChatCommand(this));
