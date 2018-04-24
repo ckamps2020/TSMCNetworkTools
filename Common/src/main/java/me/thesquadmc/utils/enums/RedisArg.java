@@ -16,6 +16,7 @@ public enum RedisArg {
 	COUNT("COUNT"),
 	UPTIME("UPTIME"),
 	TPS("TPS"),
+	MEMORY("MEMORY"),
 
 	DATE("DATE"),
 	REASON("REASON"),
