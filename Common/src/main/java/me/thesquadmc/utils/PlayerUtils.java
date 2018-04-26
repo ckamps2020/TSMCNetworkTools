@@ -139,8 +139,7 @@ public final class PlayerUtils {
 	}
 
 	public static void addPlayerPermission(Player player, String perm) {
-		User user = Main.getMain().getLuckPermsApi().getUser(player.getUniqueId());
-		user.setPermission(Main.getMain().getLuckPermsApi().getNodeFactory().newBuilder(perm).setValue(true).build());
+		Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "lp user " + player.getName() + " permission set " + perm + " true");
 	}
 
 	public static String getPlayerPrefix(Player player) {

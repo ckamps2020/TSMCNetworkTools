@@ -326,6 +326,7 @@ public final class Main extends JavaPlugin {
 		getCommand("l1").setExecutor(new MOTDCommand(main, 1));
 		getCommand("l2").setExecutor(new MOTDCommand(main, 2));
 		getCommand("motdclear").setExecutor(new MOTDClearCommand(main));
+		getCommand("rename").setExecutor(new RenameCommand(this));
 		ServerUtils.calculateServerType();
 		Bukkit.getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
 			@Override
