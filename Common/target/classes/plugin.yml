@@ -55,8 +55,6 @@ commands:
         aliases: [delay, delaychat]
     smite:
         aliases: [lightning]
-    friend:
-        aliases: [friends]
     ping:
     status:
     proxytransport:
@@ -81,4 +79,7 @@ commands:
         aliases: [chatlogs, clogs]
     l1:
     l2:
+    motdclear:
     party:
+    motdclear:
+    rename:

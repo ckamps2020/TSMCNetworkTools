@@ -1,4 +1,4 @@
-package me.thesquadmc.command;
+package me.thesquadmc.utils.command;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import me.gong.mcleaks.MCLeaksAPI;
 import me.lucko.luckperms.LuckPerms;
 import me.lucko.luckperms.api.LuckPermsApi;
-import me.thesquadmc.buycraft.Buycraft;
 import me.thesquadmc.commands.*;
 import me.thesquadmc.abstraction.AbstractionModule;
 import me.thesquadmc.abstraction.NMSAbstract;
@@ -14,10 +13,12 @@ import me.thesquadmc.listeners.*;
 import me.thesquadmc.managers.*;
 import me.thesquadmc.networking.JedisTask;
 import me.thesquadmc.networking.RedisHandler;
+import me.thesquadmc.networking.mongo.Database;
 import me.thesquadmc.networking.mongo.Mongo;
+import me.thesquadmc.networking.mongo.MongoDatabase;
 import me.thesquadmc.networking.mysql.DatabaseManager;
 import me.thesquadmc.objects.TSMCUser;
-import me.thesquadmc.command.CommandHandler;
+import me.thesquadmc.utils.command.CommandHandler;
 import me.thesquadmc.utils.enums.RedisArg;
 import me.thesquadmc.utils.enums.RedisChannels;
 import me.thesquadmc.utils.enums.Settings;
@@ -25,7 +26,6 @@ import me.thesquadmc.utils.file.FileManager;
 import me.thesquadmc.utils.handlers.UpdateHandler;
 import me.thesquadmc.utils.inventory.builder.AbstractGUI;
 import me.thesquadmc.utils.msgs.ServerType;
-import me.thesquadmc.utils.msgs.StringUtils;
 import me.thesquadmc.utils.nms.BarUtils;
 import me.thesquadmc.utils.server.Multithreading;
 import me.thesquadmc.utils.server.ServerState;
@@ -89,7 +89,9 @@ public final class Main extends JavaPlugin {
     private MCLeaksAPI mcLeaksAPI;
     private CountManager countManager;
     private NMSAbstract nmsAbstract;
+
     private Mongo mongo;
+    private Database database;
 
     private String host;
     private int port;
@@ -233,12 +235,17 @@ public final class Main extends JavaPlugin {
                 }
             }
         });
-        Multithreading.runAsync(new Runnable() {
-            @Override
-            public void run() {
-                //mongo = new Mongo();
-            }
-        });
+
+        Configuration conf = fileManager.getNetworkingConfig();
+        String user = conf.getString("mongo.user");
+        String db = conf.getString("mongo.database");
+        String host = conf.getString("mongo.host");
+        String password = conf.getString("mongo.password");
+        int port = conf.getInt("mongo.port");
+
+        mongo = new Mongo(user, db, password, host, port);
+        database = new MongoDatabase(mongo);
+        System.out.println("[NetworkTools] Setup MongoDB connection!");
 
         registerListeners();
         registerCommands();
@@ -291,6 +298,8 @@ public final class Main extends JavaPlugin {
     public Mongo getMongo() {
         return mongo;
     }
+
+    public Database getMongoDatabase() { return database; }
 
     public CountManager getCountManager() {
         return countManager;
@@ -574,20 +583,18 @@ public final class Main extends JavaPlugin {
 
     private void registerListeners() {
         Stream.of(
-                new ChatListener(),
-                new SettingsListener(),
+                new ConnectionListeners(this),
+                new FilterListener(this),
+                new ForceFieldListeners(this),
+                new FreezeListener(this),
                 new LaunchListener(),
                 new LightningListener(),
-                new FilterListener(this),
                 new ServerListener(),
-                new ForceFieldListeners(this),
+                new StaffmodeListener(this),
+                new TimedListener(this),
                 new VanishListener(),
                 new WhitelistListener(this),
-                new TimedListener(this),
-                new ConnectionListeners(this),
-                new XrayListener(),
-                new StaffmodeListener(this),
-                new FreezeListener(this)
+                new XrayListener()
         ).forEach(listener -> Bukkit.getPluginManager().registerEvents(listener, this));
     }
 
@@ -620,7 +627,6 @@ public final class Main extends JavaPlugin {
         getCommand("silence").setExecutor(new ChatSilenceCommand(this));
         getCommand("slowchat").setExecutor(new ChatSlowCommand(this));
         getCommand("smite").setExecutor(new SmiteCommand(this));
-        getCommand("friend").setExecutor(new FriendCommand(this));
         getCommand("ping").setExecutor(new PingCommand(this));
         getCommand("status").setExecutor(new StatusCommand(this));
         getCommand("proxytransport").setExecutor(new ProxyTransportCommand(this));

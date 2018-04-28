@@ -1,8 +1,8 @@
 package me.thesquadmc.commands;
 
-import me.thesquadmc.command.Command;
-import me.thesquadmc.command.CommandArgs;
-import me.thesquadmc.command.Completer;
+import me.thesquadmc.utils.command.Command;
+import me.thesquadmc.utils.command.CommandArgs;
+import me.thesquadmc.utils.command.Completer;
 import me.thesquadmc.utils.msgs.CC;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;

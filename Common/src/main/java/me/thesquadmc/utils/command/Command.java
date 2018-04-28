@@ -1,4 +1,4 @@
-package me.thesquadmc.command;
+package me.thesquadmc.utils.command;
 
 import me.thesquadmc.utils.enums.Rank;
 

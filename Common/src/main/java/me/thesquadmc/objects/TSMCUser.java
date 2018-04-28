@@ -271,6 +271,11 @@ public class TSMCUser {
 	public static TSMCUser fromUUID(UUID player) {
 		return (player != null) ? USERS.computeIfAbsent(player, TSMCUser::new) : null;
 	}
+
+	public static void loadUser(TSMCUser user) {
+		Preconditions.checkNotNull(user, "User cannot be null");
+		USERS.put(user.getUuid(), user);
+	}
 	
 	public static boolean isLoaded(OfflinePlayer player) {
 		return player != null && USERS.containsKey(player.getUniqueId());
