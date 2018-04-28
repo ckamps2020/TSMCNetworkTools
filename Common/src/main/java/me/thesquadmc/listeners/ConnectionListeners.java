@@ -45,7 +45,8 @@ public final class ConnectionListeners implements Listener {
 		Player player = e.getPlayer();
 
 		TSMCUser user = TSMCUser.fromPlayer(player);
-		user.setLoginTime(StringUtils.getDate());
+		user.setLoginTime(System.currentTimeMillis());
+
 		MojangGameProfile profile = main.getNMSAbstract().getGameProfile(player);
 		profile.getPropertyMap().values().forEach(p -> {
 			user.setSkinKey(p.getValue());
