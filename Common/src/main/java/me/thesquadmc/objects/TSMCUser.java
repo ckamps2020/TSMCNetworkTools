@@ -1,27 +1,27 @@
 package me.thesquadmc.objects;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import com.google.common.base.Preconditions;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.sun.org.apache.regexp.internal.RE;
+import me.thesquadmc.networking.mongo.Database;
 import org.bson.Document;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
+import static me.thesquadmc.networking.mongo.Database.*;
+
 public class TSMCUser {
 	
 	private static final Map<UUID, TSMCUser> USERS = new HashMap<>();
 
-	private final UUID player;
-	private final String realname;
+	private final UUID uuid;
+	private final String name;
 
 	private final List<UUID> friends = Lists.newArrayList();
 	private final List<UUID> requests = Lists.newArrayList();
@@ -29,7 +29,7 @@ public class TSMCUser {
 	
 	private Map<PlayerSetting<?>, Object> settings = Maps.newHashMap();
 	
-	private String loginTime;
+	private long loginTime;
 	private boolean vanished = false, ytVanished = false;
 	private boolean xray, monitor = true, reports = true;
 	private boolean forcefield = false, nicknamed = false;
@@ -37,24 +37,28 @@ public class TSMCUser {
 	
 	public TSMCUser(OfflinePlayer player) {
 		Preconditions.checkNotNull(player, "Cannot construct a TSMCUser from a null user");
-		this.player = player.getUniqueId();
-		this.realname = player.getName();
+		this.uuid = player.getUniqueId();
+		this.name = player.getName();
 		this.xray = Bukkit.getServerName().toUpperCase().contains("FACTIONS");
 	}
 	
 	public TSMCUser(UUID player) {
 		Preconditions.checkNotNull(player, "Cannot construct a TSMCUser from a null UUID");
-		this.player = player;
+		this.uuid = player;
 		this.xray = Bukkit.getServerName().toUpperCase().contains("FACTIONS");
-		this.realname = Bukkit.getOfflinePlayer(player).getName();
+		this.name = Bukkit.getOfflinePlayer(player).getName();
 	}
-	
-	public OfflinePlayer getPlayer() {
-		return Bukkit.getOfflinePlayer(player);
+
+	public java.util.UUID getUuid() {
+		return uuid;
+	}
+
+	public OfflinePlayer getOfflinePlayer() {
+		return Bukkit.getOfflinePlayer(uuid);
 	}
 	
 	public Player getPlayerOnline() {
-		return Bukkit.getPlayer(player);
+		return Bukkit.getPlayer(uuid);
 	}
 	
 	public void addFriend(OfflinePlayer friend) {
@@ -161,11 +165,11 @@ public class TSMCUser {
 		notes.add(note);
 	}
 
-	public void setLoginTime(String loginTime) {
+	public void setLoginTime(long loginTime) {
 		this.loginTime = loginTime;
 	}
 	
-	public String getLoginTime() {
+	public long getLoginTime() {
 		return loginTime;
 	}
 	
@@ -241,14 +245,15 @@ public class TSMCUser {
 		return signature;
 	}
 	
-	public String getRealname() {
-		return realname;
+	public String getName() {
+		return name;
 	}
 	
 	public void clearLocalizedData() {
 		this.friends.clear();
 		this.requests.clear();
 		this.settings.clear();
+		this.notes.clear();
 	}
 	
 	public static TSMCUser fromPlayer(OfflinePlayer player) {
@@ -268,7 +273,7 @@ public class TSMCUser {
 	}
 	
 	public static void unloadUser(TSMCUser user) {
-		USERS.remove(user.player);
+		USERS.remove(user.uuid);
 	}
 	
 	public static void unloadUser(OfflinePlayer player) {
@@ -289,8 +294,54 @@ public class TSMCUser {
 	}
 
 	public static TSMCUser fromDocument(Document document) {
-		//TSMCUser user = new TSMCUser(document.)
-		throw new UnsupportedOperationException("Not available in this version");
+		TSMCUser user = new TSMCUser(document.get("_id", UUID.class));
+
+		if (document.containsKey(FRIENDS)) {
+			List<UUID> friends = (List<UUID>) document.get(FRIENDS);
+			friends.addAll(user.friends);
+		}
+
+		if (document.containsKey(REQUESTS)) {
+			List<UUID> requests = (List<UUID>) document.get(REQUESTS);
+			requests.addAll(user.requests);
+		}
+
+		if (document.containsKey(NOTES)) {
+			List<Document> notes = (List<Document>) document.get(NOTES);
+			notes.stream().map(Note::fromDocument).collect(Collectors.toList()).addAll(user.notes);
+		}
+
+		user.vanished = document.getBoolean(VANISHED);
+		user.ytVanished = document.getBoolean(YT_VANISHED);
+		user.xray = document.getBoolean(XRAY);
+		user.monitor = document.getBoolean(MONITOR);
+		user.reports = document.getBoolean(REPORTS);
+		user.forcefield = document.getBoolean(FORCEFIELD);
+		user.nicknamed = document.getBoolean(NICKNAMED);
+		user.skinKey = document.getString(SKIN_KEY);
+		user.signature = document.getString(SIGNATURE);
+
+		return user;
+	}
+
+	public static Document toDocument(TSMCUser user) {
+		return new Document("_id", user.uuid)
+				.append(NAME, user.name)
+
+				.append(FRIENDS, user.friends)
+				.append(REQUESTS, user.requests)
+				.append(NOTES, user.notes)
+
+				.append(VANISHED, user.vanished)
+				.append(YT_VANISHED, user.ytVanished)
+				.append(XRAY, user.xray)
+				.append(MONITOR, user.monitor)
+				.append(REPORTS, user.reports)
+				.append(FORCEFIELD, user.forcefield)
+				.append(NICKNAMED, user.nicknamed)
+
+				.append(REPORTS, user.skinKey)
+				.append(REPORTS, user.signature);
 	}
 	
 }

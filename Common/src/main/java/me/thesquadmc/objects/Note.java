@@ -1,5 +1,7 @@
 package me.thesquadmc.objects;
 
+import me.thesquadmc.networking.mongo.Database;
+import org.bson.Document;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
@@ -29,11 +31,15 @@ public class Note {
      */
     private final String note;
 
-    public Note(Player creator, String note) {
-        this.creator = creator.getUniqueId();
-        this.creatorName = creator.getName();
-        this.timestamp = System.currentTimeMillis();
+    public Note(UUID creator, String creatorName, long timestamp, String note) {
+        this.creator = creator;
+        this.creatorName = creatorName;
+        this.timestamp = timestamp;
         this.note = note;
+    }
+
+    public Note(Player player, String note) {
+        this(player.getUniqueId(), player.getName(), System.currentTimeMillis(), note);
     }
 
     public UUID getCreator() {
@@ -50,5 +56,18 @@ public class Note {
 
     public String getNote() {
         return note;
+    }
+
+    public static Document toDocument(Note note) {
+        return null;
+    }
+
+    public static Note fromDocument(Document document) {
+        return new Note(
+                document.get(Database.NOTE_CREATOR, UUID.class),
+                document.getString(Database.NOTE_CREATOR_NAME),
+                document.getLong(Database.TIMESTAMP),
+                document.getString(Database.NOTE_MESSAGE)
+        );
     }
 }

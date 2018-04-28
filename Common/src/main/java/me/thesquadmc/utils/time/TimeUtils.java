@@ -14,6 +14,8 @@ import java.util.regex.Pattern;
 
 public final class TimeUtils {
 
+	private static final Pattern TIME_PARSE_PATTERN = Pattern.compile("([0-9]+)([smhdwMy]{1})");
+
 	public static boolean elapsed(long from, long required) {
 		return System.currentTimeMillis() - from > required;
 	}
@@ -46,7 +48,38 @@ public final class TimeUtils {
 		}
 	}
 
-	private static final Pattern TIME_PARSE_PATTERN = Pattern.compile("([0-9]+)([smhdwMy]{1})");
+	public static String getFormattedTime(long millis) {
+		if (millis < 0) {
+			return "0s";
+		}
+
+		long days = TimeUnit.MILLISECONDS.toDays(millis);
+		millis -= TimeUnit.DAYS.toMillis(days);
+		long hours = TimeUnit.MILLISECONDS.toHours(millis);
+		millis -= TimeUnit.HOURS.toMillis(hours);
+		long minutes = TimeUnit.MILLISECONDS.toMinutes(millis);
+		millis -= TimeUnit.MINUTES.toMillis(minutes);
+		long seconds = TimeUnit.MILLISECONDS.toSeconds(millis);
+
+		StringBuilder sb = new StringBuilder();
+		if (days > 0) {
+			sb.append(days).append("d");
+		}
+
+		if (hours > 0) {
+			sb.append(" ").append(hours).append("h");
+		}
+
+		if (minutes > 0) {
+			sb.append(" ").append(minutes).append("m");
+		}
+
+		if (seconds > 0) {
+			sb.append(" ").append(seconds).append("s");
+		}
+
+		return (sb.toString().trim());
+	}
 
 	public static long getTimeFromString(String timeString) {
 		long time = 0L;

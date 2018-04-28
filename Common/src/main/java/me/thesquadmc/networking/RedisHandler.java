@@ -99,7 +99,7 @@ public final class RedisHandler {
 												.withArg(RedisArg.ORIGIN_SERVER.getArg(), Bukkit.getServerName())
 												.withArg(RedisArg.PLAYER.getArg(), name)
 												.withArg(RedisArg.ORIGIN_PLAYER.getArg(), String.valueOf(data.get(RedisArg.ORIGIN_PLAYER.getArg())))
-												.withArg(RedisArg.LOGIN.getArg(), user.getLoginTime())
+												.withArg(RedisArg.LOGIN.getArg(), TimeUtils.getFormattedTime(user.getLoginTime()))
 												.send(RedisChannels.FOUND.getChannelName(), jedis);
 									}
 								}

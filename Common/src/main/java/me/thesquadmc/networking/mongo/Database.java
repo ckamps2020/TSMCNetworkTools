@@ -8,6 +8,32 @@ import java.util.concurrent.CompletableFuture;
 
 public interface Database {
 
+    String USER_DATABASE = "users";
+
+    String UUID = "uuid";
+    String NAME = "name";
+
+    String FRIENDS = "friends";
+    String REQUESTS = "requests";
+    String NOTES = "notes";
+
+    String VANISHED = "vanished";
+    String YT_VANISHED = "ytVanished";
+    String XRAY = "xray";
+    String MONITOR = "monitor";
+    String REPORTS = "reports";
+    String FORCEFIELD = "forcefield";
+    String NICKNAMED = "nicknamed";
+
+    String SKIN_KEY = "skinKey";
+    String SIGNATURE = "signature";
+
+    String TIMESTAMP = "timestamp";
+
+    String NOTE_CREATOR = "creator";
+    String NOTE_CREATOR_NAME = "creatorName";
+    String NOTE_MESSAGE = "message";
+
     /**
      * Loads a user from the database
      *
@@ -22,5 +48,5 @@ public interface Database {
      * @param user user to save
      * @return whether save was successful
      */
-    CompletableFuture<Boolean> saveUser(TSMCUser user);
+    CompletableFuture<Void> saveUser(TSMCUser user);
 }

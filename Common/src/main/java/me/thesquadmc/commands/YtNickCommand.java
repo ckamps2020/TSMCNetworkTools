@@ -35,7 +35,7 @@ public final class YtNickCommand implements CommandExecutor {
 				} else {
 					player.sendMessage(CC.translate("&e&lYT NICK &6■ &7You are &eno longer &7nicked"));
 					user.setNicknamed(false);
-					PlayerUtils.setName(player, user.getRealname());
+					PlayerUtils.setName(player, user.getName());
 				}
 			} else {
 				player.sendMessage(CC.translate("&e&lPERMISSIONS &6■ &7You do not have permission to use this command!"));

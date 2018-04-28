@@ -12,11 +12,6 @@ import java.util.logging.Logger;
 
 public final class Mongo {
 
-    //Constants
-    public static final String USER_DATABASE = "users";
-
-    public static final String UUID = "_id";
-
     private MongoClient mongoClient;
     private MongoDatabase mongoDatabase;
 
