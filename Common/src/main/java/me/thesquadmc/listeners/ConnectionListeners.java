@@ -28,6 +28,7 @@ public final class ConnectionListeners implements Listener {
 	@EventHandler
 	public void on(AsyncPlayerPreLoginEvent e) {
 		if (main.getMcLeaksAPI().checkAccount(e.getUniqueId()).isMCLeaks()) {
+			e.setKickMessage("Compromised Accounts cannot play!");
 			e.setLoginResult(AsyncPlayerPreLoginEvent.Result.KICK_OTHER);
 			Bukkit.getLogger().info("Prevented " + e.getName() + " from logging in as it is an MCLeaks Account");
 
