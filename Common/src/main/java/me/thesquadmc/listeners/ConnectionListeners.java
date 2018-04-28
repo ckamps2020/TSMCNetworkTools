@@ -17,6 +17,8 @@ import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import java.util.function.Function;
+
 public final class ConnectionListeners implements Listener {
 
     private final Main main;
@@ -27,13 +29,16 @@ public final class ConnectionListeners implements Listener {
 
     @EventHandler
     public void on(AsyncPlayerPreLoginEvent e) {
-        main.getMongoDatabase().getUser(e.getUniqueId()).whenComplete((user, throwable) -> {
+        main.getMongoDatabase().getUser(e.getUniqueId()).thenApply(user -> {
             if (user == null) {
                 e.setKickMessage(CC.RED + "Cannot load your account! \nPlease contact a Staff!");
                 e.setLoginResult(AsyncPlayerPreLoginEvent.Result.KICK_OTHER);
+
+                return false;
             }
 
             TSMCUser.loadUser(user);
+            return true;
         });
 
         if (main.getMcLeaksAPI().checkAccount(e.getUniqueId()).isMCLeaks()) {
@@ -114,7 +119,8 @@ public final class ConnectionListeners implements Listener {
             }
         }
 
-        TSMCUser.unloadUser(player);
+        main.getMongoDatabase().saveUser(TSMCUser.fromPlayer(player))
+                .whenComplete((aVoid, throwable) -> TSMCUser.unloadUser(player));
     }
 
 }

@@ -1,4 +1,4 @@
-package me.thesquadmc.objects.log;
+package me.thesquadmc.objects.logs;
 
 import com.google.common.collect.Lists;
 import com.mongodb.client.MongoCollection;
