@@ -64,6 +64,7 @@ public final class FileManager {
 			networkingConfig.set("mongo.password", "password");
 			networkingConfig.set("mongo.user", "user");
 			networkingConfig.set("mongo.database", "database");
+			networkingConfig.set("buycraft.secret", "KEY_HERE");
 			System.out.println("[NetworkTools] Default networking created!");
 			System.out.println("[NetworkTools] Saving networking file...");
 			saveNetworkingConfig();

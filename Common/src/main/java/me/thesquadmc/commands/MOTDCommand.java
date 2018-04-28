@@ -7,6 +7,7 @@ import me.thesquadmc.utils.enums.RedisChannels;
 import me.thesquadmc.utils.msgs.CC;
 import me.thesquadmc.utils.server.Multithreading;
 import org.apache.commons.lang.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -34,16 +35,23 @@ public final class MOTDCommand implements CommandExecutor {
             return false;
         }
 
+        System.out.println(Arrays.toString(args));
         String motd = CC.translate(StringUtils.join(args, " "));
+        System.out.println(line);
 
-        Multithreading.runAsync(() -> {
-            try (Jedis jedis = main.getPool().getResource()) {
-                JedisTask.withName("a")
-                        .withArg(String.valueOf(line), motd)
-                        .send(RedisChannels.MOTD.getChannelName(), jedis);
+        Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
+            @Override
+            public void run() {
+                Multithreading.runAsync(() -> {
+                    try (Jedis jedis = main.getPool().getResource()) {
+                        JedisTask.withName("a")
+                                .withArg(String.valueOf(line), motd)
+                                .send(RedisChannels.MOTD.getChannelName(), jedis);
 
-                jedis.set("motd-line" + line, motd);
-                sender.sendMessage(CC.translate("&aMOTD &6■ &7Set MOTD Line " + line + " to: " + motd));
+                        jedis.set(String.valueOf(line), motd);
+                        sender.sendMessage(CC.translate("&aMOTD &6■ &7Set MOTD Line " + line + " to: " + motd));
+                    }
+                });
             }
         });
 

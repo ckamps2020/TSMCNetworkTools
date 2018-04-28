@@ -10,6 +10,14 @@ public final class HologramManager {
 
 	private Map<String, Hologram> holograms = new HashMap<>();
 
+	public void registerHologram(String name, Hologram hologram) {
+		holograms.put(name, hologram);
+	}
+
+	public void unregisterHologram(String name) {
+		holograms.remove(name);
+	}
+
 	public boolean isHologramNameTaken(String name) {
 		return holograms.containsKey(name);
 	}

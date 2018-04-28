@@ -2,11 +2,19 @@ package me.thesquadmc.objects;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 import com.google.common.base.Preconditions;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.sun.org.apache.regexp.internal.RE;
 import me.thesquadmc.networking.mongo.Database;
 import org.bson.Document;
@@ -23,12 +31,12 @@ public class TSMCUser {
 	private final UUID uuid;
 	private final String name;
 
-	private final List<UUID> friends = Lists.newArrayList();
-	private final List<UUID> requests = Lists.newArrayList();
-	private final List<Note> notes = Lists.newArrayList();
+	private final Set<UUID> friends = Sets.newHashSet();
+	private final Set<UUID> requests = Sets.newHashSet();
+	private final Set<Note> notes = Sets.newHashSet();
 	
 	private Map<PlayerSetting<?>, Object> settings = Maps.newHashMap();
-	
+
 	private long loginTime;
 	private boolean vanished = false, ytVanished = false;
 	private boolean xray, monitor = true, reports = true;
@@ -91,8 +99,8 @@ public class TSMCUser {
 		return !friends.isEmpty();
 	}
 	
-	public List<UUID> getFriends() {
-		return Collections.unmodifiableList(friends);
+	public Set<UUID> getFriends() {
+		return Collections.unmodifiableSet(friends);
 	}
 	
 	public void clearFriends() {
@@ -129,8 +137,8 @@ public class TSMCUser {
 		return !requests.isEmpty();
 	}
 	
-	public List<UUID> getRequests() {
-		return Collections.unmodifiableList(requests);
+	public Set<UUID> getRequests() {
+		return Collections.unmodifiableSet(requests);
 	}
 	
 	public void clearRequests() {
@@ -157,8 +165,8 @@ public class TSMCUser {
 		}
 	}
 
-	public List<Note> getNotes() {
-		return notes;
+	public Set<Note> getNotes() {
+		return Collections.unmodifiableSet(notes);
 	}
 
 	public void addNote(Note note) {
@@ -297,17 +305,17 @@ public class TSMCUser {
 		TSMCUser user = new TSMCUser(document.get("_id", UUID.class));
 
 		if (document.containsKey(FRIENDS)) {
-			List<UUID> friends = (List<UUID>) document.get(FRIENDS);
+			Set<UUID> friends = (Set<UUID>) document.get(FRIENDS);
 			friends.addAll(user.friends);
 		}
 
 		if (document.containsKey(REQUESTS)) {
-			List<UUID> requests = (List<UUID>) document.get(REQUESTS);
+			Set<UUID> requests = (Set<UUID>) document.get(REQUESTS);
 			requests.addAll(user.requests);
 		}
 
 		if (document.containsKey(NOTES)) {
-			List<Document> notes = (List<Document>) document.get(NOTES);
+			Set<Document> notes = (Set<Document>) document.get(NOTES);
 			notes.stream().map(Note::fromDocument).collect(Collectors.toList()).addAll(user.notes);
 		}
 

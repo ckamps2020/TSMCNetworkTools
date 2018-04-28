@@ -16,6 +16,7 @@ import me.thesquadmc.utils.enums.RedisChannels;
 import me.thesquadmc.utils.msgs.CC;
 import me.thesquadmc.utils.msgs.Unicode;
 
+import me.thesquadmc.utils.server.Multithreading;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ClickEvent.Action;
@@ -125,14 +126,26 @@ public final class PartyCommand implements CommandExecutor {
 			
 			player.sendMessage(CC.translate("&e&lPARTY &6■ &7You have joined &e" + target.getName() + "&e's party!"));
 			target.getPlayer().sendMessage(CC.translate("&e&lPARTY &6■ &e" + player.getName() + " &7has joined your party!"));
-			
+
+			final Party p = party;
+
 			// Update cross-server
-			try (Jedis jedis = Main.getMain().getPool().getResource()) {
-				JedisTask.withName(UUID.randomUUID().toString())
-					.withArg(RedisArg.PARTY.getArg(), party)
-					.withArg(RedisArg.REASON.getArg(), "JOIN")
-					.send(RedisChannels.PARTY_UPDATE.getChannelName(), jedis);
-			}
+			Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
+				@Override
+				public void run() {
+					Multithreading.runAsync(new Runnable() {
+						@Override
+						public void run() {
+							try (Jedis jedis = Main.getMain().getPool().getResource()) {
+								JedisTask.withName(UUID.randomUUID().toString())
+										.withArg(RedisArg.PARTY.getArg(), p)
+										.withArg(RedisArg.REASON.getArg(), "JOIN")
+										.send(RedisChannels.PARTY_UPDATE.getChannelName(), jedis);
+							}
+						}
+					});
+				}
+			});
 		}
 		
 		else if (args[0].equalsIgnoreCase("kick") || args[0].equalsIgnoreCase("remove")) {
@@ -175,12 +188,22 @@ public final class PartyCommand implements CommandExecutor {
 				target.getPlayer().sendMessage(CC.translate("&e&lPARTY &6■ &7You have been &ekicked &7from &e" + player.getName() + "&7's party!"));
 			
 			// Update cross-server
-			try (Jedis jedis = Main.getMain().getPool().getResource()) {
-				JedisTask.withName(UUID.randomUUID().toString())
-					.withArg(RedisArg.PARTY.getArg(), party)
-					.withArg(RedisArg.REASON.getArg(), "KICK")
-					.send(RedisChannels.PARTY_UPDATE.getChannelName(), jedis);
-			}
+			Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
+				@Override
+				public void run() {
+					Multithreading.runAsync(new Runnable() {
+						@Override
+						public void run() {
+							try (Jedis jedis = Main.getMain().getPool().getResource()) {
+								JedisTask.withName(UUID.randomUUID().toString())
+										.withArg(RedisArg.PARTY.getArg(), party)
+										.withArg(RedisArg.REASON.getArg(), "KICK")
+										.send(RedisChannels.PARTY_UPDATE.getChannelName(), jedis);
+							}
+						}
+					});
+				}
+			});
 		}
 		
 		else if (args[0].equalsIgnoreCase("leave")) {
@@ -205,20 +228,30 @@ public final class PartyCommand implements CommandExecutor {
 			}
 			
 			// Update party cross-server
-			try (Jedis jedis = Main.getMain().getPool().getResource()) {
-				if (party.getMemberCount(true) == 0) {
-					party.destroy();
-					JedisTask.withName(UUID.randomUUID().toString())
-						.withArg(RedisArg.PARTY.getArg(), party)
-						.send(RedisChannels.PARTY_DISBAND.getChannelName(), jedis);
+			Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
+				@Override
+				public void run() {
+					Multithreading.runAsync(new Runnable() {
+						@Override
+						public void run() {
+							try (Jedis jedis = Main.getMain().getPool().getResource()) {
+								if (party.getMemberCount(true) == 0) {
+									party.destroy();
+									JedisTask.withName(UUID.randomUUID().toString())
+											.withArg(RedisArg.PARTY.getArg(), party)
+											.send(RedisChannels.PARTY_DISBAND.getChannelName(), jedis);
+								}
+								else {
+									JedisTask.withName(UUID.randomUUID().toString())
+											.withArg(RedisArg.PARTY.getArg(), party)
+											.withArg(RedisArg.REASON.getArg(), "LEAVE")
+											.send(RedisChannels.PARTY_UPDATE.getChannelName(), jedis);
+								}
+							}
+						}
+					});
 				}
-				else {
-					JedisTask.withName(UUID.randomUUID().toString())
-						.withArg(RedisArg.PARTY.getArg(), party)
-						.withArg(RedisArg.REASON.getArg(), "LEAVE")
-						.send(RedisChannels.PARTY_UPDATE.getChannelName(), jedis);
-				}
-			}
+			});
 		}
 		
 		else if (args[0].equalsIgnoreCase("disband") || args[0].equalsIgnoreCase("delete")) {
@@ -243,11 +276,21 @@ public final class PartyCommand implements CommandExecutor {
 			player.sendMessage(CC.translate("&e&lPARTY &6■ &7Your &eparty &7has been &edisbanded&7!"));
 			
 			// Update cross-server
-			try (Jedis jedis = Main.getMain().getPool().getResource()) {
-				JedisTask.withName(UUID.randomUUID().toString())
-					.withArg(RedisArg.PARTY.getArg(), party)
-					.send(RedisChannels.PARTY_DISBAND.getChannelName(), jedis);
-			}
+			Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
+				@Override
+				public void run() {
+					Multithreading.runAsync(new Runnable() {
+						@Override
+						public void run() {
+							try (Jedis jedis = Main.getMain().getPool().getResource()) {
+								JedisTask.withName(UUID.randomUUID().toString())
+										.withArg(RedisArg.PARTY.getArg(), party)
+										.send(RedisChannels.PARTY_DISBAND.getChannelName(), jedis);
+							}
+						}
+					});
+				}
+			});
 		}
 		
 		else if (args[0].equalsIgnoreCase("info")) {

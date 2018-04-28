@@ -38,15 +38,20 @@ public final class StopCommand implements CommandExecutor {
 						stringBuilder.append(args[i] + " ");
 					}
 					player.sendMessage(CC.translate("&e&lSTOP &6■ &7You have stopped &e" + server + " &7for &e" + stringBuilder.toString() + "&7"));
-					Multithreading.runAsync(new Runnable() {
+					Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
 						@Override
 						public void run() {
-							try (Jedis jedis = Main.getMain().getPool().getResource()) {
-								JedisTask.withName(UUID.randomUUID().toString())
-										.withArg(RedisArg.SERVER.getArg(), server.toUpperCase())
-										.withArg(RedisArg.MESSAGE.getArg(), stringBuilder.toString())
-										.send(RedisChannels.STOP.getChannelName(), jedis);
-							}
+							Multithreading.runAsync(new Runnable() {
+								@Override
+								public void run() {
+									try (Jedis jedis = Main.getMain().getPool().getResource()) {
+										JedisTask.withName(UUID.randomUUID().toString())
+												.withArg(RedisArg.SERVER.getArg(), server.toUpperCase())
+												.withArg(RedisArg.MESSAGE.getArg(), stringBuilder.toString())
+												.send(RedisChannels.STOP.getChannelName(), jedis);
+									}
+								}
+							});
 						}
 					});
 				} else {
@@ -56,7 +61,7 @@ public final class StopCommand implements CommandExecutor {
 				player.sendMessage(CC.translate("&e&lPERMISSIONS &6■ &7You do not have permission to use this command!"));
 			}
 		} else {
-			ServerUtils.safeShutdown();
+			Bukkit.shutdown();
 		}
 		return true;
 	}
