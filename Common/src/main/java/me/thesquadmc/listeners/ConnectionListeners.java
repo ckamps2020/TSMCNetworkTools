@@ -28,7 +28,7 @@ public final class ConnectionListeners implements Listener {
 	@EventHandler
 	public void on(AsyncPlayerPreLoginEvent e) {
 		if (main.getMcLeaksAPI().checkAccount(e.getUniqueId()).isMCLeaks()) {
-			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "ban --sender=Console " + e.getName() + " Compromised Account");
+			Bukkit.getScheduler().runTask(main, () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "ban " + e.getName() + " Compromised Account"));
 
 			/*for (Player p : Bukkit.getOnlinePlayers()) {
 				if (PlayerUtils.isEqualOrHigherThen(p, Rank.TRAINEE)) {
