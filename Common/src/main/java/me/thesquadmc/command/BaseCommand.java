@@ -1,4 +1,4 @@
-package me.thesquadmc.utils.command;
+package me.thesquadmc.command;
 
 import java.util.List;
 

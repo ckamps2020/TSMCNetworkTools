@@ -16,7 +16,7 @@ import me.thesquadmc.networking.RedisHandler;
 import me.thesquadmc.networking.mongo.Mongo;
 import me.thesquadmc.networking.mysql.DatabaseManager;
 import me.thesquadmc.objects.TSMCUser;
-import me.thesquadmc.utils.command.CommandHandler;
+import me.thesquadmc.command.CommandHandler;
 import me.thesquadmc.utils.enums.RedisArg;
 import me.thesquadmc.utils.enums.RedisChannels;
 import me.thesquadmc.utils.enums.Settings;

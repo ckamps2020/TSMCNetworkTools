@@ -1,19 +1,16 @@
 package me.thesquadmc.commands;
 
-import me.thesquadmc.utils.command.Command;
-import me.thesquadmc.utils.command.CommandArgs;
-import me.thesquadmc.utils.command.Completer;
+import me.thesquadmc.command.Command;
+import me.thesquadmc.command.CommandArgs;
+import me.thesquadmc.command.Completer;
 import me.thesquadmc.utils.msgs.CC;
-import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public final class CreativeCommand {
 

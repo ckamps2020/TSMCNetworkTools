@@ -1,4 +1,4 @@
-package me.thesquadmc.utils.command;
+package me.thesquadmc.command;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

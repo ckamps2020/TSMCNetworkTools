@@ -1,6 +1,5 @@
 package me.thesquadmc.objects;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -10,6 +9,9 @@ import java.util.UUID;
 
 import com.google.common.base.Preconditions;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import org.bson.Document;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -17,20 +19,21 @@ import org.bukkit.entity.Player;
 public class TSMCUser {
 	
 	private static final Map<UUID, TSMCUser> USERS = new HashMap<>();
+
+	private final UUID player;
+	private final String realname;
+
+	private final List<UUID> friends = Lists.newArrayList();
+	private final List<UUID> requests = Lists.newArrayList();
+	private final List<Note> notes = Lists.newArrayList();
 	
-	private final List<UUID> friends = new ArrayList<>();
-	private final List<UUID> requests = new ArrayList<>();
-	
-	private Map<PlayerSetting<?>, Object> settings = new HashMap<>();
+	private Map<PlayerSetting<?>, Object> settings = Maps.newHashMap();
 	
 	private String loginTime;
 	private boolean vanished = false, ytVanished = false;
 	private boolean xray, monitor = true, reports = true;
 	private boolean forcefield = false, nicknamed = false;
 	private String skinKey = "", signature = "";
-	
-	private final UUID player;
-	private final String realname;
 	
 	public TSMCUser(OfflinePlayer player) {
 		Preconditions.checkNotNull(player, "Cannot construct a TSMCUser from a null user");
@@ -149,7 +152,15 @@ public class TSMCUser {
 			this.settings.put(setting, setting.getDefaultValue());
 		}
 	}
-	
+
+	public List<Note> getNotes() {
+		return notes;
+	}
+
+	public void addNote(Note note) {
+		notes.add(note);
+	}
+
 	public void setLoginTime(String loginTime) {
 		this.loginTime = loginTime;
 	}
@@ -275,6 +286,11 @@ public class TSMCUser {
 	
 	public static void clearUsers() {
 		USERS.clear();
+	}
+
+	public static TSMCUser fromDocument(Document document) {
+		//TSMCUser user = new TSMCUser(document.)
+		throw new UnsupportedOperationException("Not available in this version");
 	}
 	
 }
