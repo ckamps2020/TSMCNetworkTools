@@ -2,6 +2,7 @@ package me.thesquadmc.listeners;
 
 import me.thesquadmc.Main;
 import me.thesquadmc.abstraction.MojangGameProfile;
+import me.thesquadmc.objects.PlayerSetting;
 import me.thesquadmc.objects.TSMCUser;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.msgs.CC;
@@ -12,6 +13,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
@@ -21,6 +23,19 @@ public final class ConnectionListeners implements Listener {
 
 	public ConnectionListeners(Main main) {
 		this.main = main;
+	}
+
+	@EventHandler
+	public void on(AsyncPlayerPreLoginEvent e) {
+		if (main.getMcLeaksAPI().checkAccount(e.getUniqueId()).isMCLeaks()) {
+			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "ban --sender=Console " + e.getName() + " Compromised Account");
+
+			/*for (Player p : Bukkit.getOnlinePlayers()) {
+				if (PlayerUtils.isEqualOrHigherThen(p, Rank.TRAINEE)) {
+					p.sendMessage(CC.translate("&8[&4&lAnitCheat&8] &4[MCLeaks] &f" + e.getName() + " is a verified MCLeaks account!"));
+				}
+			} */
+		}
 	}
 
 	@EventHandler
@@ -34,25 +49,8 @@ public final class ConnectionListeners implements Listener {
 			user.setSkinKey(p.getValue());
 			user.setSignature(p.getSignature());
 		});
-		
+
 		PlayerUtils.unfreezePlayer(player);
-		Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
-			@Override
-			public void run() {
-				Multithreading.runAsync(new Runnable() {
-					@Override
-					public void run() {
-						if (main.getMcLeaksAPI().checkAccount(player.getUniqueId()).isMCLeaks()) {
-							for (Player p : Bukkit.getOnlinePlayers()) {
-								if (PlayerUtils.isEqualOrHigherThen(p, Rank.TRAINEE)) {
-									p.sendMessage(CC.translate("&8[&4&lAnitCheat&8] &4[MCLeaks] &f" + player.getName() + " is a verified MCLeaks account!"));
-								}
-							}
-						}
-					}
-				});
-			}
-		});
 		Bukkit.getScheduler().runTaskLater(main, () -> {
 			if (Bukkit.getServerName().toUpperCase().startsWith("MG")
 					|| Bukkit.getServerName().toUpperCase().startsWith("FACTIONS")
@@ -72,6 +70,7 @@ public final class ConnectionListeners implements Listener {
 					player.chat("/vanish");
 				}
 			}
+
 			if (!Main.getMain().getSig().equalsIgnoreCase("NONE")) {
 				PlayerUtils.setSameSkin(player);
 			}
