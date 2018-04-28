@@ -21,7 +21,7 @@ public final class StringUtils {
 	public static Map<UUID, String> lastMsg = new HashMap<>();
 	public static Map<String, ArrayList<String>> logs = new HashMap<>();
 
-	public StringUtils() {
+	private StringUtils() {
 		populate();
 	}
 

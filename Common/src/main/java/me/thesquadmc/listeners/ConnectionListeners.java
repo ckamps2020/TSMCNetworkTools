@@ -69,6 +69,7 @@ public final class ConnectionListeners implements Listener {
 				});
 			}
 		});
+
 		Bukkit.getScheduler().runTaskLater(main, () -> {
 			if (Bukkit.getServerName().toUpperCase().startsWith("MG")
 					|| Bukkit.getServerName().toUpperCase().startsWith("FACTIONS")
@@ -78,6 +79,7 @@ public final class ConnectionListeners implements Listener {
 					player.chat("/ev");
 				}
 			}
+
 			if (Bukkit.getServerName().toUpperCase().startsWith("MG")
 					|| Bukkit.getServerName().toUpperCase().startsWith("FACTIONS")
 					|| Bukkit.getServerName().toUpperCase().startsWith("HUB")
@@ -88,9 +90,11 @@ public final class ConnectionListeners implements Listener {
 					player.chat("/vanish");
 				}
 			}
+
 			if (!Main.getMain().getSig().equalsIgnoreCase("NONE")) {
 				PlayerUtils.setSameSkin(player);
 			}
+
 			for (Player p : Bukkit.getOnlinePlayers()) {
 				TSMCUser targetUser = TSMCUser.fromPlayer(p);
 				if (targetUser.isVanished()) {
