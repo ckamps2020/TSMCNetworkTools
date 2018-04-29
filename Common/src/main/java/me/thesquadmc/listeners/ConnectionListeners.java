@@ -19,91 +19,88 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 public final class ConnectionListeners implements Listener {
 
-	private final Main main;
+    private final Main main;
 
-	public ConnectionListeners(Main main) {
-		this.main = main;
-	}
+    public ConnectionListeners(Main main) {
+        this.main = main;
+    }
 
-	@EventHandler
-	public void on(AsyncPlayerPreLoginEvent e) {
-		if (main.getMcLeaksAPI().checkAccount(e.getUniqueId()).isMCLeaks()) {
-			e.setKickMessage("Compromised Accounts cannot play!");
-			e.setLoginResult(AsyncPlayerPreLoginEvent.Result.KICK_OTHER);
-			Bukkit.getLogger().info("Prevented " + e.getName() + " from logging in as it is an MCLeaks Account");
+    @EventHandler
+    public void onJoin(PlayerJoinEvent e) {
+        Player player = e.getPlayer();
 
-			//Bukkit.getScheduler().runTask(main, () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "ban " + e.getName() + " Compromised Account"));
-			/*for (Player p : Bukkit.getOnlinePlayers()) {
-				if (PlayerUtils.isEqualOrHigherThen(p, Rank.TRAINEE)) {
-					p.sendMessage(CC.translate("&8[&4&lAnitCheat&8] &4[MCLeaks] &f" + e.getName() + " is a verified MCLeaks account!"));
-				}
-			} */
-		}
-	}
+        Multithreading.runAsync(() -> {
+            if (main.getMcLeaksAPI().checkAccount(e.getPlayer().getUniqueId()).isMCLeaks()) {
+                Bukkit.getScheduler().runTask(main, () -> {
+                    if (!e.getPlayer().isOnline()) { //Incase they log off before response comes
+                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), e.getPlayer().getName() + " is an MCLeaks account!");
+                        return;
+                    }
 
-	@EventHandler
-	public void onJoin(PlayerJoinEvent e) {
-		Player player = e.getPlayer();
+                    e.getPlayer().kickPlayer(CC.RED + "You are using a Compromised Account\n If this is wrong, please contact Staff!");
+                });
+            }
+        });
 
-		TSMCUser user = TSMCUser.fromPlayer(player);
-		user.setLoginTime(StringUtils.getDate());
-		MojangGameProfile profile = main.getNMSAbstract().getGameProfile(player);
-		profile.getPropertyMap().values().forEach(p -> {
-			user.setSkinKey(p.getValue());
-			user.setSignature(p.getSignature());
-		});
+        TSMCUser user = TSMCUser.fromPlayer(player);
+        user.setLoginTime(StringUtils.getDate());
+        MojangGameProfile profile = main.getNMSAbstract().getGameProfile(player);
+        profile.getPropertyMap().values().forEach(p -> {
+            user.setSkinKey(p.getValue());
+            user.setSignature(p.getSignature());
+        });
 
-		PlayerUtils.unfreezePlayer(player);
-		Bukkit.getScheduler().runTaskLater(main, () -> {
-			if (Bukkit.getServerName().toUpperCase().startsWith("MG")
-					|| Bukkit.getServerName().toUpperCase().startsWith("FACTIONS")
-					|| Bukkit.getServerName().toUpperCase().startsWith("HUB")
-					|| Bukkit.getServerName().toUpperCase().startsWith("CREATIVE")) {
-				if (PlayerUtils.isEqualOrHigherThen(player, Rank.ADMIN)) {
-					player.chat("/ev");
-				}
-			}
-			if (Bukkit.getServerName().toUpperCase().startsWith("MG")
-					|| Bukkit.getServerName().toUpperCase().startsWith("FACTIONS")
-					|| Bukkit.getServerName().toUpperCase().startsWith("HUB")
-					|| Bukkit.getServerName().toUpperCase().startsWith("PRISON")
-					|| Bukkit.getServerName().toUpperCase().startsWith("SKYBLOCK")
-					|| Bukkit.getServerName().toUpperCase().startsWith("CREATIVE")) {
-				if (PlayerUtils.isEqualOrHigherThen(player, Rank.ADMIN)) {
-					player.chat("/vanish");
-				}
-			}
+        PlayerUtils.unfreezePlayer(player);
+        Bukkit.getScheduler().runTaskLater(main, () -> {
+            if (Bukkit.getServerName().toUpperCase().startsWith("MG")
+                    || Bukkit.getServerName().toUpperCase().startsWith("FACTIONS")
+                    || Bukkit.getServerName().toUpperCase().startsWith("HUB")
+                    || Bukkit.getServerName().toUpperCase().startsWith("CREATIVE")) {
+                if (PlayerUtils.isEqualOrHigherThen(player, Rank.ADMIN)) {
+                    player.chat("/ev");
+                }
+            }
+            if (Bukkit.getServerName().toUpperCase().startsWith("MG")
+                    || Bukkit.getServerName().toUpperCase().startsWith("FACTIONS")
+                    || Bukkit.getServerName().toUpperCase().startsWith("HUB")
+                    || Bukkit.getServerName().toUpperCase().startsWith("PRISON")
+                    || Bukkit.getServerName().toUpperCase().startsWith("SKYBLOCK")
+                    || Bukkit.getServerName().toUpperCase().startsWith("CREATIVE")) {
+                if (PlayerUtils.isEqualOrHigherThen(player, Rank.ADMIN)) {
+                    player.chat("/vanish");
+                }
+            }
 
-			if (!Main.getMain().getSig().equalsIgnoreCase("NONE")) {
-				PlayerUtils.setSameSkin(player);
-			}
-			for (Player p : Bukkit.getOnlinePlayers()) {
-				TSMCUser targetUser = TSMCUser.fromPlayer(p);
-				if (targetUser.isVanished()) {
-					PlayerUtils.hidePlayerSpectatorStaff(p);
-				} else if (targetUser.isYtVanished()) {
-					PlayerUtils.hidePlayerSpectatorYT(p);
-				}
-			}
-		}, 3L);
-	}
+            if (!Main.getMain().getSig().equalsIgnoreCase("NONE")) {
+                PlayerUtils.setSameSkin(player);
+            }
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                TSMCUser targetUser = TSMCUser.fromPlayer(p);
+                if (targetUser.isVanished()) {
+                    PlayerUtils.hidePlayerSpectatorStaff(p);
+                } else if (targetUser.isYtVanished()) {
+                    PlayerUtils.hidePlayerSpectatorYT(p);
+                }
+            }
+        }, 3L);
+    }
 
-	@EventHandler
-	public void onQuit(PlayerQuitEvent e) {
-		Player player = e.getPlayer();
-		if (StringUtils.lastMsg.containsKey(player.getUniqueId())) {
-			StringUtils.lastMsg.remove(player.getUniqueId());
-		}
-		
-		player.performCommand("party leave");
-		
-		for (Player p : Bukkit.getServer().getOnlinePlayers()) {
-			if (TSMCUser.fromPlayer(p).isYtVanished()) {
-				p.showPlayer(player);
-			}
-		}
-		
-		TSMCUser.unloadUser(player);
-	}
+    @EventHandler
+    public void onQuit(PlayerQuitEvent e) {
+        Player player = e.getPlayer();
+        if (StringUtils.lastMsg.containsKey(player.getUniqueId())) {
+            StringUtils.lastMsg.remove(player.getUniqueId());
+        }
+
+        player.performCommand("party leave");
+
+        for (Player p : Bukkit.getServer().getOnlinePlayers()) {
+            if (TSMCUser.fromPlayer(p).isYtVanished()) {
+                p.showPlayer(player);
+            }
+        }
+
+        TSMCUser.unloadUser(player);
+    }
 
 }
