@@ -149,6 +149,7 @@ public final class Main extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new FreezeListener(this), this);
 
 		commandHandler.registerCommands(new CreativeCommand());
+		//test commit
 
 		host = fileManager.getNetworkingConfig().getString("redis.host");
 		port = fileManager.getNetworkingConfig().getInt("redis.port");
