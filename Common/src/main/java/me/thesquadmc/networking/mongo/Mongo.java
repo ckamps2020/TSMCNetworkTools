@@ -4,15 +4,24 @@ import com.mongodb.MongoClient;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoDatabase;
-import org.bson.*;
+import me.thesquadmc.utils.server.Multithreading;
+import org.bson.BSON;
+import org.bson.BsonBinary;
+import org.bson.BsonDocument;
+import org.bson.BsonDocumentWriter;
+import org.bson.Document;
+import org.bson.UuidRepresentation;
 import org.bson.codecs.EncoderContext;
 import org.bson.codecs.UuidCodec;
 import org.bson.types.Binary;
 
 import java.util.Arrays;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static com.mongodb.client.model.Filters.eq;
 
 public final class Mongo {
 
@@ -48,6 +57,28 @@ public final class Mongo {
         mongoLogger.setLevel(Level.SEVERE);
     }
 
+    public CompletableFuture<UUID> getUUID(String name) {
+        return CompletableFuture.supplyAsync(() -> {
+            Document document = mongoDatabase.getCollection(Database.USER_DATABASE).find(eq(Database.NAME, name)).first();
+            if (document == null) {
+                return null;
+            }
+
+            return document.get("_id", UUID.class);
+        }, Multithreading.POOL);
+    }
+
+    public CompletableFuture<String> getName(UUID uuid) {
+        return CompletableFuture.supplyAsync(() -> {
+            Document document = mongoDatabase.getCollection(Database.USER_DATABASE).find(eq("_id", uuid)).first();
+            if (document == null) {
+                return null;
+            }
+
+            return document.getString(Database.NAME);
+        }, Multithreading.POOL);
+    }
+
     public MongoClient getMongoClient() {
         return mongoClient;
     }
@@ -55,5 +86,4 @@ public final class Mongo {
     public MongoDatabase getMongoDatabase() {
         return mongoDatabase;
     }
-
 }

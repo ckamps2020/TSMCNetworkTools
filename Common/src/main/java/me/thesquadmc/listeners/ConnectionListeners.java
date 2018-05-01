@@ -41,11 +41,6 @@ public final class ConnectionListeners implements Listener {
             return true;
         });
 
-        if (main.getMcLeaksAPI().checkAccount(e.getUniqueId()).isMCLeaks()) {
-            e.setLoginResult(AsyncPlayerPreLoginEvent.Result.KICK_OTHER);
-            Bukkit.getLogger().info("Prevented " + e.getName() + " from logging in as it is an MCLeaks Account");
-        }
-
         //Bukkit.getScheduler().runTask(main, () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "ban " + e.getName() + " Compromised Account"));
 			/*for (Player p : Bukkit.getOnlinePlayers()) {
 				if (PlayerUtils.isEqualOrHigherThen(p, Rank.TRAINEE)) {
