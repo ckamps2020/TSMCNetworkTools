@@ -22,7 +22,7 @@ import java.util.function.Function;
 public final class ConnectionListeners implements Listener {
 
     private final Main main;
-
+  
     public ConnectionListeners(Main main) {
         this.main = main;
     }
@@ -53,9 +53,21 @@ public final class ConnectionListeners implements Listener {
     public void onJoin(PlayerJoinEvent e) {
         Player player = e.getPlayer();
 
-        TSMCUser user = TSMCUser.fromPlayer(player);
-        user.setLoginTime(System.currentTimeMillis());
+        Multithreading.runAsync(() -> {
+            if (main.getMcLeaksAPI().checkAccount(e.getPlayer().getUniqueId()).isMCLeaks()) {
+                Bukkit.getScheduler().runTask(main, () -> {
+                    if (!e.getPlayer().isOnline()) { //Incase they log off before response comes
+                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), e.getPlayer().getName() + " is an MCLeaks account!");
+                        return;
+                    }
 
+                    e.getPlayer().kickPlayer(CC.RED + "You are using a Compromised Account\n If this is wrong, please contact Staff!");
+                });
+            }
+        });
+
+        TSMCUser user = TSMCUser.fromPlayer(player);
+        user.setLoginTime(StringUtils.getDate());
         MojangGameProfile profile = main.getNMSAbstract().getGameProfile(player);
         profile.getPropertyMap().values().forEach(p -> {
             user.setSkinKey(p.getValue());

@@ -68,7 +68,8 @@ public final class Main extends JavaPlugin {
     private DatabaseManager MySQL;
     private ThreadPoolExecutor threadPoolExecutor;
     private int restartTime = 0;
-    private String version = "1.3.2";
+
+    private String version = "1.3.9";
     private String serverType = "UNKNOWN";
     private int chatslow = 0;
     private boolean chatSilenced = false;
@@ -89,7 +90,6 @@ public final class Main extends JavaPlugin {
     private MCLeaksAPI mcLeaksAPI;
     private CountManager countManager;
     private NMSAbstract nmsAbstract;
-
     private Mongo mongo;
     private Database database;
 
@@ -123,6 +123,7 @@ public final class Main extends JavaPlugin {
         fileManager = new FileManager(this);
         threadPoolExecutor = (ThreadPoolExecutor) Executors.newCachedThreadPool();
         MySQL = new DatabaseManager(this, this);
+
         frozenInventory = new FrozenInventory(this);
         staffmodeInventory = new StaffmodeInventory(this);
         updateHandler = new UpdateHandler(this);
@@ -142,6 +143,8 @@ public final class Main extends JavaPlugin {
                 new CreativeCommand(),
                 new HealCommand()
         ).forEach(o -> commandHandler.registerCommands(o));
+
+        //test commit
 
         host = fileManager.getNetworkingConfig().getString("redis.host");
         port = fileManager.getNetworkingConfig().getInt("redis.port");
@@ -215,7 +218,8 @@ public final class Main extends JavaPlugin {
                             RedisChannels.RETURN_SERVER.getChannelName(),
                             RedisChannels.STARTUP_REQUEST.getChannelName(),
                             RedisChannels.SERVER_STATE.getChannelName(),
-                            RedisChannels.PLAYER_COUNT.getChannelName());
+                            RedisChannels.PLAYER_COUNT.getChannelName(),
+                            RedisChannels.DISCORD_STAFFCHAT_SERVER.getChannelName());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -233,6 +237,25 @@ public final class Main extends JavaPlugin {
                     e.printStackTrace();
                     System.out.println("[NetworkTools] Unable to connect to mysql database!");
                 }
+            }
+        });
+
+        System.out.println("[NetworkTools] Setting up BuycraftAPI...");
+        Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable() {
+            @Override
+            public void run() {
+                Multithreading.runAsync(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            //Buycraft buycraft = new Buycraft(fileManager.getNetworkingConfig().getString("buycraft.secret"));
+                            System.out.println("[NetworkTools] BuycraftAPI setup and ready to go!");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            System.out.println("[NetworkTools] Unable to set up BuycraftAPI");
+                        }
+                    }
+                });
             }
         });
 
@@ -300,7 +323,7 @@ public final class Main extends JavaPlugin {
     }
 
     public Database getMongoDatabase() { return database; }
-
+  
     public CountManager getCountManager() {
         return countManager;
     }
@@ -650,5 +673,4 @@ public final class Main extends JavaPlugin {
         getCommand("l2").setExecutor(new MOTDCommand(main, 2));
         getCommand("motdclear").setExecutor(new MOTDClearCommand(main));
     }
-
 }
