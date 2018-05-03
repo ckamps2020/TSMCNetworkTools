@@ -3,6 +3,7 @@ package me.thesquadmc.commands;
 import me.thesquadmc.Main;
 import me.thesquadmc.utils.PlayerUtils;
 import me.thesquadmc.utils.enums.Rank;
+import me.thesquadmc.utils.inventory.ItemBuilder;
 import me.thesquadmc.utils.msgs.CC;
 import me.thesquadmc.utils.msgs.StringUtils;
 import org.bukkit.Material;
@@ -10,6 +11,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 public final class RenameCommand implements CommandExecutor {
 
@@ -27,7 +29,8 @@ public final class RenameCommand implements CommandExecutor {
 				if (player.getItemInHand() != null && player.getItemInHand().getType() != Material.AIR) {
 					if (args.length >= 1) {
 						String name = StringUtils.buildMessage(args, 0);
-						player.getItemInHand().getItemMeta().setDisplayName(CC.translate(name));
+						ItemStack itemStack = new ItemBuilder(player.getItemInHand()).name(name).build();
+						player.setItemInHand(itemStack);
 						player.sendMessage(CC.translate("&e&lRENAME &6■ &7You renamed your &e" + player.getItemInHand().getType().name() + " &7to " + name));
 					} else {
 						player.sendMessage(CC.translate("&e&lRENAME &6■ &7You must provide a new name!"));
