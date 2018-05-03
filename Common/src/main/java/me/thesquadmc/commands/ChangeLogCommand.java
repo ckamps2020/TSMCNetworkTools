@@ -1,6 +1,5 @@
 package me.thesquadmc.commands;
 
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Sorts;
@@ -34,28 +33,6 @@ public class ChangeLogCommand {
                 logs.add(ChangeLog.fromDocument(document));
             }
         }, 0L, 20 * 30);
-
-        System.out.println("d");
-        System.out.println("d");
-        System.out.println("d");
-        System.out.println("d");
-        System.out.println("d");
-        System.out.println("d");
-        System.out.println("d");
-        System.out.println("d");
-        System.out.println("d");
-        System.out.println("d");
-        System.out.println("d");
-        System.out.println("d");
-        System.out.println("d");
-        System.out.println("d");
-        System.out.println("d");
-        System.out.println("d");
-        System.out.println("d");
-        System.out.println("d");
-        System.out.println("d");
-        System.out.println("d");
-        System.out.println("d");
     }
 
     @Command(name = "changelog", aliases = {"changes"})
