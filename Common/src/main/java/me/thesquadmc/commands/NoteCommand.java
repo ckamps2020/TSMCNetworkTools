@@ -5,15 +5,11 @@ import me.thesquadmc.objects.TSMCUser;
 import me.thesquadmc.utils.command.Command;
 import me.thesquadmc.utils.command.CommandArgs;
 import me.thesquadmc.utils.msgs.CC;
+import me.thesquadmc.utils.time.TimeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.ocpsoft.prettytime.PrettyTime;
-
-import java.util.Date;
 
 public class NoteCommand {
-
-    private static final PrettyTime PT = new PrettyTime();
 
     private final Main plugin;
 
@@ -54,7 +50,7 @@ public class NoteCommand {
 
         player.sendMessage(CC.translate("&e&lNOTES &6■  " + user.getName() + "'s Notes:"));
         user.getNotes().forEach(note -> {
-            player.sendMessage(String.format(CC.YELLOW + "%s %s: %s", PT.format(new Date(System.currentTimeMillis() - note.getTimestamp())), note.getCreatorName(), note.getNote()));
+            player.sendMessage(String.format(CC.YELLOW + "%s %s: %s", TimeUtils.getFormattedTime(System.currentTimeMillis() - note.getTimestamp()), note.getCreatorName(), note.getNote()));
         });
     }
 }

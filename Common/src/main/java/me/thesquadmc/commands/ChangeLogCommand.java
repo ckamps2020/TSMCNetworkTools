@@ -35,30 +35,9 @@ public class ChangeLogCommand {
             }
         }, 0L, 20 * 30);
 
-        System.out.println("d");
-        System.out.println("d");
-        System.out.println("d");
-        System.out.println("d");
-        System.out.println("d");
-        System.out.println("d");
-        System.out.println("d");
-        System.out.println("d");
-        System.out.println("d");
-        System.out.println("d");
-        System.out.println("d");
-        System.out.println("d");
-        System.out.println("d");
-        System.out.println("d");
-        System.out.println("d");
-        System.out.println("d");
-        System.out.println("d");
-        System.out.println("d");
-        System.out.println("d");
-        System.out.println("d");
-        System.out.println("d");
     }
 
-    @Command(name = "changelog", aliases = {"changes"})
+    @Command(name = {"changelog", "changes"})
     public void on(CommandArgs args) {
         Iterator<ChangeLog> iterator = logs.descendingIterator();
 
