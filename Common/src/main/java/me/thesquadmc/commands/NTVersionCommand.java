@@ -17,10 +17,7 @@ public final class NTVersionCommand implements CommandExecutor {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		if (sender instanceof Player) {
-			Player player = (Player) sender;
-			player.sendMessage(CC.translate("&e&lBUILD &6■ &7Version &e" + main.getVersion()));
-		}
+		sender.sendMessage(CC.translate("&e&lBUILD &6■ &7Version &e" + main.getVersion()));
 		return true;
 	}
 

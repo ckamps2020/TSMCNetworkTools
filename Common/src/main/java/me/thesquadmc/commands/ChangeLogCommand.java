@@ -14,7 +14,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.TreeSet;
 
-public class ChangeLogCommand {
+public final class ChangeLogCommand {
 
     private final MongoCollection<Document> logCollection;
     private final TreeSet<ChangeLog> logs = Sets.newTreeSet(Comparator.comparingLong(ChangeLog::getTimestamp));
