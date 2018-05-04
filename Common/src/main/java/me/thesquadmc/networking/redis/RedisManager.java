@@ -2,11 +2,15 @@ package me.thesquadmc.networking.redis;
 
 import com.google.common.base.Preconditions;
 import me.thesquadmc.Main;
+import me.thesquadmc.utils.enums.RedisChannels;
 import org.bukkit.Bukkit;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.exceptions.JedisConnectionException;
+
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class RedisManager {
 
@@ -73,10 +77,10 @@ public class RedisManager {
         pool.close();
     }
 
-    public void registerChannel(RedisChannel redisChannel, String... channels) {
+    public void registerChannel(RedisChannel redisChannel, RedisChannels... channels) {
         Preconditions.checkNotNull(redisChannel, "RedisChannel cannot be null!");
 
-        pubSub.subscribe(redisChannel, channels);
+        Arrays.stream(channels).map(RedisChannels::getName).forEach(s -> pubSub.subscribe(redisChannel, s));
     }
 
     public Jedis getResource() {

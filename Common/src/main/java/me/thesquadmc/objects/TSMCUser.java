@@ -345,7 +345,6 @@ public class TSMCUser {
         user.skinKey = document.getString(SKIN_KEY);
         user.signature = document.getString(SIGNATURE);
 
-        System.out.println("user - " + user);
         return user;
     }
 

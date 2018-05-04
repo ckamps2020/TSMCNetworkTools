@@ -21,59 +21,41 @@ public class PartyChannel implements RedisChannel {
     }
 
     @Override
-    public void handle(String channel, JsonObject object) { 
-        if (channel.equalsIgnoreCase(RedisChannels.PARTY_JOIN_SERVER.getChannelName())) {
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-            @Override
-            public void run() {
-                Multithreading.runAsync(new Runnable() {
-                    @Override
-                    public void run() {
-                        Party party = Main.getMain().getGson().fromJson(object.get(RedisArg.PARTY.getName()).geta), Party.class);
-                        if (party == null) return;
-
-                        Main.getMain().getPartyManager().addParty(party);
-                    }
-                });
+    public void handle(String channel, JsonObject object) {
+        if (channel.equals(RedisChannels.PARTY_JOIN_SERVER.getName())) {
+            Party party = Main.getMain().getGson().fromJson(object.get(RedisArg.PARTY.getName()).getAsJsonObject(), Party.class);
+            if (party == null) {
+                return;
             }
-        });
-    } else if (channel.equalsIgnoreCase(RedisChannels.PARTY_UPDATE.getChannelName())) {
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-            @Override
-            public void run() {
-                Multithreading.runAsync(new Runnable() {
-                    @Override
-                    public void run() {
-                        Party party = Main.getMain().getGson().fromJson(String.valueOf(data.get(RedisArg.PARTY.getArg())), Party.class);
-                        if (party == null) return;
 
-                        // Looks ugly, but it works
-                        PartyManager manager = Main.getMain().getPartyManager();
-                        if (manager.removeParty(party)) {
-                            manager.addParty(party);
-                        }
-                    }
-                });
-            }
-        });
-    } else if (channel.equalsIgnoreCase(RedisChannels.PARTY_DISBAND.getChannelName())) {
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-            @Override
-            public void run() {
-                Multithreading.runAsync(new Runnable() {
-                    @Override
-                    public void run() {
-                        Party party = Main.getMain().getGson().fromJson(String.valueOf(data.get(RedisArg.PARTY.getArg())), Party.class);
-                        if (party == null) return;
+            Main.getMain().getPartyManager().addParty(party);
 
-                        Main.getMain().getPartyManager().removeParty(party);
-                        for (OfflinePlayer member : party.getMembers()) {
-                            if (!member.isOnline()) return;
-                            member.getPlayer().sendMessage(CC.translate("&e&lPARTY &6■ &7Your &eparty &7has been &edisbanded&7!"));
-                        }
-                    }
-                });
+        } else if (channel.equals(RedisChannels.PARTY_UPDATE.getName())) {
+            Party party = Main.getMain().getGson().fromJson(object.get(RedisArg.PARTY.getName()).getAsJsonObject(), Party.class);
+            if (party == null) {
+                return;
             }
-        });
+
+            // Looks ugly, but it works
+            PartyManager manager = Main.getMain().getPartyManager();
+            if (manager.removeParty(party)) {
+                manager.addParty(party);
+            }
+
+        } else if (channel.equals(RedisChannels.PARTY_DISBAND.getName())) {
+            Party party = Main.getMain().getGson().fromJson(object.get(RedisArg.PARTY.getName()).getAsJsonObject(), Party.class);
+            if (party == null) {
+                return;
+            }
+
+            Main.getMain().getPartyManager().removeParty(party);
+            for (OfflinePlayer member : party.getMembers()) {
+                if (!member.isOnline()) {
+                    return;
+                }
+
+                member.getPlayer().sendMessage(CC.translate("&e&lPARTY &6■ &7Your &eparty &7has been &edisbanded&7!"));
+            }
+        }
     }
 }

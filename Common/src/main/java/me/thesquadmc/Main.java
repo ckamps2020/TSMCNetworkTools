@@ -18,6 +18,14 @@ import me.thesquadmc.networking.mongo.Mongo;
 import me.thesquadmc.networking.mongo.MongoDatabase;
 import me.thesquadmc.networking.mysql.DatabaseManager;
 import me.thesquadmc.networking.redis.RedisManager;
+import me.thesquadmc.networking.redis.channels.AnnounceChannel;
+import me.thesquadmc.networking.redis.channels.FindChannel;
+import me.thesquadmc.networking.redis.channels.FriendsChannel;
+import me.thesquadmc.networking.redis.channels.MonitorChannel;
+import me.thesquadmc.networking.redis.channels.PartyChannel;
+import me.thesquadmc.networking.redis.channels.ServerManagementChannel;
+import me.thesquadmc.networking.redis.channels.StaffChatChannels;
+import me.thesquadmc.networking.redis.channels.WhitelistChannel;
 import me.thesquadmc.objects.TSMCUser;
 import me.thesquadmc.utils.command.CommandHandler;
 import me.thesquadmc.utils.enums.RedisArg;
@@ -234,6 +242,14 @@ public final class Main extends JavaPlugin {
         });*/
 
         redisManager = new RedisManager(host, port, password);
+        redisManager.registerChannel(new StaffChatChannels(this), RedisChannels.STAFFCHAT, RedisChannels.ADMINCHAT, RedisChannels.MANAGERCHAT, RedisChannels.DISCORD_STAFFCHAT_SERVER);
+        redisManager.registerChannel(new FindChannel(this), RedisChannels.FIND, RedisChannels.FOUND, RedisChannels.REQUEST_LIST, RedisChannels.RETURN_REQUEST_LIST);
+        redisManager.registerChannel(new ServerManagementChannel(this), RedisChannels.STARTUP_REQUEST, RedisChannels.RETURN_SERVER, RedisChannels.STOP);
+        redisManager.registerChannel(new WhitelistChannel(this), RedisChannels.WHITELIST, RedisChannels.WHITELIST_ADD, RedisChannels.WHITELIST_REMOVE);
+        redisManager.registerChannel(new PartyChannel(this), RedisChannels.PARTY_JOIN_SERVER, RedisChannels.PARTY_DISBAND, RedisChannels.PARTY_UPDATE);
+        redisManager.registerChannel(new MonitorChannel(this), RedisChannels.MONITOR_INFO, RedisChannels.MONITOR_REQUEST);
+        redisManager.registerChannel(new AnnounceChannel(this), RedisChannels.ANNOUNCEMENT);
+        redisManager.registerChannel(new FriendsChannel(this), RedisChannels.LEAVE);
 
         System.out.println("[NetworkTools] Redis PUB/SUB setup!");
         Multithreading.runAsync(new Runnable() {

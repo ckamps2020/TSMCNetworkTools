@@ -47,7 +47,7 @@ public final class RedisHandler {
 					for (Player player : Bukkit.getOnlinePlayers()) {
 						if (PlayerUtils.isEqualOrHigherThen(player, Rank.TRAINEE)) {
 							TSMCUser user = TSMCUser.fromPlayer(player);
-							if (user.getSetting(PlayerSetting.STAFFCHAT_ENABLED) && user.getSetting(PlayerSetting.STAFFCHAT_SCOPE) == MessageSettings.GLOBAL) {
+							if (user.getSetting(PlayerSetting.STAFFCHAT_ENABLED)) {
 								String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
 								player.spigot().sendMessage(StringUtils.getHoverMessage(String.valueOf(data.get(RedisArg.MESSAGE.getArg())), "&7Currently on &e" + server));
 							}
@@ -62,7 +62,7 @@ public final class RedisHandler {
 					for (Player player : Bukkit.getOnlinePlayers()) {
 						if (PlayerUtils.isEqualOrHigherThen(player, Rank.MANAGER)) {
 							TSMCUser user = TSMCUser.fromPlayer(player);
-							if (user.getSetting(PlayerSetting.MANAGERCHAT_ENABLED) && user.getSetting(PlayerSetting.MANAGERCHAT_SCOPE) == MessageSettings.GLOBAL) {
+							if (user.getSetting(PlayerSetting.MANAGERCHAT_ENABLED)) {
 								player.sendMessage(CC.translate(String.valueOf(data.get(RedisArg.MESSAGE.getArg()))));
 							}
 						}
@@ -76,7 +76,7 @@ public final class RedisHandler {
 					for (Player player : Bukkit.getOnlinePlayers()) {
 						if (PlayerUtils.isEqualOrHigherThen(player, Rank.ADMIN)) {
 							TSMCUser user = TSMCUser.fromPlayer(player);
-							if (user.getSetting(PlayerSetting.ADMINCHAT_ENABLED) && user.getSetting(PlayerSetting.ADMINCHAT_SCOPE) == MessageSettings.GLOBAL) {
+							if (user.getSetting(PlayerSetting.ADMINCHAT_ENABLED)) {
 								player.sendMessage(CC.translate(String.valueOf(data.get(RedisArg.MESSAGE.getArg()))));
 							}
 						}
