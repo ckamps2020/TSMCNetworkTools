@@ -1,18 +1,12 @@
 package me.thesquadmc.networking.redis;
 
-import co.itseternity.common.ThreadUtil;
-import com.google.common.collect.Maps;
-import me.thesquadmc.utils.server.Multithreading;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import com.google.common.base.Preconditions;
+import me.thesquadmc.Main;
+import org.bukkit.Bukkit;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
-import redis.clients.jedis.JedisPubSub;
-
-import java.time.Duration;
-import java.util.Map;
+import redis.clients.jedis.exceptions.JedisConnectionException;
 
 public class RedisManager {
 
@@ -20,73 +14,88 @@ public class RedisManager {
     private final int port;
     private final String pass;
 
-    private final Map<String, RedisChannel> channels = Maps.newHashMap();
-
+    private final JedisPoolConfig config;
     private JedisPool pool;
+    private RedisPubSub pubSub;
 
     public RedisManager(String host, int port, String pass) {
         this.host = host;
         this.port = port;
         this.pass = pass;
 
-        try {
-            ClassLoader previous = Thread.currentThread().getContextClassLoader();
-            Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
+        ClassLoader previous = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
 
-            this.pool = new JedisPool(new JedisPoolConfig(), host, port, 40 * 1000, pass);
+        config = new JedisPoolConfig();
+        int maxConnections = 200;
+        config.setMaxTotal(maxConnections);
+        config.setMaxIdle(maxConnections);
+        config.setMinIdle(50);
+        config.setTestOnReturn(true);
+        config.setTestWhileIdle(true);
 
-            Thread.currentThread().setContextClassLoader(previous);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        this.pool = new JedisPool(config, host, port, 40 * 1000, pass);
 
-        subscribe();
+        Thread.currentThread().setContextClassLoader(previous);
+
+        pubSub = new RedisPubSub();
+
+        new Thread(this::subscribe, "Redis Subscriber Thread").run();
+
+        Bukkit.getScheduler().runTaskTimerAsynchronously(Main.getMain(), () -> System.out.println(getPoolCurrentUsage()), 0L, 20 * 60);
     }
 
-    public void subscribe() {
-        Multithreading.runAsync(() -> {
-            Jedis subscriber;
+    @SuppressWarnings("InfiniteLoopStatement")
+    private void subscribe() {
+        long sleep = 1000;
 
-            try {
-                subscriber = new Jedis(host, port);
-                subscriber.auth(pass);
-                subscriber.connect();
+        while (true) {
+            try (Jedis jedis = getResource()) {
+                jedis.subscribe(pubSub);
 
-
-                subscriber.subscribe(new JedisPubSub() {
-                    @Override
-                    public void onMessage(String channel, String message) {
-                        try {
-                            JSONObject object = (JSONObject) new JSONParser().parse(message);
-                            String from = (String) object.get("channel");
-
-                            RedisChannel redisChannel = channels.get(from);
-                            if (redisChannel != null) {
-                                redisChannel.processMessage(channel, object);
-                            }
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-
-                }, "sync", "sync-update");
-
-            } catch (Exception e) {
+            } catch (JedisConnectionException e) {
                 e.printStackTrace();
-            }
-        });
-    }
 
-    public void registerChannel(String channel, RedisChannel redisChannel) {
-        channels.put(channel, redisChannel);
+                Main.getMain().getLogger().severe("Redis connection dropped, attempting to connect in " + (sleep / 1000) + " secs..");
+                try {
+                    Thread.sleep(sleep);
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                }
+
+                sleep += sleep;
+            }
+
+        }
     }
 
     public void close() {
         pool.close();
     }
 
+    public void registerChannel(RedisChannel redisChannel, String... channels) {
+        Preconditions.checkNotNull(redisChannel, "RedisChannel cannot be null!");
+
+        pubSub.subscribe(redisChannel, channels);
+    }
+
     public Jedis getResource() {
         return pool.getResource();
+    }
+
+    public String getPoolCurrentUsage() {
+        int active = pool.getNumActive();
+        int idle = pool.getNumIdle();
+        int total = active + idle;
+        return String.format(
+                "Active=%d, Idle=%d, Waiters=%d, total=%d, maxTotal=%d, minIdle=%d, maxIdle=%d",
+                active,
+                idle,
+                pool.getNumWaiters(),
+                total,
+                config.getMaxTotal(),
+                config.getMinIdle(),
+                config.getMaxIdle()
+        );
     }
 }

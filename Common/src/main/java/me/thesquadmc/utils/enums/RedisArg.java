@@ -43,6 +43,9 @@ public enum RedisArg {
 		this.arg = arg;
 	}
 
+	@Deprecated
 	public String getArg() { return arg; }
+
+	public String getName() { return arg; }
 
 }

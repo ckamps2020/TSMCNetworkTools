@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import me.thesquadmc.utils.enums.MessageSettings;
-
 public class PlayerSetting<T> {
 
 	private static final List<PlayerSetting<?>> VALUES = new ArrayList<>();
@@ -18,9 +16,6 @@ public class PlayerSetting<T> {
 	public static final PlayerSetting<Boolean> SOCIALSPY = new PlayerSetting<>("SOCIALSPY", Boolean.class, true);
 	
 	// Staff settings
-	public static final PlayerSetting<MessageSettings> STAFFCHAT_SCOPE = new PlayerSetting<>("STAFFCHAT_SCOPE", MessageSettings.class, MessageSettings.GLOBAL);
-	public static final PlayerSetting<MessageSettings> MANAGERCHAT_SCOPE = new PlayerSetting<>("MANAGERCHAT_SCOPE", MessageSettings.class, MessageSettings.GLOBAL);
-	public static final PlayerSetting<MessageSettings> ADMINCHAT_SCOPE = new PlayerSetting<>("ADMINCHAT_SCOPE", MessageSettings.class, MessageSettings.GLOBAL);
 	public static final PlayerSetting<Boolean> STAFFCHAT_ENABLED = new PlayerSetting<>("STAFFCHAT_ENABLED", Boolean.class, true);
 	public static final PlayerSetting<Boolean> MANAGERCHAT_ENABLED = new PlayerSetting<>("MANAGERCHAT_ENABLED", Boolean.class, true);
 	public static final PlayerSetting<Boolean> ADMINCHAT_ENABLED = new PlayerSetting<>("ADMINCHAT_ENABLED", Boolean.class, true);

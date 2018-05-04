@@ -1,9 +1,7 @@
 package me.thesquadmc.networking.redis;
 
-import org.json.simple.JSONObject;
+import com.google.gson.JsonObject;
 
 public interface RedisChannel {
-
-    void handle(String channel, JSONObject object);
-
+    void handle(String channel, JsonObject object);
 }

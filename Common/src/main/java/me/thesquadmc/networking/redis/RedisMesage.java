@@ -1,5 +1,6 @@
 package me.thesquadmc.networking.redis;
 
+import me.thesquadmc.utils.enums.RedisChannels;
 import org.json.simple.JSONObject;
 import redis.clients.jedis.Jedis;
 
@@ -16,8 +17,8 @@ public class RedisMesage {
         message.put("channel", channel);
     }
 
-    public static RedisMesage newMessage(String channel) {
-        return new RedisMesage(channel);
+    public static RedisMesage newMessage(RedisChannels channel) {
+        return new RedisMesage(channel.getName());
     }
 
     public RedisMesage set(String key, Object value){

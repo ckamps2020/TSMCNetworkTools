@@ -17,6 +17,7 @@ import me.thesquadmc.networking.mongo.Database;
 import me.thesquadmc.networking.mongo.Mongo;
 import me.thesquadmc.networking.mongo.MongoDatabase;
 import me.thesquadmc.networking.mysql.DatabaseManager;
+import me.thesquadmc.networking.redis.RedisManager;
 import me.thesquadmc.objects.TSMCUser;
 import me.thesquadmc.utils.command.CommandHandler;
 import me.thesquadmc.utils.enums.RedisArg;
@@ -62,8 +63,8 @@ public final class Main extends JavaPlugin {
     private long startup = System.currentTimeMillis();
     private String value = "NONE";
     private String sig = "NONE";
-    private Jedis jedis;
-    private JedisPoolConfig poolConfig;
+   // private Jedis jedis;
+   // private JedisPoolConfig poolConfig;
     private Jedis j;
     private DatabaseManager MySQL;
     private ThreadPoolExecutor threadPoolExecutor;
@@ -101,6 +102,8 @@ public final class Main extends JavaPlugin {
     private String mysqlpassword;
     private String mysqldb;
     private String dbuser;
+
+    private RedisManager redisManager;
 
     private Map<UUID, List<String>> friends = new HashMap<>();
     private Map<UUID, List<String>> requests = new HashMap<>();
@@ -156,7 +159,8 @@ public final class Main extends JavaPlugin {
         dbuser = fileManager.getNetworkingConfig().getString("mysql.dbuser");
         System.out.println("[NetworkTools] Loading Redis PUB/SUB...");
         redisHandler = new RedisHandler(this);
-        try {
+
+        /*try {
             ClassLoader previous = Thread.currentThread().getContextClassLoader();
             Thread.currentThread().setContextClassLoader(main.getClassLoader());
             poolConfig = new JedisPoolConfig();
@@ -169,9 +173,11 @@ public final class Main extends JavaPlugin {
             //pool = new JedisPool(poolConfig, host, port, 40*1000);
             jedis = pool.getResource();
             Thread.currentThread().setContextClassLoader(previous);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         Multithreading.runAsync(new Runnable() {
             @Override
             public void run() {
@@ -186,7 +192,8 @@ public final class Main extends JavaPlugin {
                                         JedisTask task = gson.fromJson(message, JedisTask.class);
                                         getRedisHandler().processRedisMessage(task, channel, message);
                                     }
-                                }, RedisChannels.ADMINCHAT.getChannelName(),
+                                },
+                            RedisChannels.ADMINCHAT.getChannelName(),
                             RedisChannels.REQUEST_LIST.getChannelName(),
                             RedisChannels.RETURN_REQUEST_LIST.getChannelName(),
                             RedisChannels.STAFFCHAT.getChannelName(),
@@ -224,7 +231,10 @@ public final class Main extends JavaPlugin {
                     e.printStackTrace();
                 }
             }
-        });
+        });*/
+
+        redisManager = new RedisManager(host, port, password);
+
         System.out.println("[NetworkTools] Redis PUB/SUB setup!");
         Multithreading.runAsync(new Runnable() {
             @Override
@@ -274,7 +284,7 @@ public final class Main extends JavaPlugin {
         registerCommands();
 
         ServerUtils.calculateServerType();
-        Bukkit.getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
+        /*Bukkit.getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
             @Override
             public void run() {
                 Multithreading.runAsync(new Runnable() {
@@ -301,7 +311,7 @@ public final class Main extends JavaPlugin {
                     }
                 }
             });
-        }
+        }*/
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> BarUtils.getPlayers().forEach(nmsAbstract.getBossBarManager()::teleportBar), 1, 20L);
         System.out.println("[NetworkTools] Plugin started up and ready to go!");
 
@@ -312,10 +322,12 @@ public final class Main extends JavaPlugin {
     public void onDisable() {
         System.out.println("[NetworkTools] Shutting down...");
         System.out.println("[NetworkTools] Shut down! Cya :D");
+
+        redisManager.close();
     }
 
-    public Jedis getJ() {
-        return j;
+    public RedisManager getRedisManager() {
+        return redisManager;
     }
 
     public Mongo getMongo() {
@@ -431,9 +443,9 @@ public final class Main extends JavaPlugin {
         return settings;
     }
 
-    public Jedis getJedis() {
-        return jedis;
-    }
+  //  public Jedis getJedis() {
+  //      return jedis;
+   // }
 
     public CommandHandler getCommandHandler() {
         return commandHandler;
@@ -535,23 +547,6 @@ public final class Main extends JavaPlugin {
      */
     public NMSAbstract getNMSAbstract() {
         return nmsAbstract;
-    }
-
-    private String getPoolCurrentUsage() {
-        int active = pool.getNumActive();
-        int idle = pool.getNumIdle();
-        int total = active + idle;
-        String log = String.format(
-                "Active=%d, Idle=%d, Waiters=%d, total=%d, maxTotal=%d, minIdle=%d, maxIdle=%d",
-                active,
-                idle,
-                pool.getNumWaiters(),
-                total,
-                poolConfig.getMaxTotal(),
-                poolConfig.getMinIdle(),
-                poolConfig.getMaxIdle()
-        );
-        return log;
     }
 
     private boolean setupNMSAbstract() {

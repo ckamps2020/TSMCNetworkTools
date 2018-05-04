@@ -7,6 +7,7 @@ import redis.clients.jedis.Jedis;
 import java.util.HashMap;
 import java.util.Map;
 
+@Deprecated
 public final class JedisTask {
 
 	private static final Gson gson = Main.getMain().getGson();

@@ -60,6 +60,9 @@ public enum RedisChannels {
 		this.channelName = channelName;
 	}
 
+	@Deprecated
 	public String getChannelName() { return channelName; }
+
+	public String getName() { return channelName; }
 
 }
