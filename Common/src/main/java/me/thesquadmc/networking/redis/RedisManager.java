@@ -68,7 +68,7 @@ public class RedisManager {
         executeJedisAsync(jedis -> jedis.publish(channel.getName(), JSONUtils.toJson(message)));
     }
 
-    private void executeJedisAsync(Consumer<Jedis> consumer) {
+    public void executeJedisAsync(Consumer<Jedis> consumer) {
         Multithreading.runAsync(() -> executeJedis(consumer));
     }
 

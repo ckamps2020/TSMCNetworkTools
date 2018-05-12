@@ -2,6 +2,7 @@ package me.thesquadmc.commands;
 
 import me.thesquadmc.Main;
 import me.thesquadmc.networking.JedisTask;
+import me.thesquadmc.networking.redis.RedisMesage;
 import me.thesquadmc.utils.enums.RedisChannels;
 import me.thesquadmc.utils.msgs.CC;
 import me.thesquadmc.utils.server.Multithreading;
@@ -26,22 +27,15 @@ public final class MOTDClearCommand implements CommandExecutor {
             return false;
         }
 
-        Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
-            @Override
-            public void run() {
-                Multithreading.runAsync(() -> {
-                    try (Jedis jedis = main.getPool().getResource()) {
-                        JedisTask.withName("a")
-                                .withArg(String.valueOf(1), " ")
-                                .withArg(String.valueOf(2), " ")
-                                .send(RedisChannels.MOTD.getChannelName(), jedis);
+        main.getRedisManager().sendMessage(RedisChannels.MOTD, RedisMesage.newMessage()
+                .set(String.valueOf(1), " ")
+                .set(String.valueOf(2), " "));
 
-                        jedis.set("motd-line1", "");
-                        jedis.set("motd-line2", "");
-                        sender.sendMessage(CC.translate("&aMOTD &6■ &7Cleared the MOTD!"));
-                    }
-                });
-            }
+        main.getRedisManager().executeJedisAsync(jedis -> {
+            jedis.set("motd-line1", "");
+            jedis.set("motd-line2", "");
+
+            sender.sendMessage(CC.translate("&aMOTD &6■ &7Cleared the MOTD!"));
         });
 
         return true;

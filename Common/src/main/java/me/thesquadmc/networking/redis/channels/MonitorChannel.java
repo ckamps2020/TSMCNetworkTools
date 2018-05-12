@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import me.thesquadmc.Main;
 import me.thesquadmc.networking.JedisTask;
 import me.thesquadmc.networking.redis.RedisChannel;
+import me.thesquadmc.networking.redis.RedisMesage;
 import me.thesquadmc.objects.TSMCUser;
 import me.thesquadmc.utils.PlayerUtils;
 import me.thesquadmc.utils.enums.Rank;
@@ -32,7 +33,14 @@ public class MonitorChannel implements RedisChannel {
         if (channel.equals(RedisChannels.MONITOR_REQUEST.getName())) {
             String server = object.get(RedisArg.SERVER.getName()).getAsString();
             if (server.equalsIgnoreCase(Bukkit.getServerName())) {
-                Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> Multithreading.runAsync(() -> {
+                plugin.getRedisManager().sendMessage(RedisChannels.MONITOR_RETURN, RedisMesage.newMessage()
+                        .set(RedisArg.SERVER.getName(), server)
+                        .set(RedisArg.UPTIME.getName(), TimeUtils.getFormattedTime(System.currentTimeMillis() - plugin.getStartup()))
+                        .set(RedisArg.COUNT.getName(), Bukkit.getOnlinePlayers().size())
+                        .set(RedisArg.TPS.getName(), ServerUtils.getTPS(0))
+                        .set(RedisArg.MESSAGE.getName(), String.format("&7TPS = &e%s&7, Memory = &e%s&8/&e%s", ServerUtils.getTPS(0), ServerUtils.getUsedMemory(), ServerUtils.getTotalMemory())));
+
+                /*Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> Multithreading.runAsync(() -> {
                     try (Jedis jedis = Main.getMain().getPool().getResource()) {
                         JedisTask.withName(UUID.randomUUID().toString())
                                 .withArg(RedisArg.SERVER.getName(), server)
@@ -42,7 +50,7 @@ public class MonitorChannel implements RedisChannel {
                                 .withArg(RedisArg.MESSAGE.getName(), "&7TPS = &e" + ServerUtils.getTPS(0) + "&7, &7Memory = &e" + ServerUtils.getUsedMemory() + "&8/&e" + ServerUtils.getTotalMemory() + "&7")
                                 .send(RedisChannels.MONITOR_RETURN.getName(), jedis);
                     }
-                }));
+                }));*/
             }
         } else if (channel.equalsIgnoreCase(RedisChannels.MONITOR_INFO.getName())) {
             Multithreading.runAsync(() -> {

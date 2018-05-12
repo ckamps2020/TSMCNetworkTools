@@ -18,6 +18,7 @@ import me.thesquadmc.networking.mongo.Mongo;
 import me.thesquadmc.networking.mongo.MongoDatabase;
 import me.thesquadmc.networking.mysql.DatabaseManager;
 import me.thesquadmc.networking.redis.RedisManager;
+import me.thesquadmc.networking.redis.RedisMesage;
 import me.thesquadmc.networking.redis.channels.AnnounceChannel;
 import me.thesquadmc.networking.redis.channels.FindChannel;
 import me.thesquadmc.networking.redis.channels.FriendsChannel;
@@ -71,8 +72,8 @@ public final class Main extends JavaPlugin {
     private long startup = System.currentTimeMillis();
     private String value = "NONE";
     private String sig = "NONE";
-   // private Jedis jedis;
-   // private JedisPoolConfig poolConfig;
+    // private Jedis jedis;
+    // private JedisPoolConfig poolConfig;
     private Jedis j;
     private DatabaseManager MySQL;
     private ThreadPoolExecutor threadPoolExecutor;
@@ -300,23 +301,29 @@ public final class Main extends JavaPlugin {
         registerCommands();
 
         ServerUtils.calculateServerType();
-        /*Bukkit.getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
-            @Override
-            public void run() {
-                Multithreading.runAsync(new Runnable() {
-                    @Override
-                    public void run() {
-                        try (Jedis jedis = Main.getMain().getPool().getResource()) {
-                            JedisTask.withName(UUID.randomUUID().toString())
-                                    .withArg(RedisArg.SERVER.getArg(), Bukkit.getServerName())
-                                    .withArg(RedisArg.COUNT.getArg(), Bukkit.getOnlinePlayers().size())
-                                    .send(RedisChannels.PLAYER_COUNT.getChannelName(), jedis);
-                        }
+        Bukkit.getScheduler().scheduleAsyncRepeatingTask(this, () -> {
+            redisManager.sendMessage(RedisChannels.PLAYER_COUNT, RedisMesage.newMessage()
+                    .set(RedisArg.SERVER, Bukkit.getServerName())
+                    .set(RedisArg.COUNT, Bukkit.getOnlinePlayers().size()));
+            /*
+            Multithreading.runAsync(new Runnable() {
+                @Override
+                public void run() {
+                    try (Jedis jedis = Main.getMain().getPool().getResource()) {
+                        JedisTask.withName(UUID.randomUUID().toString())
+                                .withArg(RedisArg.SERVER.getArg(), Bukkit.getServerName())
+                                .withArg(RedisArg.COUNT.getArg(), Bukkit.getOnlinePlayers().size())
+                                .send(RedisChannels.PLAYER_COUNT.getChannelName(), jedis);
                     }
-                });
-            }
-        }, 1, 1 * 20L);
+                }
+            });*/
+
+        }, 1, 20L);
+
         if (serverType.startsWith(ServerType.MINIGAME_HUB)) {
+            redisManager.sendMessage(RedisChannels.STARTUP_REQUEST, RedisMesage.newMessage()
+                    .set(RedisArg.SERVER, "ALL"));
+            /*
             Multithreading.runAsync(new Runnable() {
                 @Override
                 public void run() {
@@ -326,8 +333,8 @@ public final class Main extends JavaPlugin {
                                 .send(RedisChannels.STARTUP_REQUEST.getChannelName(), jedis);
                     }
                 }
-            });
-        }*/
+            }); */
+        }
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> BarUtils.getPlayers().forEach(nmsAbstract.getBossBarManager()::teleportBar), 1, 20L);
         System.out.println("[NetworkTools] Plugin started up and ready to go!");
 
@@ -350,8 +357,10 @@ public final class Main extends JavaPlugin {
         return mongo;
     }
 
-    public Database getMongoDatabase() { return database; }
-  
+    public Database getMongoDatabase() {
+        return database;
+    }
+
     public CountManager getCountManager() {
         return countManager;
     }
@@ -459,9 +468,9 @@ public final class Main extends JavaPlugin {
         return settings;
     }
 
-  //  public Jedis getJedis() {
-  //      return jedis;
-   // }
+    //  public Jedis getJedis() {
+    //      return jedis;
+    // }
 
     public CommandHandler getCommandHandler() {
         return commandHandler;

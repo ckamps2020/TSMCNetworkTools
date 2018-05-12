@@ -6,6 +6,7 @@ import me.thesquadmc.commands.FindCommand;
 import me.thesquadmc.commands.StafflistCommand;
 import me.thesquadmc.networking.JedisTask;
 import me.thesquadmc.networking.redis.RedisChannel;
+import me.thesquadmc.networking.redis.RedisMesage;
 import me.thesquadmc.objects.TSMCUser;
 import me.thesquadmc.utils.PlayerUtils;
 import me.thesquadmc.utils.enums.Rank;
@@ -42,7 +43,14 @@ public class FindChannel implements RedisChannel {
                     if (p.getName().equalsIgnoreCase(name)) {
                         TSMCUser user = TSMCUser.fromPlayer(p);
 
-                        Multithreading.runAsync(() -> {
+                        plugin.getRedisManager().sendMessage(RedisChannels.FOUND, RedisMesage.newMessage()
+                                .set(RedisArg.SERVER, object.get(RedisArg.SERVER.getName()).getAsString())
+                                .set(RedisArg.ORIGIN_SERVER, Bukkit.getServerName())
+                                .set(RedisArg.PLAYER, name)
+                                .set(RedisArg.ORIGIN_PLAYER, object.get(RedisArg.ORIGIN_PLAYER.getName()).getAsString())
+                                .set(RedisArg.LOGIN, TimeUtils.getFormattedTime(System.currentTimeMillis() - user.getLoginTime())));
+
+                        /*Multithreading.runAsync(() -> {
                             try (Jedis jedis = plugin.getPool().getResource()) {
                                 JedisTask.withName(UUID.randomUUID().toString())
                                         .withArg(RedisArg.SERVER.getName(), object.get(RedisArg.SERVER.getName()).getAsString())
@@ -52,7 +60,7 @@ public class FindChannel implements RedisChannel {
                                         .withArg(RedisArg.LOGIN.getName(), TimeUtils.getFormattedTime(System.currentTimeMillis() - user.getLoginTime()))
                                         .send(RedisChannels.FOUND.getName(), jedis);
                             }
-                        });
+                        });*/
                     }
                 }
             });
@@ -109,7 +117,20 @@ public class FindChannel implements RedisChannel {
                     }
                 }
 
-                Multithreading.runAsync(() -> {
+                plugin.getRedisManager().sendMessage(RedisChannels.RETURN_REQUEST_LIST, RedisMesage.newMessage()
+                        .set(RedisArg.SERVER, object.get(RedisArg.SERVER.getName()).getAsString())
+                        .set(RedisArg.PLAYER, object.get(RedisArg.PLAYER.getName()).getAsString())
+                        .set(RedisArg.TRAINEE, listToString(trainee))
+                        .set(RedisArg.HELPER, listToString(helper))
+                        .set(RedisArg.MOD, listToString(mod))
+                        .set(RedisArg.SRMOD, listToString(srmod))
+                        .set(RedisArg.ADMIN, listToString(admin))
+                        .set(RedisArg.MANAGER, listToString(manager))
+                        .set(RedisArg.DEVELOPER, listToString(developer))
+                        .set(RedisArg.OWNER, listToString(owner))
+                );
+
+                /*Multithreading.runAsync(() -> {
                     try (Jedis jedis = plugin.getRedisManager().getResource()) {
                         JedisTask.withName(UUID.randomUUID().toString())
                                 .withArg(RedisArg.SERVER.getName(), object.get(RedisArg.SERVER.getName()).getAsString())
@@ -124,8 +145,9 @@ public class FindChannel implements RedisChannel {
                                 .withArg(RedisArg.OWNER.getName(), listToString(owner))
                                 .send(RedisChannels.RETURN_REQUEST_LIST.getName(), jedis);
                     }
-                });
+                });*/
             });
+
         } else if (channel.equalsIgnoreCase(RedisChannels.RETURN_REQUEST_LIST.getName())) {
             String server = object.get(RedisArg.SERVER.getName()).getAsString();
             String name = object.get(RedisArg.PLAYER.getName()).getAsString();

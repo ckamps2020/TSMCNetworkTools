@@ -3,6 +3,7 @@ package me.thesquadmc.commands;
 import com.google.common.base.Preconditions;
 import me.thesquadmc.Main;
 import me.thesquadmc.networking.JedisTask;
+import me.thesquadmc.networking.redis.RedisMesage;
 import me.thesquadmc.utils.enums.RedisChannels;
 import me.thesquadmc.utils.msgs.CC;
 import me.thesquadmc.utils.server.Multithreading;
@@ -39,7 +40,13 @@ public final class MOTDCommand implements CommandExecutor {
         String motd = CC.translate(StringUtils.join(args, " "));
         System.out.println(line);
 
-        Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
+        main.getRedisManager().sendMessage(RedisChannels.MOTD, RedisMesage.newMessage()
+                .set(String.valueOf(line), motd));
+        main.getRedisManager().executeJedisAsync(jedis -> jedis.set(String.valueOf(line), motd));
+
+        sender.sendMessage(CC.translate("&aMOTD &6■ &7Set MOTD Line " + line + " to: " + motd));
+
+        /*Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
             @Override
             public void run() {
                 Multithreading.runAsync(() -> {
@@ -53,7 +60,7 @@ public final class MOTDCommand implements CommandExecutor {
                     }
                 });
             }
-        });
+        });*/
 
         return true;
     }
