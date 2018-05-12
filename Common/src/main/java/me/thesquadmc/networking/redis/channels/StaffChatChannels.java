@@ -30,6 +30,10 @@ public class StaffChatChannels implements RedisChannel {
     @Override
     public void handle(String channel, JsonObject object) {
         if (channel.equals(RedisChannels.STAFFCHAT.getName())) {
+            object.entrySet().forEach(stringJsonElementEntry -> {
+                System.out.println(stringJsonElementEntry.getKey());
+            });
+
             getPlayersWithRank(Rank.TRAINEE).forEach(player -> {
                 TSMCUser user = TSMCUser.fromPlayer(player);
 

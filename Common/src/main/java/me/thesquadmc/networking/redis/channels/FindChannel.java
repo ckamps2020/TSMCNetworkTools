@@ -110,7 +110,7 @@ public class FindChannel implements RedisChannel {
                 }
 
                 Multithreading.runAsync(() -> {
-                    try (Jedis jedis = plugin.getPool().getResource()) {
+                    try (Jedis jedis = plugin.getRedisManager().getResource()) {
                         JedisTask.withName(UUID.randomUUID().toString())
                                 .withArg(RedisArg.SERVER.getName(), object.get(RedisArg.SERVER.getName()).getAsString())
                                 .withArg(RedisArg.PLAYER.getName(), object.get(RedisArg.PLAYER.getName()).getAsString())

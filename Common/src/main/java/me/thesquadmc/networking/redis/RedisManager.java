@@ -1,8 +1,11 @@
 package me.thesquadmc.networking.redis;
 
 import com.google.common.base.Preconditions;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import me.thesquadmc.Main;
 import me.thesquadmc.utils.enums.RedisChannels;
+import me.thesquadmc.utils.json.JSONUtils;
+import me.thesquadmc.utils.server.Multithreading;
 import org.bukkit.Bukkit;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -10,6 +13,9 @@ import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 
 import java.util.Arrays;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class RedisManager {
@@ -18,9 +24,12 @@ public class RedisManager {
     private final int port;
     private final String pass;
 
+    private final ExecutorService subscriberExecutor = Executors.newSingleThreadExecutor(new ThreadFactoryBuilder().setNameFormat("Redis Subscriber").build());
+    private volatile Jedis redisSubscriber;
+
     private final JedisPoolConfig config;
-    private JedisPool pool;
-    private RedisPubSub pubSub;
+    private final JedisPool pool;
+    private final RedisPubSub pubSub;
 
     public RedisManager(String host, int port, String pass) {
         this.host = host;
@@ -39,37 +48,33 @@ public class RedisManager {
         config.setTestWhileIdle(true);
 
         this.pool = new JedisPool(config, host, port, 40 * 1000, pass);
-
         Thread.currentThread().setContextClassLoader(previous);
 
+        this.redisSubscriber = pool.getResource();
         pubSub = new RedisPubSub();
 
-        new Thread(this::subscribe, "Redis Subscriber Thread").run();
+        Multithreading.runAsync(() -> {
+            try (Jedis jedis = pool.getResource()) {
+                jedis.subscribe(pubSub, "networktools");
+            }
+        });
 
         Bukkit.getScheduler().runTaskTimerAsynchronously(Main.getMain(), () -> System.out.println(getPoolCurrentUsage()), 0L, 20 * 60);
     }
 
-    @SuppressWarnings("InfiniteLoopStatement")
-    private void subscribe() {
-        long sleep = 1000;
+    public void sendMessage(RedisChannels channel, RedisMesage message) {
+        message.set("channel", channel.getName());
 
-        while (true) {
-            try (Jedis jedis = getResource()) {
-                jedis.subscribe(pubSub);
+        executeJedisAsync(jedis -> jedis.publish(channel.getName(), JSONUtils.toJson(message)));
+    }
 
-            } catch (JedisConnectionException e) {
-                e.printStackTrace();
+    private void executeJedisAsync(Consumer<Jedis> consumer) {
+        Multithreading.runAsync(() -> executeJedis(consumer));
+    }
 
-                Main.getMain().getLogger().severe("Redis connection dropped, attempting to connect in " + (sleep / 1000) + " secs..");
-                try {
-                    Thread.sleep(sleep);
-                } catch (InterruptedException e1) {
-                    e1.printStackTrace();
-                }
-
-                sleep += sleep;
-            }
-
+    private void executeJedis(Consumer<Jedis> consumer) {
+        try (Jedis jedis = pool.getResource()) {
+            consumer.accept(jedis);
         }
     }
 
@@ -80,7 +85,8 @@ public class RedisManager {
     public void registerChannel(RedisChannel redisChannel, RedisChannels... channels) {
         Preconditions.checkNotNull(redisChannel, "RedisChannel cannot be null!");
 
-        Arrays.stream(channels).map(RedisChannels::getName).forEach(s -> pubSub.subscribe(redisChannel, s));
+        String[] subscribing = Arrays.stream(channels).map(RedisChannels::getName).toArray(String[]::new);
+        subscriberExecutor.submit(() -> pubSub.subscribe(redisChannel, subscribing));
     }
 
     public Jedis getResource() {
@@ -92,14 +98,16 @@ public class RedisManager {
         int idle = pool.getNumIdle();
         int total = active + idle;
         return String.format(
-                "Active=%d, Idle=%d, Waiters=%d, total=%d, maxTotal=%d, minIdle=%d, maxIdle=%d",
+                "Active=%d, Idle=%d, Waiters=%d, total=%d, maxTotal=%d, minIdle=%d, maxIdle=%d, subCount=%d, subbed=%s",
                 active,
                 idle,
                 pool.getNumWaiters(),
                 total,
                 config.getMaxTotal(),
                 config.getMinIdle(),
-                config.getMaxIdle()
+                config.getMaxIdle(),
+                pubSub.getSubscribedChannels(),
+                pubSub.getListeners().toString()
         );
     }
 }

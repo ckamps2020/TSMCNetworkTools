@@ -6,6 +6,7 @@ import me.lucko.luckperms.api.caching.MetaData;
 import me.lucko.luckperms.api.caching.UserData;
 import me.thesquadmc.Main;
 import me.thesquadmc.networking.JedisTask;
+import me.thesquadmc.networking.redis.RedisMesage;
 import me.thesquadmc.objects.PlayerSetting;
 import me.thesquadmc.objects.TSMCUser;
 import me.thesquadmc.utils.*;
@@ -25,79 +26,56 @@ import java.util.UUID;
 
 public final class StaffChatCommand implements CommandExecutor {
 
-	private final Main main;
+    private final Main main;
 
-	public StaffChatCommand(Main main) {
-		this.main = main;
-	}
+    public StaffChatCommand(Main main) {
+        this.main = main;
+    }
 
-	@Override
-	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		if (sender instanceof Player) {
-			Player player = (Player) sender;
-			User user = main.getLuckPermsApi().getUser(player.getUniqueId());
-			if (PlayerUtils.isEqualOrHigherThen(player, Rank.TRAINEE)) {
-				TSMCUser tsmcUser = TSMCUser.fromPlayer(player);
-				if (args.length == 0) {
-					if (!tsmcUser.getSetting(PlayerSetting.STAFFCHAT_ENABLED)) {
-						tsmcUser.updateSetting(PlayerSetting.STAFFCHAT_ENABLED, true);
-						player.sendMessage(CC.translate("&e&lSTAFF CHAT &6■ &7You toggled Staff Chat &eon&7!"));
-					} else {
-						tsmcUser.updateSetting(PlayerSetting.STAFFCHAT_ENABLED, false);
-						player.sendMessage(CC.translate("&e&lSTAFF CHAT &6■ &7You toggled Staff Chat &eoff&7!"));
-					}
-				} else {
-					if (!tsmcUser.getSetting(PlayerSetting.STAFFCHAT_ENABLED)) {
-						player.sendMessage(CC.translate("&e&lSTAFF CHAT &6■ &7Please enable staffchat first!"));
-						return true;
-					}
-					StringBuilder stringBuilder = new StringBuilder();
-					for (String s : args) {
-						stringBuilder.append(s + " ");
-					}
-					UserData cachedData = user.getCachedData();
-					Contexts contexts = Contexts.allowAll();
-					MetaData metaData = cachedData.getMetaData(contexts);
-					String finalMessage = "&8[&a&lSTAFFCHAT&8] " + metaData.getPrefix() + "" + player.getName() + " &8» &a" + stringBuilder.toString();
-					Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
-						@Override
-						public void run() {
-							Multithreading.runAsync(new Runnable() {
-								@Override
-								public void run() {
-									try (Jedis jedis = main.getPool().getResource()) {
-										JedisTask.withName(UUID.randomUUID().toString())
-												.withArg(RedisArg.MESSAGE.getArg(), finalMessage)
-												.withArg(RedisArg.SERVER.getArg(), Bukkit.getServerName())
-												.send(RedisChannels.STAFFCHAT.getChannelName(), jedis);
-									}
-								}
-							});
-						}
-					});
-					Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
-						@Override
-						public void run() {
-							Multithreading.runAsync(new Runnable() {
-								@Override
-								public void run() {
-									try (Jedis jedis = main.getPool().getResource()) {
-										JedisTask.withName(UUID.randomUUID().toString())
-												.withArg(RedisArg.PLAYER.getArg(), player.getName())
-												.withArg(RedisArg.MESSAGE.getArg(), stringBuilder.toString())
-												.withArg(RedisArg.SERVER.getArg(), Bukkit.getServerName())
-												.send(RedisChannels.DISCORD_STAFFCHAT_DISCORD.getChannelName(), jedis);
-									}
-								}
-							});
-						}
-					});
-				}
-			} else {
-				player.sendMessage(CC.translate("&e&lPERMISSIONS &6■ &7You do not have permission to use this command!"));
-			}
-		}
-		return true;
-	}
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            User user = main.getLuckPermsApi().getUser(player.getUniqueId());
+            if (PlayerUtils.isEqualOrHigherThen(player, Rank.TRAINEE)) {
+                TSMCUser tsmcUser = TSMCUser.fromPlayer(player);
+                if (args.length == 0) {
+                    if (!tsmcUser.getSetting(PlayerSetting.STAFFCHAT_ENABLED)) {
+                        tsmcUser.updateSetting(PlayerSetting.STAFFCHAT_ENABLED, true);
+                        player.sendMessage(CC.translate("&e&lSTAFF CHAT &6■ &7You toggled Staff Chat &eon&7!"));
+                    } else {
+                        tsmcUser.updateSetting(PlayerSetting.STAFFCHAT_ENABLED, false);
+                        player.sendMessage(CC.translate("&e&lSTAFF CHAT &6■ &7You toggled Staff Chat &eoff&7!"));
+                    }
+                } else {
+                    if (!tsmcUser.getSetting(PlayerSetting.STAFFCHAT_ENABLED)) {
+                        player.sendMessage(CC.translate("&e&lSTAFF CHAT &6■ &7Please enable staffchat first!"));
+                        return true;
+                    }
+                    StringBuilder stringBuilder = new StringBuilder();
+                    for (String s : args) {
+                        stringBuilder.append(s + " ");
+                    }
+                    UserData cachedData = user.getCachedData();
+                    Contexts contexts = Contexts.allowAll();
+                    MetaData metaData = cachedData.getMetaData(contexts);
+                    String finalMessage = "&8[&a&lSTAFFCHAT&8] " + metaData.getPrefix() + "" + player.getName() + " &8» &a" + stringBuilder.toString();
+
+                    main.getRedisManager().sendMessage(RedisChannels.STAFFCHAT, RedisMesage.newMessage()
+                            .set(RedisArg.MESSAGE, finalMessage)
+                            .set(RedisArg.SERVER, Bukkit.getServerName()));
+
+                    main.getRedisManager().sendMessage(RedisChannels.DISCORD_STAFFCHAT_DISCORD, RedisMesage.newMessage()
+                            .set(RedisArg.PLAYER, player.getName())
+                            .set(RedisArg.MESSAGE, stringBuilder.toString())
+                            .set(RedisArg.SERVER, Bukkit.getServerName()));
+
+                }
+            } else {
+                player.sendMessage(CC.translate("&e&lPERMISSIONS &6■ &7You do not have permission to use this command!"));
+            }
+        }
+        return true;
+    }
 
 }

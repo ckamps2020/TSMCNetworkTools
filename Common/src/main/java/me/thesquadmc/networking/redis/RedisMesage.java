@@ -1,24 +1,22 @@
 package me.thesquadmc.networking.redis;
 
+import me.thesquadmc.utils.enums.RedisArg;
 import me.thesquadmc.utils.enums.RedisChannels;
+import org.bukkit.Bukkit;
 import org.json.simple.JSONObject;
 import redis.clients.jedis.Jedis;
 
 @SuppressWarnings("unchecked")
 public class RedisMesage {
 
-    private final String channel;
     private JSONObject message;
 
-    private RedisMesage(String channel) {
-        this.channel = channel;
+    private RedisMesage() {
         this.message = new JSONObject();
-
-        message.put("channel", channel);
     }
 
-    public static RedisMesage newMessage(RedisChannels channel) {
-        return new RedisMesage(channel.getName());
+    public static RedisMesage newMessage() {
+        return new RedisMesage();
     }
 
     public RedisMesage set(String key, Object value){
@@ -26,7 +24,8 @@ public class RedisMesage {
         return this;
     }
 
-    public void send(Jedis jedis) {
-        jedis.publish(channel, message.toJSONString());
+    public RedisMesage set(RedisArg key, Object value){
+        message.put(key.getName(), value);
+        return this;
     }
 }
