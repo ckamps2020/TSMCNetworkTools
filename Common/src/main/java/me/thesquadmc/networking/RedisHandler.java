@@ -696,7 +696,7 @@ public final class RedisHandler {
 							String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
 							String player = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
 							for (Player p : Bukkit.getOnlinePlayers()) {
-								if (PlayerUtils.isEqualOrHigherThen(p, Rank.ADMIN)) {
+								if (PlayerUtils.isEqualOrHigherThen(p, Rank.TRAINEE)) {
 									p.sendMessage(CC.translate("&8[&c&lJOIN&8] &e" + player + " &7has joined server &e" + server));
 								}
 							}
