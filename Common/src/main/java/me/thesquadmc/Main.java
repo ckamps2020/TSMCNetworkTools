@@ -224,7 +224,8 @@ public final class Main extends JavaPlugin {
                             RedisChannels.STARTUP_REQUEST.getChannelName(),
                             RedisChannels.SERVER_STATE.getChannelName(),
                             RedisChannels.PLAYER_COUNT.getChannelName(),
-                            RedisChannels.DISCORD_STAFFCHAT_SERVER.getChannelName());
+                            RedisChannels.DISCORD_STAFFCHAT_SERVER.getChannelName(),
+                            RedisChannels.YT_JOIN.getChannelName());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -326,6 +327,7 @@ public final class Main extends JavaPlugin {
         getCommand("l2").setExecutor(new MOTDCommand(main, 2));
         getCommand("motdclear").setExecutor(new MOTDClearCommand(main));
         getCommand("rename").setExecutor(new RenameCommand(this));
+        getCommand("giveall").setExecutor(new GiveAllCommand());
         ServerUtils.calculateServerType();
         Bukkit.getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
             @Override

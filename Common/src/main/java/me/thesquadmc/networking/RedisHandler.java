@@ -110,309 +110,374 @@ public final class RedisHandler {
 				}
 			});
 		} else if (channel.equalsIgnoreCase(RedisChannels.FOUND.getChannelName())) {
-			main.getServer().getScheduler().runTaskAsynchronously(main, new Runnable() {
+			Multithreading.runAsync(new Runnable() {
 				@Override
 				public void run() {
-					String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
-					if (server.equalsIgnoreCase(Bukkit.getServerName())) {
-						String name = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
-						String origin = String.valueOf(data.get(RedisArg.ORIGIN_PLAYER.getArg()));
-						String originServer = String.valueOf(data.get(RedisArg.ORIGIN_SERVER.getArg()));
-						String time = String.valueOf(data.get(RedisArg.LOGIN.getArg()));
-						Player p = Bukkit.getPlayer(origin);
-						if (p != null) {
-							FindCommand.getStillLooking().remove(p.getName());
-							p.sendMessage(" ");
-							p.sendMessage(CC.translate("&6&l" + name));
-							p.sendMessage(CC.translate("&8■ &7Server: &f" + originServer));
-							p.sendMessage(CC.translate("&8■ &7Online Since: &f" + time));
+					main.getServer().getScheduler().runTaskAsynchronously(main, new Runnable() {
+						@Override
+						public void run() {
+							String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
+							if (server.equalsIgnoreCase(Bukkit.getServerName())) {
+								String name = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
+								String origin = String.valueOf(data.get(RedisArg.ORIGIN_PLAYER.getArg()));
+								String originServer = String.valueOf(data.get(RedisArg.ORIGIN_SERVER.getArg()));
+								String time = String.valueOf(data.get(RedisArg.LOGIN.getArg()));
+								Player p = Bukkit.getPlayer(origin);
+								if (p != null) {
+									FindCommand.getStillLooking().remove(p.getName());
+									p.sendMessage(" ");
+									p.sendMessage(CC.translate("&6&l" + name));
+									p.sendMessage(CC.translate("&8■ &7Server: &f" + originServer));
+									p.sendMessage(CC.translate("&8■ &7Online Since: &f" + time));
+								}
+							}
 						}
-					}
+					});
 				}
 			});
 		} else if (channel.equalsIgnoreCase(RedisChannels.REQUEST_LIST.getChannelName())) {
 			main.getServer().getScheduler().runTaskAsynchronously(main, new Runnable() {
 				@Override
 				public void run() {
-					ArrayList<String> trainee = new ArrayList<>();
-					ArrayList<String> helper = new ArrayList<>();
-					ArrayList<String> mod = new ArrayList<>();
-					ArrayList<String> srmod = new ArrayList<>();
-					ArrayList<String> admin = new ArrayList<>();
-					ArrayList<String> manager = new ArrayList<>();
-					ArrayList<String> developer = new ArrayList<>();
-					ArrayList<String> owner = new ArrayList<>();
-					StringBuilder tSB = new StringBuilder();
-					StringBuilder hSB = new StringBuilder();
-					StringBuilder mSB = new StringBuilder();
-					StringBuilder srSB = new StringBuilder();
-					StringBuilder aSB = new StringBuilder();
-					StringBuilder manSB = new StringBuilder();
-					StringBuilder dSB = new StringBuilder();
-					StringBuilder oSB = new StringBuilder();
-					for (Player p : Bukkit.getOnlinePlayers()) {
-						if (PlayerUtils.doesRankMatch(p, Rank.TRAINEE)) {
-							trainee.add(p.getName());
-						} else if (PlayerUtils.doesRankMatch(p, Rank.HELPER)) {
-							helper.add(p.getName());
-						} else if (PlayerUtils.doesRankMatch(p, Rank.MOD)) {
-							mod.add(p.getName());
-						} else if (PlayerUtils.doesRankMatch(p, Rank.SRMOD)) {
-							srmod.add(p.getName());
-						} else if (PlayerUtils.doesRankMatch(p, Rank.ADMIN)) {
-							admin.add(p.getName());
-						} else if (PlayerUtils.doesRankMatch(p, Rank.MANAGER)) {
-							manager.add(p.getName());
-						} else if (PlayerUtils.doesRankMatch(p, Rank.DEVELOPER)) {
-							developer.add(p.getName());
-						} else if (PlayerUtils.doesRankMatch(p, Rank.OWNER)) {
-							owner.add(p.getName());
-						}
-					}
-					if (!trainee.isEmpty()) {
-						for (String s : trainee) {
-							tSB.append(" " + s);
-						}
-					}
-					if (!helper.isEmpty()) {
-						for (String s : helper) {
-							hSB.append(" " + s);
-						}
-					}
-					if (!mod.isEmpty()) {
-						for (String s : mod) {
-							mSB.append(" " + s);
-						}
-					}
-					if (!srmod.isEmpty()) {
-						for (String s : srmod) {
-							srSB.append(" " + s);
-						}
-					}
-					if (!admin.isEmpty()) {
-						for (String s : admin) {
-							aSB.append(" " + s);
-						}
-					}
-					if (!manager.isEmpty()) {
-						for (String s : manager) {
-							manSB.append(" " + s);
-						}
-					}
-					if (!developer.isEmpty()) {
-						for (String s : developer) {
-							dSB.append(" " + s);
-						}
-					}
-					if (!owner.isEmpty()) {
-						for (String s : owner) {
-							oSB.append(" " + s);
-						}
-					}
 					Multithreading.runAsync(new Runnable() {
 						@Override
 						public void run() {
-							try (Jedis jedis = main.getPool().getResource()) {
-								JedisTask.withName(UUID.randomUUID().toString())
-										.withArg(RedisArg.SERVER.getArg(), String.valueOf(data.get(RedisArg.SERVER.getArg())))
-										.withArg(RedisArg.PLAYER.getArg(), String.valueOf(data.get(RedisArg.PLAYER.getArg())))
-										.withArg(RedisArg.TRAINEE.getArg(), tSB.toString())
-										.withArg(RedisArg.HELPER.getArg(), hSB.toString())
-										.withArg(RedisArg.MOD.getArg(), mSB.toString())
-										.withArg(RedisArg.SRMOD.getArg(), srSB.toString())
-										.withArg(RedisArg.ADMIN.getArg(), aSB.toString())
-										.withArg(RedisArg.MANAGER.getArg(), manSB.toString())
-										.withArg(RedisArg.DEVELOPER.getArg(), dSB.toString())
-										.withArg(RedisArg.OWNER.getArg(), oSB.toString())
-										.send(RedisChannels.RETURN_REQUEST_LIST.getChannelName(), jedis);
+							ArrayList<String> trainee = new ArrayList<>();
+							ArrayList<String> helper = new ArrayList<>();
+							ArrayList<String> mod = new ArrayList<>();
+							ArrayList<String> srmod = new ArrayList<>();
+							ArrayList<String> admin = new ArrayList<>();
+							ArrayList<String> manager = new ArrayList<>();
+							ArrayList<String> developer = new ArrayList<>();
+							ArrayList<String> owner = new ArrayList<>();
+							StringBuilder tSB = new StringBuilder();
+							StringBuilder hSB = new StringBuilder();
+							StringBuilder mSB = new StringBuilder();
+							StringBuilder srSB = new StringBuilder();
+							StringBuilder aSB = new StringBuilder();
+							StringBuilder manSB = new StringBuilder();
+							StringBuilder dSB = new StringBuilder();
+							StringBuilder oSB = new StringBuilder();
+							for (Player p : Bukkit.getOnlinePlayers()) {
+								if (PlayerUtils.doesRankMatch(p, Rank.TRAINEE)) {
+									trainee.add(p.getName());
+								} else if (PlayerUtils.doesRankMatch(p, Rank.HELPER)) {
+									helper.add(p.getName());
+								} else if (PlayerUtils.doesRankMatch(p, Rank.MOD)) {
+									mod.add(p.getName());
+								} else if (PlayerUtils.doesRankMatch(p, Rank.SRMOD)) {
+									srmod.add(p.getName());
+								} else if (PlayerUtils.doesRankMatch(p, Rank.ADMIN)) {
+									admin.add(p.getName());
+								} else if (PlayerUtils.doesRankMatch(p, Rank.MANAGER)) {
+									manager.add(p.getName());
+								} else if (PlayerUtils.doesRankMatch(p, Rank.DEVELOPER)) {
+									developer.add(p.getName());
+								} else if (PlayerUtils.doesRankMatch(p, Rank.OWNER)) {
+									owner.add(p.getName());
+								}
 							}
+							if (!trainee.isEmpty()) {
+								for (String s : trainee) {
+									tSB.append(" " + s);
+								}
+							}
+							if (!helper.isEmpty()) {
+								for (String s : helper) {
+									hSB.append(" " + s);
+								}
+							}
+							if (!mod.isEmpty()) {
+								for (String s : mod) {
+									mSB.append(" " + s);
+								}
+							}
+							if (!srmod.isEmpty()) {
+								for (String s : srmod) {
+									srSB.append(" " + s);
+								}
+							}
+							if (!admin.isEmpty()) {
+								for (String s : admin) {
+									aSB.append(" " + s);
+								}
+							}
+							if (!manager.isEmpty()) {
+								for (String s : manager) {
+									manSB.append(" " + s);
+								}
+							}
+							if (!developer.isEmpty()) {
+								for (String s : developer) {
+									dSB.append(" " + s);
+								}
+							}
+							if (!owner.isEmpty()) {
+								for (String s : owner) {
+									oSB.append(" " + s);
+								}
+							}
+							Multithreading.runAsync(new Runnable() {
+								@Override
+								public void run() {
+									try (Jedis jedis = main.getPool().getResource()) {
+										JedisTask.withName(UUID.randomUUID().toString())
+												.withArg(RedisArg.SERVER.getArg(), String.valueOf(data.get(RedisArg.SERVER.getArg())))
+												.withArg(RedisArg.PLAYER.getArg(), String.valueOf(data.get(RedisArg.PLAYER.getArg())))
+												.withArg(RedisArg.TRAINEE.getArg(), tSB.toString())
+												.withArg(RedisArg.HELPER.getArg(), hSB.toString())
+												.withArg(RedisArg.MOD.getArg(), mSB.toString())
+												.withArg(RedisArg.SRMOD.getArg(), srSB.toString())
+												.withArg(RedisArg.ADMIN.getArg(), aSB.toString())
+												.withArg(RedisArg.MANAGER.getArg(), manSB.toString())
+												.withArg(RedisArg.DEVELOPER.getArg(), dSB.toString())
+												.withArg(RedisArg.OWNER.getArg(), oSB.toString())
+												.send(RedisChannels.RETURN_REQUEST_LIST.getChannelName(), jedis);
+									}
+								}
+							});
 						}
 					});
 				}
 			});
 		} else if (channel.equalsIgnoreCase(RedisChannels.RETURN_REQUEST_LIST.getChannelName())) {
-			String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
-			String name = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
-			if (server.equalsIgnoreCase(Bukkit.getServerName())) {
-				Map<UUID, Map<RedisArg, String>> map = StafflistCommand.getStafflist();
-				for (Map.Entry<UUID, Map<RedisArg, String>> m : map.entrySet()) {
-					Player p = Bukkit.getPlayer(m.getKey());
-					if (p.getName().equalsIgnoreCase(name)) {
-						String trainee = String.valueOf(data.get(RedisArg.TRAINEE.getArg()));
-						String helper = String.valueOf(data.get(RedisArg.HELPER.getArg()));
-						String mod = String.valueOf(data.get(RedisArg.MOD.getArg()));
-						String srmod = String.valueOf(data.get(RedisArg.SRMOD.getArg()));
-						String admin = String.valueOf(data.get(RedisArg.ADMIN.getArg()));
-						String manager = String.valueOf(data.get(RedisArg.MANAGER.getArg()));
-						String developer = String.valueOf(data.get(RedisArg.DEVELOPER.getArg()));
-						String owner = String.valueOf(data.get(RedisArg.OWNER.getArg()));
-						if (m.getValue().get(RedisArg.TRAINEE) != null) {
-							m.getValue().put(RedisArg.TRAINEE, m.getValue().get(RedisArg.TRAINEE) + trainee);
-						} else {
-							m.getValue().put(RedisArg.TRAINEE, trainee);
-						}
-						if (m.getValue().get(RedisArg.HELPER) != null) {
-							m.getValue().put(RedisArg.HELPER, m.getValue().get(RedisArg.HELPER) + helper);
-						} else {
-							m.getValue().put(RedisArg.HELPER, helper);
-						}
-						if (m.getValue().get(RedisArg.MOD) != null) {
-							m.getValue().put(RedisArg.MOD, m.getValue().get(RedisArg.MOD) + mod);
-						} else {
-							m.getValue().put(RedisArg.MOD, mod);
-						}
-						if (m.getValue().get(RedisArg.SRMOD) != null) {
-							m.getValue().put(RedisArg.SRMOD, m.getValue().get(RedisArg.SRMOD) + srmod);
-						} else {
-							m.getValue().put(RedisArg.SRMOD, srmod);
-						}
-						if (m.getValue().get(RedisArg.ADMIN) != null) {
-							m.getValue().put(RedisArg.ADMIN, m.getValue().get(RedisArg.ADMIN) + admin);
-						} else {
-							m.getValue().put(RedisArg.ADMIN, admin);
-						}
-						if (m.getValue().get(RedisArg.MANAGER) != null) {
-							m.getValue().put(RedisArg.MANAGER, m.getValue().get(RedisArg.MANAGER) + manager);
-						} else {
-							m.getValue().put(RedisArg.MANAGER, manager);
-						}
-						if (m.getValue().get(RedisArg.DEVELOPER) != null) {
-							m.getValue().put(RedisArg.DEVELOPER, m.getValue().get(RedisArg.DEVELOPER) + developer);
-						} else {
-							m.getValue().put(RedisArg.DEVELOPER, developer);
-						}
-						if (m.getValue().get(RedisArg.OWNER) != null) {
-							m.getValue().put(RedisArg.OWNER, m.getValue().get(RedisArg.OWNER) + owner);
-						} else {
-							m.getValue().put(RedisArg.OWNER, owner);
-						}
-					}
-				}
-			}
-		} else if (channel.equalsIgnoreCase(RedisChannels.ANNOUNCEMENT.getChannelName())) {
-			String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
-			if (server.equalsIgnoreCase("ALL") || Bukkit.getServerName().toUpperCase().contains(server)) {
-				String msg = String.valueOf(data.get(RedisArg.MESSAGE.getArg()));
-				Bukkit.broadcastMessage(CC.translate("&7"));
-				Bukkit.broadcastMessage(CC.translate("&7"));
-				Bukkit.broadcastMessage(CC.translate("&8[&4&lALERT&8] &c" + msg));
-				Bukkit.broadcastMessage(CC.translate("&7"));
-				Bukkit.broadcastMessage(CC.translate("&7"));
-				for (Player p : Bukkit.getOnlinePlayers()) {
-					p.playSound(p.getLocation(), Sounds.ENDERDRAGON_GROWL.bukkitSound(), 1.0f, 1.0f);
-				}
-			}
-		} else if (channel.equalsIgnoreCase(RedisChannels.STOP.getChannelName())) {
-			String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
-			if (server.equalsIgnoreCase("ALL") || Bukkit.getServerName().toUpperCase().contains(server)) {
-				String msg = String.valueOf(data.get(RedisArg.MESSAGE.getArg()));
-				Bukkit.broadcastMessage(CC.translate("&7"));
-				Bukkit.broadcastMessage(CC.translate("&7"));
-				Bukkit.broadcastMessage(CC.translate("&e&lSTOP &6■ &7Server restarting in &e15 &7seconds for reason: &e" + msg));
-				Bukkit.broadcastMessage(CC.translate("&7"));
-				Bukkit.broadcastMessage(CC.translate("&7"));
-				Bukkit.getScheduler().runTask(main, new Runnable() {
-					@Override
-					public void run() {
-						for (Player p : Bukkit.getOnlinePlayers()) {
-							if (PlayerUtils.isEqualOrHigherThen(p, Rank.MOD)) {
-								TSMCUser user = TSMCUser.fromPlayer(p);
-								if (StaffmodeCommand.getStaffmode().containsKey(p.getUniqueId())) {
-									p.getInventory().clear();
-									for (ItemStack itemStack : StaffmodeCommand.getStaffmode().get(p.getUniqueId())) {
-										if (itemStack != null) {
-											p.getInventory().addItem(itemStack);
-										}
-									}
-									StaffmodeCommand.getStaffmode().remove(p.getUniqueId());
-									p.setGameMode(GameMode.SURVIVAL);
-									StaffmodeCommand.getStaffmode().remove(p.getUniqueId());
-									p.performCommand("spawn");
-									p.sendMessage(CC.translate("&e&lSTOP &6■ &7Due to server restart you have been taken out of staffmode"));
+			Multithreading.runAsync(new Runnable() {
+				@Override
+				public void run() {
+					String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
+					String name = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
+					if (server.equalsIgnoreCase(Bukkit.getServerName())) {
+						Map<UUID, Map<RedisArg, String>> map = StafflistCommand.getStafflist();
+						for (Map.Entry<UUID, Map<RedisArg, String>> m : map.entrySet()) {
+							Player p = Bukkit.getPlayer(m.getKey());
+							if (p.getName().equalsIgnoreCase(name)) {
+								String trainee = String.valueOf(data.get(RedisArg.TRAINEE.getArg()));
+								String helper = String.valueOf(data.get(RedisArg.HELPER.getArg()));
+								String mod = String.valueOf(data.get(RedisArg.MOD.getArg()));
+								String srmod = String.valueOf(data.get(RedisArg.SRMOD.getArg()));
+								String admin = String.valueOf(data.get(RedisArg.ADMIN.getArg()));
+								String manager = String.valueOf(data.get(RedisArg.MANAGER.getArg()));
+								String developer = String.valueOf(data.get(RedisArg.DEVELOPER.getArg()));
+								String owner = String.valueOf(data.get(RedisArg.OWNER.getArg()));
+								if (m.getValue().get(RedisArg.TRAINEE) != null) {
+									m.getValue().put(RedisArg.TRAINEE, m.getValue().get(RedisArg.TRAINEE) + trainee);
+								} else {
+									m.getValue().put(RedisArg.TRAINEE, trainee);
 								}
-								if (user.isVanished() || user.isYtVanished()) {
-									PlayerUtils.showPlayerSpectator(p);
-									user.setVanished(false);
-									user.setYtVanished(false);
-									p.sendMessage(CC.translate("&e&lSTOP &6■ &7Due to server restart you have been taken out of vanish"));
+								if (m.getValue().get(RedisArg.HELPER) != null) {
+									m.getValue().put(RedisArg.HELPER, m.getValue().get(RedisArg.HELPER) + helper);
+								} else {
+									m.getValue().put(RedisArg.HELPER, helper);
+								}
+								if (m.getValue().get(RedisArg.MOD) != null) {
+									m.getValue().put(RedisArg.MOD, m.getValue().get(RedisArg.MOD) + mod);
+								} else {
+									m.getValue().put(RedisArg.MOD, mod);
+								}
+								if (m.getValue().get(RedisArg.SRMOD) != null) {
+									m.getValue().put(RedisArg.SRMOD, m.getValue().get(RedisArg.SRMOD) + srmod);
+								} else {
+									m.getValue().put(RedisArg.SRMOD, srmod);
+								}
+								if (m.getValue().get(RedisArg.ADMIN) != null) {
+									m.getValue().put(RedisArg.ADMIN, m.getValue().get(RedisArg.ADMIN) + admin);
+								} else {
+									m.getValue().put(RedisArg.ADMIN, admin);
+								}
+								if (m.getValue().get(RedisArg.MANAGER) != null) {
+									m.getValue().put(RedisArg.MANAGER, m.getValue().get(RedisArg.MANAGER) + manager);
+								} else {
+									m.getValue().put(RedisArg.MANAGER, manager);
+								}
+								if (m.getValue().get(RedisArg.DEVELOPER) != null) {
+									m.getValue().put(RedisArg.DEVELOPER, m.getValue().get(RedisArg.DEVELOPER) + developer);
+								} else {
+									m.getValue().put(RedisArg.DEVELOPER, developer);
+								}
+								if (m.getValue().get(RedisArg.OWNER) != null) {
+									m.getValue().put(RedisArg.OWNER, m.getValue().get(RedisArg.OWNER) + owner);
+								} else {
+									m.getValue().put(RedisArg.OWNER, owner);
 								}
 							}
-							p.playSound(p.getLocation(), Sounds.ANVIL_USE.bukkitSound(), 1.0f, 1.0f);
 						}
 					}
-				});
-				Bukkit.getScheduler().runTaskLater(main, new Runnable() {
-					@Override
-					public void run() {
-						for (Player player : Bukkit.getOnlinePlayers()) {
-							player.kickPlayer(CC.translate("&e&lSTOP &6■ &7Server restarting for reason: &e" + msg));
-						}
-					}
-				}, 10 * 20);
-				Bukkit.getScheduler().runTaskLater(main, new Runnable() {
-					@Override
-					public void run() {
-						Bukkit.shutdown();
-						Bukkit.broadcastMessage(CC.translate("&e&lSTOP &6■ &7Server restarting for reason: &e" + msg));
-					}
-				}, 15 * 20L);
-			}
-		} else if (channel.equalsIgnoreCase(RedisChannels.WHITELIST_ADD.getChannelName())) {
-			String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
-			if (server.equalsIgnoreCase("ALL") || Bukkit.getServerName().toUpperCase().contains(server)) {
-				String name = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
-				ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
-				Bukkit.getScheduler().runTask(main, new Runnable() {
-					@Override
-					public void run() {
-						Bukkit.dispatchCommand(console, "minecraft:whitelist add " + name);
-					}
-				});
-			}
-		} else if (channel.equalsIgnoreCase(RedisChannels.WHITELIST_REMOVE.getChannelName())) {
-			String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
-			if (server.equalsIgnoreCase("ALL") || Bukkit.getServerName().toUpperCase().contains(server)) {
-				String name = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
-				ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
-				Bukkit.getScheduler().runTask(main, new Runnable() {
-					@Override
-					public void run() {
-						Bukkit.dispatchCommand(console, "minecraft:whitelist remove " + name);
-					}
-				});
-			}
-		} else if (channel.equalsIgnoreCase(RedisChannels.WHITELIST.getChannelName())) {
-			String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
-			if (server.equalsIgnoreCase("ALL") || Bukkit.getServerName().toUpperCase().contains(server)) {
-				String onoff = String.valueOf(data.get(RedisArg.ONOFF.getArg()));
-				String msg = String.valueOf(data.get(RedisArg.MESSAGE.getArg()));
-				if (onoff.equalsIgnoreCase("ON")) {
-					Bukkit.broadcastMessage(CC.translate("&e&lWHITELIST &6■ &7Whitelist has been enabled for reason: &e" + msg));
-					ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
-					Bukkit.getScheduler().runTask(main, new Runnable() {
+				}
+			});
+		} else if (channel.equalsIgnoreCase(RedisChannels.ANNOUNCEMENT.getChannelName())) {
+			Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
+				@Override
+				public void run() {
+					Multithreading.runAsync(new Runnable() {
 						@Override
 						public void run() {
-							Bukkit.dispatchCommand(console, "minecraft:whitelist on");
-						}
-					});
-					for (Player p : Bukkit.getOnlinePlayers()) {
-						OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(p.getName());
-						main.setWhitelistMessage(CC.translate(msg));
-						if (!PlayerUtils.isEqualOrHigherThen(p, Rank.MANAGER) && !Bukkit.getWhitelistedPlayers().contains(offlinePlayer)) {
-							p.kickPlayer(CC.translate("&7Whitelist enabled \n&e" + msg));
-						}
-					}
-				} else {
-					Bukkit.broadcastMessage(CC.translate("&e&lWHITELIST &6■ &7Whitelist has been disabled for reason: &e" + msg));
-					ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
-					Bukkit.getScheduler().runTask(main, new Runnable() {
-						@Override
-						public void run() {
-							Bukkit.dispatchCommand(console, "minecraft:whitelist off");
+							String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
+							if (server.equalsIgnoreCase("ALL") || Bukkit.getServerName().toUpperCase().contains(server)) {
+								String msg = String.valueOf(data.get(RedisArg.MESSAGE.getArg()));
+								Bukkit.broadcastMessage(CC.translate("&7"));
+								Bukkit.broadcastMessage(CC.translate("&7"));
+								Bukkit.broadcastMessage(CC.translate("&8[&4&lALERT&8] &c" + msg));
+								Bukkit.broadcastMessage(CC.translate("&7"));
+								Bukkit.broadcastMessage(CC.translate("&7"));
+								for (Player p : Bukkit.getOnlinePlayers()) {
+									p.playSound(p.getLocation(), Sounds.ENDERDRAGON_GROWL.bukkitSound(), 1.0f, 1.0f);
+								}
+							}
 						}
 					});
 				}
-			}
+			});
+		} else if (channel.equalsIgnoreCase(RedisChannels.STOP.getChannelName())) {
+			Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
+				@Override
+				public void run() {
+				Multithreading.runAsync(new Runnable() {
+					@Override
+					public void run() {
+						String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
+						if (server.equalsIgnoreCase("ALL") || Bukkit.getServerName().toUpperCase().contains(server)) {
+							String msg = String.valueOf(data.get(RedisArg.MESSAGE.getArg()));
+							Bukkit.broadcastMessage(CC.translate("&7"));
+							Bukkit.broadcastMessage(CC.translate("&7"));
+							Bukkit.broadcastMessage(CC.translate("&e&lSTOP &6■ &7Server restarting in &e15 &7seconds for reason: &e" + msg));
+							Bukkit.broadcastMessage(CC.translate("&7"));
+							Bukkit.broadcastMessage(CC.translate("&7"));
+							Bukkit.getScheduler().runTask(main, new Runnable() {
+								@Override
+								public void run() {
+									for (Player p : Bukkit.getOnlinePlayers()) {
+										if (PlayerUtils.isEqualOrHigherThen(p, Rank.MOD)) {
+											TSMCUser user = TSMCUser.fromPlayer(p);
+											if (StaffmodeCommand.getStaffmode().containsKey(p.getUniqueId())) {
+												p.getInventory().clear();
+												for (ItemStack itemStack : StaffmodeCommand.getStaffmode().get(p.getUniqueId())) {
+													if (itemStack != null) {
+														p.getInventory().addItem(itemStack);
+													}
+												}
+												StaffmodeCommand.getStaffmode().remove(p.getUniqueId());
+												p.setGameMode(GameMode.SURVIVAL);
+												StaffmodeCommand.getStaffmode().remove(p.getUniqueId());
+												p.performCommand("spawn");
+												p.sendMessage(CC.translate("&e&lSTOP &6■ &7Due to server restart you have been taken out of staffmode"));
+											}
+											if (user.isVanished() || user.isYtVanished()) {
+												PlayerUtils.showPlayerSpectator(p);
+												user.setVanished(false);
+												user.setYtVanished(false);
+												p.sendMessage(CC.translate("&e&lSTOP &6■ &7Due to server restart you have been taken out of vanish"));
+											}
+										}
+										p.playSound(p.getLocation(), Sounds.ANVIL_USE.bukkitSound(), 1.0f, 1.0f);
+									}
+								}
+							});
+							Bukkit.getScheduler().runTaskLater(main, new Runnable() {
+								@Override
+								public void run() {
+									for (Player player : Bukkit.getOnlinePlayers()) {
+										player.kickPlayer(CC.translate("&e&lSTOP &6■ &7Server restarting for reason: &e" + msg));
+									}
+								}
+							}, 10 * 20);
+							Bukkit.getScheduler().runTaskLater(main, new Runnable() {
+								@Override
+								public void run() {
+									Bukkit.shutdown();
+									Bukkit.broadcastMessage(CC.translate("&e&lSTOP &6■ &7Server restarting for reason: &e" + msg));
+								}
+							}, 15 * 20L);
+						}
+					}
+				});
+				}
+			});
+		} else if (channel.equalsIgnoreCase(RedisChannels.WHITELIST_ADD.getChannelName())) {
+			Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
+				@Override
+				public void run() {
+					Multithreading.runAsync(new Runnable() {
+						@Override
+						public void run() {
+							String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
+							if (server.equalsIgnoreCase("ALL") || Bukkit.getServerName().toUpperCase().contains(server)) {
+								String name = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
+								ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+								Bukkit.getScheduler().runTask(main, new Runnable() {
+									@Override
+									public void run() {
+										Bukkit.dispatchCommand(console, "minecraft:whitelist add " + name);
+									}
+								});
+							}
+						}
+					});
+				}
+			});
+		} else if (channel.equalsIgnoreCase(RedisChannels.WHITELIST_REMOVE.getChannelName())) {
+			Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
+				@Override
+				public void run() {
+					Multithreading.runAsync(new Runnable() {
+						@Override
+						public void run() {
+							String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
+							if (server.equalsIgnoreCase("ALL") || Bukkit.getServerName().toUpperCase().contains(server)) {
+								String name = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
+								ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+								Bukkit.getScheduler().runTask(main, new Runnable() {
+									@Override
+									public void run() {
+										Bukkit.dispatchCommand(console, "minecraft:whitelist remove " + name);
+									}
+								});
+							}
+						}
+					});
+				}
+			});
+		} else if (channel.equalsIgnoreCase(RedisChannels.WHITELIST.getChannelName())) {
+			Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
+				@Override
+				public void run() {
+					Multithreading.runAsync(new Runnable() {
+						@Override
+						public void run() {
+							String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
+							if (server.equalsIgnoreCase("ALL") || Bukkit.getServerName().toUpperCase().contains(server)) {
+								String onoff = String.valueOf(data.get(RedisArg.ONOFF.getArg()));
+								String msg = String.valueOf(data.get(RedisArg.MESSAGE.getArg()));
+								if (onoff.equalsIgnoreCase("ON")) {
+									Bukkit.broadcastMessage(CC.translate("&e&lWHITELIST &6■ &7Whitelist has been enabled for reason: &e" + msg));
+									ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+									Bukkit.getScheduler().runTask(main, new Runnable() {
+										@Override
+										public void run() {
+											Bukkit.dispatchCommand(console, "minecraft:whitelist on");
+										}
+									});
+									for (Player p : Bukkit.getOnlinePlayers()) {
+										OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(p.getName());
+										main.setWhitelistMessage(CC.translate(msg));
+										if (!PlayerUtils.isEqualOrHigherThen(p, Rank.MANAGER) && !Bukkit.getWhitelistedPlayers().contains(offlinePlayer)) {
+											p.kickPlayer(CC.translate("&7Whitelist enabled \n&e" + msg));
+										}
+									}
+								} else {
+									Bukkit.broadcastMessage(CC.translate("&e&lWHITELIST &6■ &7Whitelist has been disabled for reason: &e" + msg));
+									ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+									Bukkit.getScheduler().runTask(main, new Runnable() {
+										@Override
+										public void run() {
+											Bukkit.dispatchCommand(console, "minecraft:whitelist off");
+										}
+									});
+								}
+							}
+						}
+					});
+				}
+			});
 		} else if (channel.equalsIgnoreCase(RedisChannels.MONITOR_REQUEST.getChannelName())) {
 			String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
 			if (server.equalsIgnoreCase(Bukkit.getServerName())) {
@@ -615,6 +680,24 @@ public final class RedisHandler {
 									if (user.getSetting(PlayerSetting.STAFFCHAT_ENABLED) && user.getSetting(PlayerSetting.STAFFCHAT_SCOPE) == MessageSettings.GLOBAL) {
 										player.spigot().sendMessage(StringUtils.getHoverMessage("&8[&a&lSTAFFCHAT&8] &9" + p + " &8" + Unicode.DOUBLE_ARROW_RIGHT + " &a" + message, "&7Currently on &e" + server));
 									}
+								}
+							}
+						}
+					});
+				}
+			});
+		} else if (channel.equalsIgnoreCase(RedisChannels.YT_JOIN.getChannelName())) {
+			Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
+				@Override
+				public void run() {
+					Multithreading.runAsync(new Runnable() {
+						@Override
+						public void run() {
+							String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
+							String player = String.valueOf(data.get(RedisArg.PLAYER.getArg()));
+							for (Player p : Bukkit.getOnlinePlayers()) {
+								if (PlayerUtils.isEqualOrHigherThen(p, Rank.ADMIN)) {
+									p.sendMessage(CC.translate("&8[&c&lJOIN&8] &e" + player + " &7has joined server &e" + server));
 								}
 							}
 						}

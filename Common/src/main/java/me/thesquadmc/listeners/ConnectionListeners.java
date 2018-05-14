@@ -2,13 +2,18 @@ package me.thesquadmc.listeners;
 
 import me.thesquadmc.Main;
 import me.thesquadmc.abstraction.MojangGameProfile;
+import me.thesquadmc.networking.JedisTask;
 import me.thesquadmc.objects.PlayerSetting;
 import me.thesquadmc.objects.TSMCUser;
 import me.thesquadmc.utils.enums.Rank;
+import me.thesquadmc.utils.enums.RedisArg;
+import me.thesquadmc.utils.enums.RedisChannels;
 import me.thesquadmc.utils.msgs.CC;
 import me.thesquadmc.utils.msgs.StringUtils;
 import me.thesquadmc.utils.server.Multithreading;
 import me.thesquadmc.utils.PlayerUtils;
+import me.thesquadmc.utils.server.ServerUtils;
+import me.thesquadmc.utils.time.TimeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -16,6 +21,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import redis.clients.jedis.Jedis;
+
+import java.util.UUID;
 
 public final class ConnectionListeners implements Listener {
 
@@ -41,6 +49,25 @@ public final class ConnectionListeners implements Listener {
                 });
             }
         });
+
+        if (PlayerUtils.isEqualOrHigherThen(player, Rank.YOUTUBE)) {
+            Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
+                @Override
+                public void run() {
+                    Multithreading.runAsync(new Runnable() {
+                        @Override
+                        public void run() {
+                            try (Jedis jedis = Main.getMain().getPool().getResource()) {
+                                JedisTask.withName(UUID.randomUUID().toString())
+                                        .withArg(RedisArg.SERVER.getArg(), Bukkit.getServerName())
+                                        .withArg(RedisArg.PLAYER.getArg(), player.getName())
+                                        .send(RedisChannels.YT_JOIN.getChannelName(), jedis);
+                            }
+                        }
+                    });
+                }
+            });
+        }
 
         TSMCUser user = TSMCUser.fromPlayer(player);
         user.setLoginTime(StringUtils.getDate());
