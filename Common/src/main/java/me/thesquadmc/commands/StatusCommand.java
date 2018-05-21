@@ -25,7 +25,7 @@ public final class StatusCommand implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (sender instanceof Player) {
 			Player player = (Player) sender;
-			if (PlayerUtils.isEqualOrHigherThen(player, Rank.ADMIN)) {
+			if (PlayerUtils.isEqualOrHigherThen(player, Rank.TRAINEE)) {
 				player.sendMessage(" ");
 				player.sendMessage(CC.translate("&e&lSTATUS &6■ &7Free Memory: &e" + ServerUtils.getFreeMemory()));
 				player.sendMessage(CC.translate("&e&lSTATUS &6■ &7Used Memory: &e" + ServerUtils.getUsedMemory()));

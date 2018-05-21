@@ -71,10 +71,9 @@ commands:
         aliases: [vlist]
     ntversion:
     mg:
-    queuemanager:
-        aliases: [qm]
     staffalert:
     onlinecount:
+        aliases: [oc]
     logs:
         aliases: [chatlogs, clogs]
     l1:

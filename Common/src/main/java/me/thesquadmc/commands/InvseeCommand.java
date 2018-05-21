@@ -27,11 +27,7 @@ public final class InvseeCommand implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (sender instanceof Player) {
 			Player player = (Player) sender;
-			if (PlayerUtils.isEqualOrHigherThen(player, Rank.MOD)) {
-				if (Bukkit.getServerName().toUpperCase().contains("HUB") || Bukkit.getServerName().toUpperCase().startsWith("BW")) {
-					player.sendMessage(CC.translate("&e&lINVSEE &6■ &7You are not allowed to use this command here!"));
-					return true;
-				}
+			if (PlayerUtils.isEqualOrHigherThen(player, Rank.ADMIN)) {
 				if (args.length == 1) {
 					Player t = Bukkit.getPlayer(args[0]);
 					if (t != null) {
