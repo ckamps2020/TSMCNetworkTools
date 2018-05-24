@@ -198,6 +198,9 @@ public final class StringUtils {
 				String b = "HUB-" + h;
 				ConnectionUtils.sendPlayer(player, b, true);
 				return true;
+			case "/EVENT":
+				ConnectionUtils.sendPlayer(player, "EVENT", true);
+				return true;
 		}
 		return false;
 	}
