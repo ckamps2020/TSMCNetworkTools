@@ -356,8 +356,8 @@ public final class RedisHandler {
 													}
 												}
 												StaffmodeCommand.getStaffmode().remove(p.getUniqueId());
+												StaffmodeCommand.getLocations().remove(p.getUniqueId());
 												p.setGameMode(GameMode.SURVIVAL);
-												StaffmodeCommand.getStaffmode().remove(p.getUniqueId());
 												p.performCommand("spawn");
 												p.sendMessage(CC.translate("&e&lSTOP &6■ &7Due to server restart you have been taken out of staffmode"));
 											}

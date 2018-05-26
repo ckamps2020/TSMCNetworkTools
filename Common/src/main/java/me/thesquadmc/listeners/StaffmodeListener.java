@@ -135,6 +135,7 @@ public final class StaffmodeListener implements Listener {
 				}
 			}
 			StaffmodeCommand.getStaffmode().remove(player.getUniqueId());
+			StaffmodeCommand.getLocations().remove(player.getUniqueId());
 			player.sendMessage(CC.translate("&e&lSTAFFMODE &6■  &7Staff mode has been &edisabled&7"));
 		}
 	}

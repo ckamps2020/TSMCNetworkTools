@@ -25,6 +25,7 @@ commands:
         aliases: [mod]
     staff:
         aliases: [onlinestaff, liststaff, online, onlineplayers, list, listplayers, eonline, elist]
+    stp:
     unfreeze:
     vanish:
         aliases: [v, iv]
