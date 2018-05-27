@@ -37,8 +37,8 @@
 			<groupId>me.gong</groupId>
 			<artifactId>mcleaks-api</artifactId>
 			<version>1.9.5-SNAPSHOT</version>
-			<type>jar</type>
-			<scope>compile</scope>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/mcleaks-api.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>net.wesjd</groupId>
