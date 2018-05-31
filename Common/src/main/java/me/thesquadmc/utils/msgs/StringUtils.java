@@ -497,7 +497,6 @@ public final class StringUtils {
 		curses.add("fukcin");
 		curses.add("fucking");
 		curses.add(" fking ");
-		curses.add("fkin");
 		curses.add("fcknig");
 		curses.add("fuckign");
 		curses.add("fukcing");

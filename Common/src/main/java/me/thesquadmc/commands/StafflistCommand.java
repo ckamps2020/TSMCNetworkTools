@@ -91,7 +91,7 @@ public final class StafflistCommand implements CommandExecutor {
 										player.spigot().sendMessage(StringUtils.getHoverMessage("&a" + (ttokens.length - 1) + " &8[&f&lTrainee&8]&f" + trainee, "&7Want to become &eTrainee&7? Apply at:\n" +
 												"&6&nwww.thesquadmc.net/forums/staff-applications"));
 									} else {
-										player.sendMessage(CC.translate("&c0 &8[&f&lTrainee&8] &7None"));
+										player.sendMessage(CC.translate("&c0 &8[&a&lTrainee&8] &7None"));
 									}
 									if (!helper.equalsIgnoreCase("")) {
 										player.sendMessage(CC.translate("&a" + (htokens.length - 1) + " &8[&3&lHelper&8]&3" + helper));
