@@ -35,10 +35,11 @@
 			<artifactId>json</artifactId>
 			<version>20141113</version>
 		</dependency>
+
 		<dependency>
 			<groupId>me.gong</groupId>
 			<artifactId>mcleaks-api</artifactId>
-			<version>1.9.5-SNAPSHOT</version>
+			<version>1.9.5</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
@@ -93,6 +94,7 @@
 			<version>3.6.1</version>
 			<scope>compile</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
