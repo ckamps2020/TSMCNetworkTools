@@ -39,9 +39,9 @@
 		<dependency>
 			<groupId>me.gong</groupId>
 			<artifactId>mcleaks-api</artifactId>
-			<version>1.9.5</version>
-			<type>jar</type>
-			<scope>compile</scope>
+			<version>1.9.5-SNAPSHOT</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/mcleaks-api.jar</systemPath>
 		</dependency>
 
 		<dependency>
