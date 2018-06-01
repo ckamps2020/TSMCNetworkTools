@@ -52,7 +52,6 @@ dependency-reduced-pom.xml
 *.log
 
 # Package Files #
-*.jar
 *.war
 *.ear
 *.zip

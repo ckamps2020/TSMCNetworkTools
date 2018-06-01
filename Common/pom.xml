@@ -19,8 +19,9 @@
 			<url>https://oss.sonatype.org/content/groups/public/</url>
 		</repository>
 		<repository>
-			<id>themrgong-repo</id>
-			<url>https://repo.themrgong.xyz/repository/thirdparty</url>
+			<id>thesquadmc-repo</id>
+			<url>https://nexus.thesquadmc.net/repository/maven-releases/</url>
+			<layout>default</layout>
 		</repository>
 		<repository>
 			<id>wesjd-repo</id>
