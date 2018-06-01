@@ -20,19 +20,15 @@ pipeline {
       parallel {
         stage('deploy 1.8') {
           steps {
-            sh 'ls'
-            dir(path: '/StaffTools1.8R3') {
-              sh 'mvn clean deploy'
-            }
-
+            sh 'cd StaffTools1.8R3'
+            sh 'mvn clean deploy'
           }
         }
         stage('deploy 1.12') {
           steps {
-            dir(path: 'StaffTools1.12R1') {
-              sh 'mvn clean deploy'
-            }
-
+            dir(path: 'StaffTools1.12R1')
+            sh '''cd StaffTools1.12R1
+mvn clean deploy'''
           }
         }
       }
