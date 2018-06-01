@@ -26,9 +26,10 @@ pipeline {
         }
         stage('deploy 1.12') {
           steps {
-            dir(path: 'StaffTools1.12R1')
-            sh '''cd StaffTools1.12R1
-mvn clean deploy'''
+            dir(path: 'StaffTools1.12R1') {
+              sh 'mvn clean deploy'
+            }
+
           }
         }
       }
