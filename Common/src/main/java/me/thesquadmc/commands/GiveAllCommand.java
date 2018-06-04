@@ -25,10 +25,10 @@ public final class GiveAllCommand implements CommandExecutor {
                     for (Player p : Bukkit.getOnlinePlayers()) {
                         if (ItemUtils.hasInventorySpace(p)) {
                             p.getInventory().addItem(itemStack);
-                            player.sendMessage(CC.translate("&e&lGIVEALL &6■ &7You have received an item from " + player.getName()));
+                            p.sendMessage(CC.translate("&e&lGIVEALL &6■ &7You have received an item from " + player.getName()));
                         } else {
                             ItemUtils.spawnItem(itemStack, p.getLocation());
-                            player.sendMessage(CC.translate("&e&lGIVEALL &6■ &7You have received an item from " + player.getName() + ". Since your inventory was full it was placed at your feet"));
+                            p.sendMessage(CC.translate("&e&lGIVEALL &6■ &7You have received an item from " + player.getName() + ". Since your inventory was full it was placed at your feet"));
                         }
                     }
                     player.sendMessage(CC.translate("&e&lGIVEALL &6■ &7You gave everyone a copy of the item in your hand!"));
