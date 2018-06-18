@@ -167,14 +167,8 @@ public final class StringUtils {
 
 	public static boolean serverCommand(Player player, String msg) {
 		switch (msg) {
-			case "/SKYBLOCK-1":
+			case "/SKYBLOCK":
 				ConnectionUtils.sendPlayer(player, "SKYBLOCK-1", true);
-				return true;
-			case "/SKYBLOCK-2":
-				ConnectionUtils.sendPlayer(player, "SKYBLOCK-2", true);
-				return true;
-			case "/SKYBLOCK-3":
-				ConnectionUtils.sendPlayer(player, "SKYBLOCK-3", true);
 				return true;
 			case "/FACTIONS":
 				ConnectionUtils.sendPlayer(player, "FACTIONS-FIRE", true);

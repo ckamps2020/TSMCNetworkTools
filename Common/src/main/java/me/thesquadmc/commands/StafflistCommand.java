@@ -94,9 +94,9 @@ public final class StafflistCommand implements CommandExecutor {
 										player.sendMessage(CC.translate("&c0 &8[&a&lTrainee&8] &7None"));
 									}
 									if (!helper.equalsIgnoreCase("")) {
-										player.sendMessage(CC.translate("&a" + (htokens.length - 1) + " &8[&3&lHelper&8]&3" + helper));
+										player.sendMessage(CC.translate("&a" + (htokens.length - 1) + " &8[&b&lChat-Mod&8]&3" + helper));
 									} else {
-										player.sendMessage(CC.translate("&c0 &8[&3&lHelper&8] &7None"));
+										player.sendMessage(CC.translate("&c0 &8[&b&lChat-Mod&8] &7None"));
 									}
 									if (!mod.equalsIgnoreCase("")) {
 										player.sendMessage(CC.translate("&a" + (mtokens.length - 1) + " &8[&5&lMod&8]&5" + mod));
