@@ -98,7 +98,8 @@ public class NMSAbstract1_8_R3 implements NMSAbstract {
 
 	@Override
 	public ProfileProperty getSkinProperty(String name) {
-		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new URL("https://use.gameapis.net/mc/player/profile/" + name).openStream()))) {
+		String url = "https://use.gameapis.net/mc/player/profile/";
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new URL(url + name).openStream()))) {
 			Gson gson = Main.getMain().getGson();
 			
 			JsonObject root = gson.fromJson(reader, JsonObject.class);

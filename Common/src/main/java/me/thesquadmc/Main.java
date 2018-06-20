@@ -66,7 +66,7 @@ public final class Main extends JavaPlugin {
     private DatabaseManager MySQL;
     private ThreadPoolExecutor threadPoolExecutor;
     private int restartTime = 0;
-    private String version = "1.4.7";
+    private String version = "1.4.8";
     private String serverType = "UNKNOWN";
     private int chatslow = 0;
     private boolean chatSilenced = false;
@@ -326,6 +326,7 @@ public final class Main extends JavaPlugin {
         getCommand("rename").setExecutor(new RenameCommand(this));
         getCommand("giveall").setExecutor(new GiveAllCommand());
         getCommand("stp").setExecutor(new ModTpCommand(this));
+        getCommand("firework").setExecutor(new FireworkCommand());
         ServerUtils.calculateServerType();
         Bukkit.getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
             @Override
