@@ -172,6 +172,18 @@ public final class PlayerUtils {
 		return false;
 	}
 
+	public static Rank getRank(Player player) {
+		User user = Main.getMain().getLuckPermsApi().getUser(player.getUniqueId());
+		if (user.getPrimaryGroup() != null) {
+			for (Rank r : Rank.values()) {
+				if (r.getName().equalsIgnoreCase(user.getPrimaryGroup())) {
+					return r;
+				}
+			}
+		}
+		return Rank.PLAYER;
+	}
+
 	public static boolean doesRankMatch(Player player, Rank rank) {
 		User user = Main.getMain().getLuckPermsApi().getUser(player.getUniqueId());
 		if (user.getPrimaryGroup() != null) {

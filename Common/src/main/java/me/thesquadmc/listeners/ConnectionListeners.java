@@ -87,6 +87,7 @@ public final class ConnectionListeners implements Listener {
         });
 
         PlayerUtils.unfreezePlayer(player);
+        //main.getScoreboardManager().join(player);
         Bukkit.getScheduler().runTaskLater(main, () -> {
             if (Bukkit.getServerName().toUpperCase().startsWith("MG")
                     || Bukkit.getServerName().toUpperCase().startsWith("FACTIONS")
@@ -124,11 +125,10 @@ public final class ConnectionListeners implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent e) {
         Player player = e.getPlayer();
+        //main.getScoreboardManager().leave(player);
         if (StringUtils.lastMsg.containsKey(player.getUniqueId())) {
             StringUtils.lastMsg.remove(player.getUniqueId());
         }
-
-        player.performCommand("party leave");
 
         for (Player p : Bukkit.getServer().getOnlinePlayers()) {
             if (TSMCUser.fromPlayer(p).isYtVanished()) {

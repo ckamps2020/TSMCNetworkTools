@@ -1206,7 +1206,6 @@ public final class StringUtils {
 		curses.add(".gg");
 		curses.add("na.");
 		curses.add(".na");
-		curses.add(".na");
 		curses.add(".gs");
 		curses.add(".eu");
 		curses.add("sb-");
@@ -1250,6 +1249,8 @@ public final class StringUtils {
 		curses.add(">>>");
 		curses.add("<<<");
 		curses.add("_net");
+		curses.add("JeromeASF");
+		curses.add("[.]");
 	}
 
 }

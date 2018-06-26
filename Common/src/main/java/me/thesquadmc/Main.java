@@ -66,7 +66,7 @@ public final class Main extends JavaPlugin {
     private DatabaseManager MySQL;
     private ThreadPoolExecutor threadPoolExecutor;
     private int restartTime = 0;
-    private String version = "1.4.8";
+    private String version = "1.5.0-ALPHA";
     private String serverType = "UNKNOWN";
     private int chatslow = 0;
     private boolean chatSilenced = false;
@@ -88,6 +88,7 @@ public final class Main extends JavaPlugin {
     private CountManager countManager;
     private NMSAbstract nmsAbstract;
     private Mongo mongo;
+    private ScoreboardManager scoreboardManager;
 
     private String host;
     private int port;
@@ -133,6 +134,7 @@ public final class Main extends JavaPlugin {
         commandHandler = new CommandHandler(this);
         partyManager = new PartyManager();
         countManager = new CountManager();
+        scoreboardManager = new ScoreboardManager();
         AbstractGUI.initializeListeners(this);
         getServer().getPluginManager().registerEvents(new LaunchListener(), this);
         getServer().getPluginManager().registerEvents(new LightningListener(), this);
@@ -296,9 +298,6 @@ public final class Main extends JavaPlugin {
         getCommand("forcefield").setExecutor(new ForceFieldCommand());
         getCommand("staffmenu").setExecutor(new StaffMenuCommand(this));
         getCommand("monitor").setExecutor(new MonitorCommand());
-        getCommand("ytnick").setExecutor(new YtNickCommand());
-        getCommand("disguiseplayer").setExecutor(new DisguisePlayerCommand(this));
-        getCommand("undisguiseplayer").setExecutor(new UndisguisePlayerCommand(this));
         getCommand("silence").setExecutor(new ChatSilenceCommand(this));
         getCommand("slowchat").setExecutor(new ChatSlowCommand(this));
         getCommand("smite").setExecutor(new SmiteCommand(this));
@@ -366,6 +365,10 @@ public final class Main extends JavaPlugin {
     public void onDisable() {
         System.out.println("[NetworkTools] Shutting down...");
         System.out.println("[NetworkTools] Shut down! Cya :D");
+    }
+
+    public ScoreboardManager getScoreboardManager() {
+        return scoreboardManager;
     }
 
     public Jedis getJ() {
