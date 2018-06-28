@@ -1,5 +1,4 @@
 pipeline {
-0 * * ? * *
   agent any
 
   triggers {
