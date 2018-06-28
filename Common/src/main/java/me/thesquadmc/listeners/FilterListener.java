@@ -1,8 +1,9 @@
 package me.thesquadmc.listeners;
 
 import me.thesquadmc.Main;
-import me.thesquadmc.objects.logs.LogType;
-import me.thesquadmc.objects.logs.LogUser;
+import me.thesquadmc.objects.logging.chatlogs.Log;
+import me.thesquadmc.objects.logging.chatlogs.LogType;
+import me.thesquadmc.objects.logging.chatlogs.LogUser;
 import me.thesquadmc.utils.PlayerUtils;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.msgs.CC;
@@ -44,7 +45,7 @@ public final class FilterListener implements Listener {
 		}
 
         if (!e.isCancelled()) {
-            LogUser.fromPlayer(player).getLogs().add(me.thesquadmc.objects.log.Log.create(LogType.COMMAND, e.getMessage(), Bukkit.getServerName()));
+            LogUser.fromPlayer(player).getLogs().add(Log.create(LogType.COMMAND, e.getMessage(), Bukkit.getServerName()));
         }
 	}
 
@@ -126,7 +127,8 @@ public final class FilterListener implements Listener {
 			}
 
 			if (!e.isCancelled()) {
-                LogUser.fromPlayer(player).getLogs().add(me.thesquadmc.objects.log.Log.create(LogType.CHATLOG, e.getMessage(), Bukkit.getServerName()));
+				System.out.println("saving");
+                LogUser.fromPlayer(player).getLogs().add(Log.create(LogType.CHATLOG, e.getMessage(), Bukkit.getServerName()));
             }
 		}
 	}

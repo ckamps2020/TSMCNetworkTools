@@ -25,6 +25,7 @@ import org.bukkit.util.BlockIterator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -51,6 +52,10 @@ public final class PlayerUtils {
 			return false;
 		}
 		return true;
+	}
+
+	public static Optional<? extends Player> getPlayer(String name) {
+		return Bukkit.getOnlinePlayers().stream().filter(p -> p.getName().equalsIgnoreCase(name)).findFirst();
 	}
 
 	public static List<Player> getNearbyPlayers(Location where, int range) {

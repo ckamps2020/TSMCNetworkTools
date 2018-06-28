@@ -27,6 +27,7 @@ public final class Mongo {
 
 
     static {
+        //pls don't touch :)
         BSON.addEncodingHook(UUID.class, objectToTransform -> {
             UUID uuid = (UUID) objectToTransform;
             BsonDocument holder = new BsonDocument();
@@ -59,7 +60,7 @@ public final class Mongo {
 
     public CompletableFuture<UUID> getUUID(String name) {
         return CompletableFuture.supplyAsync(() -> {
-            Document document = mongoDatabase.getCollection(Database.USER_DATABASE).find(eq(Database.NAME, name)).first();
+            Document document = mongoDatabase.getCollection(UserDatabase.USER_DATABASE).find(eq(UserDatabase.NAME, name)).first();
             if (document == null) {
                 return null;
             }
@@ -70,12 +71,12 @@ public final class Mongo {
 
     public CompletableFuture<String> getName(UUID uuid) {
         return CompletableFuture.supplyAsync(() -> {
-            Document document = mongoDatabase.getCollection(Database.USER_DATABASE).find(eq("_id", uuid)).first();
+            Document document = mongoDatabase.getCollection(UserDatabase.USER_DATABASE).find(eq("_id", uuid)).first();
             if (document == null) {
                 return null;
             }
 
-            return document.getString(Database.NAME);
+            return document.getString(UserDatabase.NAME);
         }, Multithreading.POOL);
     }
 

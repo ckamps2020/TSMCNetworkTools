@@ -1,6 +1,6 @@
-package me.thesquadmc.objects;
+package me.thesquadmc.objects.logging;
 
-import me.thesquadmc.networking.mongo.Database;
+import me.thesquadmc.networking.mongo.UserDatabase;
 import org.bson.Document;
 import org.bukkit.entity.Player;
 
@@ -36,6 +36,8 @@ public class Note {
         this.creatorName = creatorName;
         this.timestamp = timestamp;
         this.note = note;
+
+
     }
 
     public Note(Player player, String note) {
@@ -64,10 +66,10 @@ public class Note {
 
     public static Note fromDocument(Document document) {
         return new Note(
-                document.get(Database.NOTE_CREATOR, UUID.class),
-                document.getString(Database.NOTE_CREATOR_NAME),
-                document.getLong(Database.TIMESTAMP),
-                document.getString(Database.NOTE_MESSAGE)
+                document.get(UserDatabase.NOTE_CREATOR, UUID.class),
+                document.getString(UserDatabase.NOTE_CREATOR_NAME),
+                document.getLong(UserDatabase.TIMESTAMP),
+                document.getString(UserDatabase.NOTE_MESSAGE)
         );
     }
 }

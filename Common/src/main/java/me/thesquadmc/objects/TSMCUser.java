@@ -1,36 +1,33 @@
 package me.thesquadmc.objects;
 
-import java.util.*;
 import java.util.stream.Collectors;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
 import com.google.common.base.Preconditions;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.sun.org.apache.regexp.internal.RE;
-import me.thesquadmc.networking.mongo.Database;
+import me.thesquadmc.objects.logging.Note;
 import org.bson.Document;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
-import static me.thesquadmc.networking.mongo.Database.*;
+import static me.thesquadmc.networking.mongo.UserDatabase.*;
 
 public class TSMCUser {
 
     private static final Map<UUID, TSMCUser> USERS = new HashMap<>();
 
     private final UUID uuid;
-    private final String name;
+    private String name;
 
+    private final Set<String> previousNames = Sets.newHashSet();
     private final Set<UUID> friends = Sets.newHashSet();
     private final Set<UUID> requests = Sets.newHashSet();
     private final Set<Note> notes = Sets.newHashSet();
@@ -67,6 +64,7 @@ public class TSMCUser {
     public java.util.UUID getUuid() {
         return uuid;
     }
+
 
     public OfflinePlayer getOfflinePlayer() {
         return Bukkit.getOfflinePlayer(uuid);
@@ -180,6 +178,14 @@ public class TSMCUser {
         notes.add(note);
     }
 
+    public Set<String> getPreviousNames() {
+        return previousNames;
+    }
+
+    public void addPreviousName(String name) {
+        previousNames.add(name);
+    }
+
     public void setLoginTime(long loginTime) {
         this.loginTime = loginTime;
     }
@@ -264,6 +270,10 @@ public class TSMCUser {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public void clearLocalizedData() {
         this.friends.clear();
         this.requests.clear();
@@ -315,22 +325,23 @@ public class TSMCUser {
 
     public static TSMCUser fromDocument(Document document) {
         TSMCUser user = new TSMCUser(document.get("_id", UUID.class), document.getString("name"));
-        System.out.println("user - " + user.getUuid());
 
-        Set<UUID> friends = (Set<UUID>) document.get(FRIENDS);
-        System.out.println(friends);
+        Set<String> previousNames = (Set<String>) document.get(PREVIOUS_NAMES, Set.class);
+        if (previousNames != null) {
+            previousNames.addAll(user.previousNames);
+        }
+
+        Set<UUID> friends = (Set<UUID>) document.get(FRIENDS, Set.class);
         if (friends != null) {
             friends.addAll(user.friends);
         }
 
-        Set<UUID> requests = (Set<UUID>) document.get(REQUESTS);
-        System.out.println(requests);
+        Set<UUID> requests = (Set<UUID>) document.get(REQUESTS, Set.class);
         if (requests != null) {
             requests.addAll(user.requests);
         }
 
-        Set<Document> notes = (Set<Document>) document.get(NOTES);
-        System.out.println(notes);
+        Set<Document> notes = (Set<Document>) document.get(NOTES, Set.class);
         if (notes != null) {
             notes.stream().map(Note::fromDocument).collect(Collectors.toList()).addAll(user.notes);
         }
@@ -345,6 +356,7 @@ public class TSMCUser {
         user.skinKey = document.getString(SKIN_KEY);
         user.signature = document.getString(SIGNATURE);
 
+        loadUser(user);
         return user;
     }
 

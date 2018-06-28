@@ -18,11 +18,13 @@
 			<id>sonatype</id>
 			<url>https://oss.sonatype.org/content/groups/public/</url>
 		</repository>
+
 		<repository>
 			<id>thesquadmc-repo</id>
 			<url>https://nexus.thesquadmc.net/repository/maven-releases/</url>
 			<layout>default</layout>
 		</repository>
+
 		<repository>
 			<id>wesjd-repo</id>
 			<url>https://nexus.wesjd.net/repository/thirdparty/</url>
@@ -31,17 +33,16 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.json</groupId>
-			<artifactId>json</artifactId>
-			<version>20141113</version>
+			<groupId>me.gong</groupId>
+			<artifactId>mcleaks</artifactId>
+			<version>1.9.5</version>
+			<scope>compile</scope>
 		</dependency>
 
 		<dependency>
-			<groupId>me.gong</groupId>
-			<artifactId>mcleaks-api</artifactId>
-			<version>1.9.5-SNAPSHOT</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/mcleaks-api.jar</systemPath>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20141113</version>
 		</dependency>
 
 		<dependency>

@@ -8,4 +8,6 @@ public final class Error {
 	public static final String UNABLE_TO_LOAD_FRIENDS_DATA = "D83H5";
 	public static final String UNABLE_TO_LOAD_MINIGAME_DATA = "M37E0";
 
+	public static final String CANNOT_FIND_PLAYER = "&e&lPLAYER &6■ &7Cannot find ";
+
 }

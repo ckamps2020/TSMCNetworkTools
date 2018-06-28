@@ -11,11 +11,10 @@ import me.thesquadmc.inventories.FrozenInventory;
 import me.thesquadmc.inventories.StaffmodeInventory;
 import me.thesquadmc.listeners.*;
 import me.thesquadmc.managers.*;
-import me.thesquadmc.networking.JedisTask;
 import me.thesquadmc.networking.RedisHandler;
-import me.thesquadmc.networking.mongo.Database;
+import me.thesquadmc.networking.mongo.MongoUserDatabase;
+import me.thesquadmc.networking.mongo.UserDatabase;
 import me.thesquadmc.networking.mongo.Mongo;
-import me.thesquadmc.networking.mongo.MongoDatabase;
 import me.thesquadmc.networking.mysql.DatabaseManager;
 import me.thesquadmc.networking.redis.RedisManager;
 import me.thesquadmc.networking.redis.RedisMesage;
@@ -28,6 +27,8 @@ import me.thesquadmc.networking.redis.channels.ServerManagementChannel;
 import me.thesquadmc.networking.redis.channels.StaffChatChannels;
 import me.thesquadmc.networking.redis.channels.WhitelistChannel;
 import me.thesquadmc.objects.TSMCUser;
+import me.thesquadmc.objects.logging.ChangeLog;
+import me.thesquadmc.objects.logging.chatlogs.LogSaveTask;
 import me.thesquadmc.utils.command.CommandHandler;
 import me.thesquadmc.utils.enums.RedisArg;
 import me.thesquadmc.utils.enums.RedisChannels;
@@ -101,7 +102,7 @@ public final class Main extends JavaPlugin {
     private CountManager countManager;
     private NMSAbstract nmsAbstract;
     private Mongo mongo;
-    private Database database;
+    private UserDatabase userDatabase;
 
     private String host;
     private int port;
@@ -128,6 +129,7 @@ public final class Main extends JavaPlugin {
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
+
         this.getLogger().info("[NetworkTools] Server implementation set for " + nmsAbstract.getVersionMin() + " - " + nmsAbstract.getVersionMax());
 
         luckPermsApi = LuckPerms.getApi();
@@ -153,10 +155,10 @@ public final class Main extends JavaPlugin {
 
         Stream.of(
                 new CreativeCommand(),
+                new NoteCommand(this),
+                new ChangeLogCommand(this),
                 new HealCommand()
         ).forEach(o -> commandHandler.registerCommands(o));
-
-        //test commit
 
         host = fileManager.getNetworkingConfig().getString("redis.host");
         port = fileManager.getNetworkingConfig().getInt("redis.port");
@@ -253,48 +255,40 @@ public final class Main extends JavaPlugin {
         redisManager.registerChannel(new StaffChatChannels(this), RedisChannels.STAFFCHAT, RedisChannels.ADMINCHAT, RedisChannels.MANAGERCHAT, RedisChannels.DISCORD_STAFFCHAT_SERVER);
 
         System.out.println("[NetworkTools] Redis PUB/SUB setup!");
-        Multithreading.runAsync(new Runnable() {
-            @Override
-            public void run() {
-                System.out.println("[NetworkTools] Connecting to mysql database...");
-                try {
-                    MySQL.setupDB();
-                    System.out.println("[NetworkTools] Connected to mysql database!");
-                } catch (ClassNotFoundException | SQLException e) {
-                    e.printStackTrace();
-                    System.out.println("[NetworkTools] Unable to connect to mysql database!");
-                }
+        Multithreading.runAsync(() -> {
+            System.out.println("[NetworkTools] Connecting to mysql userDatabase...");
+            try {
+                MySQL.setupDB();
+                System.out.println("[NetworkTools] Connected to mysql userDatabase!");
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+                System.out.println("[NetworkTools] Unable to connect to mysql userDatabase!");
             }
         });
 
         System.out.println("[NetworkTools] Setting up BuycraftAPI...");
-        Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable() {
+        Multithreading.runAsync(new Runnable() {
             @Override
             public void run() {
-                Multithreading.runAsync(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            //Buycraft buycraft = new Buycraft(fileManager.getNetworkingConfig().getString("buycraft.secret"));
-                            System.out.println("[NetworkTools] BuycraftAPI setup and ready to go!");
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            System.out.println("[NetworkTools] Unable to set up BuycraftAPI");
-                        }
-                    }
-                });
+                try {
+                    //Buycraft buycraft = new Buycraft(fileManager.getNetworkingConfig().getString("buycraft.secret"));
+                    System.out.println("[NetworkTools] BuycraftAPI setup and ready to go!");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    System.out.println("[NetworkTools] Unable to set up BuycraftAPI");
+                }
             }
         });
 
         Configuration conf = fileManager.getNetworkingConfig();
         String user = conf.getString("mongo.user");
-        String db = conf.getString("mongo.database");
+        String db = conf.getString("mongo.userDatabase");
         String host = conf.getString("mongo.host");
         String password = conf.getString("mongo.password");
         int port = conf.getInt("mongo.port");
 
         mongo = new Mongo(user, db, password, host, port);
-        database = new MongoDatabase(mongo);
+        userDatabase = new MongoUserDatabase(mongo);
         System.out.println("[NetworkTools] Setup MongoDB connection!");
 
         registerListeners();
@@ -335,6 +329,9 @@ public final class Main extends JavaPlugin {
                 }
             }); */
         }
+
+        new LogSaveTask(this).runTaskTimerAsynchronously(this, 20L * 60L * 5L, 20L * 60L * 5L);
+
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> BarUtils.getPlayers().forEach(nmsAbstract.getBossBarManager()::teleportBar), 1, 20L);
         System.out.println("[NetworkTools] Plugin started up and ready to go!");
 
@@ -357,8 +354,8 @@ public final class Main extends JavaPlugin {
         return mongo;
     }
 
-    public Database getMongoDatabase() {
-        return database;
+    public UserDatabase getMongoDatabase() {
+        return userDatabase;
     }
 
     public CountManager getCountManager() {
@@ -687,7 +684,7 @@ public final class Main extends JavaPlugin {
         getCommand("queuemanager").setExecutor(new QueueManagerCommand(this));
         getCommand("staffalert").setExecutor(new StaffAlertCommand(this));
         getCommand("onlinecount").setExecutor(new OnlineCountCommand(this));
-        getCommand("logs").setExecutor(new LogsCommand(this));
+        getCommand("logging").setExecutor(new LogsCommand(this));
         getCommand("party").setExecutor(new PartyCommand(this));
         getCommand("l1").setExecutor(new MOTDCommand(main, 1));
         getCommand("l2").setExecutor(new MOTDCommand(main, 2));

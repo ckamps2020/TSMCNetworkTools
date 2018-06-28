@@ -1,4 +1,4 @@
-package me.thesquadmc.objects.logs;
+package me.thesquadmc.objects.logging.chatlogs;
 
 public enum LogType {
 

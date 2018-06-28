@@ -17,7 +17,7 @@ public class NoteCommand {
         this.plugin = plugin;
     }
 
-    @Command(name = {"note", "notes"})
+    @Command(name = {"note", "notes"}, permission = "group.trainee")
     public void base(CommandArgs args) {
         CommandSender sender = args.getSender();
 
@@ -26,19 +26,25 @@ public class NoteCommand {
             return;
         }
 
-        TSMCUser user;
         String name = args.getArg(1);
 
         if (Bukkit.getPlayer(name) != null) {
-            user = TSMCUser.fromPlayer(Bukkit.getPlayer(name));
+            TSMCUser user = TSMCUser.fromPlayer(Bukkit.getPlayer(name));
             sendNotes(sender, user);
+
         } else {
             sender.sendMessage(CC.YELLOW + "Loading...");
-           // plugin.getMongo().getUUID(name).thenApply(uuid -> {
-          //      plugin.getMongoDatabase().getUser(uuid).thenApply(target -> {
+            plugin.getMongoDatabase().getUser(name).thenApply(tsmcUser -> {
+                if (tsmcUser == null) {
+                    sender.sendMessage(CC.RED + "Could not find " + name);
+                    return false;
+                }
 
-        //        });
-         //   });
+                sendNotes(sender, tsmcUser);
+                TSMCUser.unloadUser(tsmcUser);
+
+                return true;
+            });
         }
     }
 

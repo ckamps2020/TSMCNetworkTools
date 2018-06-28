@@ -6,13 +6,14 @@ import me.thesquadmc.objects.TSMCUser;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-public interface Database {
+public interface UserDatabase {
 
     String USER_DATABASE = "users";
 
     String UUID = "uuid";
     String NAME = "name";
 
+    String PREVIOUS_NAMES = "previous_names";
     String FRIENDS = "friends";
     String REQUESTS = "requests";
     String NOTES = "notes";
@@ -35,12 +36,25 @@ public interface Database {
     String NOTE_MESSAGE = "message";
 
     /**
-     * Loads a user from the database
+     * Loads a user from the database using
+     * the player's uuid. If a player was
+     * not found, it will create a {@link TSMCUser}
+     * instance
      *
      * @param uuid uuid of the player to load
      * @return the user
      */
     CompletableFuture<TSMCUser> getUser(UUID uuid);
+
+    /**
+     * Loads a user from the database using
+     * the player's name. If a player was not
+     * found, it will return null
+     *
+     * @param name name of the player to load
+     * @return the user
+     */
+    CompletableFuture<TSMCUser> getUser(String name);
 
     /**
      * Saves a user to the database

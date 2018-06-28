@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 
 public class HealCommand {
 
-    @Command(name = {"heal"}, permission = "nt.heal", playerOnly = true)
+    @Command(name = {"heal"}, permission = "essentials.heal", playerOnly = true)
     public void heal(CommandArgs args) {
         Player player = args.getPlayer();
 
@@ -19,8 +19,12 @@ public class HealCommand {
             player.sendMessage(CC.translate("&e&lHEAL &6■ &7You have been healed to full health!"));
         }
 
-        Player target = Bukkit.getPlayer(args.getArg(0));
+        if (!player.hasPermission("essentials.heal.other")) {
+            player.sendMessage(CC.RED + "You cannot heal other players!");
+            return;
+        }
 
+        Player target = Bukkit.getPlayer(args.getArg(0));
         if (target == null) {
             player.sendMessage(CC.translate("&e&lHEAL &6■ &e" +  args.getArg(0) + " &7is not online!"));
             return;
@@ -35,7 +39,7 @@ public class HealCommand {
         player.sendMessage(CC.translate("&e&lHEAL &6■ &7Healed &e" + target.getDisplayName() + " to full health"));
     }
 
-    @Command(name = {"feed"}, permission = "nt.feed", playerOnly = true)
+    @Command(name = {"feed"}, permission = "essentials.feed", playerOnly = true)
     public void feed(CommandArgs args) {
         Player player = args.getPlayer();
 
@@ -43,6 +47,12 @@ public class HealCommand {
             player.setFoodLevel(20);
             player.setSaturation(20);
             player.sendMessage(CC.translate("&e&lFEED &6■ &7You have been fed to full hunger!"));
+            return;
+        }
+
+        if (!player.hasPermission("essentials.feed.other")) {
+            player.sendMessage(CC.RED + "You cannot feed other players!");
+            return;
         }
 
         Player target = Bukkit.getPlayer(args.getArg(0));

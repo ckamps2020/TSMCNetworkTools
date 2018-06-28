@@ -1,11 +1,10 @@
 package me.thesquadmc.commands;
 
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Sorts;
 import me.thesquadmc.Main;
-import me.thesquadmc.objects.ChangeLog;
+import me.thesquadmc.objects.logging.ChangeLog;
 import me.thesquadmc.utils.command.Command;
 import me.thesquadmc.utils.command.CommandArgs;
 import org.bson.Document;

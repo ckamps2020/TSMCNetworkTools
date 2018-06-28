@@ -54,8 +54,9 @@ public final class AdminChatCommand implements CommandExecutor {
                     }
                     StringBuilder stringBuilder = new StringBuilder();
                     for (String s : args) {
-                        stringBuilder.append(s + " ");
+                        stringBuilder.append(s).append(" ");
                     }
+
                     UserData cachedData = user.getCachedData();
                     Contexts contexts = Contexts.allowAll();
                     MetaData metaData = cachedData.getMetaData(contexts);

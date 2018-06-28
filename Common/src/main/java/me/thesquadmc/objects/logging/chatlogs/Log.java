@@ -1,6 +1,5 @@
-package me.thesquadmc.objects.log;
+package me.thesquadmc.objects.logging.chatlogs;
 
-import me.thesquadmc.objects.logs.LogType;
 
 public class Log {
 

@@ -38,6 +38,11 @@ public final class ConnectionListeners implements Listener {
             }
 
             TSMCUser.loadUser(user);
+            if (!user.getName().equalsIgnoreCase(e.getName())) {
+                user.addPreviousName(user.getName());
+                user.setName(e.getName());
+            }
+
             return true;
         });
 

@@ -166,46 +166,14 @@ public class FindChannel implements RedisChannel {
                         String developer = object.get(RedisArg.DEVELOPER.getName()).getAsString();
                         String owner = object.get(RedisArg.OWNER.getName()).getAsString();
 
-                        if (m.getValue().get(RedisArg.TRAINEE) != null) {
-                            m.getValue().put(RedisArg.TRAINEE, m.getValue().get(RedisArg.TRAINEE) + trainee);
-                        } else {
-                            m.getValue().put(RedisArg.TRAINEE, trainee);
-                        }
-                        if (m.getValue().get(RedisArg.HELPER) != null) {
-                            m.getValue().put(RedisArg.HELPER, m.getValue().get(RedisArg.HELPER) + helper);
-                        } else {
-                            m.getValue().put(RedisArg.HELPER, helper);
-                        }
-                        if (m.getValue().get(RedisArg.MOD) != null) {
-                            m.getValue().put(RedisArg.MOD, m.getValue().get(RedisArg.MOD) + mod);
-                        } else {
-                            m.getValue().put(RedisArg.MOD, mod);
-                        }
-                        if (m.getValue().get(RedisArg.SRMOD) != null) {
-                            m.getValue().put(RedisArg.SRMOD, m.getValue().get(RedisArg.SRMOD) + srmod);
-                        } else {
-                            m.getValue().put(RedisArg.SRMOD, srmod);
-                        }
-                        if (m.getValue().get(RedisArg.ADMIN) != null) {
-                            m.getValue().put(RedisArg.ADMIN, m.getValue().get(RedisArg.ADMIN) + admin);
-                        } else {
-                            m.getValue().put(RedisArg.ADMIN, admin);
-                        }
-                        if (m.getValue().get(RedisArg.MANAGER) != null) {
-                            m.getValue().put(RedisArg.MANAGER, m.getValue().get(RedisArg.MANAGER) + manager);
-                        } else {
-                            m.getValue().put(RedisArg.MANAGER, manager);
-                        }
-                        if (m.getValue().get(RedisArg.DEVELOPER) != null) {
-                            m.getValue().put(RedisArg.DEVELOPER, m.getValue().get(RedisArg.DEVELOPER) + developer);
-                        } else {
-                            m.getValue().put(RedisArg.DEVELOPER, developer);
-                        }
-                        if (m.getValue().get(RedisArg.OWNER) != null) {
-                            m.getValue().put(RedisArg.OWNER, m.getValue().get(RedisArg.OWNER) + owner);
-                        } else {
-                            m.getValue().put(RedisArg.OWNER, owner);
-                        }
+                        m.getValue().merge(RedisArg.TRAINEE, trainee, (a, b) -> a + b);
+                        m.getValue().merge(RedisArg.HELPER, helper, (a, b) -> a + b);
+                        m.getValue().merge(RedisArg.MOD, mod, (a, b) -> a + b);
+                        m.getValue().merge(RedisArg.SRMOD, srmod, (a, b) -> a + b);
+                        m.getValue().merge(RedisArg.ADMIN, admin, (a, b) -> a + b);
+                        m.getValue().merge(RedisArg.MANAGER, manager, (a, b) -> a + b);
+                        m.getValue().merge(RedisArg.DEVELOPER, developer, (a, b) -> a + b);
+                        m.getValue().merge(RedisArg.OWNER, owner, (a, b) -> a + b);
                     }
                 }
             }
