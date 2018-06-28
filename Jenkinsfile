@@ -3,7 +3,7 @@ pipeline {
   stages {
     stage('Build') {
       steps {
-        sh 'mvn clean package  -s /opt/maven/3.5.3/conf/settings.xml'
+        sh 'mvn clean package -s /opt/maven/3.5.3/conf/settings.xml'
       }
     }
     stage('1.8') {
