@@ -34,13 +34,6 @@
 		<finalName>TSMCNetworkTools</finalName>
 		<defaultGoal>clean package</defaultGoal>
 
-		<resources>
-			<resource>
-				<directory>Common/src/main/resources</directory>
-				<filtering>true</filtering>
-			</resource>
-		</resources>
-
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

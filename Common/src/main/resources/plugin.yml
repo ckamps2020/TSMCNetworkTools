@@ -1,5 +1,5 @@
 name: TSMCNetworkTools
-version: ${project.version}
+version: 2.5.0
 main: me.thesquadmc.Main
 author: ckamps
 depend: [LuckPerms]

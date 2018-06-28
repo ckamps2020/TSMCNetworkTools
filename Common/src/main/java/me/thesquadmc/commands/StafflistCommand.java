@@ -15,6 +15,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import redis.clients.jedis.Jedis;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -61,7 +62,6 @@ public final class StafflistCommand implements CommandExecutor {
                     } else if (m.getKey() == RedisArg.MANAGER) {
                         manager = m.getValue();
                     } else if (m.getKey() == RedisArg.DEVELOPER) {
-                        System.out.println(m.getValue());
                         developer = m.getValue();
                     } else if (m.getKey() == RedisArg.OWNER) {
                         owner = m.getValue();
@@ -83,6 +83,7 @@ public final class StafflistCommand implements CommandExecutor {
                 String[] mantokens = manager.split(manr);
                 String[] dtokens = developer.split(dr);
                 String[] otokens = owner.split(or);
+
                 if (!trainee.equalsIgnoreCase("")) {
                     player.spigot().sendMessage(StringUtils.getHoverMessage("&a" + ttokens.length + " &8[&a&lTrainee&8]&a " + trainee, "&7Want to become &eTrainee&7? Apply at:\n" +
                             "&6&nwww.thesquadmc.net/forums/staff-applications"));
@@ -90,37 +91,37 @@ public final class StafflistCommand implements CommandExecutor {
                     player.sendMessage(CC.translate("&c0 &8[&a&lTrainee&8] &7None"));
                 }
                 if (!helper.equalsIgnoreCase("")) {
-                    player.sendMessage(CC.translate("&a" + htokens.length + " &8[&b&lChat-Mod&8]&3 " + helper));
+                    player.sendMessage(CC.translate("&a" + htokens.length + " &8[&b&lChat-Mod&8]&3" + helper));
                 } else {
                     player.sendMessage(CC.translate("&c0 &8[&b&lChat-Mod&8] &7None"));
                 }
                 if (!mod.equalsIgnoreCase("")) {
-                    player.sendMessage(CC.translate("&a" + mtokens.length + " &8[&5&lMod&8]&5 " + mod));
+                    player.sendMessage(CC.translate("&a" + mtokens.length + " &8[&5&lMod&8]&5" + mod));
                 } else {
                     player.sendMessage(CC.translate("&c0 &8[&5&lMod&8] &7None"));
                 }
                 if (!srmod.equalsIgnoreCase("")) {
-                    player.sendMessage(CC.translate("&a" + srtokens.length + " &8[&d&lSr-Mod&8]&d " + srmod));
+                    player.sendMessage(CC.translate("&a" + srtokens.length + " &8[&d&lSr-Mod&8]&d" + srmod));
                 } else {
                     player.sendMessage(CC.translate("&c0 &8[&d&lSr-Mod&8] &7None"));
                 }
                 if (!admin.equalsIgnoreCase("")) {
-                    player.sendMessage(CC.translate("&a" + atokens.length + " &8[&c&lAdmin&8]&c " + admin));
+                    player.sendMessage(CC.translate("&a" + atokens.length + " &8[&c&lAdmin&8]&c" + admin));
                 } else {
                     player.sendMessage(CC.translate("&c0 &8[&c&lAdmin&8] &7None"));
                 }
                 if (!manager.equalsIgnoreCase("")) {
-                    player.sendMessage(CC.translate("&a" + mantokens.length + " &8[&c&lManager&8]&c " + manager));
+                    player.sendMessage(CC.translate("&a" + mantokens.length + " &8[&c&lManager&8]&c" + manager));
                 } else {
                     player.sendMessage(CC.translate("&c0 &8[&c&lManager&8] &7None"));
                 }
                 if (!developer.equalsIgnoreCase("")) {
-                    player.sendMessage(CC.translate("&a" + dtokens.length + " &8[&c&lDeveloper&8]&c " + developer));
+                    player.sendMessage(CC.translate("&a" + dtokens.length + " &8[&c&lDeveloper&8]&c" + developer));
                 } else {
                     player.sendMessage(CC.translate("&c0 &8[&c&lDeveloper&8] &7None"));
                 }
                 if (!owner.equalsIgnoreCase("")) {
-                    player.sendMessage(CC.translate("&a" + otokens.length + " &8[&4&lOwner&8]&4 " + owner));
+                    player.sendMessage(CC.translate("&a" + otokens.length + " &8[&4&lOwner&8]&4" + owner));
                 } else {
                     player.sendMessage(CC.translate("&c0 &8[&4&lOwner&8] &7None"));
                 }

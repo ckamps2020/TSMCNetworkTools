@@ -86,7 +86,7 @@ public class FindChannel implements RedisChannel {
                 }
             });
 
-        } else if (channel.equalsIgnoreCase(RedisChannels.REQUEST_LIST.getName())) {
+        } else if (channel.equalsIgnoreCase(RedisChannels.REQUEST_LIST.getName())) { //TODO Move us to something better than this
             plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
                 ArrayList<String> trainee = new ArrayList<>();
                 ArrayList<String> helper = new ArrayList<>();
@@ -117,17 +117,67 @@ public class FindChannel implements RedisChannel {
                     }
                 }
 
+                StringBuilder tSB = new StringBuilder();
+                StringBuilder hSB = new StringBuilder();
+                StringBuilder mSB = new StringBuilder();
+                StringBuilder srSB = new StringBuilder();
+                StringBuilder aSB = new StringBuilder();
+                StringBuilder manSB = new StringBuilder();
+                StringBuilder dSB = new StringBuilder();
+                StringBuilder oSB = new StringBuilder();
+
+                if (!trainee.isEmpty()) {
+                    for (String s : trainee) {
+                        tSB.append(" ").append(s);
+                    }
+                }
+                if (!helper.isEmpty()) {
+                    for (String s : helper) {
+                        hSB.append(" ").append(s);
+                    }
+                }
+                if (!mod.isEmpty()) {
+                    for (String s : mod) {
+                        mSB.append(" ").append(s);
+                    }
+                }
+                if (!srmod.isEmpty()) {
+                    for (String s : srmod) {
+                        srSB.append(" ").append(s);
+                    }
+                }
+                if (!admin.isEmpty()) {
+                    for (String s : admin) {
+                        aSB.append(" ").append(s);
+                    }
+                }
+                if (!manager.isEmpty()) {
+                    for (String s : manager) {
+                        manSB.append(" ").append(s);
+                    }
+                }
+                if (!developer.isEmpty()) {
+                    for (String s : developer) {
+                        dSB.append(" ").append(s);
+                    }
+                }
+                if (!owner.isEmpty()) {
+                    for (String s : owner) {
+                        oSB.append(" ").append(s);
+                    }
+                }
+
                 plugin.getRedisManager().sendMessage(RedisChannels.RETURN_REQUEST_LIST, RedisMesage.newMessage()
                         .set(RedisArg.SERVER, object.get(RedisArg.SERVER.getName()).getAsString())
                         .set(RedisArg.PLAYER, object.get(RedisArg.PLAYER.getName()).getAsString())
-                        .set(RedisArg.TRAINEE, listToString(trainee))
-                        .set(RedisArg.HELPER, listToString(helper))
-                        .set(RedisArg.MOD, listToString(mod))
-                        .set(RedisArg.SRMOD, listToString(srmod))
-                        .set(RedisArg.ADMIN, listToString(admin))
-                        .set(RedisArg.MANAGER, listToString(manager))
-                        .set(RedisArg.DEVELOPER, listToString(developer))
-                        .set(RedisArg.OWNER, listToString(owner))
+                        .set(RedisArg.TRAINEE, tSB.toString())
+                        .set(RedisArg.HELPER, hSB.toString())
+                        .set(RedisArg.MOD, mSB.toString())
+                        .set(RedisArg.SRMOD, srSB.toString())
+                        .set(RedisArg.ADMIN, aSB.toString())
+                        .set(RedisArg.MANAGER, mSB.toString())
+                        .set(RedisArg.DEVELOPER, dSB.toString())
+                        .set(RedisArg.OWNER, oSB.toString())
                 );
 
                 /*Multithreading.runAsync(() -> {
@@ -166,23 +216,51 @@ public class FindChannel implements RedisChannel {
                         String developer = object.get(RedisArg.DEVELOPER.getName()).getAsString();
                         String owner = object.get(RedisArg.OWNER.getName()).getAsString();
 
-                        m.getValue().merge(RedisArg.TRAINEE, trainee, (a, b) -> a + b);
-                        m.getValue().merge(RedisArg.HELPER, helper, (a, b) -> a + b);
-                        m.getValue().merge(RedisArg.MOD, mod, (a, b) -> a + b);
-                        m.getValue().merge(RedisArg.SRMOD, srmod, (a, b) -> a + b);
-                        m.getValue().merge(RedisArg.ADMIN, admin, (a, b) -> a + b);
-                        m.getValue().merge(RedisArg.MANAGER, manager, (a, b) -> a + b);
-                        m.getValue().merge(RedisArg.DEVELOPER, developer, (a, b) -> a + b);
-                        m.getValue().merge(RedisArg.OWNER, owner, (a, b) -> a + b);
+                        System.out.println("169: " + developer);
+
+                        if (m.getValue().get(RedisArg.TRAINEE) != null) {
+                            m.getValue().put(RedisArg.TRAINEE, m.getValue().get(RedisArg.TRAINEE) + trainee);
+                        } else {
+                            m.getValue().put(RedisArg.TRAINEE, trainee);
+                        }
+                        if (m.getValue().get(RedisArg.HELPER) != null) {
+                            m.getValue().put(RedisArg.HELPER, m.getValue().get(RedisArg.HELPER) + helper);
+                        } else {
+                            m.getValue().put(RedisArg.HELPER, helper);
+                        }
+                        if (m.getValue().get(RedisArg.MOD) != null) {
+                            m.getValue().put(RedisArg.MOD, m.getValue().get(RedisArg.MOD) + mod);
+                        } else {
+                            m.getValue().put(RedisArg.MOD, mod);
+                        }
+                        if (m.getValue().get(RedisArg.SRMOD) != null) {
+                            m.getValue().put(RedisArg.SRMOD, m.getValue().get(RedisArg.SRMOD) + srmod);
+                        } else {
+                            m.getValue().put(RedisArg.SRMOD, srmod);
+                        }
+                        if (m.getValue().get(RedisArg.ADMIN) != null) {
+                            m.getValue().put(RedisArg.ADMIN, m.getValue().get(RedisArg.ADMIN) + admin);
+                        } else {
+                            m.getValue().put(RedisArg.ADMIN, admin);
+                        }
+                        if (m.getValue().get(RedisArg.MANAGER) != null) {
+                            m.getValue().put(RedisArg.MANAGER, m.getValue().get(RedisArg.MANAGER) + manager);
+                        } else {
+                            m.getValue().put(RedisArg.MANAGER, manager);
+                        }
+                        if (m.getValue().get(RedisArg.DEVELOPER) != null) {
+                            m.getValue().put(RedisArg.DEVELOPER, m.getValue().get(RedisArg.DEVELOPER) + developer);
+                        } else {
+                            m.getValue().put(RedisArg.DEVELOPER, developer);
+                        }
+                        if (m.getValue().get(RedisArg.OWNER) != null) {
+                            m.getValue().put(RedisArg.OWNER, m.getValue().get(RedisArg.OWNER) + owner);
+                        } else {
+                            m.getValue().put(RedisArg.OWNER, owner);
+                        }
                     }
                 }
             }
         }
-    }
-
-    private String listToString(List<String> list) {
-        return list
-                .stream()
-                .collect(Collectors.joining(", "));
     }
 }
