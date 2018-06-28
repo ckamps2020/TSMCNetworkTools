@@ -55,7 +55,7 @@ public final class ServerUtils {
     public static void safeShutdown() {
         System.out.println("[NetworkTools] Server restarting in 3 seconds...");
         for (Player player : Bukkit.getOnlinePlayers()) {
-            player.kickPlayer(CC.translate("&e&lSTOP &6■ &7Server restarting!"));
+            player.kickPlayer(CC.translate("&e&lSTOP &6■ &7Server is restarting!"));
         }
         Bukkit.getScheduler().runTaskLater(Main.getMain(), new Runnable() {
             @Override
