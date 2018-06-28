@@ -21,13 +21,13 @@ pipeline {
         stage('deploy 1.8') {
           steps {
             sh 'cd StaffTools1.8R3'
-            sh 'mvn clean deploy'
+            sh 'mvn clean deploy -s /opt/maven/3.5.3/conf/settings.xml'
           }
         }
         stage('deploy 1.12') {
           steps {
             dir(path: 'StaffTools1.12R1') {
-              sh 'mvn deploy'
+              sh 'mvn deploy -s /opt/maven/3.5.3/conf/settings.xml'
             }
 
           }
