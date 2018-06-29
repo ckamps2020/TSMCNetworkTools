@@ -23,8 +23,6 @@ public class RedisPubSub extends JedisPubSub {
     @Override
     public void onMessage(String channel, String message) {
         try {
-            Bukkit.broadcastMessage("message: " + message);
-
             JsonObject object = JSONUtils.parseObject(message);
 
             RedisChannel redisChannel = listeners.get(channel);

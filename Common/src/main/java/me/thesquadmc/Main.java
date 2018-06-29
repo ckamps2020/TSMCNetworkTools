@@ -239,9 +239,104 @@ public final class Main extends JavaPlugin {
             }
         });*/
 
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+        System.out.println("------------------");
+
         redisManager = new RedisManager(host, port, password);
         redisManager.registerChannel(new FindChannel(this), RedisChannels.FIND, RedisChannels.FOUND, RedisChannels.REQUEST_LIST, RedisChannels.RETURN_REQUEST_LIST);
-        redisManager.registerChannel(new ServerManagementChannel(this), RedisChannels.STARTUP_REQUEST, RedisChannels.RETURN_SERVER, RedisChannels.STOP);
+        redisManager.registerChannel(new ServerManagementChannel(this), RedisChannels.STARTUP_REQUEST, RedisChannels.PLAYER_COUNT, RedisChannels.RETURN_SERVER, RedisChannels.STOP);
         redisManager.registerChannel(new WhitelistChannel(this), RedisChannels.WHITELIST, RedisChannels.WHITELIST_ADD, RedisChannels.WHITELIST_REMOVE);
         redisManager.registerChannel(new PartyChannel(this), RedisChannels.PARTY_JOIN_SERVER, RedisChannels.PARTY_DISBAND, RedisChannels.PARTY_UPDATE);
         redisManager.registerChannel(new MonitorChannel(this), RedisChannels.MONITOR_INFO, RedisChannels.MONITOR_REQUEST);
@@ -297,8 +392,8 @@ public final class Main extends JavaPlugin {
         ServerUtils.calculateServerType();
         Bukkit.getScheduler().scheduleAsyncRepeatingTask(this, () -> {
             redisManager.sendMessage(RedisChannels.PLAYER_COUNT, RedisMesage.newMessage()
-                    .set(RedisArg.SERVER, Bukkit.getServerName())
-                    .set(RedisArg.COUNT, Bukkit.getOnlinePlayers().size()));
+                    .set(RedisArg.SERVER.getName(), Bukkit.getServerName())
+                    .set(RedisArg.COUNT.getName(), Bukkit.getOnlinePlayers().size()));
             /*
             Multithreading.runAsync(new Runnable() {
                 @Override
@@ -312,7 +407,7 @@ public final class Main extends JavaPlugin {
                 }
             });*/
 
-        }, 1, 20L);
+        }, 20L, 20L);
 
         if (serverType.startsWith(ServerType.MINIGAME_HUB)) {
             redisManager.sendMessage(RedisChannels.STARTUP_REQUEST, RedisMesage.newMessage()
