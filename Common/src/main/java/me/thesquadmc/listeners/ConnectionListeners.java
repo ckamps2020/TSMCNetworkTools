@@ -50,16 +50,7 @@ public final class ConnectionListeners implements Listener {
             }
         });
 
-        if (player.getUniqueId().toString().equalsIgnoreCase("f11f30ac-2e7e-4d1c-bf48-943aca877b79")
-                || player.getUniqueId().toString().equalsIgnoreCase("94e7105f-9748-48f3-8bcc-c54f11d6f7b6")
-                || player.getUniqueId().toString().equalsIgnoreCase("9531147b-4afd-42bc-b809-461c996d45e6")
-                || player.getUniqueId().toString().equalsIgnoreCase("df656d65-79e4-42eb-8a94-9a88ff2831e5")
-                || player.getUniqueId().toString().equalsIgnoreCase("0d31da71-c21f-49a7-aec8-d1729a238cb0")
-                || player.getUniqueId().toString().equalsIgnoreCase("7a973b2a-3b52-4a5c-9bff-ccb49c403ad9")
-                || player.getUniqueId().toString().equalsIgnoreCase("17b5676f-2a0f-4b47-9c17-1009355a1ddf")
-                || player.getUniqueId().toString().equalsIgnoreCase("c3c87af8-6f50-41bd-90a4-a57434f8fb86")
-                || player.getUniqueId().toString().equalsIgnoreCase("265201db-bdfb-47c5-8a4a-d1c41b83b39b")
-                || player.getUniqueId().toString().equalsIgnoreCase("fdaae5f5-68a0-4f16-817d-a8f7e36a2848")) {
+        if (PlayerUtils.isEqualOrHigherThen(player, Rank.OWNER)) {
             Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
                 @Override
                 public void run() {

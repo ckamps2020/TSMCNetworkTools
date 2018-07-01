@@ -27,7 +27,7 @@ public final class OnlineCountCommand implements CommandExecutor {
 				player.sendMessage(CC.translate("&9&lCREATIVE &9■ &7" + main.getCountManager().getCreativeCount()));
 				player.sendMessage(CC.translate("&d&lSKYBLOCK &d■ &7" + main.getCountManager().getSkyblockCount()));
 				player.sendMessage(CC.translate("&b&lPRISON &b■ &7" + main.getCountManager().getPrisonCount()));
-				player.sendMessage(CC.translate("&6&lMINIGAMES &6■ &7" + main.getCountManager().getMinigameCount()));
+				player.sendMessage(CC.translate("&6&lEVENTS &6■ &7" + main.getCountManager().getEventCount()));
 				player.sendMessage(CC.translate("&7"));
 				player.sendMessage(CC.translate("&e" + main.getCountManager().getTotalOnlineCount() + "&8/&e4000"));
 			} else {
