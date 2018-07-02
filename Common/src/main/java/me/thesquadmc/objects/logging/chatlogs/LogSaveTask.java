@@ -1,6 +1,5 @@
 package me.thesquadmc.objects.logging.chatlogs;
 
-import com.google.common.collect.Lists;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Indexes;
@@ -16,27 +15,14 @@ public class LogSaveTask extends BukkitRunnable {
     private final MongoCollection<Document> logCollection;
 
     public LogSaveTask(Main plugin) {
-        this.logCollection = plugin.getMongo().getMongoDatabase().getCollection("logging");
+        this.logCollection = plugin.getMongo().getMongoDatabase().getCollection("playerLogs");
 
         logCollection.createIndex(Indexes.descending("uuid"), new IndexOptions().unique(false));
     }
 
     @Override
     public void run() {
-        List<Document> updateDocuments = Lists.newArrayList();
-
-        for (LogUser user : LogUser.getUsers()) {
-            for (Log log : user.getLogs()) {
-                updateDocuments.add(new Document("uuid", user.getUuid())
-                        .append("name", user.getName())
-                        .append("type", log.getType().name())
-                        .append("time", log.getTimestamp())
-                        .append("server", log.getServer())
-                        .append("message", log.getMessage()));
-            }
-
-            user.getLogs().clear();
-        }
+        List<Document> updateDocuments = LogUser.toDocuments();
 
         Multithreading.runAsync(() -> {
             if (updateDocuments.isEmpty()) {

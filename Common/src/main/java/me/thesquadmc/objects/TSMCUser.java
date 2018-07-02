@@ -24,17 +24,52 @@ public class TSMCUser {
 
     private static final Map<UUID, TSMCUser> USERS = new HashMap<>();
 
+    /** The UUID of the player **/
     private final UUID uuid;
+
+    /** The player's current name **/
     private String name;
 
+    /** All previous names the player has had **/
     private final Set<String> previousNames = Sets.newHashSet();
+
+    /**
+     * A list of friends that this player has
+     */
     private final Set<UUID> friends = Sets.newHashSet();
+
+    /**
+     * A list of friend requests this player has
+     */
     private final Set<UUID> requests = Sets.newHashSet();
+
+    /**
+     * A list of {@link Note} that this player has
+     */
     private final Set<Note> notes = Sets.newHashSet();
 
+    /**
+     * The player's settings
+     */
     private Map<PlayerSetting<?>, Object> settings = Maps.newHashMap();
 
-    private long loginTime;
+    /**
+     * Whether the player has private messages
+     * enabled
+     */
+    private boolean privateMessages;
+
+    /**
+     * The last player to send this player a message
+     * Used in the /reply command
+     */
+    private UUID lastMessager;
+
+    /**
+     * The time at which the player logged in
+     */
+    @Deprecated  private long loginTime;
+
     private boolean vanished = false, ytVanished = false;
     private boolean xray, monitor = true, reports = true;
     private boolean forcefield = false, nicknamed = false;
@@ -148,6 +183,22 @@ public class TSMCUser {
 
     public void clearRequests() {
         this.requests.clear();
+    }
+
+    public boolean hasPrivateMessages() {
+        return privateMessages;
+    }
+
+    public void setPrivateMessages(boolean privateMessages) {
+        this.privateMessages = privateMessages;
+    }
+
+    public UUID getLastMessager() {
+        return lastMessager;
+    }
+
+    public void setLastMessager(UUID lastMessager) {
+        this.lastMessager = lastMessager;
     }
 
     public <T> T updateSetting(PlayerSetting<T> setting, T value) {

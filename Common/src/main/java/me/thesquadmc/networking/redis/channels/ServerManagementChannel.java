@@ -108,9 +108,6 @@ public class ServerManagementChannel implements RedisChannel {
             Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> Multithreading.runAsync(() -> ServerUtils.updateServerState(plugin.getServerState())));
 
         } else if (channel.equalsIgnoreCase(RedisChannels.PLAYER_COUNT.getName())) {
-            object.entrySet().forEach(stringJsonElementEntry -> {
-                System.out.println(stringJsonElementEntry.getKey() + " : " + stringJsonElementEntry.getValue());
-            });
             String server = object.get(RedisArg.SERVER.getName()).getAsString();
             int count = object.get(RedisArg.COUNT.getName()).getAsInt();
 

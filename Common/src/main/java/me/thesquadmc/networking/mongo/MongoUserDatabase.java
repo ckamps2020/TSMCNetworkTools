@@ -18,8 +18,6 @@ public class MongoUserDatabase implements UserDatabase {
     public MongoUserDatabase(Mongo plugin) {
         this.plugin = plugin;
         this.users = plugin.getMongoDatabase().getCollection(UserDatabase.USER_DATABASE, Document.class);
-
-        System.out.println(users);
     }
 
     @Override

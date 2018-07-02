@@ -216,8 +216,6 @@ public class FindChannel implements RedisChannel {
                         String developer = object.get(RedisArg.DEVELOPER.getName()).getAsString();
                         String owner = object.get(RedisArg.OWNER.getName()).getAsString();
 
-                        System.out.println("169: " + developer);
-
                         if (m.getValue().get(RedisArg.TRAINEE) != null) {
                             m.getValue().put(RedisArg.TRAINEE, m.getValue().get(RedisArg.TRAINEE) + trainee);
                         } else {

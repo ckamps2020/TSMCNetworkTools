@@ -2,6 +2,8 @@ package me.thesquadmc.objects.logging.chatlogs;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import me.thesquadmc.utils.server.Multithreading;
+import org.bson.Document;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -47,5 +49,25 @@ public class LogUser {
 
     public static Collection<LogUser> getUsers() {
         return Collections.unmodifiableCollection(USERS.values());
+    }
+
+    /**
+     * @return Compiles a list of {@link Document} of chat logs by each user
+     */
+    public static List<Document> toDocuments() {
+        List<Document> updateDocuments = Lists.newArrayList();
+
+        USERS.forEach((uuid, logUser) -> {
+            logUser.getLogs().forEach(log -> updateDocuments.add(new Document("uuid", uuid)
+                    .append("name", logUser.getName())
+                    .append("type", log.getType().name())
+                    .append("time", log.getTimestamp())
+                    .append("server", log.getServer())
+                    .append("message", log.getMessage())));
+
+            logUser.getLogs().clear();
+        });
+
+        return updateDocuments;
     }
 }

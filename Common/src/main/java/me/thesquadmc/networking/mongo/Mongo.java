@@ -58,28 +58,6 @@ public final class Mongo {
         mongoLogger.setLevel(Level.SEVERE);
     }
 
-    public CompletableFuture<UUID> getUUID(String name) {
-        return CompletableFuture.supplyAsync(() -> {
-            Document document = mongoDatabase.getCollection(UserDatabase.USER_DATABASE).find(eq(UserDatabase.NAME, name)).first();
-            if (document == null) {
-                return null;
-            }
-
-            return document.get("_id", UUID.class);
-        }, Multithreading.POOL);
-    }
-
-    public CompletableFuture<String> getName(UUID uuid) {
-        return CompletableFuture.supplyAsync(() -> {
-            Document document = mongoDatabase.getCollection(UserDatabase.USER_DATABASE).find(eq("_id", uuid)).first();
-            if (document == null) {
-                return null;
-            }
-
-            return document.getString(UserDatabase.NAME);
-        }, Multithreading.POOL);
-    }
-
     public MongoClient getMongoClient() {
         return mongoClient;
     }

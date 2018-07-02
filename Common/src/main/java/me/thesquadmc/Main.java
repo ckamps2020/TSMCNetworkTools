@@ -1,6 +1,7 @@
 package me.thesquadmc;
 
 import com.google.gson.Gson;
+import com.mongodb.client.MongoCollection;
 import me.gong.mcleaks.MCLeaksAPI;
 import me.lucko.luckperms.LuckPerms;
 import me.lucko.luckperms.api.LuckPermsApi;
@@ -29,6 +30,7 @@ import me.thesquadmc.networking.redis.channels.WhitelistChannel;
 import me.thesquadmc.objects.TSMCUser;
 import me.thesquadmc.objects.logging.ChangeLog;
 import me.thesquadmc.objects.logging.chatlogs.LogSaveTask;
+import me.thesquadmc.objects.logging.chatlogs.LogUser;
 import me.thesquadmc.utils.command.CommandHandler;
 import me.thesquadmc.utils.enums.RedisArg;
 import me.thesquadmc.utils.enums.RedisChannels;
@@ -41,6 +43,8 @@ import me.thesquadmc.utils.nms.BarUtils;
 import me.thesquadmc.utils.server.Multithreading;
 import me.thesquadmc.utils.server.ServerState;
 import me.thesquadmc.utils.server.ServerUtils;
+import me.thesquadmc.utils.uuid.UUIDTranslator;
+import org.bson.Document;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.Configuration;
@@ -65,8 +69,9 @@ import java.util.stream.Stream;
 
 public final class Main extends JavaPlugin {
 
+    private UUIDTranslator uuidTranslator;
+
     private JedisPool pool;
-    private Gson gson = new Gson();
     private static Main main;
     private LuckPermsApi luckPermsApi;
     private String whitelistMessage = ChatColor.translateAlternateColorCodes('&', "&cServer currently whitelisted!");
@@ -166,6 +171,7 @@ public final class Main extends JavaPlugin {
         getLogger().info("[NetworkTools] Loading Redis PUB/SUB...");
         redisHandler = new RedisHandler(this);
 
+        uuidTranslator = new UUIDTranslator(this);
         /*try {
             ClassLoader previous = Thread.currentThread().getContextClassLoader();
             Thread.currentThread().setContextClassLoader(main.getClassLoader());
@@ -238,101 +244,6 @@ public final class Main extends JavaPlugin {
                 }
             }
         });*/
-
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
-        System.out.println("------------------");
 
         redisManager = new RedisManager(host, port, password);
         redisManager.registerChannel(new FindChannel(this), RedisChannels.FIND, RedisChannels.FOUND, RedisChannels.REQUEST_LIST, RedisChannels.RETURN_REQUEST_LIST);
@@ -433,6 +344,7 @@ public final class Main extends JavaPlugin {
                 new CreativeCommand(),
                 new NoteCommand(this),
                 new ChangeLogCommand(this),
+                new Find2Command(this),
                 new HealCommand()
         ).forEach(o -> commandHandler.registerCommands(o));
         commandHandler.registerHelp();
@@ -442,10 +354,22 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        List<Document> updateDocuments = LogUser.toDocuments();
+
+        if (!updateDocuments.isEmpty()) {
+            MongoCollection<Document> collection = mongo.getMongoDatabase().getCollection("playerLogs");
+            collection.insertMany(updateDocuments); //Running this sync to ensure it is completed
+            return;
+        }
+
         getLogger().info("[NetworkTools] Shutting down...");
         getLogger().info("[NetworkTools] Shut down! Cya :D");
 
         redisManager.close();
+    }
+
+    public UUIDTranslator getUUIDTranslator() {
+        return uuidTranslator;
     }
 
     public RedisManager getRedisManager() {
@@ -660,10 +584,6 @@ public final class Main extends JavaPlugin {
         return pool;
     }
 
-    public Gson getGson() {
-        return gson;
-    }
-
     /**
      * Get an instance of the NMSAbstract class for this server version implementation
      *
@@ -685,7 +605,7 @@ public final class Main extends JavaPlugin {
                 entryName = entryName.replace(".class", ""); // Remove the .class file extension
                 if (org.apache.commons.lang.StringUtils.countMatches(entryName, ".") > 2) continue;
 
-                Class<?> clazz = null;
+                Class<?> clazz;
                 try {
                     clazz = Class.forName(entryName);
                 } catch (ClassNotFoundException e) {

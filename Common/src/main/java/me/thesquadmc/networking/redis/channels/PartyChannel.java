@@ -7,6 +7,7 @@ import me.thesquadmc.networking.redis.RedisChannel;
 import me.thesquadmc.objects.Party;
 import me.thesquadmc.utils.enums.RedisArg;
 import me.thesquadmc.utils.enums.RedisChannels;
+import me.thesquadmc.utils.json.JSONUtils;
 import me.thesquadmc.utils.msgs.CC;
 import me.thesquadmc.utils.server.Multithreading;
 import org.bukkit.Bukkit;
@@ -23,7 +24,7 @@ public class PartyChannel implements RedisChannel {
     @Override
     public void handle(String channel, JsonObject object) {
         if (channel.equals(RedisChannels.PARTY_JOIN_SERVER.getName())) {
-            Party party = Main.getMain().getGson().fromJson(object.get(RedisArg.PARTY.getName()).getAsJsonObject(), Party.class);
+            Party party =JSONUtils.getGson().fromJson(object.get(RedisArg.PARTY.getName()).getAsJsonObject(), Party.class);
             if (party == null) {
                 return;
             }
@@ -31,7 +32,7 @@ public class PartyChannel implements RedisChannel {
             Main.getMain().getPartyManager().addParty(party);
 
         } else if (channel.equals(RedisChannels.PARTY_UPDATE.getName())) {
-            Party party = Main.getMain().getGson().fromJson(object.get(RedisArg.PARTY.getName()).getAsJsonObject(), Party.class);
+            Party party =JSONUtils.getGson().fromJson(object.get(RedisArg.PARTY.getName()).getAsJsonObject(), Party.class);
             if (party == null) {
                 return;
             }
@@ -43,7 +44,7 @@ public class PartyChannel implements RedisChannel {
             }
 
         } else if (channel.equals(RedisChannels.PARTY_DISBAND.getName())) {
-            Party party = Main.getMain().getGson().fromJson(object.get(RedisArg.PARTY.getName()).getAsJsonObject(), Party.class);
+            Party party =JSONUtils.getGson().fromJson(object.get(RedisArg.PARTY.getName()).getAsJsonObject(), Party.class);
             if (party == null) {
                 return;
             }

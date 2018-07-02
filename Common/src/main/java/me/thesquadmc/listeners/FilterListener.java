@@ -125,11 +125,11 @@ public final class FilterListener implements Listener {
 				e.setCancelled(true);
 				player.sendMessage(CC.translate("&e&lCHAT &6■ &7The chat is currently silenced!"));
 			}
+		}
 
-			if (!e.isCancelled()) {
-				System.out.println("saving");
-                LogUser.fromPlayer(player).getLogs().add(Log.create(LogType.CHATLOG, e.getMessage(), Bukkit.getServerName()));
-            }
+		if (!e.isCancelled()) {
+			System.out.println("saving");
+			LogUser.fromPlayer(player).getLogs().add(Log.create(LogType.CHATLOG, e.getMessage(), Bukkit.getServerName()));
 		}
 	}
 

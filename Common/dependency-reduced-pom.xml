@@ -19,8 +19,8 @@
       <url>https://nexus.thesquadmc.net/repository/maven-releases/</url>
     </repository>
     <repository>
-      <id>wesjd-repo</id>
-      <url>https://nexus.wesjd.net/repository/thirdparty/</url>
+      <id>md_5-snapshots</id>
+      <url>http://repo.md-5.net/content/repositories/snapshots/</url>
     </repository>
   </repositories>
   <dependencies>

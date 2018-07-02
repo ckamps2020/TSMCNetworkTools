@@ -11,6 +11,7 @@ import me.thesquadmc.objects.PlayerSetting;
 import me.thesquadmc.objects.TSMCUser;
 import me.thesquadmc.utils.*;
 import me.thesquadmc.utils.enums.*;
+import me.thesquadmc.utils.json.JSONUtils;
 import me.thesquadmc.utils.msgs.CC;
 import me.thesquadmc.utils.msgs.GameMsgs;
 import me.thesquadmc.utils.msgs.StringUtils;
@@ -554,7 +555,7 @@ public final class RedisHandler {
 					Multithreading.runAsync(new Runnable() {
 						@Override
 						public void run() {
-							Party party = Main.getMain().getGson().fromJson(String.valueOf(data.get(RedisArg.PARTY.getArg())), Party.class);
+							Party party =JSONUtils.getGson().fromJson(String.valueOf(data.get(RedisArg.PARTY.getArg())), Party.class);
 							if (party == null) return;
 
 							Main.getMain().getPartyManager().addParty(party);
@@ -569,7 +570,7 @@ public final class RedisHandler {
 					Multithreading.runAsync(new Runnable() {
 						@Override
 						public void run() {
-							Party party = Main.getMain().getGson().fromJson(String.valueOf(data.get(RedisArg.PARTY.getArg())), Party.class);
+							Party party =JSONUtils.getGson().fromJson(String.valueOf(data.get(RedisArg.PARTY.getArg())), Party.class);
 							if (party == null) return;
 
 							// Looks ugly, but it works
@@ -588,7 +589,7 @@ public final class RedisHandler {
 					Multithreading.runAsync(new Runnable() {
 						@Override
 						public void run() {
-							Party party = Main.getMain().getGson().fromJson(String.valueOf(data.get(RedisArg.PARTY.getArg())), Party.class);
+							Party party =JSONUtils.getGson().fromJson(String.valueOf(data.get(RedisArg.PARTY.getArg())), Party.class);
 							if (party == null) return;
 
 							Main.getMain().getPartyManager().removeParty(party);
