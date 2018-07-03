@@ -3,6 +3,7 @@ package me.thesquadmc.utils.enums;
 public enum RedisChannels {
 
 	ANNOUNCEMENT("ANNOUNCEMENT"),
+	MESSAGE("MESSAGE"),
 	STAFFCHAT("STAFFCHAT"),
 	ADMINCHAT("ADMINCHAT"),
 	MANAGERCHAT("MANAGERCHAT"),

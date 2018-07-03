@@ -22,6 +22,7 @@ import me.thesquadmc.networking.redis.RedisMesage;
 import me.thesquadmc.networking.redis.channels.AnnounceChannel;
 import me.thesquadmc.networking.redis.channels.FindChannel;
 import me.thesquadmc.networking.redis.channels.FriendsChannel;
+import me.thesquadmc.networking.redis.channels.MessageChannel;
 import me.thesquadmc.networking.redis.channels.MonitorChannel;
 import me.thesquadmc.networking.redis.channels.PartyChannel;
 import me.thesquadmc.networking.redis.channels.ServerManagementChannel;
@@ -252,7 +253,8 @@ public final class Main extends JavaPlugin {
         redisManager.registerChannel(new PartyChannel(this), RedisChannels.PARTY_JOIN_SERVER, RedisChannels.PARTY_DISBAND, RedisChannels.PARTY_UPDATE);
         redisManager.registerChannel(new MonitorChannel(this), RedisChannels.MONITOR_INFO, RedisChannels.MONITOR_REQUEST);
         redisManager.registerChannel(new AnnounceChannel(this), RedisChannels.ANNOUNCEMENT);
-        redisManager.registerChannel(new FriendsChannel(this), RedisChannels.LEAVE);
+        //redisManager.registerChannel(new FriendsChannel(this), RedisChannels.LEAVE);
+        redisManager.registerChannel(new MessageChannel(this), RedisChannels.MESSAGE);
         redisManager.registerChannel(new StaffChatChannels(this), RedisChannels.STAFFCHAT, RedisChannels.ADMINCHAT, RedisChannels.MANAGERCHAT, RedisChannels.DISCORD_STAFFCHAT_SERVER);
 
         getLogger().info("[NetworkTools] Redis PUB/SUB setup!");
@@ -345,6 +347,7 @@ public final class Main extends JavaPlugin {
                 new NoteCommand(this),
                 new ChangeLogCommand(this),
                 new Find2Command(this),
+                new MessageCommand(this),
                 new HealCommand()
         ).forEach(o -> commandHandler.registerCommands(o));
         commandHandler.registerHelp();

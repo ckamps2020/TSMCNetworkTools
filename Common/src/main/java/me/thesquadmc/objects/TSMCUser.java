@@ -60,6 +60,12 @@ public class TSMCUser {
     private boolean privateMessages;
 
     /**
+     * Whether the player has teleportation
+     * requests enabled
+     */
+    private boolean teleportationRequests;
+
+    /**
      * The last player to send this player a message
      * Used in the /reply command
      */
@@ -199,6 +205,14 @@ public class TSMCUser {
 
     public void setLastMessager(UUID lastMessager) {
         this.lastMessager = lastMessager;
+    }
+
+    public boolean hasTeleportationRequests() {
+        return teleportationRequests;
+    }
+
+    public void setTeleportationRequests(boolean teleportationRequests) {
+        this.teleportationRequests = teleportationRequests;
     }
 
     public <T> T updateSetting(PlayerSetting<T> setting, T value) {
