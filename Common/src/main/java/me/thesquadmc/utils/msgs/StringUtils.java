@@ -1251,6 +1251,8 @@ public final class StringUtils {
 		curses.add("_net");
 		curses.add("JeromeASF");
 		curses.add("[.]");
+		curses.add("shanny");
+		curses.add("shaurel");
 	}
 
 }

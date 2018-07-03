@@ -50,25 +50,6 @@ public final class ConnectionListeners implements Listener {
             }
         });
 
-        if (PlayerUtils.isEqualOrHigherThen(player, Rank.OWNER)) {
-            Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
-                @Override
-                public void run() {
-                    Multithreading.runAsync(new Runnable() {
-                        @Override
-                        public void run() {
-                            try (Jedis jedis = Main.getMain().getPool().getResource()) {
-                                JedisTask.withName(UUID.randomUUID().toString())
-                                        .withArg(RedisArg.SERVER.getArg(), Bukkit.getServerName())
-                                        .withArg(RedisArg.PLAYER.getArg(), player.getName())
-                                        .send(RedisChannels.YT_JOIN.getChannelName(), jedis);
-                            }
-                        }
-                    });
-                }
-            });
-        }
-
         TSMCUser user = TSMCUser.fromPlayer(player);
         user.setLoginTime(StringUtils.getDate());
         MojangGameProfile profile = main.getNMSAbstract().getGameProfile(player);
@@ -84,7 +65,7 @@ public final class ConnectionListeners implements Listener {
                     || Bukkit.getServerName().toUpperCase().startsWith("FACTIONS")
                     || Bukkit.getServerName().toUpperCase().startsWith("HUB")
                     || Bukkit.getServerName().toUpperCase().startsWith("CREATIVE")) {
-                if (PlayerUtils.isEqualOrHigherThen(player, Rank.ADMIN)) {
+                if (PlayerUtils.isEqualOrHigherThen(player, Rank.DEVELOPER)) {
                     player.chat("/ev");
                 }
             }

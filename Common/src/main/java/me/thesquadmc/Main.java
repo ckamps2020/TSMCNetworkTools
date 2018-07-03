@@ -326,6 +326,7 @@ public final class Main extends JavaPlugin {
         getCommand("giveall").setExecutor(new GiveAllCommand());
         getCommand("stp").setExecutor(new ModTpCommand(this));
         getCommand("firework").setExecutor(new FireworkCommand());
+        getCommand("setplayers").setExecutor(new SetPlayersCommand());
         ServerUtils.calculateServerType();
         Bukkit.getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
             @Override
