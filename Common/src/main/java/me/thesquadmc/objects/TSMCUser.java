@@ -56,6 +56,8 @@ public class TSMCUser {
      */
     private Map<PlayerSetting<?>, Object> settings = Maps.newHashMap();
 
+    private Map<String, String> serverNicknames = Maps.newHashMap();
+
     /**
      * The last player to send this player a message
      * Used in the /reply command
@@ -201,6 +203,14 @@ public class TSMCUser {
     public <T> T getSetting(PlayerSetting<T> setting) {
         return (setting != null) ? setting.getSettingType()
                 .cast(settings.getOrDefault(setting, setting.getDefaultValue())) : null;
+    }
+
+    public void setServerNickname(String server, String nickname) {
+        serverNicknames.put(server, nickname);
+    }
+
+    public String getServerNickname(String server) {
+        return serverNicknames.get(server);
     }
 
     public void resetSettingsToDefault() {
