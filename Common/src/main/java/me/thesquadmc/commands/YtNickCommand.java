@@ -11,37 +11,36 @@ import org.bukkit.entity.Player;
 
 public final class YtNickCommand implements CommandExecutor {
 
-	@Override
-	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		if (sender instanceof Player) {
-			Player player = (Player) sender;
-			if (PlayerUtils.isEqualOrHigherThen(player, Rank.YOUTUBE)) {
-				TSMCUser user = TSMCUser.fromPlayer(player);
-				boolean t = true;
-				if (t) {
-					player.sendMessage(CC.translate("&e&lYT NICK &6■ &7Command disabled for the moment!"));
-					return true;
-				}
-				
-				if (!user.isNicknamed()) {
-					if (args.length == 1) {
-						String name = args[0];
-						player.sendMessage(CC.translate("&e&lYT NICK &6■ &7You are now nicked as &e" + name));
-						user.setNicknamed(true);
-						PlayerUtils.setName(player, name);
-					} else {
-						player.sendMessage(CC.translate("&e&lYT NICK &6■ &7Usage: /ytnick (name)"));
-					}
-				} else {
-					player.sendMessage(CC.translate("&e&lYT NICK &6■ &7You are &eno longer &7nicked"));
-					user.setNicknamed(false);
-					PlayerUtils.setName(player, user.getName());
-				}
-			} else {
-				player.sendMessage(CC.translate("&e&lPERMISSIONS &6■ &7You do not have permission to use this command!"));
-			}
-		}
-		return true;
-	}
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            if (PlayerUtils.isEqualOrHigherThen(player, Rank.YOUTUBE)) {
+                TSMCUser user = TSMCUser.fromPlayer(player);
+
+                if (!user.isNicknamed()) {
+                    if (args.length == 1) {
+                        String name = args[0];
+                        player.sendMessage(CC.translate("&e&lYT NICK &6■ &7You are now nicked as &e" + name));
+                        user.setNickname(name);
+                        PlayerUtils.setName(player, name);
+
+                    } else {
+                        player.sendMessage(CC.translate("&e&lYT NICK &6■ &7Usage: /ytnick (name)"));
+
+                    }
+                } else {
+                    player.sendMessage(CC.translate("&e&lYT NICK &6■ &7You are &eno longer &7nicked"));
+                    user.unsetNickname(false);
+                    PlayerUtils.setName(player, user.getName());
+                }
+
+            } else {
+                player.sendMessage(CC.translate("&e&lPERMISSIONS &6■ &7You do not have permission to use this command!"));
+            }
+        }
+
+        return true;
+    }
 
 }

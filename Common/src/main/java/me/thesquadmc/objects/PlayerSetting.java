@@ -14,7 +14,8 @@ public class PlayerSetting<T> {
 	public static final PlayerSetting<Boolean> FRIEND_CHAT = new PlayerSetting<>("FRIEND_CHAT", "FRIENDCHAT", Boolean.class, true);
 	public static final PlayerSetting<Boolean> FRIEND_REQUESTS = new PlayerSetting<>("FRIEND_REQUESTS", "REQUESTS", Boolean.class, true);
 	public static final PlayerSetting<Boolean> SOCIALSPY = new PlayerSetting<>("SOCIALSPY", Boolean.class, true);
-	
+	public static final PlayerSetting<Boolean> TELEPORT_REQUESTS = new PlayerSetting<>("TELEPORT_REQUESTS", Boolean.class, true);
+
 	// Staff settings
 	public static final PlayerSetting<Boolean> STAFFCHAT_ENABLED = new PlayerSetting<>("STAFFCHAT_ENABLED", Boolean.class, true);
 	public static final PlayerSetting<Boolean> MANAGERCHAT_ENABLED = new PlayerSetting<>("MANAGERCHAT_ENABLED", Boolean.class, true);

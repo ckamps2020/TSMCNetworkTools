@@ -24,6 +24,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.BlockIterator;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -141,6 +142,25 @@ public final class PlayerUtils {
 			}
 		}
 		return false;
+	}
+
+	public static void refreshPlayer(Player player) {
+		if (player == null) return;
+
+		for (Player target : player.getWorld().getPlayers()) {
+			refreshPlayer(player, target);
+		}
+	}
+
+	public static void refreshPlayer(Player player, Player target) {
+		if (player == null || target == null || player.getWorld() != target.getWorld() || !target.canSee(player)) return;
+
+		target.hidePlayer(player);
+		Bukkit.getScheduler().runTaskLater(Main.getMain(), () -> target.showPlayer(player), 2L);
+	}
+
+	public static void refreshPlayer(Player player, Collection<Player> targets) {
+		targets.forEach(target -> refreshPlayer(player, target));
 	}
 
 	public static void addPlayerPermission(Player player, String perm) {

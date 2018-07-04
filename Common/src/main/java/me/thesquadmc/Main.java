@@ -348,6 +348,7 @@ public final class Main extends JavaPlugin {
                 new ChangeLogCommand(this),
                 new Find2Command(this),
                 new MessageCommand(this),
+                new TeleportCommand(),
                 new HealCommand()
         ).forEach(o -> commandHandler.registerCommands(o));
         commandHandler.registerHelp();

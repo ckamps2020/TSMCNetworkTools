@@ -13,6 +13,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import me.thesquadmc.objects.logging.Note;
+import me.thesquadmc.utils.PlayerUtils;
 import org.bson.Document;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -29,6 +30,8 @@ public class TSMCUser {
 
     /** The player's current name **/
     private String name;
+
+    private String nickname;
 
     /** All previous names the player has had **/
     private final Set<String> previousNames = Sets.newHashSet();
@@ -54,18 +57,6 @@ public class TSMCUser {
     private Map<PlayerSetting<?>, Object> settings = Maps.newHashMap();
 
     /**
-     * Whether the player has private messages
-     * enabled
-     */
-    private boolean privateMessages;
-
-    /**
-     * Whether the player has teleportation
-     * requests enabled
-     */
-    private boolean teleportationRequests;
-
-    /**
      * The last player to send this player a message
      * Used in the /reply command
      */
@@ -78,7 +69,7 @@ public class TSMCUser {
 
     private boolean vanished = false, ytVanished = false;
     private boolean xray, monitor = true, reports = true;
-    private boolean forcefield = false, nicknamed = false;
+    private boolean forcefield = false;
     private String skinKey = "", signature = "";
 
     public TSMCUser(OfflinePlayer player) {
@@ -191,28 +182,12 @@ public class TSMCUser {
         this.requests.clear();
     }
 
-    public boolean hasPrivateMessages() {
-        return privateMessages;
-    }
-
-    public void setPrivateMessages(boolean privateMessages) {
-        this.privateMessages = privateMessages;
-    }
-
     public UUID getLastMessager() {
         return lastMessager;
     }
 
     public void setLastMessager(UUID lastMessager) {
         this.lastMessager = lastMessager;
-    }
-
-    public boolean hasTeleportationRequests() {
-        return teleportationRequests;
-    }
-
-    public void setTeleportationRequests(boolean teleportationRequests) {
-        this.teleportationRequests = teleportationRequests;
     }
 
     public <T> T updateSetting(PlayerSetting<T> setting, T value) {
@@ -233,6 +208,37 @@ public class TSMCUser {
         for (PlayerSetting<?> setting : PlayerSetting.values()) {
             this.settings.put(setting, setting.getDefaultValue());
         }
+    }
+
+    public void setNickname(String nickname, boolean refresh) {
+        this.nickname = nickname;
+        if (refresh) {
+            PlayerUtils.refreshPlayer(getPlayerOnline());
+        }
+    }
+
+    public void setNickname(String nickname) {
+        this.setNickname(nickname, true);
+    }
+
+    public void unsetNickname(boolean refresh) {
+        this.setNickname(name, refresh);
+    }
+
+    public void unsetNickname() {
+        this.unsetNickname(true);
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public boolean isNicknamed() {
+        if (nickname == null) {
+            return false; //didn't know I needed this but oh well
+        }
+
+        return !name.equals(nickname);
     }
 
     public Set<Note> getNotes() {
@@ -305,14 +311,6 @@ public class TSMCUser {
 
     public boolean hasForcefield() {
         return forcefield;
-    }
-
-    public void setNicknamed(boolean nicknamed) {
-        this.nicknamed = nicknamed;
-    }
-
-    public boolean isNicknamed() {
-        return this.nicknamed;
     }
 
     public void setSkinKey(String skinKey) {
@@ -417,7 +415,6 @@ public class TSMCUser {
         user.monitor = document.getBoolean(MONITOR, false);
         user.reports = document.getBoolean(REPORTS, false);
         user.forcefield = document.getBoolean(FORCEFIELD, false);
-        user.nicknamed = document.getBoolean(NICKNAMED, false);
         user.skinKey = document.getString(SKIN_KEY);
         user.signature = document.getString(SIGNATURE);
 
@@ -439,7 +436,6 @@ public class TSMCUser {
                 .append(MONITOR, user.monitor)
                 .append(REPORTS, user.reports)
                 .append(FORCEFIELD, user.forcefield)
-                .append(NICKNAMED, user.nicknamed)
 
                 .append(SKIN_KEY, user.skinKey)
                 .append(SIGNATURE, user.signature);

@@ -15,8 +15,10 @@ public final class VanishListener implements Listener {
 	@EventHandler
 	public void onUpdate(UpdateEvent e) {
 		if (e.getUpdateType() == UpdateType.SEC) {
+
 			for (Player player : Bukkit.getOnlinePlayers()) {
 				TSMCUser user = TSMCUser.fromPlayer(player);
+
 				if (user.isYtVanished()) {
 					if (user.isNicknamed()) {
 						TitleUtils.sendActionBarToPlayer("&e&lVanished &7and nicknamed as &e&l" + player.getName(), player);

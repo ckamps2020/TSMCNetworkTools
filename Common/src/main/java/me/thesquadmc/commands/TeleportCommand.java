@@ -1,6 +1,7 @@
 package me.thesquadmc.commands;
 
 import com.google.common.collect.Maps;
+import me.thesquadmc.objects.PlayerSetting;
 import me.thesquadmc.objects.TSMCUser;
 import me.thesquadmc.utils.command.Command;
 import me.thesquadmc.utils.command.CommandArgs;
@@ -22,7 +23,7 @@ public class TeleportCommand {
 
     private final Map<UUID, Location> locations = Maps.newHashMap();
 
-    @Command(name = {"teleport", "tp", "tpo"}, permission = "essentials.tp")
+    @Command(name = {"teleport", "tp", "tpo", "ntp"}, permission = "essentials.tp")
     public void teleport(CommandArgs args) {
         CommandSender sender = args.getSender();
 
@@ -100,7 +101,7 @@ public class TeleportCommand {
         }
 
         TSMCUser user = TSMCUser.fromPlayer(target);
-        if (user.hasTeleportationRequests()) {
+        if (user.getSetting(PlayerSetting.TELEPORT_REQUESTS)) {
         }
     }
 
