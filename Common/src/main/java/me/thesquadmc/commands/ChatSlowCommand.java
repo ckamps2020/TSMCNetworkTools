@@ -28,11 +28,11 @@ public final class ChatSlowCommand implements CommandExecutor {
 						int i = Integer.valueOf(args[0]);
 						if (i == 0) {
 							Bukkit.broadcastMessage(" ");
-							Bukkit.broadcastMessage(CC.translate("&e&lCHAT &6■ &7Chat delay has been disabled"));
+							Bukkit.broadcastMessage(CC.translate("&e&lCHAT &6■ &7Chat delay has been disabled by &e" + player.getName()));
 							Bukkit.broadcastMessage(" ");
 						} else {
 							Bukkit.broadcastMessage(" ");
-							Bukkit.broadcastMessage(CC.translate("&e&lCHAT &6■ &7Chat delay set to &e" + i));
+							Bukkit.broadcastMessage(CC.translate("&e&lCHAT &6■ &7Chat delay set to &e" + i + " &7by &e" + player.getName()));
 							Bukkit.broadcastMessage(" ");
 						}
 						main.setChatslow(i);

@@ -45,7 +45,7 @@ public final class FilterListener implements Listener {
 	@EventHandler (priority = EventPriority.HIGHEST)
 	public void onChat(AsyncPlayerChatEvent e) {
 		Player player = e.getPlayer();
-		if (!PlayerUtils.isEqualOrHigherThen(player, Rank.MOD)) {
+		if (!PlayerUtils.isEqualOrHigherThen(player, Rank.TRAINEE)) {
 			if (!main.isChatSilenced()) {
 				if (main.getChatslow() != 0) {
 					if (!slowchat.contains(player.getUniqueId())) {

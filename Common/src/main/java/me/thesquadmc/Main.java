@@ -29,9 +29,11 @@ import me.thesquadmc.utils.nms.BarUtils;
 import me.thesquadmc.utils.server.Multithreading;
 import me.thesquadmc.utils.server.ServerState;
 import me.thesquadmc.utils.server.ServerUtils;
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.Configuration;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import redis.clients.jedis.*;
 
@@ -89,6 +91,7 @@ public final class Main extends JavaPlugin {
     private NMSAbstract nmsAbstract;
     private Mongo mongo;
     private ScoreboardManager scoreboardManager;
+    private Economy eco;
 
     private String host;
     private int port;
@@ -114,7 +117,8 @@ public final class Main extends JavaPlugin {
             return;
         }
         this.getLogger().info("[NetworkTools] Server implementation set for " + nmsAbstract.getVersionMin() + " - " + nmsAbstract.getVersionMax());
-
+        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+        eco = rsp.getProvider();
         luckPermsApi = LuckPerms.getApi();
         mcLeaksAPI = MCLeaksAPI.builder().threadCount(2).expireAfter(10, TimeUnit.MINUTES).build();
         fileManager = new FileManager(this);
@@ -327,6 +331,7 @@ public final class Main extends JavaPlugin {
         getCommand("stp").setExecutor(new ModTpCommand(this));
         getCommand("firework").setExecutor(new FireworkCommand());
         getCommand("setplayers").setExecutor(new SetPlayersCommand());
+        getCommand("help").setExecutor(new HelpCommand());
         ServerUtils.calculateServerType();
         Bukkit.getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
             @Override
@@ -543,6 +548,9 @@ public final class Main extends JavaPlugin {
         return whitelistMessage;
     }
 
+    public Economy getEco() {
+        return eco;
+    }
 
     public StaffmodeInventory getStaffmodeInventory() {
         return staffmodeInventory;

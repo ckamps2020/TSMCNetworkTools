@@ -26,12 +26,12 @@ public final class ChatSilenceCommand implements CommandExecutor {
 				if (!main.isChatSilenced()) {
 					main.setChatSilenced(true);
 					Bukkit.broadcastMessage(" ");
-					Bukkit.broadcastMessage(CC.translate("&e&lCHAT &6■ &7Chat silence has been &eenabled!"));
+					Bukkit.broadcastMessage(CC.translate("&e&lCHAT &6■ &7Chat silence has been &eenabled &7by &e" + player.getName()));
 					Bukkit.broadcastMessage(" ");
 				} else {
 					main.setChatSilenced(false);
 					Bukkit.broadcastMessage(" ");
-					Bukkit.broadcastMessage(CC.translate("&e&lCHAT &6■ &7Chat silence has been &edisabled!"));
+					Bukkit.broadcastMessage(CC.translate("&e&lCHAT &6■ &7Chat silence has been &edisabled &7by &e" + player.getName()));
 					Bukkit.broadcastMessage(" ");
 				}
 			} else {

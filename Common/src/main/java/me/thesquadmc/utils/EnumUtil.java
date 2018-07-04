@@ -1,6 +1,6 @@
 package me.thesquadmc.utils;
 
-public class EnumUtil {
+public final class EnumUtil {
 
     private EnumUtil() {
         //A utility class
