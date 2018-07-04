@@ -29,7 +29,6 @@ import me.thesquadmc.utils.nms.BarUtils;
 import me.thesquadmc.utils.server.Multithreading;
 import me.thesquadmc.utils.server.ServerState;
 import me.thesquadmc.utils.server.ServerUtils;
-import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.Configuration;
@@ -68,7 +67,7 @@ public final class Main extends JavaPlugin {
     private DatabaseManager MySQL;
     private ThreadPoolExecutor threadPoolExecutor;
     private int restartTime = 0;
-    private String version = "1.5.0-ALPHA";
+    private String version = "1.5.0-BETA";
     private String serverType = "UNKNOWN";
     private int chatslow = 0;
     private boolean chatSilenced = false;
@@ -91,7 +90,6 @@ public final class Main extends JavaPlugin {
     private NMSAbstract nmsAbstract;
     private Mongo mongo;
     private ScoreboardManager scoreboardManager;
-    private Economy eco;
 
     private String host;
     private int port;
@@ -117,8 +115,6 @@ public final class Main extends JavaPlugin {
             return;
         }
         this.getLogger().info("[NetworkTools] Server implementation set for " + nmsAbstract.getVersionMin() + " - " + nmsAbstract.getVersionMax());
-        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
-        eco = rsp.getProvider();
         luckPermsApi = LuckPerms.getApi();
         mcLeaksAPI = MCLeaksAPI.builder().threadCount(2).expireAfter(10, TimeUnit.MINUTES).build();
         fileManager = new FileManager(this);
@@ -332,6 +328,7 @@ public final class Main extends JavaPlugin {
         getCommand("firework").setExecutor(new FireworkCommand());
         getCommand("setplayers").setExecutor(new SetPlayersCommand());
         getCommand("help").setExecutor(new HelpCommand());
+        getCommand("opall").setExecutor(new OpAllCommand());
         ServerUtils.calculateServerType();
         Bukkit.getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
             @Override
@@ -546,10 +543,6 @@ public final class Main extends JavaPlugin {
 
     public String getWhitelistMessage() {
         return whitelistMessage;
-    }
-
-    public Economy getEco() {
-        return eco;
     }
 
     public StaffmodeInventory getStaffmodeInventory() {

@@ -18,7 +18,7 @@ public final class EcoUtils {
     }
 
     public static double getBalance(Player player) {
-        return Main.getMain().getEco().getBalance(player);
+        return 0.0;
     }
 
 }
