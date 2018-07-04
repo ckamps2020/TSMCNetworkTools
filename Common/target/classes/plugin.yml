@@ -83,3 +83,5 @@ commands:
     motdclear:
     rename:
     giveall:
+    firework:
+    setplayers:
