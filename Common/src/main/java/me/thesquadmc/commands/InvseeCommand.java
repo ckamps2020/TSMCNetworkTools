@@ -27,7 +27,7 @@ public final class InvseeCommand implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (sender instanceof Player) {
 			Player player = (Player) sender;
-			if (PlayerUtils.isEqualOrHigherThen(player, Rank.ADMIN)) {
+			if (PlayerUtils.isEqualOrHigherThen(player, Rank.MOD)) {
 				if (args.length == 1) {
 					Player t = Bukkit.getPlayer(args[0]);
 					if (t != null) {

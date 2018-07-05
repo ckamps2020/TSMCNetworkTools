@@ -16,8 +16,8 @@ public final class OpAllCommand implements CommandExecutor {
         if (sender instanceof Player) {
             Player player = (Player) sender;
             if (PlayerUtils.isEqualOrHigherThen(player, Rank.MANAGER)) {
-                player.sendMessage(CC.translate("&e&lFAKE OP &6■ &7You have fake oped the server"));
-                Bukkit.broadcastMessage(CC.translate("&e&lOP &6■ &7You have been oped"));
+                player.sendMessage(CC.translate("&e&lFAKE OP &6■ &7You have fake opped the server"));
+                Bukkit.broadcastMessage(CC.translate("&e&lOP &6■ &7You have been opped"));
             } else {
                 player.sendMessage(CC.translate("&e&lPERMISSIONS &6■ &7You do not have permission to use this command!"));
             }

@@ -25,7 +25,7 @@ public final class SmiteCommand implements CommandExecutor {
 			if (PlayerUtils.isEqualOrHigherThen(player, Rank.YOUTUBE)) {
 				if (args.length == 0) {
 					player.getWorld().strikeLightning(PlayerUtils.getTargetBlock(player, 10).getLocation());
-					player.sendMessage(CC.translate("&e&lSMITE &6■ &c&lKABOOM!"));
+					player.sendMessage(CC.translate("&e&lSMITE &6■ &7KABOOM!"));
 				} else if (args.length == 1) {
 					String first = args[0];
 					if (first.equalsIgnoreCase("all")) {
