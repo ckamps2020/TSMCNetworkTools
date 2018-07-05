@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 import java.util.Arrays;
 import java.util.List;
 
-public final class CreativeCommand {
+public final class GamemodeCommand {
 
     @Completer(name = {"gamemode", "gm"})
     public List<String> complete(CommandArgs args) {
@@ -23,30 +23,29 @@ public final class CreativeCommand {
         return null;
     }
 
-    @Command(name = {"gamemode", "gm"}, permission = "group.admin")
+    @Command(name = {"gamemode", "gm"}, permission = "essentials.gamemode")
     public void gamemode(CommandArgs args) {
         if (args.length() == 0) {
             args.getPlayer().sendMessage(CC.RED + "/gamemode <creative:survival:spectator:adventure>");
         }
     }
 
-    @Command(name = {"gamemode c", "gamemode creative", "gm c", "gmc"}, permission = "group.admin")
+    @Command(name = {"gamemode c", "gamemode creative", "gm c", "gmc"}, permission = "essentials.gamemode")
     public void creative(CommandArgs args) {
         handleArgs(args, GameMode.CREATIVE);
-        args.getPlayer().setDisplayName("InNOutInUK");
     }
 
-    @Command(name = {"gamemode s", "gamemode survival", "gm s", "gms"}, permission = "group.admin")
+    @Command(name = {"gamemode s", "gamemode survival", "gm s", "gms"}, permission = "essentials.gamemode")
     public void survival(CommandArgs args) {
         handleArgs(args, GameMode.SURVIVAL);
     }
 
-    @Command(name = {"gamemode sp", "gamemode spectator", "gm sp", "gmsp"}, permission = "group.admin")
+    @Command(name = {"gamemode sp", "gamemode spectator", "gm sp", "gmsp"}, permission = "essentials.gamemode")
     public void spectator(CommandArgs args) {
         handleArgs(args, GameMode.SPECTATOR);
     }
 
-    @Command(name = {"gamemode a", "gamemode adventure", "gm a", "gma"}, permission = "group.admin")
+    @Command(name = {"gamemode a", "gamemode adventure", "gm a", "gma"}, permission = "essentials.gamemode")
     public void adventure(CommandArgs args) {
         handleArgs(args, GameMode.ADVENTURE);
     }

@@ -1,14 +1,12 @@
 package me.thesquadmc.commands;
 
-import me.thesquadmc.utils.PlayerUtils;
+import me.thesquadmc.utils.LocationUtil;
 import me.thesquadmc.utils.command.Command;
 import me.thesquadmc.utils.command.CommandArgs;
 import me.thesquadmc.utils.msgs.CC;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.Inventory;
 
 import java.util.Arrays;
 
@@ -18,7 +16,6 @@ public class EssentialCommands {
     public void workbench(CommandArgs args) {
         Player player = args.getPlayer();
 
-        Inventory inventory = Bukkit.createInventory(null, InventoryType.CRAFTING);
         if (args.length() > 0 && player.hasPermission("essentials.workbench.others")) {
             Player target = Bukkit.getPlayer(args.getArg(0));
             if (target == null) {
@@ -26,12 +23,12 @@ public class EssentialCommands {
                 return;
             }
 
-            target.openInventory(inventory);
+            target.openWorkbench(null, true);
             player.sendMessage(CC.translate("&e&lWORKBENCH &6■ &7Opened a workbench for " + target.getDisplayName()));
 
 
         } else {
-            player.openInventory(inventory);
+            player.openWorkbench(null, true);
         }
     }
 
@@ -54,10 +51,19 @@ public class EssentialCommands {
             player.sendMessage(CC.translate("&e&lSURFACE &6■ &7Surfaced " + target.getDisplayName()));
 
         } else {
-            location = player.getLocation().clone();
-            location.setY(player.getWorld().getHighestBlockYAt(location));
+            final int topX = player.getLocation().getBlockX();
+            final int topZ = player.getLocation().getBlockZ();
+            final float pitch = player.getLocation().getPitch();
+            final float yaw = player.getLocation().getYaw();
 
-            player.teleport(location);
+            final Location loc = LocationUtil.getSafeDestination(new Location(player.getWorld(), topX, player.getWorld().getMaxHeight(), topZ, yaw, pitch));
+            if (loc == null) {
+                player.sendMessage(CC.RED + "Unable to teleport you to the surface!");
+                return;
+            }
+
+
+            player.teleport(loc);
             player.sendMessage(CC.translate("&e&lSURFACE &6■ &7You surfaced to the top"));
         }
     }
@@ -129,6 +135,7 @@ public class EssentialCommands {
             }
 
             toggleFlight(target);
+            player.sendMessage(CC.translate("&e&lFLY &6■ &7" + (player.getAllowFlight() ? "Enabled" : "Disabled") + " flight for " + target.getName()));
 
         } else {
             toggleFlight(player);

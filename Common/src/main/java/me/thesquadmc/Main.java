@@ -1,27 +1,98 @@
 package me.thesquadmc;
 
-import com.google.gson.Gson;
 import com.mongodb.client.MongoCollection;
 import me.gong.mcleaks.MCLeaksAPI;
 import me.lucko.luckperms.LuckPerms;
 import me.lucko.luckperms.api.LuckPermsApi;
-import me.thesquadmc.commands.*;
 import me.thesquadmc.abstraction.AbstractionModule;
 import me.thesquadmc.abstraction.NMSAbstract;
+import me.thesquadmc.commands.AdminChatCommand;
+import me.thesquadmc.commands.AlertCommand;
+import me.thesquadmc.commands.ApplyCommand;
+import me.thesquadmc.commands.ChangeLogCommand;
+import me.thesquadmc.commands.ChatSilenceCommand;
+import me.thesquadmc.commands.ChatSlowCommand;
+import me.thesquadmc.commands.DiscordCommand;
+import me.thesquadmc.commands.DisguisePlayerCommand;
+import me.thesquadmc.commands.EssentialCommands;
+import me.thesquadmc.commands.Find2Command;
+import me.thesquadmc.commands.FindCommand;
+import me.thesquadmc.commands.ForceFieldCommand;
+import me.thesquadmc.commands.FreezeCommand;
+import me.thesquadmc.commands.FreezePanelCommand;
+import me.thesquadmc.commands.GamemodeCommand;
+import me.thesquadmc.commands.HealCommand;
+import me.thesquadmc.commands.InvseeCommand;
+import me.thesquadmc.commands.LaunchCommand;
+import me.thesquadmc.commands.LogsCommand;
+import me.thesquadmc.commands.LookupCommand;
+import me.thesquadmc.commands.MGCommand;
+import me.thesquadmc.commands.MOTDClearCommand;
+import me.thesquadmc.commands.MOTDCommand;
+import me.thesquadmc.commands.ManagerChatCommand;
+import me.thesquadmc.commands.MessageCommand;
+import me.thesquadmc.commands.MonitorCommand;
+import me.thesquadmc.commands.NTVersionCommand;
+import me.thesquadmc.commands.NoteCommand;
+import me.thesquadmc.commands.OnlineCountCommand;
+import me.thesquadmc.commands.PartyCommand;
+import me.thesquadmc.commands.PingCommand;
+import me.thesquadmc.commands.ProxyTransportCommand;
+import me.thesquadmc.commands.QueueManagerCommand;
+import me.thesquadmc.commands.QueueRestartCommand;
+import me.thesquadmc.commands.RandomTPCommand;
+import me.thesquadmc.commands.RestartTimeCommand;
+import me.thesquadmc.commands.SmiteCommand;
+import me.thesquadmc.commands.StaffAlertCommand;
+import me.thesquadmc.commands.StaffChatCommand;
+import me.thesquadmc.commands.StaffMenuCommand;
+import me.thesquadmc.commands.StafflistCommand;
+import me.thesquadmc.commands.StaffmodeCommand;
+import me.thesquadmc.commands.StatusCommand;
+import me.thesquadmc.commands.StopCommand;
+import me.thesquadmc.commands.StoreCommand;
+import me.thesquadmc.commands.TeleportCommand;
+import me.thesquadmc.commands.TitleCommand;
+import me.thesquadmc.commands.UnFreezeCommand;
+import me.thesquadmc.commands.UndisguisePlayerCommand;
+import me.thesquadmc.commands.UniquePlayersCommand;
+import me.thesquadmc.commands.VanishCommand;
+import me.thesquadmc.commands.VanishListCommand;
+import me.thesquadmc.commands.WebsiteCommand;
+import me.thesquadmc.commands.WhitelistCommand;
+import me.thesquadmc.commands.XrayVerboseCommand;
+import me.thesquadmc.commands.YtNickCommand;
+import me.thesquadmc.commands.YtVanishCommand;
 import me.thesquadmc.inventories.FrozenInventory;
 import me.thesquadmc.inventories.StaffmodeInventory;
-import me.thesquadmc.listeners.*;
-import me.thesquadmc.managers.*;
+import me.thesquadmc.listeners.ConnectionListeners;
+import me.thesquadmc.listeners.FilterListener;
+import me.thesquadmc.listeners.ForceFieldListeners;
+import me.thesquadmc.listeners.FreezeListener;
+import me.thesquadmc.listeners.LaunchListener;
+import me.thesquadmc.listeners.LightningListener;
+import me.thesquadmc.listeners.ServerListener;
+import me.thesquadmc.listeners.StaffmodeListener;
+import me.thesquadmc.listeners.TimedListener;
+import me.thesquadmc.listeners.VanishListener;
+import me.thesquadmc.listeners.WhitelistListener;
+import me.thesquadmc.listeners.XrayListener;
+import me.thesquadmc.managers.BootManager;
+import me.thesquadmc.managers.CountManager;
+import me.thesquadmc.managers.HologramManager;
+import me.thesquadmc.managers.NPCManager;
+import me.thesquadmc.managers.PartyManager;
+import me.thesquadmc.managers.QueueManager;
+import me.thesquadmc.managers.TempDataManager;
 import me.thesquadmc.networking.RedisHandler;
+import me.thesquadmc.networking.mongo.Mongo;
 import me.thesquadmc.networking.mongo.MongoUserDatabase;
 import me.thesquadmc.networking.mongo.UserDatabase;
-import me.thesquadmc.networking.mongo.Mongo;
 import me.thesquadmc.networking.mysql.DatabaseManager;
 import me.thesquadmc.networking.redis.RedisManager;
 import me.thesquadmc.networking.redis.RedisMesage;
 import me.thesquadmc.networking.redis.channels.AnnounceChannel;
 import me.thesquadmc.networking.redis.channels.FindChannel;
-import me.thesquadmc.networking.redis.channels.FriendsChannel;
 import me.thesquadmc.networking.redis.channels.MessageChannel;
 import me.thesquadmc.networking.redis.channels.MonitorChannel;
 import me.thesquadmc.networking.redis.channels.PartyChannel;
@@ -29,7 +100,6 @@ import me.thesquadmc.networking.redis.channels.ServerManagementChannel;
 import me.thesquadmc.networking.redis.channels.StaffChatChannels;
 import me.thesquadmc.networking.redis.channels.WhitelistChannel;
 import me.thesquadmc.objects.TSMCUser;
-import me.thesquadmc.objects.logging.ChangeLog;
 import me.thesquadmc.objects.logging.chatlogs.LogSaveTask;
 import me.thesquadmc.objects.logging.chatlogs.LogUser;
 import me.thesquadmc.utils.command.CommandHandler;
@@ -50,7 +120,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.plugin.java.JavaPlugin;
-import redis.clients.jedis.*;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -343,11 +414,12 @@ public final class Main extends JavaPlugin {
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> BarUtils.getPlayers().forEach(nmsAbstract.getBossBarManager()::teleportBar), 1, 20L);
 
         Stream.of(
-                new CreativeCommand(),
+                new GamemodeCommand(),
                 new NoteCommand(this),
                 new ChangeLogCommand(this),
                 new Find2Command(this),
                 new MessageCommand(this),
+                new EssentialCommands(),
                 new TeleportCommand(),
                 new HealCommand()
         ).forEach(o -> commandHandler.registerCommands(o));
