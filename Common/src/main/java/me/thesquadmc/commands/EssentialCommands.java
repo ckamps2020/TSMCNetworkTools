@@ -3,6 +3,7 @@ package me.thesquadmc.commands;
 import me.thesquadmc.utils.LocationUtil;
 import me.thesquadmc.utils.command.Command;
 import me.thesquadmc.utils.command.CommandArgs;
+import me.thesquadmc.utils.message.ClickableMessage;
 import me.thesquadmc.utils.msgs.CC;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -28,7 +29,12 @@ public class EssentialCommands {
 
 
         } else {
-            player.openWorkbench(null, true);
+            new ClickableMessage(player, CC.YELLOW + "Click to open a workbench", "") {
+                @Override
+                public void onClick(Player player) {
+                    player.openWorkbench(null, true);
+                }
+            };
         }
     }
 

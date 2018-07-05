@@ -78,6 +78,7 @@ import me.thesquadmc.listeners.VanishListener;
 import me.thesquadmc.listeners.WhitelistListener;
 import me.thesquadmc.listeners.XrayListener;
 import me.thesquadmc.managers.BootManager;
+import me.thesquadmc.managers.ClickableMessageManager;
 import me.thesquadmc.managers.CountManager;
 import me.thesquadmc.managers.HologramManager;
 import me.thesquadmc.managers.NPCManager;
@@ -177,6 +178,7 @@ public final class Main extends JavaPlugin {
     private PartyManager partyManager;
     private MCLeaksAPI mcLeaksAPI;
     private CountManager countManager;
+    private ClickableMessageManager clickableMessageManager;
     private NMSAbstract nmsAbstract;
     private Mongo mongo;
     private UserDatabase userDatabase;
@@ -230,6 +232,7 @@ public final class Main extends JavaPlugin {
         commandHandler = new CommandHandler(this);
         partyManager = new PartyManager();
         countManager = new CountManager();
+        clickableMessageManager = new ClickableMessageManager(this);
         AbstractGUI.initializeListeners(this);
 
         host = fileManager.getNetworkingConfig().getString("redis.host");
@@ -446,6 +449,10 @@ public final class Main extends JavaPlugin {
 
     public UUIDTranslator getUUIDTranslator() {
         return uuidTranslator;
+    }
+
+    public ClickableMessageManager getClickableMessageManager() {
+        return clickableMessageManager;
     }
 
     public RedisManager getRedisManager() {

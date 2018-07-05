@@ -6,7 +6,6 @@ import me.thesquadmc.utils.command.CommandArgs;
 import me.thesquadmc.utils.msgs.CC;
 import me.thesquadmc.utils.msgs.StringUtils;
 import me.thesquadmc.utils.msgs.Unicode;
-import me.thesquadmc.utils.server.WorldUtils;
 import me.thesquadmc.utils.time.TimeUtils;
 import org.bukkit.command.CommandSender;
 
@@ -48,7 +47,6 @@ public class Find2Command {
             }
 
             long timestamp;
-            System.out.println(server);
             if (server.containsKey("lastOnline")) {
                 timestamp = System.currentTimeMillis() - Long.parseLong(server.get("lastOnline"));
 

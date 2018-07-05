@@ -128,7 +128,6 @@ public final class FilterListener implements Listener {
 		}
 
 		if (!e.isCancelled()) {
-			System.out.println("saving");
 			LogUser.fromPlayer(player).getLogs().add(Log.create(LogType.CHATLOG, e.getMessage(), Bukkit.getServerName()));
 		}
 	}

@@ -1,6 +1,6 @@
 package me.thesquadmc.objects.logging;
 
-import me.thesquadmc.utils.EnumUtil;
+import me.thesquadmc.utils.enums.EnumUtil;
 import me.thesquadmc.utils.time.TimeUtils;
 import org.bson.Document;
 import org.bukkit.ChatColor;
