@@ -32,15 +32,18 @@ public abstract class ClickableMessage implements Listener {
         Bukkit.getPluginManager().registerEvents(this, Main.getMain());
 
         BaseComponent[] components = TextComponent.fromLegacyText(CC.translate(message));
-        BaseComponent[] hoverText = TextComponent.fromLegacyText(CC.translate(hoverMessage));
-
         ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + command.toString());
-        HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText);
+
+        HoverEvent hoverEvent = null;
+        if (hoverMessage != null && !hoverMessage.isEmpty()) {
+            BaseComponent[] hoverText = TextComponent.fromLegacyText(CC.translate(hoverMessage));
+            hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText);
+        }
 
         for (BaseComponent component : components) {
             component.setClickEvent(clickEvent);
 
-            if (hoverMessage == null || hoverMessage.isEmpty()) {
+            if (hoverEvent != null) {
                 component.setHoverEvent(hoverEvent);
             }
         }

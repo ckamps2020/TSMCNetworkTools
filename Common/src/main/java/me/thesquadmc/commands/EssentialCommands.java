@@ -29,7 +29,7 @@ public class EssentialCommands {
 
 
         } else {
-            new ClickableMessage(player, CC.YELLOW + "Click to open a workbench", "") {
+            new ClickableMessage(player, CC.YELLOW + "Click to open a workbench", null) {
                 @Override
                 public void onClick(Player player) {
                     player.openWorkbench(null, true);
