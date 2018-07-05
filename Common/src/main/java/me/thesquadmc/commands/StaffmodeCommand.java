@@ -1,10 +1,10 @@
 package me.thesquadmc.commands;
 
 import me.thesquadmc.objects.TSMCUser;
-import me.thesquadmc.utils.inventory.ItemBuilder;
-import me.thesquadmc.utils.PlayerUtils;
 import me.thesquadmc.utils.enums.Rank;
+import me.thesquadmc.utils.inventory.ItemBuilder;
 import me.thesquadmc.utils.msgs.CC;
+import me.thesquadmc.utils.player.PlayerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -14,7 +14,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public final class StaffmodeCommand implements CommandExecutor {
 

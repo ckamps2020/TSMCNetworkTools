@@ -5,14 +5,13 @@ import me.thesquadmc.Main;
 import me.thesquadmc.networking.redis.RedisChannel;
 import me.thesquadmc.objects.PlayerSetting;
 import me.thesquadmc.objects.TSMCUser;
-import me.thesquadmc.utils.PlayerUtils;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.enums.RedisArg;
 import me.thesquadmc.utils.enums.RedisChannels;
 import me.thesquadmc.utils.msgs.CC;
 import me.thesquadmc.utils.msgs.StringUtils;
 import me.thesquadmc.utils.msgs.Unicode;
-import me.thesquadmc.utils.server.Multithreading;
+import me.thesquadmc.utils.player.PlayerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 

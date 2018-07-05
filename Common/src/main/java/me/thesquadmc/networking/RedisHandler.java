@@ -9,13 +9,15 @@ import me.thesquadmc.managers.PartyManager;
 import me.thesquadmc.objects.Party;
 import me.thesquadmc.objects.PlayerSetting;
 import me.thesquadmc.objects.TSMCUser;
-import me.thesquadmc.utils.*;
-import me.thesquadmc.utils.enums.*;
+import me.thesquadmc.utils.enums.Rank;
+import me.thesquadmc.utils.enums.RedisArg;
+import me.thesquadmc.utils.enums.RedisChannels;
 import me.thesquadmc.utils.json.JSONUtils;
 import me.thesquadmc.utils.msgs.CC;
 import me.thesquadmc.utils.msgs.GameMsgs;
 import me.thesquadmc.utils.msgs.StringUtils;
 import me.thesquadmc.utils.msgs.Unicode;
+import me.thesquadmc.utils.player.PlayerUtils;
 import me.thesquadmc.utils.server.ConnectionUtils;
 import me.thesquadmc.utils.server.Multithreading;
 import me.thesquadmc.utils.server.ServerUtils;
@@ -28,7 +30,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import redis.clients.jedis.Jedis;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.UUID;
 
 @Deprecated
 public final class RedisHandler {

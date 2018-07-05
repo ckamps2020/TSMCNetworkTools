@@ -1,4 +1,4 @@
-package me.thesquadmc.utils;
+package me.thesquadmc.utils.player;
 
 import me.lucko.luckperms.api.Contexts;
 import me.lucko.luckperms.api.Group;
@@ -49,11 +49,8 @@ public final class PlayerUtils {
 	private static boolean isInBorder(Location center, Location notCenter, int range) {
 		int x = center.getBlockX(), z = center.getBlockZ();
 		int x1 = notCenter.getBlockX(), z1 = notCenter.getBlockZ();
-		if (x1 >= (x + range) || z1 >= (z + range) || x1 <= (x - range) || z1 <= (z - range)) {
-			return false;
-		}
-		return true;
-	}
+        return x1 < (x + range) && z1 < (z + range) && x1 > (x - range) && z1 > (z - range);
+    }
 
 	public static Optional<? extends Player> getPlayer(String name) {
 		return Bukkit.getOnlinePlayers().stream().filter(p -> p.getName().equalsIgnoreCase(name)).findFirst();

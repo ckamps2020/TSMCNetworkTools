@@ -1,16 +1,18 @@
 package me.thesquadmc.commands;
 
 import me.thesquadmc.Main;
-import me.thesquadmc.utils.PlayerUtils;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.msgs.CC;
+import me.thesquadmc.utils.player.PlayerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public final class FreezeCommand implements CommandExecutor {
 

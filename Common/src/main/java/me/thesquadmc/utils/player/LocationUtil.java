@@ -1,4 +1,4 @@
-package me.thesquadmc.utils;
+package me.thesquadmc.utils.player;
 
 import com.google.common.base.Preconditions;
 import org.bukkit.GameMode;

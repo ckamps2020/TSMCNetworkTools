@@ -3,10 +3,10 @@ package me.thesquadmc.listeners;
 import me.thesquadmc.Main;
 import me.thesquadmc.abstraction.Sounds;
 import me.thesquadmc.objects.TSMCUser;
-import me.thesquadmc.utils.PlayerUtils;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.enums.UpdateType;
 import me.thesquadmc.utils.handlers.UpdateEvent;
+import me.thesquadmc.utils.player.PlayerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -26,12 +26,8 @@ public final class ForceFieldListeners implements Listener {
 	@EventHandler
 	public void onUpdate(UpdateEvent e) {
 		if (e.getUpdateType() == UpdateType.SEC) {
-			if (main.getQueueManager().getSoloBW().contains("null")) {
-				main.getQueueManager().getSoloBW().remove("null");
-			}
-			if (main.getQueueManager().getSoloBW().contains(null)) {
-				main.getQueueManager().getSoloBW().remove(null);
-			}
+            main.getQueueManager().getSoloBW().remove("null");
+            main.getQueueManager().getSoloBW().remove(null);
 		} else if (e.getUpdateType() == UpdateType.HALF_SEC) {
 			for (Player player : Bukkit.getOnlinePlayers()) {
 				if (TSMCUser.fromPlayer(player).hasForcefield()) {

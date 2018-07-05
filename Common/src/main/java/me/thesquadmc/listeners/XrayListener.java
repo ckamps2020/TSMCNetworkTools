@@ -1,11 +1,11 @@
 package me.thesquadmc.listeners;
 
 import me.thesquadmc.objects.TSMCUser;
-import me.thesquadmc.utils.PlayerUtils;
 import me.thesquadmc.utils.enums.Rank;
-import me.thesquadmc.utils.handlers.UpdateEvent;
 import me.thesquadmc.utils.enums.UpdateType;
+import me.thesquadmc.utils.handlers.UpdateEvent;
 import me.thesquadmc.utils.msgs.CC;
+import me.thesquadmc.utils.player.PlayerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

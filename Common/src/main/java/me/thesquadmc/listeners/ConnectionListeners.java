@@ -2,13 +2,12 @@ package me.thesquadmc.listeners;
 
 import me.thesquadmc.Main;
 import me.thesquadmc.abstraction.MojangGameProfile;
-import me.thesquadmc.objects.PlayerSetting;
 import me.thesquadmc.objects.TSMCUser;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.msgs.CC;
 import me.thesquadmc.utils.msgs.StringUtils;
+import me.thesquadmc.utils.player.PlayerUtils;
 import me.thesquadmc.utils.server.Multithreading;
-import me.thesquadmc.utils.PlayerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -16,8 +15,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-
-import java.util.function.Function;
 
 public final class ConnectionListeners implements Listener {
 
@@ -119,9 +116,7 @@ public final class ConnectionListeners implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent e) {
         Player player = e.getPlayer();
-        if (StringUtils.lastMsg.containsKey(player.getUniqueId())) {
-            StringUtils.lastMsg.remove(player.getUniqueId());
-        }
+        StringUtils.lastMsg.remove(player.getUniqueId());
 
         player.performCommand("party leave");
 

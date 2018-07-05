@@ -1,25 +1,36 @@
 package me.thesquadmc.objects;
 
-import java.util.stream.Collectors;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import me.thesquadmc.objects.logging.Note;
+import me.thesquadmc.utils.player.PlayerUtils;
+import org.bson.Document;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
-import com.google.common.base.Preconditions;
-
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-import me.thesquadmc.objects.logging.Note;
-import me.thesquadmc.utils.PlayerUtils;
-import org.bson.Document;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
-
-import static me.thesquadmc.networking.mongo.UserDatabase.*;
+import static me.thesquadmc.networking.mongo.UserDatabase.FORCEFIELD;
+import static me.thesquadmc.networking.mongo.UserDatabase.FRIENDS;
+import static me.thesquadmc.networking.mongo.UserDatabase.MONITOR;
+import static me.thesquadmc.networking.mongo.UserDatabase.NAME;
+import static me.thesquadmc.networking.mongo.UserDatabase.NOTES;
+import static me.thesquadmc.networking.mongo.UserDatabase.PREVIOUS_NAMES;
+import static me.thesquadmc.networking.mongo.UserDatabase.REPORTS;
+import static me.thesquadmc.networking.mongo.UserDatabase.REQUESTS;
+import static me.thesquadmc.networking.mongo.UserDatabase.SIGNATURE;
+import static me.thesquadmc.networking.mongo.UserDatabase.SKIN_KEY;
+import static me.thesquadmc.networking.mongo.UserDatabase.VANISHED;
+import static me.thesquadmc.networking.mongo.UserDatabase.XRAY;
+import static me.thesquadmc.networking.mongo.UserDatabase.YT_VANISHED;
 
 public class TSMCUser {
 

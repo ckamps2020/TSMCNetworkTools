@@ -1,9 +1,9 @@
 package me.thesquadmc.commands;
 
 import me.thesquadmc.objects.TSMCUser;
-import me.thesquadmc.utils.*;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.msgs.CC;
+import me.thesquadmc.utils.player.PlayerUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

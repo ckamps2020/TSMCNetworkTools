@@ -27,5 +27,4 @@ public final class Unicode {
 	public static final String ARROW_BOW = "➸";
 	public static final String ARROW_RIGHT = "➟";
 	public static final String CURVED_ARROW_RIGHT = "➥";
-
 }

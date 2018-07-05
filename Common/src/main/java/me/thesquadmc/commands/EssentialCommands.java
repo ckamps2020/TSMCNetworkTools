@@ -1,15 +1,15 @@
 package me.thesquadmc.commands;
 
-import me.thesquadmc.utils.LocationUtil;
 import me.thesquadmc.utils.command.Command;
 import me.thesquadmc.utils.command.CommandArgs;
 import me.thesquadmc.utils.message.ClickableMessage;
 import me.thesquadmc.utils.msgs.CC;
+import me.thesquadmc.utils.msgs.Unicode;
+import me.thesquadmc.utils.player.ExpUtil;
+import me.thesquadmc.utils.player.LocationUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-
-import java.util.Arrays;
 
 public class EssentialCommands {
 
@@ -85,16 +85,12 @@ public class EssentialCommands {
                 return;
             }
 
-            target.getInventory().clear();
-            target.getInventory().setArmorContents(null);
-
+            clearInventory(target);
             player.sendMessage(CC.translate("&e&lCLEAR &6■ &7Cleared " + target.getDisplayName() + "'s &7inventory"));
+
         } else {
+            clearInventory(player);
 
-            player.getInventory().clear();
-            player.getInventory().setArmorContents(null);
-
-            player.sendMessage(CC.translate("&e&lCLEAR &6■ &7You cleared your inventory"));
         }
     }
 
@@ -124,8 +120,7 @@ public class EssentialCommands {
             player.sendMessage(CC.translate("&e&lBROADCAST &6■ &7/broadcast <message>"));
 
         } else {
-            String message = Arrays.toString(Arrays.copyOfRange(args.getArgs(), 0, args.length()));
-            Bukkit.broadcastMessage(CC.translate(message));
+            Bukkit.broadcastMessage(CC.B_YELLOW + "INFO " + CC.D_GRAY + Unicode.SQUARE + CC.GRAY + " " + CC.translate(String.join(" ", args.getArgs())));
         }
     }
 
@@ -148,12 +143,66 @@ public class EssentialCommands {
         }
     }
 
+    @Command(name = {"feed"}, permission = "essentials.feed", playerOnly = true)
+    public void feed(CommandArgs args) {
+        Player player = args.getPlayer();
+
+        if (args.length() > 0 && player.hasPermission("essentials.feed.others")) {
+            Player target = Bukkit.getPlayer(args.getArg(0));
+            if (target == null) {
+                player.sendMessage(CC.translate("&e&lPLAYER &6■ &7Cannot find " + args.getArg(0)));
+                return;
+            }
+
+            target.setFoodLevel(20);
+            target.setSaturation(20);
+
+            player.sendMessage(CC.translate("&e&lFEED &6■ &7 You fed  " + target.getName()));
+            target.sendMessage(CC.translate("&e&lFEED &6■ &7 " + player.getDisplayName() + " fed you"));
+
+        } else {
+            player.setFoodLevel(20);
+            player.setSaturation(20);
+            player.sendMessage(CC.translate("&e&lFEED &6■ &7 You fed yourself"));
+        }
+    }
+
+    @Command(name = {"exp", "xp"}, permission = "essentials.xp", playerOnly = true)
+    public void xp(CommandArgs args) {
+        Player player = args.getPlayer();
+
+        if (args.length() == 0) {
+            player.sendMessage(getXPMessage(player, player));
+            return;
+        }
+
+        Player target = Bukkit.getPlayer(args.getArg(0));
+        if (target == null) {
+            player.sendMessage(CC.RED + args.getArg(0) + " is not online!");
+            return;
+        }
+
+        player.sendMessage(getXPMessage(target, player));
+    }
+
+    private void clearInventory(Player player) {
+        new ClickableMessage(player, CC.B_YELLOW + "Are sure you want to clear your inventory", CC.GRAY + "Click to clear your inventory") {
+            @Override
+            public void onClick(Player player) {
+                player.getInventory().clear();
+                player.getInventory().setArmorContents(null);
+
+                player.sendMessage(CC.translate("&e&lCLEAR &6■ &7Your inventory was cleared"));
+            }
+        };
+    }
+
     private void toggleFlight(Player player) {
         boolean flight = !player.getAllowFlight();
 
+        player.setAllowFlight(flight);
         player.setFallDistance(0);
         player.setFlying(flight);
-        player.setAllowFlight(flight);
 
         String message;
         if (flight) {
@@ -163,5 +212,16 @@ public class EssentialCommands {
         }
 
         player.sendMessage(message);
+    }
+
+    private String getXPMessage(Player player, Player checking) {
+        boolean self = player == checking;
+        return String.format(CC.translate("&e&lXP &e■ %s &7%s &e%,d &7exp (level &e%,d&7) and %s &e%,d&7 more exp to level up."),
+                (self ? "You" : player.getDisplayName()),
+                (self ? "have" : "has"),
+                ExpUtil.getXp(player),
+                player.getLevel(),
+                (self ? "need" : "needs"),
+                player.getExpToLevel());
     }
 }

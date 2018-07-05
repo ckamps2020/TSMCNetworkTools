@@ -1,11 +1,11 @@
 package me.thesquadmc.commands;
 
 import me.thesquadmc.Main;
-import me.thesquadmc.utils.PlayerUtils;
-import me.thesquadmc.utils.server.ServerUtils;
-import me.thesquadmc.utils.time.TimeUtils;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.msgs.CC;
+import me.thesquadmc.utils.player.PlayerUtils;
+import me.thesquadmc.utils.server.ServerUtils;
+import me.thesquadmc.utils.time.TimeUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

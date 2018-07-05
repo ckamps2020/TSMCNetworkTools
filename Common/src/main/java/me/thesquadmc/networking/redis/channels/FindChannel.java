@@ -4,26 +4,21 @@ import com.google.gson.JsonObject;
 import me.thesquadmc.Main;
 import me.thesquadmc.commands.FindCommand;
 import me.thesquadmc.commands.StafflistCommand;
-import me.thesquadmc.networking.JedisTask;
 import me.thesquadmc.networking.redis.RedisChannel;
 import me.thesquadmc.networking.redis.RedisMesage;
 import me.thesquadmc.objects.TSMCUser;
-import me.thesquadmc.utils.PlayerUtils;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.enums.RedisArg;
 import me.thesquadmc.utils.enums.RedisChannels;
 import me.thesquadmc.utils.msgs.CC;
-import me.thesquadmc.utils.server.Multithreading;
+import me.thesquadmc.utils.player.PlayerUtils;
 import me.thesquadmc.utils.time.TimeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import redis.clients.jedis.Jedis;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class FindChannel implements RedisChannel {
 

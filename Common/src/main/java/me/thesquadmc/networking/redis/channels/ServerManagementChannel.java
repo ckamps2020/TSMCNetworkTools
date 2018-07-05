@@ -4,26 +4,21 @@ import com.google.gson.JsonObject;
 import me.thesquadmc.Main;
 import me.thesquadmc.abstraction.Sounds;
 import me.thesquadmc.commands.StaffmodeCommand;
-import me.thesquadmc.networking.JedisTask;
 import me.thesquadmc.networking.redis.RedisChannel;
 import me.thesquadmc.objects.TSMCUser;
-import me.thesquadmc.utils.PlayerUtils;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.enums.RedisArg;
 import me.thesquadmc.utils.enums.RedisChannels;
 import me.thesquadmc.utils.msgs.CC;
 import me.thesquadmc.utils.msgs.GameMsgs;
+import me.thesquadmc.utils.player.PlayerUtils;
 import me.thesquadmc.utils.server.ConnectionUtils;
 import me.thesquadmc.utils.server.Multithreading;
 import me.thesquadmc.utils.server.ServerUtils;
-import me.thesquadmc.utils.time.TimeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import redis.clients.jedis.Jedis;
-
-import java.util.UUID;
 
 public class ServerManagementChannel implements RedisChannel {
 
