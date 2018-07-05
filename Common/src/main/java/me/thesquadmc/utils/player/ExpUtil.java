@@ -33,8 +33,14 @@ public class ExpUtil {
         ExpUtil.result = (int) ExpUtil.xplevel;
     }
 
-    public static int getXp(final Player p) {
+    public static int getEXP(final Player p) {
         setXpLevel(p.getLevel(), p.getExp());
         return ExpUtil.result;
+    }
+
+    public static void resetEXP(final Player player) {
+        player.setTotalExperience(0);
+        player.setLevel(0);
+        player.setExp(0.0f);
     }
 }

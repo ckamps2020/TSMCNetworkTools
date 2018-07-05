@@ -1,5 +1,6 @@
 package me.thesquadmc.commands;
 
+import com.google.common.primitives.Ints;
 import me.thesquadmc.utils.command.Command;
 import me.thesquadmc.utils.command.CommandArgs;
 import me.thesquadmc.utils.message.ClickableMessage;
@@ -9,7 +10,10 @@ import me.thesquadmc.utils.player.ExpUtil;
 import me.thesquadmc.utils.player.LocationUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.text.MessageFormat;
 
 public class EssentialCommands {
 
@@ -167,7 +171,7 @@ public class EssentialCommands {
         }
     }
 
-    @Command(name = {"exp", "xp"}, permission = "essentials.xp", playerOnly = true)
+    @Command(name = {"exp", "xp"}, permission = "essentials.exp", playerOnly = true)
     public void xp(CommandArgs args) {
         Player player = args.getPlayer();
 
@@ -183,6 +187,62 @@ public class EssentialCommands {
         }
 
         player.sendMessage(getXPMessage(target, player));
+    }
+
+    @Command(name = {"exp set", "xp set"}, permission = "essentials.exp.set")
+    public void setEXP(CommandArgs args) {
+        CommandSender sender = args.getSender();
+
+        if (args.length() < 2) {
+            sender.sendMessage(CC.RED + "/exp set <player> <exp>");
+            return;
+        }
+
+        Player player = Bukkit.getPlayer(args.getArg(0));
+        if (player == null) {
+            sender.sendMessage(CC.RED + args.getArg(0) + " is not online!");
+            return;
+        }
+
+        Integer exp = Ints.tryParse(args.getArg(1));
+        if (exp == null) {
+            sender.sendMessage(CC.RED + args.getArg(1) + " cannot be parsed as a number");
+            return;
+        }
+
+        ExpUtil.resetEXP(player);
+        player.giveExp(exp);
+
+        sender.sendMessage(CC.translate(MessageFormat.format("&e&lEXP &6■ &7Set &e{0}'s &7exp to &e{1}", player.getName(), exp)));
+    }
+
+    @Command(name = {"exp give", "xp give"}, permission = "essentials.exp.give")
+    public void giveEXP(CommandArgs args) {
+        CommandSender sender = args.getSender();
+
+        if (args.length() < 2) {
+            sender.sendMessage(CC.RED + "/exp give <player> <exp>");
+            return;
+        }
+
+        Player player = Bukkit.getPlayer(args.getArg(0));
+        if (player == null) {
+            sender.sendMessage(CC.RED + args.getArg(0) + " is not online!");
+            return;
+        }
+
+        Integer exp = Ints.tryParse(args.getArg(1));
+        if (exp == null) {
+            sender.sendMessage(CC.RED + args.getArg(1) + " cannot be parsed as a number");
+            return;
+        }
+
+        int expToGive = ExpUtil.getEXP(player) + exp;
+
+        ExpUtil.resetEXP(player);
+        player.giveExp(expToGive);
+
+        sender.sendMessage(CC.translate(MessageFormat.format("&e&lEXP &6■ &7You gave &e{0} {1} &7exp", player.getName(), exp)));
     }
 
     private void clearInventory(Player player) {
@@ -219,7 +279,7 @@ public class EssentialCommands {
         return String.format(CC.translate("&e&lXP &e■ %s &7%s &e%,d &7exp (level &e%,d&7) and %s &e%,d&7 more exp to level up."),
                 (self ? "You" : player.getDisplayName()),
                 (self ? "have" : "has"),
-                ExpUtil.getXp(player),
+                ExpUtil.getEXP(player),
                 player.getLevel(),
                 (self ? "need" : "needs"),
                 player.getExpToLevel());

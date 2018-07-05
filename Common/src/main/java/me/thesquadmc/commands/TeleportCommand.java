@@ -7,12 +7,12 @@ import me.thesquadmc.utils.command.Command;
 import me.thesquadmc.utils.command.CommandArgs;
 import me.thesquadmc.utils.msgs.CC;
 import me.thesquadmc.utils.msgs.Unicode;
+import me.thesquadmc.utils.player.LocationUtil;
 import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.Map;
 import java.util.UUID;
@@ -105,16 +105,19 @@ public class TeleportCommand {
         }
     }
 
-    private void teleport(Player teleporting, Player where) {
-        teleporting(teleporting, where.getLocation());
+    private boolean teleport(Player teleporting, Player where) {
+        return teleporting(teleporting, where.getLocation());
     }
 
-    private void teleporting(Player teleporting, Location to) {
-        //TODO Check if the location is safe
+    private boolean teleporting(Player teleporting, Location to) {
+        if (LocationUtil.isBlockUnsafe(to)) {
+            return false;
+        }
 
         locations.put(teleporting.getUniqueId(), teleporting.getLocation());
-
         teleporting.teleport(to);
+
+        return true;
     }
 
 }
