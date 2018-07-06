@@ -28,7 +28,7 @@ public class ChatManager {
     private int chatDelay = 0;
 
     public ChatManager(Main plugin) {
-        Bukkit.getPluginManager().registerEvents(new ChatListener(this), plugin);
+        Bukkit.getPluginManager().registerEvents(new ChatListener(plugin), plugin);
 
         Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> {
             List<UpdateOneModel<Document>> bulk = Lists.newArrayList();

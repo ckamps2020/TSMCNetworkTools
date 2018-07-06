@@ -108,9 +108,13 @@ import me.thesquadmc.utils.server.Multithreading;
 import me.thesquadmc.utils.server.ServerState;
 import me.thesquadmc.utils.server.ServerUtils;
 import me.thesquadmc.utils.uuid.UUIDTranslator;
+import net.milkbowl.vault.chat.Chat;
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.Configuration;
+import org.bukkit.permissions.Permission;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
@@ -139,6 +143,10 @@ public final class Main extends JavaPlugin {
     private String version;
     private String serverType = "UNKNOWN";
     private String serverState = ServerState.LOADING;
+
+    private Chat vaultChat;
+    private Permission vaultPermissions;
+    private Economy vaultEconomy;
 
     private FileManager fileManager;
     private ChatManager chatManager;
@@ -184,6 +192,7 @@ public final class Main extends JavaPlugin {
         mcLeaksAPI = MCLeaksAPI.builder().threadCount(2).expireAfter(10, TimeUnit.MINUTES).build();
         fileManager = new FileManager(this);
         MySQL = new DatabaseManager(this, this);
+
 
         frozenInventory = new FrozenInventory();
         staffmodeInventory = new StaffmodeInventory();
@@ -298,6 +307,46 @@ public final class Main extends JavaPlugin {
         getLogger().info("[NetworkTools] Shutting down...");
         redisManager.close();
         getLogger().info("[NetworkTools] Shut down! Cya :D");
+    }
+
+    private boolean setupEconomy() {
+        if (getServer().getPluginManager().getPlugin("Vault") == null) {
+            return false;
+        }
+
+        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+        if (rsp == null) {
+            return false;
+        }
+
+        vaultEconomy = rsp.getProvider();
+        return vaultEconomy != null;
+    }
+
+    private boolean setupChat() {
+        RegisteredServiceProvider<Chat> rsp = getServer().getServicesManager().getRegistration(Chat.class);
+
+        vaultChat = rsp.getProvider();
+        return vaultChat != null;
+    }
+
+    private boolean setupPermissions() {
+        RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
+
+        vaultPermissions = rsp.getProvider();
+        return vaultPermissions != null;
+    }
+
+    public Chat getVaultChat() {
+        return vaultChat;
+    }
+
+    public Permission getVaultPermissions() {
+        return vaultPermissions;
+    }
+
+    public Economy getVaultEconomy() {
+        return vaultEconomy;
     }
 
     public ChatManager getChatManager() {

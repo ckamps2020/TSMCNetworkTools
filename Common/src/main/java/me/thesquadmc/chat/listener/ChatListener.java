@@ -1,7 +1,7 @@
 package me.thesquadmc.chat.listener;
 
 import com.google.common.collect.Maps;
-import me.thesquadmc.chat.ChatManager;
+import me.thesquadmc.Main;
 import me.thesquadmc.chat.ChatMessage;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.msgs.CC;
@@ -22,11 +22,11 @@ public class ChatListener implements Listener {
 
     private static final String FILTER_PREFIX = CC.B_YELLOW + "FILTER " + CC.D_GRAY + Unicode.SQUARE + CC.GRAY + " ";
 
-    private final ChatManager chatManager;
+    private final Main plugin;
     private final Map<UUID, ChatMessage> lastMessage = Maps.newHashMap();
 
-    public ChatListener(ChatManager chatManager) {
-        this.chatManager = chatManager;
+    public ChatListener(Main plugin) {
+        this.plugin = plugin;
     }
 
     @EventHandler
@@ -36,7 +36,7 @@ public class ChatListener implements Listener {
         if (!PlayerUtils.isEqualOrHigherThen(player, Rank.TRAINEE)) {
 
             //Check whether chat has been disabled
-            if (chatManager.isSilenced()) {
+            if (plugin.getChatManager().isSilenced()) {
                 player.sendMessage(FILTER_PREFIX + "The chat is currently silenced!");
 
                 e.setCancelled(true);
@@ -56,11 +56,11 @@ public class ChatListener implements Listener {
                 }
 
                 //Check if there is a chat delay
-                if (chatManager.getChatDelay() > 0) {
+                if (plugin.getChatManager().getChatDelay() > 0) {
                     long difference = (System.currentTimeMillis() - message.getTimestamp().getTime()) / 1000;
 
 
-                    if (difference > chatManager.getChatDelay()) {
+                    if (difference > plugin.getChatManager().getChatDelay()) {
                         player.sendMessage(FILTER_PREFIX + "You are sending messages too fast!");
 
                         e.setCancelled(true);
@@ -85,8 +85,13 @@ public class ChatListener implements Listener {
                     null
             );
 
+
             lastMessage.put(player.getUniqueId(), message);
-            chatManager.addMessage(message);
+            plugin.getChatManager().addMessage(message);
+
+            for (String group : plugin.getVaultChat().getPlayerGroups(player)) {
+                Bukkit.broadcastMessage(group);
+            }
         }
     }
 }
