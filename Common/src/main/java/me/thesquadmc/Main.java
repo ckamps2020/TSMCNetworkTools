@@ -82,8 +82,6 @@ import me.thesquadmc.managers.HologramManager;
 import me.thesquadmc.managers.NPCManager;
 import me.thesquadmc.managers.PartyManager;
 import me.thesquadmc.managers.QueueManager;
-import me.thesquadmc.managers.TempDataManager;
-import me.thesquadmc.networking.RedisHandler;
 import me.thesquadmc.networking.mongo.Mongo;
 import me.thesquadmc.networking.mongo.MongoUserDatabase;
 import me.thesquadmc.networking.mongo.UserDatabase;
@@ -152,8 +150,6 @@ public final class Main extends JavaPlugin {
     private String serverState = ServerState.LOADING;
 
     private FileManager fileManager;
-    private TempDataManager tempDataManager;
-    private RedisHandler redisHandler;
     private FrozenInventory frozenInventory;
     private StaffmodeInventory staffmodeInventory;
     private UpdateHandler updateHandler;
@@ -207,7 +203,6 @@ public final class Main extends JavaPlugin {
         updateHandler = new UpdateHandler(this);
         fileManager.setup();
         updateHandler.run();
-        tempDataManager = new TempDataManager();
         hologramManager = new HologramManager();
         npcManager = new NPCManager();
         queueManager = new QueueManager();
@@ -464,10 +459,6 @@ public final class Main extends JavaPlugin {
 
     public FrozenInventory getFrozenInventory() {
         return frozenInventory;
-    }
-
-    public RedisHandler getRedisHandler() {
-        return redisHandler;
     }
 
     public LuckPermsApi getLuckPermsApi() {
