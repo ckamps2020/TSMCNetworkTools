@@ -3,8 +3,8 @@ package me.thesquadmc.networking.mongo;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
+import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import me.thesquadmc.utils.server.Multithreading;
 import org.bson.BSON;
 import org.bson.BsonBinary;
 import org.bson.BsonDocument;
@@ -17,11 +17,8 @@ import org.bson.types.Binary;
 
 import java.util.Arrays;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import static com.mongodb.client.model.Filters.eq;
 
 public final class Mongo {
 
@@ -64,5 +61,9 @@ public final class Mongo {
 
     public MongoDatabase getMongoDatabase() {
         return mongoDatabase;
+    }
+
+    public MongoCollection<Document> getCollection(String name) {
+        return mongoDatabase.getCollection(name);
     }
 }

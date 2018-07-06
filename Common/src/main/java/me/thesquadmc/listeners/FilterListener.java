@@ -1,9 +1,6 @@
 package me.thesquadmc.listeners;
 
 import me.thesquadmc.Main;
-import me.thesquadmc.objects.logging.chatlogs.Log;
-import me.thesquadmc.objects.logging.chatlogs.LogType;
-import me.thesquadmc.objects.logging.chatlogs.LogUser;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.msgs.CC;
 import me.thesquadmc.utils.msgs.StringUtils;
@@ -37,16 +34,13 @@ public final class FilterListener implements Listener {
 			e.setCancelled(true);
 			return;
 		}
-		if (!PlayerUtils.isEqualOrHigherThen(player, Rank.TRAINEE)) {
+
+        if (!PlayerUtils.isEqualOrHigherThen(player, Rank.TRAINEE)) {
 			if (StringUtils.shouldFilter(msg)) {
 				e.setCancelled(true);
 				player.sendMessage(CC.translate("&e&lFILTER &6■ &7You are not allowed to say that!"));
 			}
 		}
-
-        if (!e.isCancelled()) {
-            LogUser.fromPlayer(player).getLogs().add(Log.create(LogType.COMMAND, e.getMessage(), Bukkit.getServerName()));
-        }
 	}
 
 	@EventHandler (priority = EventPriority.HIGHEST)
@@ -125,10 +119,6 @@ public final class FilterListener implements Listener {
 				e.setCancelled(true);
 				player.sendMessage(CC.translate("&e&lCHAT &6■ &7The chat is currently silenced!"));
 			}
-		}
-
-		if (!e.isCancelled()) {
-			LogUser.fromPlayer(player).getLogs().add(Log.create(LogType.CHATLOG, e.getMessage(), Bukkit.getServerName()));
 		}
 	}
 

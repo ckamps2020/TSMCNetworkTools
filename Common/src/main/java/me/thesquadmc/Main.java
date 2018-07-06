@@ -1,6 +1,5 @@
 package me.thesquadmc;
 
-import com.mongodb.client.MongoCollection;
 import me.gong.mcleaks.MCLeaksAPI;
 import me.lucko.luckperms.LuckPerms;
 import me.lucko.luckperms.api.LuckPermsApi;
@@ -66,7 +65,6 @@ import me.thesquadmc.commands.YtVanishCommand;
 import me.thesquadmc.inventories.FrozenInventory;
 import me.thesquadmc.inventories.StaffmodeInventory;
 import me.thesquadmc.listeners.ConnectionListeners;
-import me.thesquadmc.listeners.FilterListener;
 import me.thesquadmc.listeners.ForceFieldListeners;
 import me.thesquadmc.listeners.FreezeListener;
 import me.thesquadmc.listeners.LaunchListener;
@@ -101,8 +99,6 @@ import me.thesquadmc.networking.redis.channels.ServerManagementChannel;
 import me.thesquadmc.networking.redis.channels.StaffChatChannels;
 import me.thesquadmc.networking.redis.channels.WhitelistChannel;
 import me.thesquadmc.objects.TSMCUser;
-import me.thesquadmc.objects.logging.chatlogs.LogSaveTask;
-import me.thesquadmc.objects.logging.chatlogs.LogUser;
 import me.thesquadmc.utils.command.CommandHandler;
 import me.thesquadmc.utils.enums.RedisArg;
 import me.thesquadmc.utils.enums.RedisChannels;
@@ -116,7 +112,6 @@ import me.thesquadmc.utils.server.Multithreading;
 import me.thesquadmc.utils.server.ServerState;
 import me.thesquadmc.utils.server.ServerUtils;
 import me.thesquadmc.utils.uuid.UUIDTranslator;
-import org.bson.Document;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.Configuration;
@@ -412,8 +407,6 @@ public final class Main extends JavaPlugin {
             }); */
         }
 
-        new LogSaveTask(this).runTaskTimerAsynchronously(this, 20L * 60L * 5L, 20L * 60L * 5L);
-
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> BarUtils.getPlayers().forEach(nmsAbstract.getBossBarManager()::teleportBar), 1, 20L);
 
         Stream.of(
@@ -433,18 +426,9 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        List<Document> updateDocuments = LogUser.toDocuments();
-
-        if (!updateDocuments.isEmpty()) {
-            MongoCollection<Document> collection = mongo.getMongoDatabase().getCollection("playerLogs");
-            collection.insertMany(updateDocuments); //Running this sync to ensure it is completed
-            return;
-        }
-
         getLogger().info("[NetworkTools] Shutting down...");
-        getLogger().info("[NetworkTools] Shut down! Cya :D");
-
         redisManager.close();
+        getLogger().info("[NetworkTools] Shut down! Cya :D");
     }
 
     public UUIDTranslator getUUIDTranslator() {
@@ -729,7 +713,7 @@ public final class Main extends JavaPlugin {
     private void registerListeners() {
         Stream.of(
                 new ConnectionListeners(this),
-                new FilterListener(this),
+                //new FilterListener(this),
                 new ForceFieldListeners(this),
                 new FreezeListener(this),
                 new LaunchListener(),
