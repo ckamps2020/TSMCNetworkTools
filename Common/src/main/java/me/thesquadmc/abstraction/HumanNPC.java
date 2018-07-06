@@ -15,48 +15,48 @@ public interface HumanNPC {
 	 * 
 	 * @param players the players who will see this NPC
 	 */
-	public void spawn(Player... players);
+    void spawn(Player... players);
 	
 	/**
 	 * Destroy this NPC for the provided players
 	 * 
 	 * @param players the players who will have the NPC removed
 	 */
-	public void destroy(Player... players);
+    void destroy(Player... players);
 	
 	/**
 	 * Get this NPC's ID
 	 * 
 	 * @return the NPC ID
 	 */
-	public int getId();
+    int getId();
 	
 	/**
 	 * Get the location at which this NPC resides
 	 * 
 	 * @return the NPC location
 	 */
-	public Location getLocation();
+    Location getLocation();
 	
 	/**
 	 * Get this NPC's display name
 	 * 
 	 * @return the display name
 	 */
-	public String getDisplayName();
+    String getDisplayName();
 	
 	/**
 	 * Get the String representation of the player skin used by this NPC
 	 * 
 	 * @return the NPC's skin
 	 */
-	public String getPlayerSkin();
+    String getPlayerSkin();
 	
 	/**
 	 * Get the net.minecraft.server Object wrapped by this instance
 	 * 
 	 * @return the underlying NMS instance
 	 */
-	public Object getHandle();
+    Object getHandle();
 	
 }

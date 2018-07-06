@@ -1,6 +1,5 @@
 package me.thesquadmc.inventories;
 
-import me.thesquadmc.Main;
 import me.thesquadmc.utils.inventory.InventorySize;
 import me.thesquadmc.utils.inventory.ItemBuilder;
 import org.bukkit.Bukkit;
@@ -10,12 +9,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
 public final class StaffmodeInventory {
-
-	private final Main main;
-
-	public StaffmodeInventory(Main main) {
-		this.main = main;
-	}
 
 	public void buildStaffpanel(Player player) {
 		Inventory inventory = Bukkit.createInventory(null, InventorySize.THREE_LINE, "CONTROL PANEL");

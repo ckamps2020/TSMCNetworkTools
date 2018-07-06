@@ -2,7 +2,6 @@ package me.thesquadmc.utils.server;
 
 import me.thesquadmc.Main;
 import me.thesquadmc.managers.PartyManager;
-import me.thesquadmc.networking.JedisTask;
 import me.thesquadmc.networking.redis.RedisMesage;
 import me.thesquadmc.objects.Party;
 import me.thesquadmc.utils.enums.RedisArg;
@@ -12,7 +11,6 @@ import me.thesquadmc.utils.msgs.GameMsgs;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import redis.clients.jedis.Jedis;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,42 +43,6 @@ public final class ConnectionUtils {
 
             partyManager.removeParty(party); // Unregister the party from this instance of NetworkTools
         }
-
-        /*Bukkit.getScheduler().runTaskAsynchronously(Main.getMain(), new Runnable() {
-            @Override
-            public void run() {
-                Multithreading.runAsync(new Runnable() {
-                    @Override
-                    public void run() {
-                        try (Jedis jedis = Main.getMain().getPool().getResource()) {
-                            JedisTask.withName(UUID.randomUUID().toString())
-                                    .withArg(RedisArg.PLAYER.getArg(), player.getName())
-                                    .withArg(RedisArg.SERVER.getArg(), server)
-                                    .send(RedisChannels.TRANSPORT.getChannelName(), jedis);
-
-                            // Account for sending a party to a server
-                            PartyManager partyManager = Main.getMain().getPartyManager();
-                            Party party = partyManager.getOwnedParty(player);
-                            if (sendParty && party != null) {
-                                party.destroy();
-
-                                for (OfflinePlayer member : party.getMembers()) {
-                                    if (!member.isOnline()) continue;
-                                    ConnectionUtils.sendPlayer(member.getPlayer(), server); // WOO! Recursion!
-                                }
-
-                                // Send message for party through server
-                                JedisTask.withName(UUID.randomUUID().toString())
-                                        .withArg(RedisArg.PARTY.getArg(), party)
-                                        .send(RedisChannels.PARTY_JOIN_SERVER.getChannelName(), jedis);
-
-                                partyManager.removeParty(party); // Unregister the party from this instance of NetworkTools
-                            }
-                        }
-                    }
-                });
-            }
-        }); */
     }
 
     public static void sendPlayer(Player player, String server) {
@@ -111,41 +73,6 @@ public final class ConnectionUtils {
                     }
                 }
             }, 3);
-
-            /*Bukkit.getScheduler().runTaskAsynchronously(Main.getMain(), new Runnable() {
-                @Override
-                public void run() {
-                    Multithreading.runAsync(new Runnable() {
-                        @Override
-                        public void run() {
-                            int i = 1;
-                            if (Main.getMain().getPartyManager().hasParty(player.getUniqueId())) {
-                                i = Main.getMain().getPartyManager().getParty(player.getUniqueId()).getMemberCount();
-                            }
-                            fetching.add(player.getUniqueId());
-                            try (Jedis jedis = Main.getMain().getPool().getResource()) {
-                                JedisTask.withName(UUID.randomUUID().toString())
-                                        .withArg(RedisArg.COUNT.getArg(), String.valueOf(i))
-                                        .withArg(RedisArg.ORIGIN_PLAYER.getArg(), player.getName())
-                                        .withArg(RedisArg.ORIGIN_SERVER.getArg(), Bukkit.getServerName())
-                                        .withArg(RedisArg.SERVER.getArg(), serverType)
-                                        .send(RedisChannels.REQUEST_SERVER.getChannelName(), jedis);
-                            }
-                            Bukkit.getScheduler().runTaskLater(Main.getMain(), new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (fetching.contains(player.getUniqueId())) {
-                                        fetching.remove(player.getUniqueId());
-                                        if (Bukkit.getPlayer(player.getUniqueId()) != null) {
-                                            player.sendMessage(GameMsgs.GAME_PREFIX + "Unable to find you an open server!");
-                                        }
-                                    }
-                                }
-                            }, 3);
-                        }
-                    });
-                }
-            }); */
         } else {
             player.sendMessage(CC.translate(GameMsgs.GAME_PREFIX + "Whoa slow down there before queueing again!"));
         }

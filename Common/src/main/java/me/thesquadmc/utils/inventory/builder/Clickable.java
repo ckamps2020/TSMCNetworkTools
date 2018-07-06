@@ -19,6 +19,6 @@ public interface Clickable {
 	 * @param rightClick whether the inventory was clicked with the right mouse button or not
 	 * @param shiftClick whether the inventory was clicked while holding shift or not
 	 */
-	public void click(Player player, Inventory inventory, ItemStack cursor, int slot, boolean leftClick, boolean rightClick, boolean shiftClick);
+	void click(Player player, Inventory inventory, ItemStack cursor, int slot, boolean leftClick, boolean rightClick, boolean shiftClick);
 
 }

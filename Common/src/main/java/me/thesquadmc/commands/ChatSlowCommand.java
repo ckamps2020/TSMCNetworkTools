@@ -22,6 +22,7 @@ public final class ChatSlowCommand implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (sender instanceof Player) {
 			Player player = (Player) sender;
+
 			if (PlayerUtils.isEqualOrHigherThen(player, Rank.MOD)) {
 				if (args.length == 1) {
 					try {
@@ -35,7 +36,8 @@ public final class ChatSlowCommand implements CommandExecutor {
 							Bukkit.broadcastMessage(CC.translate("&e&lCHAT &6■ &7Chat delay set to &e" + i));
 							Bukkit.broadcastMessage(" ");
 						}
-						main.setChatslow(i);
+
+						main.getChatManager().setChatDelay(i);
 					} catch (Exception e) {
 						player.sendMessage(CC.translate("&e&lCHAT &6■ &7That is not a valid number!"));
 					}

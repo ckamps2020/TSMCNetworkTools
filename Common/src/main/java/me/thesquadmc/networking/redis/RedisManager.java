@@ -10,32 +10,21 @@ import org.bukkit.Bukkit;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
-import redis.clients.jedis.exceptions.JedisConnectionException;
 
 import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 public class RedisManager {
 
-    private final String host;
-    private final int port;
-    private final String pass;
-
     private final ExecutorService subscriberExecutor = Executors.newSingleThreadExecutor(new ThreadFactoryBuilder().setNameFormat("Redis Subscriber").build());
-    private volatile Jedis redisSubscriber;
 
     private final JedisPoolConfig config;
     private final JedisPool pool;
     private final RedisPubSub pubSub;
 
     public RedisManager(String host, int port, String pass) {
-        this.host = host;
-        this.port = port;
-        this.pass = pass;
-
         ClassLoader previous = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
 
@@ -50,7 +39,7 @@ public class RedisManager {
         this.pool = new JedisPool(config, host, port, 40 * 1000, pass);
         Thread.currentThread().setContextClassLoader(previous);
 
-        this.redisSubscriber = pool.getResource();
+        Jedis redisSubscriber = pool.getResource();
         pubSub = new RedisPubSub();
 
         Multithreading.runAsync(() -> {
@@ -93,7 +82,7 @@ public class RedisManager {
         return pool.getResource();
     }
 
-    public String getPoolCurrentUsage() {
+    private String getPoolCurrentUsage() {
         int active = pool.getNumActive();
         int idle = pool.getNumIdle();
         int total = active + idle;

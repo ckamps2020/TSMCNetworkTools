@@ -1,6 +1,5 @@
 package me.thesquadmc.commands;
 
-import me.thesquadmc.Main;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.msgs.CC;
 import me.thesquadmc.utils.player.PlayerUtils;
@@ -16,12 +15,7 @@ import java.util.UUID;
 
 public final class InvseeCommand implements CommandExecutor {
 
-	private final Main main;
-	private static Map<UUID, UUID> viewing = new HashMap<>();
-
-	public InvseeCommand(Main main) {
-		this.main = main;
-	}
+    private static Map<UUID, UUID> viewing = new HashMap<>();
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {

@@ -15,19 +15,18 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 import java.util.UUID;
+import java.util.function.Consumer;
 
-public abstract class ClickableMessage implements Listener {
+public class ClickableMessage implements Listener {
 
     private final Player player;
-    private final String message;
-    private final String hoverMessage;
     private final UUID command;
+    private final Consumer<Player> consumer;
 
-    protected ClickableMessage(Player player, String message, String hoverMessage) {
+    public ClickableMessage(Player player, String message, String hoverMessage, Consumer<Player> consumer) {
         this.player = player;
-        this.message = message;
-        this.hoverMessage = hoverMessage;
         this.command = UUID.randomUUID();
+        this.consumer = consumer;
 
         Bukkit.getPluginManager().registerEvents(this, Main.getMain());
 
@@ -51,8 +50,6 @@ public abstract class ClickableMessage implements Listener {
         player.spigot().sendMessage(components);
     }
 
-    public abstract void onClick(Player player);
-
     @EventHandler(priority = EventPriority.LOWEST)
     public void on(PlayerCommandPreprocessEvent e) {
         if (e.getMessage().replaceAll("/", "").equals(command.toString())) {
@@ -60,7 +57,7 @@ public abstract class ClickableMessage implements Listener {
 
             Main.getMain().getClickableMessageManager().addUsedCommand(e.getMessage());
 
-            onClick(player);
+            consumer.accept(player);
             HandlerList.unregisterAll(this);
         }
     }

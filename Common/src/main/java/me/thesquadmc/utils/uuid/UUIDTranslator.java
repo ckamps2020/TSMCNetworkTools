@@ -1,6 +1,5 @@
 package me.thesquadmc.utils.uuid;
 
-import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import me.thesquadmc.Main;
@@ -134,7 +133,7 @@ public final class UUIDTranslator {
         }
 
         // Okay, it wasn't locally cached. Let's try Redis.
-        try (Jedis jedis = plugin.getPool().getResource()) {
+        try (Jedis jedis = plugin.getRedisManager().getResource()) {
             String stored = jedis.hget("name-cache", player.toString());
             if (stored != null) {
                 // Found an entry value. Deserialize it.
@@ -178,7 +177,7 @@ public final class UUIDTranslator {
         }
     }
 
-    public final void persistInfo(String name, UUID uuid, Jedis jedis) {
+    private final void persistInfo(String name, UUID uuid, Jedis jedis) {
         addToMaps(name, uuid);
         String json = JSONUtils.getGson().toJson(uuidToNameMap.get(uuid));
         jedis.hmset("name-cache", ImmutableMap.of(name.toLowerCase(), json, uuid.toString(), json));
@@ -209,7 +208,7 @@ public final class UUIDTranslator {
             return uuid;
         }
 
-        public boolean expired() {
+        boolean expired() {
             return Calendar.getInstance().after(expiry);
         }
     }

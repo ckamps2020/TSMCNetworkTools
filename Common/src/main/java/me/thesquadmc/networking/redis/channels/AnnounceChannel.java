@@ -1,7 +1,6 @@
 package me.thesquadmc.networking.redis.channels;
 
 import com.google.gson.JsonObject;
-import me.thesquadmc.Main;
 import me.thesquadmc.abstraction.Sounds;
 import me.thesquadmc.networking.redis.RedisChannel;
 import me.thesquadmc.utils.enums.RedisArg;
@@ -10,12 +9,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class AnnounceChannel implements RedisChannel {
-
-    private final Main plugin;
-
-    public AnnounceChannel(Main plugin) {
-        this.plugin = plugin;
-    }
 
     @Override
     public void handle(String channel, JsonObject object) {

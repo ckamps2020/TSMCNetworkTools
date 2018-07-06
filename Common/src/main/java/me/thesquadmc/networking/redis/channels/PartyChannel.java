@@ -9,17 +9,9 @@ import me.thesquadmc.utils.enums.RedisArg;
 import me.thesquadmc.utils.enums.RedisChannels;
 import me.thesquadmc.utils.json.JSONUtils;
 import me.thesquadmc.utils.msgs.CC;
-import me.thesquadmc.utils.server.Multithreading;
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
 public class PartyChannel implements RedisChannel {
-
-    private final Main plugin;
-
-    public PartyChannel(Main plugin) {
-        this.plugin = plugin;
-    }
 
     @Override
     public void handle(String channel, JsonObject object) {

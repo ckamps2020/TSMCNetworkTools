@@ -1,6 +1,5 @@
 package me.thesquadmc.commands;
 
-import me.thesquadmc.Main;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.msgs.CC;
 import me.thesquadmc.utils.player.PlayerUtils;
@@ -13,12 +12,6 @@ import org.bukkit.entity.Player;
 import java.util.Random;
 
 public final class RandomTPCommand implements CommandExecutor {
-
-	private final Main main;
-
-	public RandomTPCommand(Main main) {
-		this.main = main;
-	}
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {

@@ -1,6 +1,5 @@
 package me.thesquadmc.commands;
 
-import me.thesquadmc.Main;
 import me.thesquadmc.utils.msgs.CC;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -8,12 +7,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public final class ApplyCommand implements CommandExecutor {
-
-	private final Main main;
-
-	public ApplyCommand(Main main) {
-		this.main = main;
-	}
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {

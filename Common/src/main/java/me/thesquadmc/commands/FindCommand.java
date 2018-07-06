@@ -1,80 +1,70 @@
 package me.thesquadmc.commands;
 
 import me.thesquadmc.Main;
-import me.thesquadmc.networking.redis.RedisMesage;
-import me.thesquadmc.utils.enums.Rank;
-import me.thesquadmc.utils.enums.RedisArg;
-import me.thesquadmc.utils.enums.RedisChannels;
+import me.thesquadmc.utils.command.Command;
+import me.thesquadmc.utils.command.CommandArgs;
 import me.thesquadmc.utils.msgs.CC;
-import me.thesquadmc.utils.player.PlayerUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
+import me.thesquadmc.utils.msgs.StringUtils;
+import me.thesquadmc.utils.msgs.Unicode;
+import me.thesquadmc.utils.time.TimeUtils;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
-public final class FindCommand implements CommandExecutor {
+public class FindCommand {
 
-    private final Main main;
-    private static List<String> stillLooking = new ArrayList<>();
+    private final Main plugin;
 
-    public FindCommand(Main main) {
-        this.main = main;
+    public FindCommand(Main plugin) {
+        this.plugin = plugin;
     }
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
-            if (PlayerUtils.isEqualOrHigherThen(player, Rank.TRAINEE)) {
-                if (args.length == 1) {
-                    String name = args[0];
-                    Bukkit.getScheduler().runTaskAsynchronously(main, () -> {
-                        player.sendMessage(CC.translate("&e&lFIND&6■ &7Trying to find &e" + name + "&7..."));
+    @Command(name = {"find2", "whereis2"}, permission = "group.helper")
+    public void find(CommandArgs args) {
+        CommandSender sender = args.getSender();
 
-                        stillLooking.add(player.getName());
-
-                        main.getRedisManager().sendMessage(RedisChannels.FIND, RedisMesage.newMessage()
-                                .set(RedisArg.SERVER, Bukkit.getServerName())
-                                .set(RedisArg.PLAYER, name)
-                                .set(RedisArg.ORIGIN_PLAYER, player.getName()));
-
-                        /*
-                        Multithreading.runAsync(new Runnable() {
-                            @Override
-                            public void run() {
-                                try (Jedis jedis = main.getPool().getResource()) {
-                                    JedisTask.withName(UUID.randomUUID().toString())
-                                            .withArg(RedisArg.SERVER.getArg(), Bukkit.getServerName())
-                                            .withArg(RedisArg.PLAYER.getArg(), name)
-                                            .withArg(RedisArg.ORIGIN_PLAYER.getArg(), player.getName())
-                                            .send(RedisChannels.FIND.getChannelName(), jedis);
-                                }
-                            }
-                        });*/
-
-                        Bukkit.getScheduler().runTaskLater(main, () -> {
-                            if (stillLooking.contains(player.getName())) {
-                                stillLooking.remove(player.getName());
-                                player.sendMessage(CC.translate("&e&lFIND&6■ &7Unable to find player &e" + name));
-                            }
-                        }, 20L);
-                    });
-                } else {
-                    player.sendMessage(CC.translate("&e&lFIND &6■ &7Usage: /find <player>"));
-                }
-            } else {
-                player.sendMessage(CC.translate("&e&lPERMISSIONS &6■ &7You do not have permission to use this command!"));
-            }
+        if (args.length() == 0) {
+            sender.sendMessage(CC.RED + "/find <player>");
+            return;
         }
-        return true;
-    }
+        String name = args.getArg(0);
 
-    public static List<String> getStillLooking() {
-        return stillLooking;
-    }
+        sender.sendMessage(CC.translate("&e&lFIND&6■ &7Trying to find &e" + name + "&7..."));
+        sender.sendMessage(" ");
+        plugin.getRedisManager().executeJedisAsync(jedis -> {
+            UUID uuid = plugin.getUUIDTranslator().getUUID(name, true);
 
+            if (uuid == null) {
+                sender.sendMessage(CC.translate("&e&lFIND&6■ &7Unable to find player &e" + name));
+                return;
+            }
+
+            Map<String, String> server = jedis.hgetAll("players:" + uuid.toString());
+            if (server == null) {
+                sender.sendMessage(CC.translate("&e&lFIND&6■ &7Something went wrong with getting &e" + name));
+                return;
+            }
+
+            long timestamp;
+            if (server.containsKey("lastOnline")) {
+                timestamp = System.currentTimeMillis() - Long.parseLong(server.get("lastOnline"));
+
+                sender.sendMessage(CC.B_YELLOW + name);
+                sender.sendMessage(CC.GRAY + Unicode.SQUARE  + " Status: " + CC.RED + "Offline");
+                sender.sendMessage(CC.GRAY + Unicode.SQUARE  + " Offline for: " + CC.WHITE + TimeUtils.getFormattedTime(timestamp));
+
+            } else if (server.containsKey("onlineSince")) {
+                timestamp = System.currentTimeMillis() - Long.parseLong(server.get("onlineSince"));
+
+                sender.sendMessage(CC.B_YELLOW + name);
+                sender.sendMessage(CC.GRAY + Unicode.SQUARE  + " Status: " + CC.GREEN + "Online");
+                sender.sendMessage(CC.GRAY + Unicode.SQUARE  + " Server: " + CC.WHITE + StringUtils.capitalize(server.get("server")));
+                sender.sendMessage(CC.GRAY + Unicode.SQUARE +  " Online Since: " + CC.WHITE + TimeUtils.getFormattedTime(timestamp));
+
+            } else {
+                sender.sendMessage(CC.translate("&e&lFIND&6■ &7Unable to find player &e" + name));
+            }
+        });
+    }
 }

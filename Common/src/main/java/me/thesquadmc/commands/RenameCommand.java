@@ -1,6 +1,5 @@
 package me.thesquadmc.commands;
 
-import me.thesquadmc.Main;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.msgs.CC;
 import me.thesquadmc.utils.msgs.StringUtils;
@@ -12,12 +11,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public final class RenameCommand implements CommandExecutor {
-
-	private final Main main;
-
-	public RenameCommand(Main main) {
-		this.main = main;
-	}
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {

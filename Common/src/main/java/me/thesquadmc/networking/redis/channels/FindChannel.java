@@ -2,17 +2,13 @@ package me.thesquadmc.networking.redis.channels;
 
 import com.google.gson.JsonObject;
 import me.thesquadmc.Main;
-import me.thesquadmc.commands.FindCommand;
 import me.thesquadmc.commands.StafflistCommand;
 import me.thesquadmc.networking.redis.RedisChannel;
 import me.thesquadmc.networking.redis.RedisMesage;
-import me.thesquadmc.objects.TSMCUser;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.enums.RedisArg;
 import me.thesquadmc.utils.enums.RedisChannels;
-import me.thesquadmc.utils.msgs.CC;
 import me.thesquadmc.utils.player.PlayerUtils;
-import me.thesquadmc.utils.time.TimeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -30,58 +26,7 @@ public class FindChannel implements RedisChannel {
 
     @Override
     public void handle(String channel, JsonObject object) {
-        if (channel.equals(RedisChannels.FIND.getName())) {
-            plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
-                String name = object.get(RedisArg.PLAYER.getName()).getAsString();
-
-                for (Player p : Bukkit.getOnlinePlayers()) {
-                    if (p.getName().equalsIgnoreCase(name)) {
-                        TSMCUser user = TSMCUser.fromPlayer(p);
-
-                        plugin.getRedisManager().sendMessage(RedisChannels.FOUND, RedisMesage.newMessage()
-                                .set(RedisArg.SERVER, object.get(RedisArg.SERVER.getName()).getAsString())
-                                .set(RedisArg.ORIGIN_SERVER, Bukkit.getServerName())
-                                .set(RedisArg.PLAYER, name)
-                                .set(RedisArg.ORIGIN_PLAYER, object.get(RedisArg.ORIGIN_PLAYER.getName()).getAsString())
-                                .set(RedisArg.LOGIN, TimeUtils.getFormattedTime(System.currentTimeMillis() - user.getLoginTime())));
-
-                        /*Multithreading.runAsync(() -> {
-                            try (Jedis jedis = plugin.getPool().getResource()) {
-                                JedisTask.withName(UUID.randomUUID().toString())
-                                        .withArg(RedisArg.SERVER.getName(), object.get(RedisArg.SERVER.getName()).getAsString())
-                                        .withArg(RedisArg.ORIGIN_SERVER.getName(), Bukkit.getServerName())
-                                        .withArg(RedisArg.PLAYER.getName(), name)
-                                        .withArg(RedisArg.ORIGIN_PLAYER.getName(), object.get(RedisArg.ORIGIN_PLAYER.getName()).getAsString())
-                                        .withArg(RedisArg.LOGIN.getName(), TimeUtils.getFormattedTime(System.currentTimeMillis() - user.getLoginTime()))
-                                        .send(RedisChannels.FOUND.getName(), jedis);
-                            }
-                        });*/
-                    }
-                }
-            });
-
-        } else if (channel.equalsIgnoreCase(RedisChannels.FOUND.getName())) {
-            plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
-                String server = object.get(RedisArg.SERVER.getName()).getAsString();
-
-                if (server.equals(Bukkit.getServerName())) {
-                    String name = object.get(RedisArg.PLAYER.getName()).getAsString();
-                    String origin = object.get(RedisArg.ORIGIN_PLAYER.getName()).getAsString();
-                    String originServer = object.get(RedisArg.ORIGIN_SERVER.getName()).getAsString();
-                    String time = object.get(RedisArg.LOGIN.getName()).getAsString();
-
-                    Player p = Bukkit.getPlayer(origin);
-                    if (p != null) {
-                        FindCommand.getStillLooking().remove(p.getName());
-                        p.sendMessage(" ");
-                        p.sendMessage(CC.translate("&6&l" + name));
-                        p.sendMessage(CC.translate("&8■ &7Server: &f" + originServer));
-                        p.sendMessage(CC.translate("&8■ &7Online Since: &f" + time));
-                    }
-                }
-            });
-
-        } else if (channel.equalsIgnoreCase(RedisChannels.REQUEST_LIST.getName())) { //TODO Move us to something better than this
+        if (channel.equalsIgnoreCase(RedisChannels.REQUEST_LIST.getName())) { //TODO Move us to something better than this
             plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
                 ArrayList<String> trainee = new ArrayList<>();
                 ArrayList<String> helper = new ArrayList<>();

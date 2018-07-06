@@ -108,11 +108,8 @@ public final class Base {
 	private boolean isInBorder(Location center, Location notCenter, int range) {
 		int x = center.getBlockX(), z = center.getBlockZ();
 		int x1 = notCenter.getBlockX(), z1 = notCenter.getBlockZ();
-		if (x1 >= (x + range) || z1 >= (z + range) || x1 <= (x - range) || z1 <= (z - range)) {
-			return false;
-		}
-		return true;
-	}
+        return x1 < (x + range) && z1 < (z + range) && x1 > (x - range) && z1 > (z - range);
+    }
 
 	public List<Player> getNearbyPlayers(Location where) {
 		List<Player> found = new ArrayList<>();

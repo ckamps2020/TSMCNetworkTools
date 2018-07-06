@@ -12,11 +12,9 @@ import static com.mongodb.client.model.Filters.eq;
 
 public class MongoUserDatabase implements UserDatabase {
 
-    private final Mongo plugin;
     private final MongoCollection<Document> users;
 
     public MongoUserDatabase(Mongo plugin) {
-        this.plugin = plugin;
         this.users = plugin.getMongoDatabase().getCollection(UserDatabase.USER_DATABASE, Document.class);
     }
 

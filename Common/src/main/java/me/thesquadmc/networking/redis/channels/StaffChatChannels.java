@@ -1,7 +1,6 @@
 package me.thesquadmc.networking.redis.channels;
 
 import com.google.gson.JsonObject;
-import me.thesquadmc.Main;
 import me.thesquadmc.networking.redis.RedisChannel;
 import me.thesquadmc.objects.PlayerSetting;
 import me.thesquadmc.objects.TSMCUser;
@@ -19,12 +18,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class StaffChatChannels implements RedisChannel {
-
-    private final Main plugin;
-
-    public StaffChatChannels(Main plugin) {
-        this.plugin = plugin;
-    }
 
     @Override
     public void handle(String channel, JsonObject object) {

@@ -12,27 +12,27 @@ public interface ProfileProperty {
 	 * 
 	 * @return the underlying NMS instance
 	 */
-	public Object getHandle();
+    Object getHandle();
 	
 	/**
 	 * Get this property's name
 	 * 
 	 * @return the property name
 	 */
-	public String getName();
+    String getName();
 	
 	/**
 	 * Get this property's value
 	 * 
 	 * @return the property value
 	 */
-	public String getValue();
+    String getValue();
 	
 	/**
 	 * Get this property's signature
 	 * 
 	 * @return the property signature
 	 */
-	public String getSignature();
+    String getSignature();
 	
 }

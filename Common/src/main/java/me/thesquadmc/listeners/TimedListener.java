@@ -2,28 +2,13 @@ package me.thesquadmc.listeners;
 
 import me.thesquadmc.Main;
 import me.thesquadmc.abstraction.Sounds;
-import me.thesquadmc.networking.JedisTask;
-import me.thesquadmc.utils.enums.RedisArg;
-import me.thesquadmc.utils.enums.RedisChannels;
-import me.thesquadmc.utils.handlers.UpdateEvent;
 import me.thesquadmc.utils.enums.UpdateType;
+import me.thesquadmc.utils.handlers.UpdateEvent;
 import me.thesquadmc.utils.msgs.CC;
-import me.thesquadmc.utils.server.Multithreading;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import redis.clients.jedis.Jedis;
-
-import java.util.List;
-import java.util.UUID;
 
 public final class TimedListener implements Listener {
 

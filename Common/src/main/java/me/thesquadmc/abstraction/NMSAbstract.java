@@ -1,7 +1,6 @@
 package me.thesquadmc.abstraction;
 
-import java.util.Set;
-
+import me.thesquadmc.utils.server.ServerProperty;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Entity;
@@ -10,7 +9,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import me.thesquadmc.utils.server.ServerProperty;
+import java.util.Set;
 
 /**
  * Represents the central class managing all NMS-based actions and features
@@ -24,14 +23,14 @@ public interface NMSAbstract {
 	 * 
 	 * @return the minimum version
 	 */
-	public String getVersionMin();
+    String getVersionMin();
 
 	/**
 	 * Get the maximum version supported by this NMSAbstract instance
 	 * 
 	 * @return the maximum version
 	 */
-	public String getVersionMax();
+    String getVersionMax();
 
 	/**
 	 * Get the ping of the specified player
@@ -39,7 +38,7 @@ public interface NMSAbstract {
 	 * @param player the player whose ping to retrieve
 	 * @return the player's ping
 	 */
-	public int getPing(Player player);
+    int getPing(Player player);
 
 	/**
 	 * Get the {@link MojangGameProfile} of the specified player
@@ -47,7 +46,7 @@ public interface NMSAbstract {
 	 * @param player the player whose game profile to fetch
 	 * @return the player's game profile
 	 */
-	public MojangGameProfile getGameProfile(OfflinePlayer player);
+    MojangGameProfile getGameProfile(OfflinePlayer player);
 
 	/**
 	 * Get an instance of {@link ProfileProperty} that represents the provided player's
@@ -58,7 +57,7 @@ public interface NMSAbstract {
 	 * 
 	 * @see #getSkinProperty(String)
 	 */
-	public ProfileProperty getSkinProperty(OfflinePlayer player);
+    ProfileProperty getSkinProperty(OfflinePlayer player);
 
 	/**
 	 * Get an instance of {@link ProfileProperty} that represents the provided player's
@@ -69,7 +68,7 @@ public interface NMSAbstract {
 	 * 
 	 * @see #getSkinProperty(OfflinePlayer)
 	 */
-	public ProfileProperty getSkinProperty(String name);
+    ProfileProperty getSkinProperty(String name);
 
 	/**
 	 * Create a new {@link ProfileProperty} with a given name, value and signature
@@ -80,7 +79,7 @@ public interface NMSAbstract {
 	 * 
 	 * @return the resulting profile property
 	 */
-	public ProfileProperty createNewProperty(String name, String value, String signature);
+    ProfileProperty createNewProperty(String name, String value, String signature);
 
 	/**
 	 * Create and return a new {@link HumanNPC} instance
@@ -91,7 +90,7 @@ public interface NMSAbstract {
 	 * 
 	 * @return the newly created HumanNPC instance
 	 */
-	public HumanNPC createHumanNPC(Location location, String name, String skin);
+    HumanNPC createHumanNPC(Location location, String name, String skin);
 
 	/**
 	 * Create and return a new {@link MobNPC} instance
@@ -103,12 +102,12 @@ public interface NMSAbstract {
 	 * 
 	 * @return the newly created MobNPC instance
 	 */
-	public MobNPC createMobNPC(String name, String displayName, EntityType type, boolean ai);
+    MobNPC createMobNPC(String name, String displayName, EntityType type, boolean ai);
 
 	/**
 	 * Save the server properties file
 	 */
-	public void savePropertiesFile();
+    void savePropertiesFile();
 
 	/**
 	 * Set and update a server property
@@ -116,7 +115,7 @@ public interface NMSAbstract {
 	 * @param property the property to set
 	 * @param value the property value to set
 	 */
-	public <T> void setServerProperty(ServerProperty<T> property, T value);
+    <T> void setServerProperty(ServerProperty<T> property, T value);
 
 	/**
 	 * Set whether an entity is enabled or not
@@ -127,14 +126,14 @@ public interface NMSAbstract {
 	 * @param entity the entity whose AI to set
 	 * @param ai the new state
 	 */
-	public void setAI(LivingEntity entity, boolean ai);
+    void setAI(LivingEntity entity, boolean ai);
 
 	/**
 	 * Get an instance of the {@link BossBarManager}
 	 * 
 	 * @return the boss bar manager
 	 */
-	public BossBarManager getBossBarManager();
+    BossBarManager getBossBarManager();
 
 	/**
 	 * Set the direction in which the provided entity should look
@@ -143,7 +142,7 @@ public interface NMSAbstract {
 	 * @param pitch the pitch to set
 	 * @param yaw the yaw to set
 	 */
-	public void setLookDirection(Entity entity, float pitch, float yaw);
+    void setLookDirection(Entity entity, float pitch, float yaw);
 
 	/**
 	 * Set the direction in which the provided entity's head should be rotated
@@ -151,7 +150,7 @@ public interface NMSAbstract {
 	 * @param entity the entity whose head direction to change
 	 * @param yaw the yaw to set
 	 */
-	public void setHeadYaw(LivingEntity entity, float yaw);
+    void setHeadYaw(LivingEntity entity, float yaw);
 
 	/**
 	 * Send a title to the specified player
@@ -166,7 +165,7 @@ public interface NMSAbstract {
 	 * @param stay the title's stay time (in ticks)
 	 * @param out the title' fade out time (in ticks)
 	 */
-	public void sendTitle(Player player, String title, String subtitle, int in, int stay, int out);
+    void sendTitle(Player player, String title, String subtitle, int in, int stay, int out);
 
 	/**
 	 * Send a title to all players on the server
@@ -177,7 +176,7 @@ public interface NMSAbstract {
 	 * @param stay the title's stay time (in ticks)
 	 * @param out the title' fade out time (in ticks)
 	 */
-	public void broadcastTitle(String title, String subtitle, int in, int stay, int out);
+    void broadcastTitle(String title, String subtitle, int in, int stay, int out);
 
 	/**
 	 * Send an action bar to the specified player
@@ -185,14 +184,14 @@ public interface NMSAbstract {
 	 * @param player the player to whom the action bar should be sent
 	 * @param text the text to send
 	 */
-	public void sendActionBar(Player player, String text);
+    void sendActionBar(Player player, String text);
 
 	/**
 	 * Send an action bar to all players on the server
 	 * 
 	 * @param text the text to send
 	 */
-	public void broadcastActionBar(String text);
+    void broadcastActionBar(String text);
 
 	/**
 	 * Send a header/footer tab list to the specified player
@@ -201,7 +200,7 @@ public interface NMSAbstract {
 	 * @param header the header to display. Supports colour codes
 	 * @param footer the footer to display. Supports colour codes
 	 */
-	public void sendTabList(Player player, String header, String footer);
+    void sendTabList(Player player, String header, String footer);
 
 	/**
 	 * Send a header/footer tab list to all players on the server
@@ -209,28 +208,28 @@ public interface NMSAbstract {
 	 * @param header the header to display. Supports colour codes
 	 * @param footer the footer to display. Supports colour codes
 	 */
-	public void broadcastTabList(String header, String footer);
+    void broadcastTabList(String header, String footer);
 
 	/**
 	 * Force a player to sit
 	 * 
 	 * @param player the player to sit
 	 */
-	public void sit(Player player);
+    void sit(Player player);
 
 	/**
 	 * Force a player to stand (will not affect players who are not sitting)
 	 * 
 	 * @param player the player to stand
 	 */
-	public void stand(Player player);
+    void stand(Player player);
 
 	/**
 	 * Get a set of all players who are actively sitting
 	 * 
 	 * @return all sitting players
 	 */
-	public Set<Player> getSitting();
+    Set<Player> getSitting();
 
 	/**
 	 * Send a world border packet to the specified player with the provided distance away
@@ -239,7 +238,7 @@ public interface NMSAbstract {
 	 * @param player the player to whom the world border should be send
 	 * @param warningBlocks the distance from the border to start showing warnings
 	 */
-	public void sendWorldBorder(Player player, int warningBlocks);
+    void sendWorldBorder(Player player, int warningBlocks);
 
 	/**
 	 * Convert an ItemStack to Base64
@@ -247,7 +246,7 @@ public interface NMSAbstract {
 	 * @param item the item to convert
 	 * @return the resulting Base64 string
 	 */
-	public String toBase64(ItemStack item);
+    String toBase64(ItemStack item);
 
 	/**
 	 * Convert a Base64 string to an ItemStack
@@ -255,7 +254,7 @@ public interface NMSAbstract {
 	 * @param data the Base64 item data
 	 * @return the resulting ItemStack. null if invalid
 	 */
-	public ItemStack fromBase64(String data);
+    ItemStack fromBase64(String data);
 
 	/**
 	 * Set the type of monster egg represented by the provided ItemStack
@@ -265,6 +264,6 @@ public interface NMSAbstract {
 	 * 
 	 * @return the updated ItemStack
 	 */
-	public ItemStack setMonsterEggType(ItemStack item, EntityType type);
+    ItemStack setMonsterEggType(ItemStack item, EntityType type);
 
 }

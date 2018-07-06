@@ -1,7 +1,6 @@
 package me.thesquadmc.networking.redis.channels;
 
 import com.google.gson.JsonObject;
-import me.thesquadmc.Main;
 import me.thesquadmc.networking.redis.RedisChannel;
 import me.thesquadmc.objects.TSMCUser;
 import me.thesquadmc.utils.enums.RedisArg;
@@ -14,17 +13,11 @@ import org.bukkit.entity.Player;
 
 public class FriendsChannel implements RedisChannel {
 
-    private final Main bot;
-
-    public FriendsChannel(Main bot) {
-        this.bot = bot;
-    }
-
     @Override
     public void handle(String channel, JsonObject object) {
-        if (channel.equals(RedisChannels.LEAVE.getChannelName())) {
+        if (channel.equals(RedisChannels.LEAVE.getName())) {
             Multithreading.runAsync(() -> {
-                String player = object.get(RedisArg.PLAYER.getArg()).getAsString();
+                String player = object.get(RedisArg.PLAYER.getName()).getAsString();
                 OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(player);
 
                 for (Player p : Bukkit.getOnlinePlayers()) {

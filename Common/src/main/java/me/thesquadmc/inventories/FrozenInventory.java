@@ -1,6 +1,5 @@
 package me.thesquadmc.inventories;
 
-import me.thesquadmc.Main;
 import me.thesquadmc.utils.inventory.InventorySize;
 import me.thesquadmc.utils.inventory.ItemBuilder;
 import org.bukkit.Bukkit;
@@ -8,21 +7,20 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public final class FrozenInventory {
 
-	private final Main main;
 	private Map<UUID, UUID> viewing = new HashMap<>();
 	private Map<UUID, Player> typing = new HashMap<>();
 	private Map<UUID, String> screenshare = new HashMap<>();
 	private List<UUID> admitMenu = new ArrayList<>();
 	private List<UUID> admitted = new ArrayList<>();
 	private List<UUID> denying = new ArrayList<>();
-
-	public FrozenInventory(Main main) {
-		this.main = main;
-	}
 
 	public void buildFrozenInventory(Player player) {
 		Inventory inventory = Bukkit.createInventory(null, InventorySize.THREE_LINE, "FROZEN");

@@ -1,8 +1,8 @@
 package me.thesquadmc.abstraction;
 
-import java.util.Set;
-
 import org.bukkit.entity.Player;
+
+import java.util.Set;
 
 /**
  * Represents an abstract manager for boss bars to hold messages and display different
@@ -22,14 +22,14 @@ public interface BossBarManager {
 	 * @param text the boss bar text
 	 * @param healthPercent the percentage of health to display on the bar
 	 */
-	public void setBar(Player player, String text, float healthPercent);
+    void setBar(Player player, String text, float healthPercent);
 	
 	/**
 	 * Remove a boss bar from a player
 	 * 
 	 * @param player the player for whom to remove the boss bar
 	 */
-	public void removeBar(Player player);
+    void removeBar(Player player);
 	
 	/**
 	 * Check whether a player has a boss bar or not
@@ -37,7 +37,7 @@ public interface BossBarManager {
 	 * @param player the player to check
 	 * @return true if present, false otherwise
 	 */
-	public boolean hasBar(Player player);
+    boolean hasBar(Player player);
 	
 	/**
 	 * Teleport the boss bar to the player's position. This is used internally to constantly
@@ -45,7 +45,7 @@ public interface BossBarManager {
 	 * 
 	 * @param player the player to have their boss bar teleported
 	 */
-	public void teleportBar(Player player);
+    void teleportBar(Player player);
 	
 	/**
 	 * Change the text of the boss bar for the provided player
@@ -55,7 +55,7 @@ public interface BossBarManager {
 	 * 
 	 * @see #updateBar(Player, String, float)
 	 */
-	public void updateText(Player player, String text);
+    void updateText(Player player, String text);
 	
 	/**
 	 * Change the health percentage of the boss bar for the provided player
@@ -65,7 +65,7 @@ public interface BossBarManager {
 	 * 
 	 * @see #updateBar(Player, String, float)
 	 */
-	public void updateHealth(Player player, float healthPercent);
+    void updateHealth(Player player, float healthPercent);
 	
 	/**
 	 * Update the text and health percentage of the boss bar for the provided player
@@ -74,13 +74,13 @@ public interface BossBarManager {
 	 * @param text the text to set
 	 * @param healthPercent the health percentage to set
 	 */
-	public void updateBar(Player player, String text, float healthPercent);
+    void updateBar(Player player, String text, float healthPercent);
 	
 	/**
 	 * Get a set of all players who have an active boss bar
 	 * 
 	 * @return all players with boss bars
 	 */
-	public Set<Player> getPlayers();
+    Set<Player> getPlayers();
 	
 }

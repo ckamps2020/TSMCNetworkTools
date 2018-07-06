@@ -2,7 +2,6 @@ package me.thesquadmc.utils.server;
 
 import com.sun.management.OperatingSystemMXBean;
 import me.thesquadmc.Main;
-import me.thesquadmc.networking.JedisTask;
 import me.thesquadmc.networking.redis.RedisMesage;
 import me.thesquadmc.utils.enums.RedisArg;
 import me.thesquadmc.utils.enums.RedisChannels;
@@ -10,21 +9,17 @@ import me.thesquadmc.utils.msgs.CC;
 import me.thesquadmc.utils.msgs.ServerType;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import redis.clients.jedis.Jedis;
 
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.Field;
 import java.text.DecimalFormat;
 import java.util.Locale;
-import java.util.UUID;
 
 public final class ServerUtils {
 
     private static final String name = Bukkit.getServer().getClass().getPackage().getName();
     private static final String version = name.substring(name.lastIndexOf('.') + 1);
     private static final DecimalFormat format = new DecimalFormat("##.##");
-    private static Object serverInstance;
-    private static Field tpsField;
     private static final OperatingSystemMXBean OS = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
 
     public static void calculateServerType() {
@@ -57,18 +52,13 @@ public final class ServerUtils {
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.kickPlayer(CC.translate("&e&lSTOP &6■ &7Server is restarting!"));
         }
-        Bukkit.getScheduler().runTaskLater(Main.getMain(), new Runnable() {
-            @Override
-            public void run() {
-                Bukkit.shutdown();
-            }
-        }, 3 * 20);
+        Bukkit.getScheduler().runTaskLater(Main.getMain(), Bukkit::shutdown, 3 * 20);
     }
 
     public static String getTPS(int time) {
         try {
-            serverInstance = getNMSClass("MinecraftServer").getMethod("getServer").invoke(null);
-            tpsField = serverInstance.getClass().getField("recentTps");
+            Object serverInstance = getNMSClass("MinecraftServer").getMethod("getServer").invoke(null);
+            Field tpsField = serverInstance.getClass().getField("recentTps");
             double[] tps = ((double[]) tpsField.get(serverInstance));
             return format.format(tps[time]);
         } catch (Exception e) {
@@ -90,23 +80,6 @@ public final class ServerUtils {
         Main.getMain().getRedisManager().sendMessage(RedisChannels.SERVER_STATE, RedisMesage.newMessage()
                 .set(RedisArg.SERVER, Bukkit.getServerName())
                 .set(RedisArg.SERVER_STATE, serverState));
-
-        /*Bukkit.getScheduler().runTaskAsynchronously(Main.getMain(), new Runnable() {
-            @Override
-            public void run() {
-                Multithreading.runAsync(new Runnable() {
-                    @Override
-                    public void run() {
-                        try (Jedis jedis = Main.getMain().getPool().getResource()) {
-                            JedisTask.withName(UUID.randomUUID().toString())
-                                    .withArg(RedisArg.SERVER.getArg(), Bukkit.getServerName())
-                                    .withArg(RedisArg.SERVER_STATE.getArg(), serverState)
-                                    .send(RedisChannels.SERVER_STATE.getChannelName(), jedis);
-                        }
-                    }
-                });
-            }
-        });*/
     }
 
     public static String getSystemCpuLoadFormatted() {
@@ -115,18 +88,6 @@ public final class ServerUtils {
 
     public static String getProcessCpuLoadFormatted() {
         return new DecimalFormat("0.0").format(OS.getProcessCpuLoad() * 100) + "%";
-    }
-
-    public static int getThreadPoolSize() {
-        return Main.getMain().getThreadPoolExecutor().getPoolSize();
-    }
-
-    public static int getActiveThreadCount() {
-        return Main.getMain().getThreadPoolExecutor().getActiveCount();
-    }
-
-    public static int getLargestPoolSize() {
-        return Main.getMain().getThreadPoolExecutor().getLargestPoolSize();
     }
 
     public static String getFreeMemory() {

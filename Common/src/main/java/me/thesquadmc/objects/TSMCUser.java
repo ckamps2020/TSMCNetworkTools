@@ -278,14 +278,6 @@ public class TSMCUser {
         previousNames.add(name);
     }
 
-    public void setLoginTime(long loginTime) {
-        this.loginTime = loginTime;
-    }
-
-    public long getLoginTime() {
-        return loginTime;
-    }
-
     public void setVanished(boolean vanished) {
         this.vanished = vanished;
     }

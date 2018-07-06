@@ -116,7 +116,7 @@ public final class ReflectionUtils {
 		setValue(instance, instance.getClass(), declared, fieldName, value);
 	}
 
-	public static enum PackageType {
+	public enum PackageType {
 		MINECRAFT_SERVER("net.minecraft.server." + getServerVersion()),  CRAFTBUKKIT("org.bukkit.craftbukkit." + getServerVersion()),  CRAFTBUKKIT_BLOCK(CRAFTBUKKIT, "block"),  CRAFTBUKKIT_CHUNKIO(
 				CRAFTBUKKIT, "chunkio"),  CRAFTBUKKIT_COMMAND(CRAFTBUKKIT, "command"),  CRAFTBUKKIT_CONVERSATIONS(CRAFTBUKKIT, "conversations"),  CRAFTBUKKIT_ENCHANTMENS(CRAFTBUKKIT,
 				"enchantments"),  CRAFTBUKKIT_ENTITY(CRAFTBUKKIT, "entity"),  CRAFTBUKKIT_EVENT(CRAFTBUKKIT, "event"),  CRAFTBUKKIT_GENERATOR(CRAFTBUKKIT, "generator"),  CRAFTBUKKIT_HELP(
@@ -126,11 +126,11 @@ public final class ReflectionUtils {
 
 		private final String path;
 
-		private PackageType(String path) {
+		PackageType(String path) {
 			this.path = path;
 		}
 
-		private PackageType(PackageType parent, String path) {
+		PackageType(PackageType parent, String path) {
 			this(parent + "." + path);
 		}
 
@@ -152,7 +152,7 @@ public final class ReflectionUtils {
 		}
 	}
 
-	public static enum DataType {
+	public enum DataType {
 		BYTE(Byte.TYPE, Byte.class),  SHORT(Short.TYPE, Short.class),  INTEGER(Integer.TYPE, Integer.class),  LONG(Long.TYPE, Long.class),  CHARACTER(Character.TYPE, Character.class),  FLOAT(
 				Float.TYPE, Float.class),  DOUBLE(Double.TYPE, Double.class),  BOOLEAN(Boolean.TYPE, Boolean.class);
 
@@ -172,7 +172,7 @@ public final class ReflectionUtils {
 			}
 		}
 
-		private DataType(Class<?> primitive, Class<?> reference) {
+		DataType(Class<?> primitive, Class<?> reference) {
 			this.primitive = primitive;
 			this.reference = reference;
 		}
@@ -186,7 +186,7 @@ public final class ReflectionUtils {
 		}
 
 		public static DataType fromClass(Class<?> clazz) {
-			return (DataType)CLASS_MAP.get(clazz);
+			return CLASS_MAP.get(clazz);
 		}
 
 		public static Class<?> getPrimitive(Class<?> clazz) {

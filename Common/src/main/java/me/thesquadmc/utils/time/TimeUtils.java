@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 
 public final class TimeUtils {
 
-	private static final Pattern TIME_PARSE_PATTERN = Pattern.compile("([0-9]+)([smhdwMy]{1})");
+	private static final Pattern TIME_PARSE_PATTERN = Pattern.compile("([0-9]+)([smhdwMy])");
 	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-ddHH:mm:ssX", Locale.ENGLISH);
 
 	public static Date parseDate(String string) {
@@ -162,7 +162,7 @@ public final class TimeUtils {
 
 	public static String formatTs(String ts) {
 		long timestamp = Long.parseLong(ts) * 1000L;
-		return new SimpleDateFormat("yyyy.MM.dd HH.mm.ss").format(Long.valueOf(timestamp));
+		return new SimpleDateFormat("yyyy.MM.dd HH.mm.ss").format(timestamp);
 	}
 
 	public static boolean isSameDay(long ts1, long ts2) {

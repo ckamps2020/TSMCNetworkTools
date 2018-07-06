@@ -21,9 +21,7 @@ import java.util.UUID;
 
 public final class XrayListener implements Listener {
 
-	private final int diamondThreshhold = 13;
-	private final int spawnerThreshhold = 4;
-	private Map<UUID, Integer> diamondsMined = new HashMap<>();
+    private Map<UUID, Integer> diamondsMined = new HashMap<>();
 	private Map<UUID, Integer> spawnerMined = new HashMap<>();
 
 	@EventHandler
@@ -43,10 +41,12 @@ public final class XrayListener implements Listener {
 
 				for (Player staff : Bukkit.getOnlinePlayers()) {
 					if (PlayerUtils.isEqualOrHigherThen(staff, Rank.TRAINEE) && TSMCUser.fromPlayer(staff).isXray()) {
-						if (diamonds >= diamondThreshhold) {
+                        int diamondThreshhold = 13;
+                        if (diamonds >= diamondThreshhold) {
 							staff.sendMessage(CC.translate("&8[&4&lAnitCheat&8] &4[XRAY] &f" + player.getName() + " is suspected for XRAY. Mined " + diamonds + " diamonds in the last MINUTE! World&4=&f" + player.getWorld().getName() + ""));
 						}
-						if (spawners >= spawnerThreshhold) {
+                        int spawnerThreshhold = 4;
+                        if (spawners >= spawnerThreshhold) {
 							staff.sendMessage(CC.translate("&8[&4&lAnitCheat&8] &4[XRAY] &f" + player.getName() + " is suspected for XRAY. Mined " + spawners + " spawners in the last MINUTE! World&4=&f" + player.getWorld().getName() + ""));
 						}
 					}

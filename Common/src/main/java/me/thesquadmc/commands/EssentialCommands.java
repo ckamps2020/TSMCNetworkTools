@@ -33,12 +33,7 @@ public class EssentialCommands {
 
 
         } else {
-            new ClickableMessage(player, CC.YELLOW + "Click to open a workbench", null) {
-                @Override
-                public void onClick(Player player) {
-                    player.openWorkbench(null, true);
-                }
-            };
+            new ClickableMessage(player, CC.YELLOW + "Click to open a workbench", null, p -> p.openWorkbench(null, true));
         }
     }
 
@@ -246,15 +241,12 @@ public class EssentialCommands {
     }
 
     private void clearInventory(Player player) {
-        new ClickableMessage(player, CC.B_YELLOW + "Are sure you want to clear your inventory", CC.GRAY + "Click to clear your inventory") {
-            @Override
-            public void onClick(Player player) {
-                player.getInventory().clear();
-                player.getInventory().setArmorContents(null);
+        new ClickableMessage(player, CC.B_YELLOW + "Are sure you want to clear your inventory", CC.GRAY + "Click to clear your inventory", p -> {
+            p.getInventory().clear();
+            p.getInventory().setArmorContents(null);
 
-                player.sendMessage(CC.translate("&e&lCLEAR &6■ &7Your inventory was cleared"));
-            }
-        };
+            p.sendMessage(CC.translate("&e&lCLEAR &6■ &7Your inventory was cleared"));
+        });
     }
 
     private void toggleFlight(Player player) {

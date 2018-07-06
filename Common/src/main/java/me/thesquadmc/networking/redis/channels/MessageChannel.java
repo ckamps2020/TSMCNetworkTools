@@ -1,7 +1,6 @@
 package me.thesquadmc.networking.redis.channels;
 
 import com.google.gson.JsonObject;
-import me.thesquadmc.Main;
 import me.thesquadmc.networking.redis.RedisChannel;
 import me.thesquadmc.objects.TSMCUser;
 import me.thesquadmc.utils.msgs.CC;
@@ -12,12 +11,6 @@ import org.bukkit.entity.Player;
 import java.util.UUID;
 
 public class MessageChannel implements RedisChannel {
-
-    private final Main plugin;
-
-    public MessageChannel(Main plugin) {
-        this.plugin = plugin;
-    }
 
     @Override
     public void handle(String channel, JsonObject object) {

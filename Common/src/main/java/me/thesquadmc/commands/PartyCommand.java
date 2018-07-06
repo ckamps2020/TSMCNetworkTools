@@ -1,28 +1,20 @@
 package me.thesquadmc.commands;
 
-import java.util.Collection;
-import java.util.UUID;
-
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Multimap;
-
 import me.thesquadmc.Main;
 import me.thesquadmc.managers.PartyManager;
-import me.thesquadmc.networking.JedisTask;
 import me.thesquadmc.networking.redis.RedisMesage;
 import me.thesquadmc.objects.Party;
 import me.thesquadmc.utils.enums.RedisArg;
 import me.thesquadmc.utils.enums.RedisChannels;
 import me.thesquadmc.utils.msgs.CC;
 import me.thesquadmc.utils.msgs.Unicode;
-
-import me.thesquadmc.utils.server.Multithreading;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ClickEvent.Action;
 import net.md_5.bungee.api.chat.ComponentBuilder;
-
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -31,7 +23,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import redis.clients.jedis.Jedis;
+import java.util.Collection;
+import java.util.UUID;
 
 public final class PartyCommand implements CommandExecutor {
 

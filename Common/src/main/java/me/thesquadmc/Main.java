@@ -5,6 +5,7 @@ import me.lucko.luckperms.LuckPerms;
 import me.lucko.luckperms.api.LuckPermsApi;
 import me.thesquadmc.abstraction.AbstractionModule;
 import me.thesquadmc.abstraction.NMSAbstract;
+import me.thesquadmc.chat.ChatManager;
 import me.thesquadmc.commands.AdminChatCommand;
 import me.thesquadmc.commands.AlertCommand;
 import me.thesquadmc.commands.ApplyCommand;
@@ -14,7 +15,6 @@ import me.thesquadmc.commands.ChatSlowCommand;
 import me.thesquadmc.commands.DiscordCommand;
 import me.thesquadmc.commands.DisguisePlayerCommand;
 import me.thesquadmc.commands.EssentialCommands;
-import me.thesquadmc.commands.Find2Command;
 import me.thesquadmc.commands.FindCommand;
 import me.thesquadmc.commands.ForceFieldCommand;
 import me.thesquadmc.commands.FreezeCommand;
@@ -112,16 +112,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.plugin.java.JavaPlugin;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.SQLException;
 import java.util.Enumeration;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -131,18 +127,13 @@ public final class Main extends JavaPlugin {
 
     private UUIDTranslator uuidTranslator;
 
-    private JedisPool pool;
     private static Main main;
     private LuckPermsApi luckPermsApi;
     private String whitelistMessage = ChatColor.translateAlternateColorCodes('&', "&cServer currently whitelisted!");
     private long startup = System.currentTimeMillis();
     private String value = "NONE";
     private String sig = "NONE";
-    // private Jedis jedis;
-    // private JedisPoolConfig poolConfig;
-    private Jedis j;
     private DatabaseManager MySQL;
-    private ThreadPoolExecutor threadPoolExecutor;
     private int restartTime = 0;
 
     private String version;
@@ -150,9 +141,9 @@ public final class Main extends JavaPlugin {
     private String serverState = ServerState.LOADING;
 
     private FileManager fileManager;
+    private ChatManager chatManager;
     private FrozenInventory frozenInventory;
     private StaffmodeInventory staffmodeInventory;
-    private UpdateHandler updateHandler;
     private HologramManager hologramManager;
     private NPCManager npcManager;
     private QueueManager queueManager;
@@ -166,9 +157,6 @@ public final class Main extends JavaPlugin {
     private Mongo mongo;
     private UserDatabase userDatabase;
 
-    private String host;
-    private int port;
-    private String password;
     private String mysqlhost;
     private String mysqlport;
     private String mysqlpassword;
@@ -195,14 +183,14 @@ public final class Main extends JavaPlugin {
         luckPermsApi = LuckPerms.getApi();
         mcLeaksAPI = MCLeaksAPI.builder().threadCount(2).expireAfter(10, TimeUnit.MINUTES).build();
         fileManager = new FileManager(this);
-        threadPoolExecutor = (ThreadPoolExecutor) Executors.newCachedThreadPool();
         MySQL = new DatabaseManager(this, this);
 
-        frozenInventory = new FrozenInventory(this);
-        staffmodeInventory = new StaffmodeInventory(this);
-        updateHandler = new UpdateHandler(this);
+        frozenInventory = new FrozenInventory();
+        staffmodeInventory = new StaffmodeInventory();
+        UpdateHandler updateHandler = new UpdateHandler(this);
         fileManager.setup();
         updateHandler.run();
+        chatManager = new ChatManager(this);
         hologramManager = new HologramManager();
         npcManager = new NPCManager();
         queueManager = new QueueManager();
@@ -213,9 +201,9 @@ public final class Main extends JavaPlugin {
         clickableMessageManager = new ClickableMessageManager(this);
         AbstractGUI.initializeListeners(this);
 
-        host = fileManager.getNetworkingConfig().getString("redis.host");
-        port = fileManager.getNetworkingConfig().getInt("redis.port");
-        password = fileManager.getNetworkingConfig().getString("redis.password");
+        String host1 = fileManager.getNetworkingConfig().getString("redis.host");
+        int port1 = fileManager.getNetworkingConfig().getInt("redis.port");
+        String password1 = fileManager.getNetworkingConfig().getString("redis.password");
         mysqlhost = fileManager.getNetworkingConfig().getString("mysql.host");
         mysqlport = fileManager.getNetworkingConfig().getString("mysql.port");
         mysqlpassword = fileManager.getNetworkingConfig().getString("mysql.dbpassword");
@@ -225,16 +213,16 @@ public final class Main extends JavaPlugin {
 
         uuidTranslator = new UUIDTranslator(this);
 
-        redisManager = new RedisManager(host, port, password);
+        redisManager = new RedisManager(host1, port1, password1);
         redisManager.registerChannel(new FindChannel(this), RedisChannels.FIND, RedisChannels.FOUND, RedisChannels.REQUEST_LIST, RedisChannels.RETURN_REQUEST_LIST);
         redisManager.registerChannel(new ServerManagementChannel(this), RedisChannels.STARTUP_REQUEST, RedisChannels.PLAYER_COUNT, RedisChannels.RETURN_SERVER, RedisChannels.STOP);
         redisManager.registerChannel(new WhitelistChannel(this), RedisChannels.WHITELIST, RedisChannels.WHITELIST_ADD, RedisChannels.WHITELIST_REMOVE);
-        redisManager.registerChannel(new PartyChannel(this), RedisChannels.PARTY_JOIN_SERVER, RedisChannels.PARTY_DISBAND, RedisChannels.PARTY_UPDATE);
+        redisManager.registerChannel(new PartyChannel(), RedisChannels.PARTY_JOIN_SERVER, RedisChannels.PARTY_DISBAND, RedisChannels.PARTY_UPDATE);
         redisManager.registerChannel(new MonitorChannel(this), RedisChannels.MONITOR_INFO, RedisChannels.MONITOR_REQUEST);
-        redisManager.registerChannel(new AnnounceChannel(this), RedisChannels.ANNOUNCEMENT);
+        redisManager.registerChannel(new AnnounceChannel(), RedisChannels.ANNOUNCEMENT);
         //redisManager.registerChannel(new FriendsChannel(this), RedisChannels.LEAVE);
-        redisManager.registerChannel(new MessageChannel(this), RedisChannels.MESSAGE);
-        redisManager.registerChannel(new StaffChatChannels(this), RedisChannels.STAFFCHAT, RedisChannels.ADMINCHAT, RedisChannels.MANAGERCHAT, RedisChannels.DISCORD_STAFFCHAT_SERVER);
+        redisManager.registerChannel(new MessageChannel(), RedisChannels.MESSAGE);
+        redisManager.registerChannel(new StaffChatChannels(), RedisChannels.STAFFCHAT, RedisChannels.ADMINCHAT, RedisChannels.MANAGERCHAT, RedisChannels.DISCORD_STAFFCHAT_SERVER);
 
         getLogger().info("[NetworkTools] Redis PUB/SUB setup!");
         Multithreading.runAsync(() -> {
@@ -279,7 +267,7 @@ public final class Main extends JavaPlugin {
         registerCommands();
 
         ServerUtils.calculateServerType();
-        Bukkit.getScheduler().scheduleAsyncRepeatingTask(this, () -> redisManager.sendMessage(RedisChannels.PLAYER_COUNT, RedisMesage.newMessage()
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> redisManager.sendMessage(RedisChannels.PLAYER_COUNT, RedisMesage.newMessage()
                 .set(RedisArg.SERVER.getName(), Bukkit.getServerName())
                 .set(RedisArg.COUNT.getName(), Bukkit.getOnlinePlayers().size())), 20L, 20L);
 
@@ -294,7 +282,7 @@ public final class Main extends JavaPlugin {
                 new GamemodeCommand(),
                 new NoteCommand(this),
                 new ChangeLogCommand(this),
-                new Find2Command(this),
+                new FindCommand(this),
                 new MessageCommand(this),
                 new EssentialCommands(),
                 new TeleportCommand(),
@@ -310,6 +298,10 @@ public final class Main extends JavaPlugin {
         getLogger().info("[NetworkTools] Shutting down...");
         redisManager.close();
         getLogger().info("[NetworkTools] Shut down! Cya :D");
+    }
+
+    public ChatManager getChatManager() {
+        return chatManager;
     }
 
     public UUIDTranslator getUUIDTranslator() {
@@ -386,10 +378,6 @@ public final class Main extends JavaPlugin {
 
     public void setServerState(String serverState) {
         this.serverState = serverState;
-    }
-
-    public ThreadPoolExecutor getThreadPoolExecutor() {
-        return threadPoolExecutor;
     }
 
     public DatabaseManager getMySQL() {
@@ -473,10 +461,6 @@ public final class Main extends JavaPlugin {
         return main;
     }
 
-    public JedisPool getPool() {
-        return pool;
-    }
-
     /**
      * Get an instance of the NMSAbstract class for this server version implementation
      *
@@ -557,14 +541,13 @@ public final class Main extends JavaPlugin {
         getCommand("staffchat").setExecutor(new StaffChatCommand(this));
         getCommand("adminchat").setExecutor(new AdminChatCommand(this));
         getCommand("managerchat").setExecutor(new ManagerChatCommand(this));
-        getCommand("find").setExecutor(new FindCommand(this));
         getCommand("lookup").setExecutor(new LookupCommand(this));
         getCommand("vanish").setExecutor(new VanishCommand());
         getCommand("freeze").setExecutor(new FreezeCommand(this));
         getCommand("unfreeze").setExecutor(new UnFreezeCommand(this));
         getCommand("freezepanel").setExecutor(new FreezePanelCommand(this));
-        getCommand("invsee").setExecutor(new InvseeCommand(this));
-        getCommand("randomtp").setExecutor(new RandomTPCommand(this));
+        getCommand("invsee").setExecutor(new InvseeCommand());
+        getCommand("randomtp").setExecutor(new RandomTPCommand());
         getCommand("staffmode").setExecutor(new StaffmodeCommand());
         getCommand("staff").setExecutor(new StafflistCommand(this));
         getCommand("xray").setExecutor(new XrayVerboseCommand());
@@ -581,25 +564,25 @@ public final class Main extends JavaPlugin {
         getCommand("undisguiseplayer").setExecutor(new UndisguisePlayerCommand(this));
         getCommand("silence").setExecutor(new ChatSilenceCommand(this));
         getCommand("slowchat").setExecutor(new ChatSlowCommand(this));
-        getCommand("smite").setExecutor(new SmiteCommand(this));
+        getCommand("smite").setExecutor(new SmiteCommand());
         getCommand("ping").setExecutor(new PingCommand(this));
         getCommand("status").setExecutor(new StatusCommand(this));
-        getCommand("proxytransport").setExecutor(new ProxyTransportCommand(this));
+        getCommand("proxytransport").setExecutor(new ProxyTransportCommand());
         getCommand("restarttime").setExecutor(new RestartTimeCommand(this));
-        getCommand("apply").setExecutor(new ApplyCommand(this));
-        getCommand("discord").setExecutor(new DiscordCommand(this));
-        getCommand("store").setExecutor(new StoreCommand(this));
-        getCommand("website").setExecutor(new WebsiteCommand(this));
+        getCommand("apply").setExecutor(new ApplyCommand());
+        getCommand("discord").setExecutor(new DiscordCommand());
+        getCommand("store").setExecutor(new StoreCommand());
+        getCommand("website").setExecutor(new WebsiteCommand());
         getCommand("uniqueplayers").setExecutor(new UniquePlayersCommand(this));
-        getCommand("title").setExecutor(new TitleCommand(this));
+        getCommand("title").setExecutor(new TitleCommand());
         getCommand("queuerestart").setExecutor(new QueueRestartCommand(this));
         getCommand("vanishlist").setExecutor(new VanishListCommand());
         getCommand("ntversion").setExecutor(new NTVersionCommand(this));
         getCommand("mg").setExecutor(new MGCommand(this));
         getCommand("queuemanager").setExecutor(new QueueManagerCommand(this));
-        getCommand("staffalert").setExecutor(new StaffAlertCommand(this));
+        getCommand("staffalert").setExecutor(new StaffAlertCommand());
         getCommand("onlinecount").setExecutor(new OnlineCountCommand(this));
-        getCommand("logs").setExecutor(new LogsCommand(this));
+        getCommand("logs").setExecutor(new LogsCommand());
         getCommand("party").setExecutor(new PartyCommand(this));
         getCommand("l1").setExecutor(new MOTDCommand(main, 1));
         getCommand("l2").setExecutor(new MOTDCommand(main, 2));

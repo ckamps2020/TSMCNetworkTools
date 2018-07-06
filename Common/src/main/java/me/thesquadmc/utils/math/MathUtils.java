@@ -1,7 +1,12 @@
 package me.thesquadmc.utils.math;
 
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 public final class MathUtils {
@@ -11,14 +16,9 @@ public final class MathUtils {
 	}
 
 	public static Map<UUID, Integer> sortByValue(Map<UUID, Integer> unsortMap) {
-		List<Map.Entry<UUID, Integer>> list = new LinkedList<Map.Entry<UUID, Integer>>(unsortMap.entrySet());
-		Collections.sort(list, new Comparator<Map.Entry<UUID, Integer>>() {
-			public int compare(Map.Entry<UUID, Integer> o1,
-			                   Map.Entry<UUID, Integer> o2) {
-				return (o1.getValue()).compareTo(o2.getValue());
-			}
-		});
-		Map<UUID, Integer> sortedMap = new LinkedHashMap<UUID, Integer>();
+        List<Map.Entry<UUID, Integer>> list = new LinkedList<>(unsortMap.entrySet());
+        list.sort(Comparator.comparing(o -> (o.getValue())));
+        Map<UUID, Integer> sortedMap = new LinkedHashMap<>();
 		for (Map.Entry<UUID, Integer> entry : list) {
 			sortedMap.put(entry.getKey(), entry.getValue());
 		}
@@ -26,12 +26,9 @@ public final class MathUtils {
 	}
 
 	public static boolean canContinue(int amount) {
-		if (amount == 52 || amount == 52 * 2 || amount == 52 * 3 || amount == 52 * 4
-				|| amount == 52 * 5 || amount == 52 * 6 || amount == 52 * 7) {
-			return false;
-		}
-		return true;
-	}
+        return amount != 52 && amount != 52 * 2 && amount != 52 * 3 && amount != 52 * 4
+                && amount != 52 * 5 && amount != 52 * 6 && amount != 52 * 7;
+    }
 
 	public static double clamp(double value, double min, double max) {
 		return (value < min ? min : (value > max ? max : value));
@@ -70,8 +67,8 @@ public final class MathUtils {
 			format = format + "#";
 		}
 		try {
-			return Double.valueOf(new DecimalFormat(format).format(d)).doubleValue();
-		} catch (NumberFormatException exception) {
+            return Double.valueOf(new DecimalFormat(format).format(d));
+        } catch (NumberFormatException ignored) {
 		}
 		return d;
 	}
