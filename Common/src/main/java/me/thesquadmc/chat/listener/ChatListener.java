@@ -11,8 +11,10 @@ import me.thesquadmc.utils.player.PlayerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 import java.util.Date;
 import java.util.Map;
@@ -76,22 +78,35 @@ public class ChatListener implements Listener {
                 e.setCancelled(true);
                 return;
             }
-
-            message = new ChatMessage(player,
-                    e.getMessage(),
-                    Bukkit.getServerName(),
-                    ChatMessage.ChatType.PUBLIC,
-                    new Date(),
-                    null
-            );
-
-
-            lastMessage.put(player.getUniqueId(), message);
-            plugin.getChatManager().addMessage(message);
-
-            for (String group : plugin.getVaultChat().getPlayerGroups(player)) {
-                Bukkit.broadcastMessage(group);
-            }
         }
+
+        ChatMessage message = new ChatMessage(player,
+                e.getMessage(),
+                Bukkit.getServerName(),
+                ChatMessage.ChatType.PUBLIC,
+                new Date(),
+                null
+        );
+
+        lastMessage.put(player.getUniqueId(), message);
+        plugin.getChatManager().addMessage(message);
+
+        for (String group : plugin.getVaultChat().getPlayerGroups(player)) {
+            Bukkit.broadcastMessage(plugin.getFileManager().getChatConfig().getString(group).replace("%player_name%", player.getDisplayName()));
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void on(PlayerCommandPreprocessEvent e) {
+        System.out.println(e.isCancelled());
+
+        plugin.getChatManager().addMessage(new ChatMessage(
+                e.getPlayer(),
+                e.getMessage(),
+                Bukkit.getServerName(),
+                ChatMessage.ChatType.COMMAND,
+                new Date(),
+                null
+        ));
     }
 }

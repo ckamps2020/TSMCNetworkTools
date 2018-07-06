@@ -49,14 +49,17 @@ public class ChatManager {
             }
 
             Multithreading.runAsync(() -> {
-                MongoCollection<Document> collection = plugin.getMongo().getCollection("messages");
-                BulkWriteResult result = collection.bulkWrite(bulk, new BulkWriteOptions().ordered(true));
+                System.out.println(bulk.size());
+                if (bulk.size() > 0) {
+                    MongoCollection<Document> collection = plugin.getMongo().getCollection("messages");
+                    BulkWriteResult result = collection.bulkWrite(bulk, new BulkWriteOptions().ordered(true));
 
-                if (result.getModifiedCount() <= 0) {
-                    plugin.getLogger().severe(MessageFormat.format("Failed insert for {0} messages: {1}", bulk.size(), result));
+                    if (result.getModifiedCount() <= 0) {
+                        plugin.getLogger().severe(MessageFormat.format("Failed insert for {0} messages: {1}", bulk.size(), result));
 
-                } else {
-                    plugin.getLogger().severe(MessageFormat.format("Insert for {0} messages to the database", bulk.size()));
+                    } else {
+                        plugin.getLogger().severe(MessageFormat.format("Inserted {0} chat messages to the database", bulk.size()));
+                    }
                 }
             });
 
@@ -64,6 +67,7 @@ public class ChatManager {
     }
 
     public void addMessage(ChatMessage message) {
+        System.out.println(message.toDocument());
         chatMessages.add(message);
     }
 

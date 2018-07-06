@@ -193,6 +193,9 @@ public final class Main extends JavaPlugin {
         fileManager = new FileManager(this);
         MySQL = new DatabaseManager(this, this);
 
+        setupEconomy();
+        setupChat();
+        setupPermissions();
 
         frozenInventory = new FrozenInventory();
         staffmodeInventory = new StaffmodeInventory();
@@ -325,6 +328,9 @@ public final class Main extends JavaPlugin {
 
     private boolean setupChat() {
         RegisteredServiceProvider<Chat> rsp = getServer().getServicesManager().getRegistration(Chat.class);
+        if (rsp == null) {
+            return false;
+        }
 
         vaultChat = rsp.getProvider();
         return vaultChat != null;
@@ -332,6 +338,9 @@ public final class Main extends JavaPlugin {
 
     private boolean setupPermissions() {
         RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
+        if (rsp == null) {
+            return false;
+        }
 
         vaultPermissions = rsp.getProvider();
         return vaultPermissions != null;
