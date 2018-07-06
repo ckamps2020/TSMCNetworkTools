@@ -239,81 +239,8 @@ public final class Main extends JavaPlugin {
         mysqldb = fileManager.getNetworkingConfig().getString("mysql.dbname");
         dbuser = fileManager.getNetworkingConfig().getString("mysql.dbuser");
         getLogger().info("[NetworkTools] Loading Redis PUB/SUB...");
-        redisHandler = new RedisHandler(this);
 
         uuidTranslator = new UUIDTranslator(this);
-        /*try {
-            ClassLoader previous = Thread.currentThread().getContextClassLoader();
-            Thread.currentThread().setContextClassLoader(main.getClassLoader());
-            poolConfig = new JedisPoolConfig();
-            poolConfig.setTestOnReturn(true);
-            poolConfig.setTestWhileIdle(true);
-            poolConfig.setMinIdle(20);
-            poolConfig.setMaxIdle(150);
-            poolConfig.setMaxTotal(150);
-            pool = new JedisPool(poolConfig, host, port, 40 * 1000, password);
-            //pool = new JedisPool(poolConfig, host, port, 40*1000);
-            jedis = pool.getResource();
-            Thread.currentThread().setContextClassLoader(previous);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        Multithreading.runAsync(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    j = new Jedis(host, port, 40 * 1000);
-                    j.auth(password);
-                    //j = new Jedis(host, port);
-                    j.connect();
-                    j.subscribe(new JedisPubSub() {
-                                    @Override
-                                    public void onMessage(String channel, String message) {
-                                        JedisTask task = gson.fromJson(message, JedisTask.class);
-                                        getRedisHandler().processRedisMessage(task, channel, message);
-                                    }
-                                },
-                            RedisChannels.ADMINCHAT.getChannelName(),
-                            RedisChannels.REQUEST_LIST.getChannelName(),
-                            RedisChannels.RETURN_REQUEST_LIST.getChannelName(),
-                            RedisChannels.STAFFCHAT.getChannelName(),
-                            RedisChannels.MANAGERCHAT.getChannelName(),
-                            RedisChannels.FIND.getChannelName(),
-                            RedisChannels.FOUND.getChannelName(),
-                            RedisChannels.ANNOUNCEMENT.getChannelName(),
-                            RedisChannels.STOP.getChannelName(),
-                            RedisChannels.WHITELIST.getChannelName(),
-                            RedisChannels.WHITELIST_ADD.getChannelName(),
-                            RedisChannels.WHITELIST_REMOVE.getChannelName(),
-                            RedisChannels.REPORTS.getChannelName(),
-                            RedisChannels.CLOSED_REPORTS.getChannelName(),
-                            RedisChannels.MONITOR_INFO.getChannelName(),
-                            RedisChannels.PROXY_RETURN.getChannelName(),
-                            RedisChannels.MONITOR_REQUEST.getChannelName(),
-                            RedisChannels.HEARTBEAT.getChannelName(),
-                            RedisChannels.FRIEND_ADD.getChannelName(),
-                            RedisChannels.FRIEND_REMOVE_INBOUND.getChannelName(),
-                            RedisChannels.FRIEND_REMOVE_OUTBOUND.getChannelName(),
-                            RedisChannels.FRIEND_CHAT.getChannelName(),
-                            RedisChannels.FRIEND_CHECK_REQUEST.getChannelName(),
-                            RedisChannels.FRIEND_RETURN_REQUEST.getChannelName(),
-                            RedisChannels.PARTY_JOIN_SERVER.getChannelName(),
-                            RedisChannels.PARTY_UPDATE.getChannelName(),
-                            RedisChannels.PARTY_DISBAND.getChannelName(),
-                            RedisChannels.LEAVE.getChannelName(),
-                            RedisChannels.LOGIN.getChannelName(),
-                            RedisChannels.RETURN_SERVER.getChannelName(),
-                            RedisChannels.STARTUP_REQUEST.getChannelName(),
-                            RedisChannels.SERVER_STATE.getChannelName(),
-                            RedisChannels.PLAYER_COUNT.getChannelName(),
-                            RedisChannels.DISCORD_STAFFCHAT_SERVER.getChannelName());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });*/
 
         redisManager = new RedisManager(host, port, password);
         redisManager.registerChannel(new FindChannel(this), RedisChannels.FIND, RedisChannels.FOUND, RedisChannels.REQUEST_LIST, RedisChannels.RETURN_REQUEST_LIST);
@@ -339,16 +266,13 @@ public final class Main extends JavaPlugin {
         });
 
         getLogger().info("[NetworkTools] Setting up BuycraftAPI...");
-        Multithreading.runAsync(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    //Buycraft buycraft = new Buycraft(fileManager.getNetworkingConfig().getString("buycraft.secret"));
-                    getLogger().info("[NetworkTools] BuycraftAPI setup and ready to go!");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    getLogger().severe("[NetworkTools] Unable to set up BuycraftAPI");
-                }
+        Multithreading.runAsync(() -> {
+            try {
+                //Buycraft buycraft = new Buycraft(fileManager.getNetworkingConfig().getString("buycraft.secret"));
+                getLogger().info("[NetworkTools] BuycraftAPI setup and ready to go!");
+            } catch (Exception e) {
+                e.printStackTrace();
+                getLogger().severe("[NetworkTools] Unable to set up BuycraftAPI");
             }
         });
 
@@ -372,39 +296,13 @@ public final class Main extends JavaPlugin {
         registerCommands();
 
         ServerUtils.calculateServerType();
-        Bukkit.getScheduler().scheduleAsyncRepeatingTask(this, () -> {
-            redisManager.sendMessage(RedisChannels.PLAYER_COUNT, RedisMesage.newMessage()
-                    .set(RedisArg.SERVER.getName(), Bukkit.getServerName())
-                    .set(RedisArg.COUNT.getName(), Bukkit.getOnlinePlayers().size()));
-            /*
-            Multithreading.runAsync(new Runnable() {
-                @Override
-                public void run() {
-                    try (Jedis jedis = Main.getMain().getPool().getResource()) {
-                        JedisTask.withName(UUID.randomUUID().toString())
-                                .withArg(RedisArg.SERVER.getArg(), Bukkit.getServerName())
-                                .withArg(RedisArg.COUNT.getArg(), Bukkit.getOnlinePlayers().size())
-                                .send(RedisChannels.PLAYER_COUNT.getChannelName(), jedis);
-                    }
-                }
-            });*/
-
-        }, 20L, 20L);
+        Bukkit.getScheduler().scheduleAsyncRepeatingTask(this, () -> redisManager.sendMessage(RedisChannels.PLAYER_COUNT, RedisMesage.newMessage()
+                .set(RedisArg.SERVER.getName(), Bukkit.getServerName())
+                .set(RedisArg.COUNT.getName(), Bukkit.getOnlinePlayers().size())), 20L, 20L);
 
         if (serverType.startsWith(ServerType.MINIGAME_HUB)) {
             redisManager.sendMessage(RedisChannels.STARTUP_REQUEST, RedisMesage.newMessage()
                     .set(RedisArg.SERVER, "ALL"));
-            /*
-            Multithreading.runAsync(new Runnable() {
-                @Override
-                public void run() {
-                    try (Jedis jedis = Main.getMain().getPool().getResource()) {
-                        JedisTask.withName(UUID.randomUUID().toString())
-                                .withArg(RedisArg.SERVER.getArg(), "ALL")
-                                .send(RedisChannels.STARTUP_REQUEST.getChannelName(), jedis);
-                    }
-                }
-            }); */
         }
 
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> BarUtils.getPlayers().forEach(nmsAbstract.getBossBarManager()::teleportBar), 1, 20L);
