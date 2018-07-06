@@ -98,11 +98,9 @@ import me.thesquadmc.networking.redis.channels.PartyChannel;
 import me.thesquadmc.networking.redis.channels.ServerManagementChannel;
 import me.thesquadmc.networking.redis.channels.StaffChatChannels;
 import me.thesquadmc.networking.redis.channels.WhitelistChannel;
-import me.thesquadmc.objects.TSMCUser;
 import me.thesquadmc.utils.command.CommandHandler;
 import me.thesquadmc.utils.enums.RedisArg;
 import me.thesquadmc.utils.enums.RedisChannels;
-import me.thesquadmc.utils.enums.Settings;
 import me.thesquadmc.utils.file.FileManager;
 import me.thesquadmc.utils.handlers.UpdateHandler;
 import me.thesquadmc.utils.inventory.builder.AbstractGUI;
@@ -124,10 +122,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.SQLException;
 import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -155,8 +149,6 @@ public final class Main extends JavaPlugin {
 
     private String version;
     private String serverType = "UNKNOWN";
-    private int chatslow = 0;
-    private boolean chatSilenced = false;
     private String serverState = ServerState.LOADING;
 
     private FileManager fileManager;
@@ -188,10 +180,6 @@ public final class Main extends JavaPlugin {
     private String dbuser;
 
     private RedisManager redisManager;
-
-    private Map<UUID, List<String>> friends = new HashMap<>();
-    private Map<UUID, List<String>> requests = new HashMap<>();
-    private Map<UUID, Map<Settings, Boolean>> settings = new HashMap<>();
 
     @Override
     public void onEnable() {
@@ -433,51 +421,8 @@ public final class Main extends JavaPlugin {
         return dbuser;
     }
 
-    /**
-     * @deprecated Legacy API. See {@link TSMCUser#getFriends()}
-     */
-    public Map<UUID, List<String>> getFriends() {
-        return friends;
-    }
-
-    /**
-     * @deprecated Legacy API. See {@link TSMCUser#getRequests()}
-     */
-    @Deprecated
-    public Map<UUID, List<String>> getRequests() {
-        return requests;
-    }
-
-    /**
-     * @deprecated Legacy API. See {@link TSMCUser#getSetting(me.thesquadmc.objects.PlayerSetting)}
-     */
-    @Deprecated
-    public Map<UUID, Map<Settings, Boolean>> getSettings() {
-        return settings;
-    }
-
-    //  public Jedis getJedis() {
-    //      return jedis;
-    // }
-
     public CommandHandler getCommandHandler() {
         return commandHandler;
-    }
-
-    public int getChatslow() {
-        return chatslow;
-    }
-
-    public void setChatslow(int chatslow) {
-        this.chatslow = chatslow;
-    }
-
-    public boolean isChatSilenced() {
-        return chatSilenced;
-    }
-
-    public void setChatSilenced(boolean chatSilenced) {
-        this.chatSilenced = chatSilenced;
     }
 
     public String getValue() {
@@ -527,14 +472,6 @@ public final class Main extends JavaPlugin {
 
     public LuckPermsApi getLuckPermsApi() {
         return luckPermsApi;
-    }
-
-    /**
-     * @deprecated Legacy API. See {@link TSMCUser}
-     */
-    @Deprecated
-    public TempDataManager getTempDataManager() {
-        return tempDataManager;
     }
 
     public FileManager getFileManager() {
