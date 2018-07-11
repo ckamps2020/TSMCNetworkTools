@@ -1233,6 +1233,7 @@ public final class StringUtils {
 		curses.add("sb-");
 		curses.add(",cz");
 		curses.add(".nu");
+		curses.add(".fun");
 
 		curses.add("[{");
 		curses.add("}]");
