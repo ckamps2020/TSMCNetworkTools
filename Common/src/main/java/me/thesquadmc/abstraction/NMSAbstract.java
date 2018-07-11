@@ -168,6 +168,14 @@ public interface NMSAbstract {
     void sendTitle(Player player, String title, String subtitle, int in, int stay, int out);
 
 	/**
+	 * Sends a message to a specified player
+	 *
+	 * @param player  the player who will recieve this message
+	 * @param message the message to send
+	 */
+	void sendMessage(Player player, String message);
+
+	/**
 	 * Send a title to all players on the server
 	 * 
 	 * @param title the title to send

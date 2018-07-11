@@ -72,6 +72,7 @@ public final class FileUtils {
 	public static YamlConfiguration getConfig(String name) {
 		File file = new File(Main.getMain().getDataFolder(), name + ".yml");
 		if (!file.exists()) {
+			System.out.println("Saving chat.yml");
 			file.getParentFile().mkdirs();
 			Main.getMain().saveResource(name + ".yml", false);
 		}

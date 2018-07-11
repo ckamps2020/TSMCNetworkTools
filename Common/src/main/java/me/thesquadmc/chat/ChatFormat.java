@@ -3,7 +3,6 @@ package me.thesquadmc.chat;
 import me.thesquadmc.fanciful.FancyMessage;
 import me.thesquadmc.utils.msgs.CC;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
@@ -34,11 +33,6 @@ public class ChatFormat {
     private final String suffix;
 
     /**
-     * The chat color for the player's name
-     */
-    private final String nameColor;
-
-    /**
      * The chat color the player's message
      */
     private final String chatColor;
@@ -55,13 +49,12 @@ public class ChatFormat {
      */
     private final List<String> nameToolTip;
 
-    public ChatFormat(int priority, String key, String prefix, String suffix, String nameColor, String chatColor, String nameSuggestCommand, List<String> nameToolTip) {
+    public ChatFormat(int priority, String key, String prefix, String suffix, String chatColor, String nameSuggestCommand, List<String> nameToolTip) {
         this.priority = priority;
         this.key = key;
 
         this.prefix = CC.translate(prefix);
         this.suffix = CC.translate(suffix);
-        this.nameColor = CC.translate(nameColor);
         this.chatColor = CC.translate(chatColor);
         this.nameSuggestCommand = CC.translate(nameSuggestCommand);
         this.nameToolTip = nameToolTip.stream().map(CC::translate).collect(Collectors.toList());
@@ -90,10 +83,6 @@ public class ChatFormat {
         return suffix;
     }
 
-    public String getNameColor() {
-        return nameColor;
-    }
-
     public String getChatColor() {
         return chatColor;
     }
@@ -109,24 +98,19 @@ public class ChatFormat {
     public FancyMessage toFancyMessage(Player sender, String message) {
         FancyMessage fancyMessage = new FancyMessage();
 
-        if (prefix != null && !prefix.isEmpty()) {
-            fancyMessage.text(prefix)
-                    .suggest(nameSuggestCommand)
-                    .tooltip(nameToolTip);
-        }
-
-        fancyMessage.then();
-        fancyMessage.text(" " + nameColor + sender.getDisplayName() + " ")
+        fancyMessage
+                .text(prefix.replace("%display_name%", sender.getName()))
                 .suggest(nameSuggestCommand)
                 .tooltip(nameToolTip);
 
-        if (suffix != null && !suffix.isEmpty()) {
-            fancyMessage.text(suffix)
-                    .suggest(nameSuggestCommand)
-                    .tooltip(nameToolTip);
-        }
+        fancyMessage.then();
+
+        fancyMessage.text(suffix)
+                .suggest(nameSuggestCommand)
+                .tooltip(nameToolTip);
 
         fancyMessage.then();
+
         fancyMessage.text(" " + chatColor + message);
 
         return fancyMessage;

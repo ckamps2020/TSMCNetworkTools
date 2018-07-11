@@ -1,13 +1,9 @@
 package me.thesquadmc.chat.listener;
 
 import com.google.common.collect.Maps;
-import me.lucko.luckperms.api.Contexts;
-import me.lucko.luckperms.api.Group;
-import me.lucko.luckperms.api.caching.MetaData;
 import me.thesquadmc.Main;
 import me.thesquadmc.chat.ChatFormat;
 import me.thesquadmc.chat.ChatMessage;
-import me.thesquadmc.fanciful.FancyMessage;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.msgs.CC;
 import me.thesquadmc.utils.msgs.FormatUtil;
@@ -22,7 +18,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
@@ -108,7 +103,9 @@ public class ChatListener implements Listener {
         e.setCancelled(true);
 
         ChatFormat format = plugin.getChatManager().getPlayerFormat(player);
-        format.toFancyMessage(player, message).send(Bukkit.getOnlinePlayers()); //TODO Check if the player is ignored
+        String json = format.toFancyMessage(player, message).toJSONString();
+
+        Bukkit.getOnlinePlayers().forEach(p -> plugin.getNMSAbstract().sendMessage(player, json)); //TODO Check if the player is ignored
 
         lastMessage.put(player.getUniqueId(), chatMessage);
         plugin.getChatManager().addMessage(chatMessage);

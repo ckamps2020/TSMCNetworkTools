@@ -1,3 +1,18 @@
-owner: "OWNER >> %player_name%"
-developer: "DEVELOPER >> %player_name%"
-admin: "ADMIN >> %player_name%"
+formats:
+  owner:
+    priority: 1
+    prefix: "&c&lOWNER %display_name%"
+    suffix: "&7: "
+    chatColor: "&c"
+
+  developer:
+    priority: 2
+    prefix: "&c&lDEVELOPER %display_name%"
+    suffix: "&7: "
+    chatColor: "&c"
+
+  admin:
+    priority: 3
+    prefix: "&c&lADMIN %display_name%"
+    suffix: "&7: "
+    chatColor: "&c"

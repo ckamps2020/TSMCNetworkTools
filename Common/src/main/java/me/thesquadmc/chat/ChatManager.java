@@ -43,7 +43,9 @@ public class ChatManager {
         Bukkit.getPluginManager().registerEvents(new ChatListener(plugin), plugin);
 
         chatConfig = FileUtils.getConfig("chat");
-        loadFormats();
+
+        int loaded = loadFormats();
+        plugin.getLogger().info(MessageFormat.format("Loaded in {0} formats", loaded));
 
         Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> {
             List<UpdateOneModel<Document>> bulk = Lists.newArrayList();
@@ -64,7 +66,6 @@ public class ChatManager {
             }
 
             Multithreading.runAsync(() -> {
-                System.out.println(bulk.size());
                 if (bulk.size() > 0) {
                     MongoCollection<Document> collection = plugin.getMongo().getCollection("messages");
                     BulkWriteResult result = collection.bulkWrite(bulk, new BulkWriteOptions().ordered(true));
@@ -91,33 +92,37 @@ public class ChatManager {
 
         formats.clear();
 
+        conf.getKeys(false).forEach(System.out::println);
+
         if (!conf.contains("formats") || !conf.isConfigurationSection("formats")) {
             return 0;
         }
 
-        for (String keys : conf.getKeys(false)) {
-            String key = "formats." + keys;
+        for (String keys : conf.getConfigurationSection("formats").getKeys(false)) {
+            String path = "formats." + keys + ".";
 
-            if (!conf.contains(key + "priority")) {
+            if (!conf.contains(path + "priority")) {
                 plugin.getLogger().severe("There was no priority, skipping...");
                 continue;
             }
 
-            int priority = conf.getInt(key + "priority", -1);
+            int priority = conf.getInt(path + "priority");
 
-            String prefix = conf.getString(key + "prefix", "");
-            String suffix = conf.getString(key + "suffix", "");
-            String chatColor = conf.getString(key + "chatColor", "&7");
-            String nameClickCommand = conf.getString(key + "name_click_command", "/msg %player_name%");
+            String prefix = conf.getString(path + "prefix", "%display_name%");
+            String suffix = conf.getString(path + "suffix", "");
+            String chatColor = conf.getString(path + "chatColor", "&7");
+            String nameClickCommand = conf.getString(path + "name_click_command", "/msg %player_name%");
 
-            List<String> nameToolTip = conf.getStringList(key + "name_tooltip");
+            List<String> nameToolTip = conf.getStringList(path + "name_tooltip");
+
+            System.out.println(keys);
 
             ChatFormat format = formats.put(priority, new ChatFormat(
                     priority,
-                    key,
+                    keys,
                     prefix,
                     suffix,
-                    nameColor, chatColor,
+                    chatColor,
                     nameClickCommand,
                     nameToolTip
             ));
@@ -144,12 +149,11 @@ public class ChatManager {
             format = new ChatFormat(
                     Integer.MAX_VALUE,
                     "default",
-                    "",
-                    "&7:",
-                    nameColor, "&7",
+                    "&7%display_name%",
+                    "&7: ",
+                    "&7",
                     "/msg %player_name% ",
                     Lists.newArrayList()
-
             );
         }
 
@@ -176,7 +180,6 @@ public class ChatManager {
      * @param message the message to store
      */
     public void addMessage(ChatMessage message) {
-        System.out.println(message.toDocument());
         chatMessages.add(message);
     }
 

@@ -1,42 +1,16 @@
 package me.thesquadmc.abstraction.v1_8_R3;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutput;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.lang.reflect.Field;
-import java.math.BigInteger;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-
+import me.thesquadmc.abstraction.BossBarManager;
+import me.thesquadmc.abstraction.HumanNPC;
+import me.thesquadmc.abstraction.MobNPC;
+import me.thesquadmc.abstraction.MojangGameProfile;
+import me.thesquadmc.abstraction.NMSAbstract;
+import me.thesquadmc.abstraction.ProfileProperty;
 import me.thesquadmc.utils.json.JSONUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.craftbukkit.v1_8_R3.CraftServer;
-import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftLivingEntity;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-
+import me.thesquadmc.utils.msgs.CC;
+import me.thesquadmc.utils.server.ServerProperty;
 import net.minecraft.server.v1_8_R3.EntityHorse;
 import net.minecraft.server.v1_8_R3.EntityHuman;
 import net.minecraft.server.v1_8_R3.EntityLiving;
@@ -56,16 +30,38 @@ import net.minecraft.server.v1_8_R3.PacketPlayOutWorldBorder;
 import net.minecraft.server.v1_8_R3.PacketPlayOutWorldBorder.EnumWorldBorderAction;
 import net.minecraft.server.v1_8_R3.PlayerConnection;
 import net.minecraft.server.v1_8_R3.WorldBorder;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.craftbukkit.v1_8_R3.CraftServer;
+import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
-import me.thesquadmc.Main;
-import me.thesquadmc.abstraction.BossBarManager;
-import me.thesquadmc.abstraction.HumanNPC;
-import me.thesquadmc.abstraction.MobNPC;
-import me.thesquadmc.abstraction.MojangGameProfile;
-import me.thesquadmc.abstraction.NMSAbstract;
-import me.thesquadmc.abstraction.ProfileProperty;
-import me.thesquadmc.utils.msgs.CC;
-import me.thesquadmc.utils.server.ServerProperty;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutput;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.lang.reflect.Field;
+import java.math.BigInteger;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class NMSAbstract1_8_R3 implements NMSAbstract {
 
@@ -196,6 +192,13 @@ public class NMSAbstract1_8_R3 implements NMSAbstract {
         connection.sendPacket(titlePacket);
         connection.sendPacket(subtitlePacket);
         connection.sendPacket(timingsPacket);
+    }
+
+    @Override
+    public void sendMessage(Player player, String message) {
+        final PacketPlayOutChat packet = new PacketPlayOutChat(IChatBaseComponent.ChatSerializer.a(message));
+
+        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
     }
 
     @Override
