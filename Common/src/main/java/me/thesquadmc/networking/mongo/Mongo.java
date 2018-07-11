@@ -29,7 +29,6 @@ public final class Mongo {
             UUID uuid = (UUID) objectToTransform;
             BsonDocument holder = new BsonDocument();
 
-            // Use UUIDCodec to encode the UUID using binary subtype 4
             BsonDocumentWriter writer = new BsonDocumentWriter(holder);
             writer.writeStartDocument();
             writer.writeName("uuid");
@@ -39,7 +38,6 @@ public final class Mongo {
             BsonBinary bsonBinary = holder.getBinary("uuid");
             return new Binary(bsonBinary.getType(), bsonBinary.getData());
         });
-
     }
 
     private MongoClient mongoClient;

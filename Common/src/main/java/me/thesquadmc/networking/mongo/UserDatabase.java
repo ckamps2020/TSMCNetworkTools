@@ -24,7 +24,6 @@ public interface UserDatabase {
     String MONITOR = "monitor";
     String REPORTS = "reports";
     String FORCEFIELD = "forcefield";
-    String NICKNAMED = "nicknamed";
 
     String SKIN_KEY = "skinKey";
     String SIGNATURE = "signature";

@@ -15,8 +15,6 @@ public final class FileManager {
     private File networkingFile;
     private FileConfiguration networkingConfig;
 
-    private YamlConfiguration chatConfig;
-
     public FileManager(Main main) {
         this.plugin = main;
     }
@@ -77,43 +75,10 @@ public final class FileManager {
             System.out.println("[NetworkTools] Reloading networking config...");
             reloadNetworkingConfig();
         }
-
-        chatConfig = getConfig("chat");
-        System.out.println("[NetworkTools] File Manager setup and loaded!");
-    }
-
-    private YamlConfiguration getConfig(String name) {
-        File file = new File(plugin.getDataFolder(), name + ".yml");
-        if (!file.exists()) {
-            file.getParentFile().mkdirs();
-            plugin.saveResource(name + ".yml", false);
-        }
-
-        YamlConfiguration config = new YamlConfiguration();
-        try {
-            config.load(file);
-        } catch (IOException | InvalidConfigurationException e) {
-            e.printStackTrace();
-        }
-
-        return config;
-    }
-
-    public void saveDefaultConfig(File config) {
-        if (config == null) {
-            config = new File(plugin.getDataFolder(), config.getName() + ".yml");
-        }
-        if (!config.exists()) {
-            plugin.saveResource(config.getName() + ".yml", false);
-        }
     }
 
     public FileConfiguration getNetworkingConfig() {
         return this.networkingConfig;
-    }
-
-    public YamlConfiguration getChatConfig() {
-        return chatConfig;
     }
 
     public void saveNetworkingConfig() {

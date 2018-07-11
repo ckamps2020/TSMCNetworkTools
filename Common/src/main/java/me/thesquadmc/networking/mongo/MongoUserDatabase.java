@@ -47,9 +47,9 @@ public class MongoUserDatabase implements UserDatabase {
     @Override
     public CompletableFuture<Void> saveUser(TSMCUser user) {
         return CompletableFuture.runAsync(() -> {
-            Document prisonUser = users.find(eq("_id", user.getUuid())).first();
+            Document document = users.find(eq("_id", user.getUuid())).first();
 
-            if (prisonUser != null) {
+            if (document != null) {
                 users.replaceOne(eq("_id", user.getUuid()), TSMCUser.toDocument(user));
 
             } else {

@@ -1,5 +1,9 @@
 package me.thesquadmc.utils.file;
 
+import me.thesquadmc.Main;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -62,6 +66,32 @@ public final class FileUtils {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
+		}
+	}
+
+	public static YamlConfiguration getConfig(String name) {
+		File file = new File(Main.getMain().getDataFolder(), name + ".yml");
+		if (!file.exists()) {
+			file.getParentFile().mkdirs();
+			Main.getMain().saveResource(name + ".yml", false);
+		}
+
+		YamlConfiguration config = new YamlConfiguration();
+		try {
+			config.load(file);
+		} catch (IOException | InvalidConfigurationException e) {
+			e.printStackTrace();
+		}
+
+		return config;
+	}
+
+	public static void saveDefaultConfig(File config) {
+		if (config == null) {
+			config = new File(Main.getMain().getDataFolder(), config.getName() + ".yml");
+		}
+		if (!config.exists()) {
+			Main.getMain().saveResource(config.getName() + ".yml", false);
 		}
 	}
 
