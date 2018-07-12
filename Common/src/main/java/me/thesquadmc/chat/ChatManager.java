@@ -115,8 +115,6 @@ public class ChatManager {
 
             List<String> nameToolTip = conf.getStringList(path + "name_tooltip");
 
-            System.out.println(keys);
-
             ChatFormat format = formats.put(priority, new ChatFormat(
                     priority,
                     keys,

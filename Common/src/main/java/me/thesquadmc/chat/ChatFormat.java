@@ -1,5 +1,6 @@
 package me.thesquadmc.chat;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import me.thesquadmc.fanciful.FancyMessage;
 import me.thesquadmc.utils.msgs.CC;
 import org.bukkit.Bukkit;
@@ -98,16 +99,20 @@ public class ChatFormat {
     public FancyMessage toFancyMessage(Player sender, String message) {
         FancyMessage fancyMessage = new FancyMessage();
 
+        String name = prefix.replace("%display_name%", sender.getName());
+        String suggest = PlaceholderAPI.setPlaceholders(sender, nameSuggestCommand);
+        List<String> tooltip = PlaceholderAPI.setPlaceholders(sender, nameToolTip);
+
         fancyMessage
-                .text(prefix.replace("%display_name%", sender.getName()))
-                .suggest(nameSuggestCommand)
-                .tooltip(nameToolTip);
+                .text(PlaceholderAPI.setPlaceholders(sender, name))
+                .suggest(suggest)
+                .tooltip(tooltip);
 
         fancyMessage.then();
 
-        fancyMessage.text(suffix)
-                .suggest(nameSuggestCommand)
-                .tooltip(nameToolTip);
+        fancyMessage.text(PlaceholderAPI.setPlaceholders(sender, suffix))
+                .suggest(suggest)
+                .tooltip(tooltip);
 
         fancyMessage.then();
 
