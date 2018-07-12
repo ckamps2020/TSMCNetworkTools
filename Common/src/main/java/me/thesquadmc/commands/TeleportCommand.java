@@ -38,8 +38,13 @@ public class TeleportCommand {
                     }
 
                     teleport((Player) sender, target);
-                    break;
+                    sender.sendMessage(CC.B_YELLOW + "TELEPORT " + Unicode.SQUARE + CC.GRAY + " You teleported to " + target.getName());
+
+                } else {
+                    sender.sendMessage(CC.RED + "You must be a player to teleport yourself!");
                 }
+
+                break;
             }
 
             case 2: {
@@ -58,15 +63,19 @@ public class TeleportCommand {
 
                     teleport(toTeleport, where);
                     sender.sendMessage(CC.B_YELLOW + "TELEPORT " + Unicode.SQUARE + CC.GRAY + " Teleported " + toTeleport.getName() + " to " + where.getName());
-                    break;
+
+                } else {
+                    sender.sendMessage(CC.RED + "You cannot teleport to other players!");
                 }
+
+                break;
             }
 
             case 3: {
                 if (sender instanceof Player) {
                     int x = NumberUtils.toInt(args.getArg(0), DEFAUFT);
-                    int y = NumberUtils.toInt(args.getArg(0), DEFAUFT);
-                    int z = NumberUtils.toInt(args.getArg(0), DEFAUFT);
+                    int y = NumberUtils.toInt(args.getArg(1), DEFAUFT);
+                    int z = NumberUtils.toInt(args.getArg(2), DEFAUFT);
 
                     if (x == DEFAUFT || y == DEFAUFT || z == DEFAUFT) {
                         sender.sendMessage(CC.RED + "Not valid coordinates! /tp <x> <y> <z>");
@@ -75,12 +84,16 @@ public class TeleportCommand {
 
                     Location location = new Location(((Player) sender).getWorld(), x, y, z);
                     ((Player) sender).teleport(location);
-                    break;
+
+                } else {
+                    sender.sendMessage(CC.RED + "Console cannot teleport to coordinates");
                 }
+
+                break;
             }
 
             default: {
-                sender.sendMessage(CC.B_YELLOW + "TELEPORT " + Unicode.SQUARE + CC.GRAY + " Uh oh, something went wrong!");
+                sender.sendMessage(CC.B_YELLOW + "TELEPORT " + Unicode.SQUARE + CC.GRAY + " Uh oh, something went wrong! /tp <player> [player]");
             }
         }
     }

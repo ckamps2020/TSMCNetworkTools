@@ -1,5 +1,6 @@
 package me.thesquadmc.commands;
 
+import com.google.common.collect.Lists;
 import com.google.common.primitives.Ints;
 import me.thesquadmc.utils.command.Command;
 import me.thesquadmc.utils.command.CommandArgs;
@@ -8,12 +9,18 @@ import me.thesquadmc.utils.msgs.CC;
 import me.thesquadmc.utils.msgs.Unicode;
 import me.thesquadmc.utils.player.ExpUtil;
 import me.thesquadmc.utils.player.LocationUtil;
+import me.thesquadmc.utils.server.Mob;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.text.MessageFormat;
+import java.util.Collections;
+import java.util.List;
 
 public class EssentialCommands {
 
@@ -166,6 +173,138 @@ public class EssentialCommands {
         }
     }
 
+    @Command(name = {"spawnmob"}, permission = "essentials.spawnmob", playerOnly = true)
+    public void spawnMob(CommandArgs args) {
+        Player player = args.getPlayer();
+
+        if (args.length() == 0) {
+            player.sendMessage(CC.RED + "/spawnmob <mob>");
+            return;
+        }
+
+        Integer amount = 1;
+        if (args.length() > 1) {
+            amount = Ints.tryParse(args.getArg(1));
+            if (amount == null) {
+                amount = 1;
+            }
+        }
+
+        Mob mob = Mob.fromName(args.getArg(0));
+        if (mob == null) {
+            player.sendMessage(CC.RED + args.getArg(0) + " is not a valid mob!");
+            player.sendMessage(CC.RED + "Valid mobs: " + String.join(", ", Mob.getMobList()));
+            return;
+        }
+
+        try {
+            Location location = LocationUtil.getSafeDestination(player.getLocation());
+
+            for (int x = 0; x <= amount; x++) {
+                mob.spawn(player.getWorld(), location);
+            }
+        } catch (Mob.MobException e) {
+            player.sendMessage(CC.RED + "Something went wrong with spawning the mobs in, do they exist?");
+        }
+    }
+
+    @Command(name = {"walkspeed"}, permission = "essentials.speed", playerOnly = true)
+    public void walkSpeed(CommandArgs args) {
+        Player player = args.getPlayer();
+
+        if (args.length() == 0) {
+            player.sendMessage(CC.RED + "/walkspeed <speed>");
+            return;
+        }
+
+        Integer speed = Ints.tryParse(args.getArg(0));
+        if (speed == null) {
+            player.sendMessage(CC.RED + "Could not parse " + args.getArg(0) + " as an integer!");
+            return;
+        }
+
+        if (speed < 0) {
+            player.sendMessage(CC.RED + "Speed cannot be less than 0!");
+            return;
+        }
+
+        // No more than 10
+        if (speed > 10) {
+            speed = 10;
+        }
+
+        player.setWalkSpeed(speed.floatValue());
+    }
+
+    @Command(name = {"flyspeed"}, permission = "essentials.speed", playerOnly = true)
+    public void flySpeed(CommandArgs args) {
+        Player player = args.getPlayer();
+
+        if (args.length() == 0) {
+            player.sendMessage(CC.RED + "/walkspeed <speed>");
+            return;
+        }
+
+        Integer speed = Ints.tryParse(args.getArg(0));
+        if (speed == null) {
+            player.sendMessage(CC.RED + "Could not parse " + args.getArg(0) + " as an integer!");
+            return;
+        }
+
+        if (speed < 0) {
+            player.sendMessage(CC.RED + "Speed cannot be less than 0!");
+            return;
+        }
+
+        // No more than 10
+        if (speed > 10) {
+            speed = 10;
+        }
+
+        player.setFlySpeed(speed.floatValue());
+    }
+
+    @Command(name = {"repair"}, permission = "essentials.repair", playerOnly = true)
+    public void repair(CommandArgs args) {
+        Player player = args.getPlayer();
+
+        if (args.length() > 1 && player.hasPermission("essentials.repair.all")) {
+            List<ItemStack> items = Lists.newArrayList();
+            Collections.addAll(items, player.getInventory().getContents());
+            Collections.addAll(items, player.getInventory().getArmorContents());
+
+            for (ItemStack itemStack : items) {
+                if (itemStack == null || itemStack.getType() == Material.AIR) return;
+
+
+                itemStack.setDurability((short) 0);
+                player.sendMessage(CC.translate("&e&lEXP &6■ &7Repaired all your items"));
+            }
+
+        } else {
+            ItemStack held = player.getInventory().getItemInHand();
+
+            if (held == null || held.getType() == Material.AIR) {
+                player.sendMessage(CC.RED + "You must be holding an item!");
+                return;
+            }
+
+            String name = formatName(held.getType());
+            if (held.hasItemMeta() && held.getItemMeta().hasDisplayName()) {
+                name = held.getItemMeta().getDisplayName();
+            }
+
+            if (held.getDurability() == 0) {
+                player.sendMessage(name + CC.RED + " is already at full durability!");
+                return;
+            }
+
+            held.setDurability((short) 0);
+            player.sendMessage(CC.translate("&e&lEXP &6■ &7Repaired " + name));
+        }
+    }
+
+
     @Command(name = {"exp", "xp"}, permission = "essentials.exp", playerOnly = true)
     public void xp(CommandArgs args) {
         Player player = args.getPlayer();
@@ -208,7 +347,7 @@ public class EssentialCommands {
         ExpUtil.resetEXP(player);
         player.giveExp(exp);
 
-        sender.sendMessage(CC.translate(MessageFormat.format("&e&lEXP &6■ &7Set &e{0}'s &7exp to &e{1}", player.getName(), exp)));
+        sender.sendMessage(CC.translate(MessageFormat.format("&e&lEXP &6■ &7Set &e{0}'s &7exp to &e{1}", player.getName(), exp.toString())));
     }
 
     @Command(name = {"exp give", "xp give"}, permission = "essentials.exp.give")
@@ -238,6 +377,22 @@ public class EssentialCommands {
         player.giveExp(expToGive);
 
         sender.sendMessage(CC.translate(MessageFormat.format("&e&lEXP &6■ &7You gave &e{0} {1} &7exp", player.getName(), exp)));
+    }
+
+    private void repair(Player player) {
+
+    }
+
+    private String formatName(Material material) {
+        String[] names = material.name().split("_");
+
+        StringBuilder sb = new StringBuilder();
+        for (String name : names) {
+            sb.append(StringUtils.capitalize(name.toLowerCase())).append(" ");
+        }
+
+        sb.trimToSize();
+        return sb.toString();
     }
 
     private void clearInventory(Player player) {
