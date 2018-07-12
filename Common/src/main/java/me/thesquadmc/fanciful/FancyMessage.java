@@ -12,6 +12,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
+
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -222,7 +223,11 @@ public class FancyMessage implements JsonRepresentedObject, Cloneable, Iterable<
 	 * @return This builder instance.
 	 */
 	public FancyMessage tooltip(final String text) {
-		onHover("show_text", new JsonString(text));
+		if (text == null || text.isEmpty()) {
+			return this;
+		}
+
+		onHover("show_text", new JsonString(text.trim()));
 		return this;
 	}
 

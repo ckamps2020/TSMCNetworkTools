@@ -1,5 +1,7 @@
 package me.thesquadmc;
 
+import me.clip.placeholderapi.PlaceholderAPIPlugin;
+import me.clip.placeholderapi.expansion.cloud.CloudExpansion;
 import me.gong.mcleaks.MCLeaksAPI;
 import me.lucko.luckperms.LuckPerms;
 import me.lucko.luckperms.api.LuckPermsApi;
@@ -300,7 +302,12 @@ public final class Main extends JavaPlugin {
                 new TeleportCommand(),
                 new HealCommand()
         ).forEach(o -> commandHandler.registerCommands(o));
-        commandHandler.registerHelp();
+
+        PlaceholderAPIPlugin plugin = PlaceholderAPIPlugin.getInstance();
+        CloudExpansion playerExpansion = plugin.getExpansionCloud().getCloudExpansion("Player");
+        if (playerExpansion != null) {
+            plugin.getExpansionCloud().downloadExpansion(null, playerExpansion, playerExpansion.getLatestVersion());
+        }
 
         getLogger().info("[NetworkTools] Plugin started up and ready to go!");
     }
