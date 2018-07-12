@@ -138,6 +138,10 @@ public final class PlayerUtils {
 		return false;
 	}
 
+	public static boolean isDonator(Player player) {
+		return player.hasPermission("group.donator");
+	}
+
 	public static void addPlayerPermission(Player player, String perm) {
 		Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "lp user " + player.getName() + " permission set " + perm + " true");
 	}

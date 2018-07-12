@@ -21,6 +21,12 @@ public final class StringUtils {
 
 	public static Map<UUID, String> lastMsg = new HashMap<>();
 	public static Map<String, ArrayList<String>> logs = new HashMap<>();
+	private static String[] ads = new String[] {
+			"Enjoy playing on TheSquadMC? Consider donating and support us today!",
+			"Having fun? I promise you will have even more fun with some of the items we have on our store!",
+			"Ever need a boost, or something to get you over the edge? Think about checking out our store to pick up some amazing new items!",
+			"Want to help out your favorite server? Consider checking out the store and donating today!"
+	};
 
 	public StringUtils() {
 		populate();
@@ -32,6 +38,12 @@ public final class StringUtils {
 
 	public static Map<UUID, String> getLastMsg() {
 		return lastMsg;
+	}
+
+	public static String getRandomAd() {
+		Random random = new Random();
+		int selection = random.nextInt(ads.length);
+		return ads[selection];
 	}
 
 	public static String getDate() {
@@ -183,12 +195,12 @@ public final class StringUtils {
 				ConnectionUtils.sendPlayer(player, "CREATIVE", true);
 				return true;
 			case "/HUB":
-				int i = MathUtils.random(1, 12);
+				int i = MathUtils.random(1, 6);
 				String s = "HUB-" + i;
 				ConnectionUtils.sendPlayer(player, s, true);
 				return true;
 			case "/LOBBY":
-				int h = MathUtils.random(1, 12);
+				int h = MathUtils.random(1, 6);
 				String b = "HUB-" + h;
 				ConnectionUtils.sendPlayer(player, b, true);
 				return true;
@@ -1233,6 +1245,7 @@ public final class StringUtils {
 		curses.add("sb-");
 		curses.add(",cz");
 		curses.add(".nu");
+		curses.add(".fun");
 
 		curses.add("[{");
 		curses.add("}]");

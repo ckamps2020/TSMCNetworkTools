@@ -15,8 +15,12 @@ public final class FireworkCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            EntityUtils.launchRandomFirework(player.getLocation(), false);
-            player.sendMessage(CC.translate("&e&lFIREWORK &6■ &7BOOM!"));
+            if (PlayerUtils.isEqualOrHigherThen(player, Rank.ADMIN)) {
+                EntityUtils.launchRandomFirework(player.getLocation(), false);
+                player.sendMessage(CC.translate("&e&lFIREWORK &6■ &7BOOM!"));
+            } else {
+                player.sendMessage(CC.translate("&e&lPERMISSIONS &6■ &7You do not have permission to use this command!"));
+            }
         }
         return true;
     }

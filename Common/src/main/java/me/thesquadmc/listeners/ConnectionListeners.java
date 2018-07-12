@@ -92,6 +92,17 @@ public final class ConnectionListeners implements Listener {
                 }
             }
         }, 3L);
+
+        Bukkit.getScheduler().runTaskLater(main, new Runnable() {
+            @Override
+            public void run() {
+                if (Bukkit.getServerName().toUpperCase().startsWith("SKYBLOCK")) {
+
+                } else if (Bukkit.getServerName().toUpperCase().startsWith("HUB")) {
+                    
+                }
+            }
+        }, 40L);
     }
 
     @EventHandler
