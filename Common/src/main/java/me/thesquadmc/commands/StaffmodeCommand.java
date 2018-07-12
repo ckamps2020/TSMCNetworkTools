@@ -21,6 +21,7 @@ import java.util.*;
 public final class StaffmodeCommand implements CommandExecutor {
 
 	private static final Map<UUID, ItemStack[]> staffmode = new HashMap<>();
+	private static final Map<UUID, ItemStack[]> staffmodeArmor = new HashMap<>();
 	private static final Map<UUID, Location> locations = new HashMap<>();
 
 	@Override
@@ -37,7 +38,9 @@ public final class StaffmodeCommand implements CommandExecutor {
 					PlayerUtils.hidePlayerSpectatorStaff(player);
 					user.setVanished(true);
 					player.sendMessage(CC.translate("&e&lVANISH &6■ &7You toggled vanish &eon&7! No one will be able to see you"));
+
 					staffmode.put(player.getUniqueId(), player.getInventory().getContents());
+					staffmodeArmor.put(player.getUniqueId(), player.getInventory().getArmorContents());
 					locations.put(player.getUniqueId(), player.getLocation());
 					player.getInventory().clear();
 					player.getInventory().setArmorContents(null);
@@ -53,9 +56,11 @@ public final class StaffmodeCommand implements CommandExecutor {
 				} else {
 					player.getInventory().clear();
 					player.getInventory().setContents(staffmode.get(player.getUniqueId()));
+					player.getInventory().setArmorContents(staffmodeArmor.get(player.getUniqueId()));
 
 					player.teleport(locations.remove(player.getUniqueId()));
 					staffmode.remove(player.getUniqueId());
+					staffmodeArmor.remove(player.getUniqueId());
 					PlayerUtils.showPlayerSpectator(player);
 					user.setVanished(false);
 					player.sendMessage(CC.translate("&e&lVANISH &6■ &7You toggled vanish &eoff&7! Everyone will be able to see you"));
@@ -68,6 +73,10 @@ public final class StaffmodeCommand implements CommandExecutor {
 			}
 		}
 		return true;
+	}
+
+	public static Map<UUID, ItemStack[]> getStaffmodeArmor() {
+		return staffmodeArmor;
 	}
 
 	public static Map<UUID, ItemStack[]> getStaffmode() {

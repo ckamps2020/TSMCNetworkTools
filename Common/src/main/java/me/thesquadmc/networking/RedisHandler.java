@@ -350,12 +350,10 @@ public final class RedisHandler {
 											TSMCUser user = TSMCUser.fromPlayer(p);
 											if (StaffmodeCommand.getStaffmode().containsKey(p.getUniqueId())) {
 												p.getInventory().clear();
-												for (ItemStack itemStack : StaffmodeCommand.getStaffmode().get(p.getUniqueId())) {
-													if (itemStack != null) {
-														p.getInventory().addItem(itemStack);
-													}
-												}
+												p.getInventory().setContents(StaffmodeCommand.getStaffmode().get(p.getUniqueId()));
+												p.getInventory().setArmorContents(StaffmodeCommand.getStaffmodeArmor().get(p.getUniqueId()));
 												StaffmodeCommand.getStaffmode().remove(p.getUniqueId());
+												StaffmodeCommand.getStaffmodeArmor().remove(p.getUniqueId());
 												StaffmodeCommand.getLocations().remove(p.getUniqueId());
 												p.setGameMode(GameMode.SURVIVAL);
 												p.performCommand("spawn");
