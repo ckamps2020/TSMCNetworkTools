@@ -40,7 +40,6 @@ public final class TimedListener implements Listener {
 					|| Bukkit.getServerName().toUpperCase().contains("SKYBLOCK")
 					|| Bukkit.getServerName().toUpperCase().contains("FACTIONS")
 					|| Bukkit.getServerName().toUpperCase().contains("PRISON")
-					|| Bukkit.getServerName().toUpperCase().contains("TROLLWARS")
 					|| Bukkit.getServerName().toUpperCase().contains("CREATIVE")) {
 				main.setRestartTime(main.getRestartTime() + 1);
 				if (main.getRestartTime() == 720) {

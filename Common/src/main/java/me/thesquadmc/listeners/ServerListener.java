@@ -2,14 +2,18 @@ package me.thesquadmc.listeners;
 
 import me.thesquadmc.Main;
 import me.thesquadmc.networking.JedisTask;
+import me.thesquadmc.utils.PlayerUtils;
 import me.thesquadmc.utils.enums.RedisArg;
 import me.thesquadmc.utils.enums.RedisChannels;
+import me.thesquadmc.utils.msgs.CC;
+import me.thesquadmc.utils.msgs.StringUtils;
 import me.thesquadmc.utils.server.Multithreading;
 import me.thesquadmc.utils.server.ServerUtils;
 import me.thesquadmc.utils.time.TimeUtils;
 import me.thesquadmc.utils.handlers.UpdateEvent;
 import me.thesquadmc.utils.enums.UpdateType;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import redis.clients.jedis.Jedis;
@@ -20,8 +24,8 @@ public final class ServerListener implements Listener {
 
 	@EventHandler
 	public void onUpdate(UpdateEvent e) {
-		if (e.getUpdateType() == UpdateType.TWO_MIN) {
-			if (Double.valueOf(ServerUtils.getTPS(0)) <= 15.00) {
+		if (e.getUpdateType() == UpdateType.THREE_MIN) {
+			if (Double.valueOf(ServerUtils.getTPS(0)) <= 13.00) {
 				Bukkit.getScheduler().runTaskAsynchronously(Main.getMain(), new Runnable() {
 					@Override
 					public void run() {
@@ -42,6 +46,16 @@ public final class ServerListener implements Listener {
 						});
 					}
 				});
+			}
+		} else if (e.getUpdateType() == UpdateType.FIVE_MIN) {
+			for (Player player : Bukkit.getOnlinePlayers()) {
+				if (!PlayerUtils.isDonator(player)) {
+					player.sendMessage(CC.translate("&8&l&m------------------------------------"));
+					player.sendMessage(" ");
+					player.spigot().sendMessage(StringUtils.getHoverMessage("&e&lSTORE &6■ &7" + StringUtils.getRandomAd(), "&e&lstore.thesquadmc.net"));
+					player.sendMessage(" ");
+					player.sendMessage(CC.translate("&8&l&m------------------------------------"));
+				}
 			}
 		}
 	}
