@@ -134,7 +134,7 @@ public class CommandHandler implements CommandExecutor {
 					System.out.println("Unable to register tab completer " + m.getName() + ". Return type must be a List of String");
 					continue;
 				}
-
+//
 				registerCompleter(comp.name(), m, obj);
 				for (String alias : comp.aliases()) {
 					registerCompleter(alias, m, obj);
