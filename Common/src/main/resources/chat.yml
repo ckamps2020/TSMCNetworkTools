@@ -13,6 +13,6 @@ formats:
 
   admin:
     priority: 3
-    prefix: "&c&lADMIN %display_name%"
+    prefix: "&d&lADMIN %display_name%"
     suffix: "&7: "
-    chatColor: "&c"
+    chatColor: "&e"

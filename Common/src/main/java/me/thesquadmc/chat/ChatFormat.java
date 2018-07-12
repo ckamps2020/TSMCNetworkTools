@@ -122,7 +122,7 @@ public class ChatFormat {
 
         fancyMessage.then();
 
-        fancyMessage.text(" " + chatColor + message);
+        fancyMessage.text(chatColor + message);
 
         return fancyMessage;
     }
