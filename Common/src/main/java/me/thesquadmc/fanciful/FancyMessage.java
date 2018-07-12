@@ -227,7 +227,7 @@ public class FancyMessage implements JsonRepresentedObject, Cloneable, Iterable<
 			return this;
 		}
 
-		onHover("show_text", new JsonString(text.trim()));
+		onHover("show_text", new JsonString(text));
 		return this;
 	}
 
