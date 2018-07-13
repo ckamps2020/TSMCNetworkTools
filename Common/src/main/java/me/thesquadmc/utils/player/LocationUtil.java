@@ -6,6 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -20,10 +21,13 @@ import java.util.Set;
  */
 public class LocationUtil {
 
-    public static final int RADIUS = 3;
-    public static final Vector3D[] VOLUME;
+    private static final int RADIUS = 3;
+    private static final Vector3D[] VOLUME;
+
     // The player can stand inside these materials
     private static final Set<Material> HOLLOW_MATERIALS = new HashSet<>();
+    private static final HashSet<Byte> TRANSPARENT_MATERIALS = new HashSet<>();
+
 
     static {
         HOLLOW_MATERIALS.add(Material.AIR);
@@ -62,6 +66,13 @@ public class LocationUtil {
         HOLLOW_MATERIALS.add(Material.WATER_LILY);
         HOLLOW_MATERIALS.add(Material.NETHER_WARTS);
         HOLLOW_MATERIALS.add(Material.CARPET);
+
+        for (Material material : HOLLOW_MATERIALS) {
+            TRANSPARENT_MATERIALS.add((byte) material.getId());
+        }
+
+        TRANSPARENT_MATERIALS.add((byte) Material.WATER.getId());
+        TRANSPARENT_MATERIALS.add((byte) Material.STATIONARY_WATER.getId());
     }
 
     static {
@@ -75,6 +86,15 @@ public class LocationUtil {
         }
         pos.sort(Comparator.comparingInt(a -> (a.x * a.x + a.y * a.y + a.z * a.z)));
         VOLUME = pos.toArray(new Vector3D[0]);
+    }
+
+    public static Location getTarget(final LivingEntity entity) throws Exception {
+        final Block block = entity.getTargetBlock(TRANSPARENT_MATERIALS, 300);
+        if (block == null) {
+            throw new Exception("Not targeting a block");
+        }
+
+        return block.getLocation();
     }
 
     public static ItemStack convertBlockToItem(final Block block) {

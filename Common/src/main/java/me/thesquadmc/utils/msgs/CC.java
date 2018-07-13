@@ -2,6 +2,8 @@ package me.thesquadmc.utils.msgs;
 
 import org.bukkit.ChatColor;
 
+import java.text.MessageFormat;
+
 public final class CC {
 
 	public static final String PRIMARY = ChatColor.YELLOW.toString();
@@ -95,5 +97,8 @@ public final class CC {
 		return ChatColor.translateAlternateColorCodes('&', string);
 	}
 
+	public static String translate(String string, Object... replacements) {
+		return ChatColor.translateAlternateColorCodes('&', MessageFormat.format(string, replacements));
+	}
 
 }

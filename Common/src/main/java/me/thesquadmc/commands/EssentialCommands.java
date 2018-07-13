@@ -15,8 +15,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 
 import java.text.MessageFormat;
 import java.util.Collections;
@@ -100,6 +103,73 @@ public class EssentialCommands {
         }
     }
 
+    @Command(name = {"extinguish", "ext"}, permission = "essentials.ext", playerOnly = true)
+    public void ext(CommandArgs args) {
+        Player player = args.getPlayer();
+
+        if (args.length() > 0 && player.hasPermission("essentials.ext.others")) {
+            Player target = Bukkit.getPlayer(args.getArg(0));
+            if (target == null) {
+                player.sendMessage(CC.RED + args.getArg(0) + " is not online!");
+                return;
+            }
+
+            target.setFireTicks(0);
+            player.sendMessage(CC.translate("&e&lEXT &6■ &7Extinguished &e{0}", target.getName()));
+
+        } else {
+            player.setFireTicks(0);
+            player.sendMessage(CC.translate("&e&lEXT &6■ &7You extinguished yourself"));
+        }
+    }
+
+    @Command(name = {"fireball"}, permission = "essentials.fireball", playerOnly = true)
+    public void fireball(CommandArgs args) {
+        Player player = args.getPlayer();
+
+        Vector vector = player.getEyeLocation().getDirection().multiply(2);
+
+        Projectile projectile = player.getWorld().spawn(player.getEyeLocation().add(vector.getX(), vector.getY(), vector.getZ()), Fireball.class);
+        projectile.setShooter(player);
+        projectile.setVelocity(vector);
+    }
+
+    @Command(name = {"jump"}, permission = "essentials.jump", playerOnly = true)
+    public void jump(CommandArgs args) {
+        Player player = args.getPlayer();
+
+        try {
+            Location location = LocationUtil.getTarget(player);
+            Location playerLoc = player.getLocation();
+
+            location.setYaw(playerLoc.getYaw());
+            location.setPitch(playerLoc.getPitch());
+            location.setY(location.getY() + 1);
+
+            player.teleport(location);
+        } catch (Exception e) {
+            player.sendMessage(CC.RED + "Could not find a free space!");
+        }
+    }
+
+    // /give <player> <item> [amount]
+    // /give <item> [item]
+
+    @Command(name = {"i", "give"}, permission = "essentials.give")
+    public void give(CommandArgs args) {
+        if (args.length() > 2) {
+            CommandSender sender = args.getSender();
+
+            Player target = Bukkit.getPlayer(args.getArg(0));
+            if (target == null) {
+                sender.sendMessage(CC.RED + args.getArg(0) + " is not online!");
+                return;
+            }
+
+            //TODO Finish this
+        }
+    }
+
     @Command(name = {"enderchest", "echest"}, permission = "essentials.enderchest", playerOnly = true)
     public void enderchest(CommandArgs args) {
         Player player = args.getPlayer();
@@ -111,7 +181,7 @@ public class EssentialCommands {
                 return;
             }
 
-            player.openInventory(target.getEnderChest());
+            player.openInventory(target.getEnderChest()); //TODO Listen for edits
 
         } else {
             player.openInventory(player.getEnderChest());
@@ -127,6 +197,7 @@ public class EssentialCommands {
 
         } else {
             Bukkit.broadcastMessage(CC.B_YELLOW + "INFO " + CC.D_GRAY + Unicode.SQUARE + CC.GRAY + " " + CC.translate(String.join(" ", args.getArgs())));
+            Bukkit.broadcastMessage(CC.translate("&e&lINFO &8{0} &e{1}", Unicode.SQUARE, String.join(" ", args.getArgs())));
         }
     }
 
@@ -142,7 +213,7 @@ public class EssentialCommands {
             }
 
             toggleFlight(target);
-            player.sendMessage(CC.translate("&e&lFLY &6■ &7" + (player.getAllowFlight() ? "Enabled" : "Disabled") + " flight for " + target.getName()));
+            player.sendMessage(CC.translate("&e&lFLY &6■ &e{0} &7flight for &e{1}", (player.getAllowFlight() ? "Enabled" : "Disabled"), target.getName()));
 
         } else {
             toggleFlight(player);
@@ -163,8 +234,8 @@ public class EssentialCommands {
             target.setFoodLevel(20);
             target.setSaturation(20);
 
-            player.sendMessage(CC.translate("&e&lFEED &6■ &7 You fed  " + target.getName()));
-            target.sendMessage(CC.translate("&e&lFEED &6■ &7 " + player.getDisplayName() + " fed you"));
+            player.sendMessage(CC.translate("&e&lFEED &6■ &7 You fed &e{0}", target.getName()));
+            target.sendMessage(CC.translate("&e&lFEED &6■ &7 &e{0} &7 fed you", player.getName()));
 
         } else {
             player.setFoodLevel(20);
@@ -234,6 +305,7 @@ public class EssentialCommands {
         }
 
         player.setWalkSpeed(speed.floatValue());
+        player.sendMessage(CC.translate("&e&lSPEED &6■ &7Set your walk speed to {0}", speed));
     }
 
     @Command(name = {"flyspeed"}, permission = "essentials.speed", playerOnly = true)
@@ -262,6 +334,7 @@ public class EssentialCommands {
         }
 
         player.setFlySpeed(speed.floatValue());
+        player.sendMessage(CC.translate("&e&lSPEED &6■ &7Set your flight speed to {0}", speed));
     }
 
     @Command(name = {"repair"}, permission = "essentials.repair", playerOnly = true)
@@ -278,12 +351,11 @@ public class EssentialCommands {
 
 
                 itemStack.setDurability((short) 0);
-                player.sendMessage(CC.translate("&e&lEXP &6■ &7Repaired all your items"));
+                player.sendMessage(CC.translate("&e&lREPAIR &6■ &7Repaired all your items"));
             }
 
         } else {
             ItemStack held = player.getInventory().getItemInHand();
-
             if (held == null || held.getType() == Material.AIR) {
                 player.sendMessage(CC.RED + "You must be holding an item!");
                 return;
@@ -300,10 +372,72 @@ public class EssentialCommands {
             }
 
             held.setDurability((short) 0);
-            player.sendMessage(CC.translate("&e&lEXP &6■ &7Repaired " + name));
+            player.sendMessage(CC.translate("&e&lREPAIR &6■ &7Repaired your &e{0}", name));
         }
     }
 
+    @Command(name = {"hat"}, permission = "essentials.hat", playerOnly = true)
+    public void hat(CommandArgs args) {
+        Player player = args.getPlayer();
+
+        ItemStack itemStack = player.getItemInHand();
+        if (itemStack == null || itemStack.getType() == Material.AIR) {
+            player.sendMessage(CC.RED + "You must have an item to put on your head!");
+            return;
+        }
+
+        if (itemStack.getType().getMaxDurability() == 0) {
+            player.sendMessage(CC.RED + "You cannot place this on your head!");
+            return;
+        }
+
+        ItemStack head = player.getInventory().getHelmet();
+        player.getInventory().setItemInHand(head);
+        player.getInventory().setHelmet(itemStack);
+
+        player.sendMessage(CC.translate("&e&lHAT &6■ &7You have set your hat"));
+    }
+
+    @Command(name = {"burn"}, permission = "essentials.burn", playerOnly = true)
+    public void burn(CommandArgs args) {
+        Player player = args.getPlayer();
+
+        if (args.length() < 2) {
+            player.sendMessage(CC.RED + "/burn <player> <time in seconds>");
+            return;
+        }
+
+        Player target = Bukkit.getPlayer(args.getArg(0));
+        if (target == null) {
+            player.sendMessage(CC.RED + args.getArg(0) + " is not online!");
+            return;
+        }
+
+        Integer time = Ints.tryParse(args.getArg(1));
+        if (time == null || time <= 0) {
+            player.sendMessage(CC.RED + "Burn time must be above a number above 0!");
+            return;
+        }
+
+        target.setFireTicks(time * 20);
+        player.sendMessage(CC.translate("&e&lBURN &6■ &7You set &e{0} &7on &cfire &7for &e{1} seconds", target.getName(), time));
+    }
+
+    @Command(name = {"more"}, permission = "essentials.more", playerOnly = true)
+    public void more(CommandArgs args) {
+        Player player = args.getPlayer();
+
+        ItemStack held = player.getInventory().getItemInHand();
+        if (held == null || held.getType() == Material.AIR) {
+            player.sendMessage(CC.RED + "You must be holding an item!");
+            return;
+        }
+
+        held.setAmount(64);
+        player.updateInventory();
+
+        player.sendMessage(CC.translate("&e&lMORE &6■ &7Set item amount to 64!"));
+    }
 
     @Command(name = {"exp", "xp"}, permission = "essentials.exp", playerOnly = true)
     public void xp(CommandArgs args) {
