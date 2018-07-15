@@ -14,8 +14,8 @@ public interface MobNPC {
 	
 	/**
 	 * Spawn this NPC in the world at the provided location
-	 * 
-	 * @param location the location at which to spawn the NPC
+	 *
+     * @param location the location at which to warp the NPC
 	 */
     void spawn(Location location);
 	

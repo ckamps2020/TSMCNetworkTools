@@ -2,6 +2,7 @@ package me.thesquadmc.utils.file;
 
 import me.thesquadmc.Main;
 import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
@@ -54,11 +55,11 @@ public final class FileUtils {
 		try {
 			if(path.exists()) {
 				File files[] = path.listFiles();
-				for(int i=0; i<files.length; i++) {
-					if(files[i].isDirectory()) {
-						deleteFile(files[i]);
+                for (File file : files) {
+                    if (file.isDirectory()) {
+                        deleteFile(file);
 					} else {
-						files[i].delete();
+                        file.delete();
 					}
 				}
 			}
@@ -72,7 +73,6 @@ public final class FileUtils {
 	public static YamlConfiguration getConfig(String name) {
 		File file = new File(Main.getMain().getDataFolder(), name + ".yml");
 		if (!file.exists()) {
-			System.out.println("Saving chat.yml");
 			file.getParentFile().mkdirs();
 			Main.getMain().saveResource(name + ".yml", false);
 		}
@@ -87,13 +87,9 @@ public final class FileUtils {
 		return config;
 	}
 
-	public static void saveDefaultConfig(File config) {
-		if (config == null) {
-			config = new File(Main.getMain().getDataFolder(), config.getName() + ".yml");
-		}
-		if (!config.exists()) {
-			Main.getMain().saveResource(config.getName() + ".yml", false);
-		}
+
+    public static boolean saveConfig(FileConfiguration config) {
+        return false;
 	}
 
 	public static String getRootFolder() {

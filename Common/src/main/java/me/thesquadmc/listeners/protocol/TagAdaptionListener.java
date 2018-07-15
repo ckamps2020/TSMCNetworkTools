@@ -8,7 +8,7 @@ import com.comphenix.protocol.wrappers.EnumWrappers.PlayerInfoAction;
 import com.comphenix.protocol.wrappers.PlayerInfoData;
 import com.comphenix.protocol.wrappers.WrappedGameProfile;
 import me.thesquadmc.Main;
-import me.thesquadmc.objects.TSMCUser;
+import me.thesquadmc.player.TSMCUser;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -65,7 +65,7 @@ public class TagAdaptionListener extends PacketAdapter {
 		StringBuilder uuid = new StringBuilder();
 		if (!profileId.contains("-")) { // If it's a shortened UUID, make it full-length
 			for (int i = 0; i < UUID_SPLIT_INDICES.length; i++) {
-				uuid.append(oldProfile.getId().substring(UUID_SPLIT_INDICES[i], UUID_SPLIT_INDICES[i + 1])).append('-');
+                uuid.append(oldProfile.getId(), UUID_SPLIT_INDICES[i], UUID_SPLIT_INDICES[i + 1]).append('-');
 			}
 		} else {
 			uuid.append(profileId);

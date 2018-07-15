@@ -1,4 +1,4 @@
-package me.thesquadmc.objects;
+package me.thesquadmc.player;
 
 import java.util.ArrayList;
 import java.util.List;

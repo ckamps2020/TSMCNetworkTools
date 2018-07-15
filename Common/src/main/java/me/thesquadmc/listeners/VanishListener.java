@@ -1,9 +1,9 @@
 package me.thesquadmc.listeners;
 
 import me.thesquadmc.commands.StaffmodeCommand;
-import me.thesquadmc.objects.TSMCUser;
-import me.thesquadmc.utils.handlers.UpdateEvent;
+import me.thesquadmc.player.TSMCUser;
 import me.thesquadmc.utils.enums.UpdateType;
+import me.thesquadmc.utils.handlers.UpdateEvent;
 import me.thesquadmc.utils.nms.TitleUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

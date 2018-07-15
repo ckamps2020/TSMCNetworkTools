@@ -1,7 +1,7 @@
 package me.thesquadmc.networking.mongo;
 
 import com.mongodb.client.MongoCollection;
-import me.thesquadmc.objects.TSMCUser;
+import me.thesquadmc.player.TSMCUser;
 import me.thesquadmc.utils.server.Multithreading;
 import org.bson.Document;
 

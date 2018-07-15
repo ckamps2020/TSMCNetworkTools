@@ -1,7 +1,7 @@
 package me.thesquadmc.utils.uuid;
 
 import com.google.gson.reflect.TypeToken;
-import me.thesquadmc.utils.JsonUtils;
+import me.thesquadmc.utils.json.JSONUtils;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.ResponseBody;
@@ -25,7 +25,7 @@ public class NameFetcher {
 
         Type listType = new TypeToken<List<Name>>() {
         }.getType();
-        List<Name> names = JsonUtils.getGson().fromJson(response, listType);
+        List<Name> names = JSONUtils.getGson().fromJson(response, listType);
 
         List<String> humanNames = new ArrayList<>();
         for (Name name : names) {

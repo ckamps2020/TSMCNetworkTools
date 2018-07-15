@@ -6,8 +6,8 @@ import me.lucko.luckperms.api.caching.MetaData;
 import me.lucko.luckperms.api.caching.UserData;
 import me.thesquadmc.Main;
 import me.thesquadmc.networking.redis.RedisMesage;
-import me.thesquadmc.objects.PlayerSetting;
-import me.thesquadmc.objects.TSMCUser;
+import me.thesquadmc.player.PlayerSetting;
+import me.thesquadmc.player.TSMCUser;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.enums.RedisArg;
 import me.thesquadmc.utils.enums.RedisChannels;
@@ -41,6 +41,7 @@ public final class AdminChatCommand implements CommandExecutor {
                         tsmcUser.updateSetting(PlayerSetting.ADMINCHAT_ENABLED, false);
                         player.sendMessage(CC.translate("&e&lADMIN CHAT &6■ &7You toggled Admin Chat &eoff&7!"));
                     }
+
                 } else {
                     if (!tsmcUser.getSetting(PlayerSetting.ADMINCHAT_ENABLED)) {
                         player.sendMessage(CC.translate("&e&lADMIN CHAT &6■ &7Please enable adminchat first!"));

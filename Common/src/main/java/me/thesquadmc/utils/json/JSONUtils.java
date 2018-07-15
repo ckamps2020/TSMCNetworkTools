@@ -2,9 +2,11 @@ package me.thesquadmc.utils.json;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import org.bukkit.Location;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -94,7 +96,9 @@ public final class JSONUtils {
 	}
 
 	private static final JsonParser PARSER = new JsonParser();
-	private static final Gson GSON = new Gson();
+	private static final Gson GSON = new GsonBuilder()
+			.registerTypeAdapter(Location.class, new LocationTypeAdapter())
+			.create();
 
 	public static JsonElement parse(String data) {
 		Preconditions.checkNotNull(data);

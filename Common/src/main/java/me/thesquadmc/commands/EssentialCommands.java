@@ -14,6 +14,7 @@ import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
@@ -176,6 +177,7 @@ public class EssentialCommands {
 
         if (args.length() > 0 && player.hasPermission("essentials.enderchest.others")) {
             Player target = Bukkit.getPlayer(args.getArg(0));
+
             if (target == null) {
                 player.sendMessage(CC.translate("&e&lPLAYER &6■ &7Cannot find " + args.getArg(0)));
                 return;
@@ -185,6 +187,7 @@ public class EssentialCommands {
 
         } else {
             player.openInventory(player.getEnderChest());
+
         }
     }
 
@@ -199,6 +202,13 @@ public class EssentialCommands {
             Bukkit.broadcastMessage(CC.B_YELLOW + "INFO " + CC.D_GRAY + Unicode.SQUARE + CC.GRAY + " " + CC.translate(String.join(" ", args.getArgs())));
             Bukkit.broadcastMessage(CC.translate("&e&lINFO &8{0} &e{1}", Unicode.SQUARE, String.join(" ", args.getArgs())));
         }
+    }
+
+    @Command(name = {"near"}, permission = "essentials.near")
+    public void near(CommandArgs args) {
+        Player player = args.getPlayer();
+
+        player.sendMessage(CC.translate("&e&lNEAR &6■ &7Players near you: {0}", getNearestPlayers(player, 200)));
     }
 
     @Command(name = {"fly"}, permission = "essentials.fly", playerOnly = true)
@@ -513,8 +523,32 @@ public class EssentialCommands {
         sender.sendMessage(CC.translate(MessageFormat.format("&e&lEXP &6■ &7You gave &e{0} {1} &7exp", player.getName(), exp)));
     }
 
-    private void repair(Player player) {
+    private String getNearestPlayers(final Player player, final long radius) {
+        final Location loc = player.getLocation();
+        final World world = loc.getWorld();
 
+        final StringBuilder output = new StringBuilder();
+        final long radiusSquared = radius * radius;
+
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            if (!player.equals(p) || player.canSee(p)) {
+                final Location playerLoc = player.getLocation();
+                if (playerLoc.getWorld() != world) {
+                    continue;
+                }
+
+                final long delta = (long) playerLoc.distanceSquared(loc);
+                if (delta < radiusSquared) {
+                    if (output.length() > 0) {
+                        output.append(", ");
+                    }
+
+                    output.append(player.getDisplayName()).append("§f(§4").append((long) Math.sqrt(delta)).append("m§f)");
+                }
+            }
+        }
+
+        return output.length() > 1 ? output.toString() : "No one";
     }
 
     private String formatName(Material material) {

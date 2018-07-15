@@ -1,6 +1,6 @@
 package me.thesquadmc.commands;
 
-import me.thesquadmc.objects.TSMCUser;
+import me.thesquadmc.player.TSMCUser;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.inventory.ItemBuilder;
 import me.thesquadmc.utils.msgs.CC;

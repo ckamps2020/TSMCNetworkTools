@@ -1,6 +1,6 @@
 package me.thesquadmc.listeners;
 
-import me.thesquadmc.objects.TSMCUser;
+import me.thesquadmc.player.TSMCUser;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.enums.UpdateType;
 import me.thesquadmc.utils.handlers.UpdateEvent;

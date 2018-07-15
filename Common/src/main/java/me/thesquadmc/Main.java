@@ -56,9 +56,9 @@ import me.thesquadmc.commands.TeleportCommand;
 import me.thesquadmc.commands.TitleCommand;
 import me.thesquadmc.commands.UnFreezeCommand;
 import me.thesquadmc.commands.UndisguisePlayerCommand;
-import me.thesquadmc.commands.UniquePlayersCommand;
 import me.thesquadmc.commands.VanishCommand;
 import me.thesquadmc.commands.VanishListCommand;
+import me.thesquadmc.commands.WarpCommand;
 import me.thesquadmc.commands.WebsiteCommand;
 import me.thesquadmc.commands.WhitelistCommand;
 import me.thesquadmc.commands.XrayVerboseCommand;
@@ -87,7 +87,6 @@ import me.thesquadmc.managers.QueueManager;
 import me.thesquadmc.networking.mongo.Mongo;
 import me.thesquadmc.networking.mongo.MongoUserDatabase;
 import me.thesquadmc.networking.mongo.UserDatabase;
-import me.thesquadmc.networking.mysql.DatabaseManager;
 import me.thesquadmc.networking.redis.RedisManager;
 import me.thesquadmc.networking.redis.RedisMesage;
 import me.thesquadmc.networking.redis.channels.AnnounceChannel;
@@ -98,6 +97,7 @@ import me.thesquadmc.networking.redis.channels.PartyChannel;
 import me.thesquadmc.networking.redis.channels.ServerManagementChannel;
 import me.thesquadmc.networking.redis.channels.StaffChatChannels;
 import me.thesquadmc.networking.redis.channels.WhitelistChannel;
+import me.thesquadmc.player.local.LocalPlayerManager;
 import me.thesquadmc.utils.command.CommandHandler;
 import me.thesquadmc.utils.enums.RedisArg;
 import me.thesquadmc.utils.enums.RedisChannels;
@@ -110,6 +110,7 @@ import me.thesquadmc.utils.server.Multithreading;
 import me.thesquadmc.utils.server.ServerState;
 import me.thesquadmc.utils.server.ServerUtils;
 import me.thesquadmc.utils.uuid.UUIDTranslator;
+import me.thesquadmc.warp.WarpManager;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -122,7 +123,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.sql.SQLException;
 import java.util.Enumeration;
 import java.util.concurrent.TimeUnit;
 import java.util.jar.JarEntry;
@@ -139,7 +139,6 @@ public final class Main extends JavaPlugin {
     private long startup = System.currentTimeMillis();
     private String value = "NONE";
     private String sig = "NONE";
-    private DatabaseManager MySQL;
     private int restartTime = 0;
 
     private String version;
@@ -151,6 +150,8 @@ public final class Main extends JavaPlugin {
     private Economy vaultEconomy;
 
     private FileManager fileManager;
+    private LocalPlayerManager localPlayerManager;
+    private WarpManager warpManager;
     private ChatManager chatManager;
     private FrozenInventory frozenInventory;
     private StaffmodeInventory staffmodeInventory;
@@ -167,18 +168,14 @@ public final class Main extends JavaPlugin {
     private Mongo mongo;
     private UserDatabase userDatabase;
 
-    private String mysqlhost;
-    private String mysqlport;
-    private String mysqlpassword;
-    private String mysqldb;
-    private String dbuser;
-
     private RedisManager redisManager;
 
     @Override
     public void onEnable() {
-        getLogger().info("[NetworkTools] Starting the plugin up...");
+        getLogger().info("Starting the plugin up...");
+
         main = this;
+        version = getDescription().getVersion();
 
         if (!setupNMSAbstract()) {
             getLogger().severe("This jar was not built for this server implementation!");
@@ -186,14 +183,10 @@ public final class Main extends JavaPlugin {
             return;
         }
 
-        getLogger().info("[NetworkTools] Server implementation set for " + nmsAbstract.getVersionMin() + " - " + nmsAbstract.getVersionMax());
-
-        version = getDescription().getVersion();
+        getLogger().info("Server implementation set for " + nmsAbstract.getVersionMin() + " - " + nmsAbstract.getVersionMax());
 
         luckPermsApi = LuckPerms.getApi();
         mcLeaksAPI = MCLeaksAPI.builder().threadCount(2).expireAfter(10, TimeUnit.MINUTES).build();
-        fileManager = new FileManager(this);
-        MySQL = new DatabaseManager(this, this);
 
         setupEconomy();
         setupChat();
@@ -201,9 +194,12 @@ public final class Main extends JavaPlugin {
 
         frozenInventory = new FrozenInventory();
         staffmodeInventory = new StaffmodeInventory();
+
         UpdateHandler updateHandler = new UpdateHandler(this);
-        fileManager.setup();
         updateHandler.run();
+
+        localPlayerManager = new LocalPlayerManager();
+        warpManager = new WarpManager(this);
         chatManager = new ChatManager(this);
         hologramManager = new HologramManager();
         npcManager = new NPCManager();
@@ -213,17 +209,15 @@ public final class Main extends JavaPlugin {
         partyManager = new PartyManager();
         countManager = new CountManager();
         clickableMessageManager = new ClickableMessageManager(this);
+        fileManager = new FileManager(this);
+        fileManager.setup();
+
         AbstractGUI.initializeListeners(this);
 
         String host1 = fileManager.getNetworkingConfig().getString("redis.host");
         int port1 = fileManager.getNetworkingConfig().getInt("redis.port");
         String password1 = fileManager.getNetworkingConfig().getString("redis.password");
-        mysqlhost = fileManager.getNetworkingConfig().getString("mysql.host");
-        mysqlport = fileManager.getNetworkingConfig().getString("mysql.port");
-        mysqlpassword = fileManager.getNetworkingConfig().getString("mysql.dbpassword");
-        mysqldb = fileManager.getNetworkingConfig().getString("mysql.dbname");
-        dbuser = fileManager.getNetworkingConfig().getString("mysql.dbuser");
-        getLogger().info("[NetworkTools] Loading Redis PUB/SUB...");
+        getLogger().info("Loading Redis PUB/SUB...");
 
         uuidTranslator = new UUIDTranslator(this);
 
@@ -238,26 +232,16 @@ public final class Main extends JavaPlugin {
         redisManager.registerChannel(new MessageChannel(), RedisChannels.MESSAGE);
         redisManager.registerChannel(new StaffChatChannels(), RedisChannels.STAFFCHAT, RedisChannels.ADMINCHAT, RedisChannels.MANAGERCHAT, RedisChannels.DISCORD_STAFFCHAT_SERVER);
 
-        getLogger().info("[NetworkTools] Redis PUB/SUB setup!");
-        Multithreading.runAsync(() -> {
-            getLogger().info("[NetworkTools] Connecting to mysql userDatabase...");
-            try {
-                MySQL.setupDB();
-                getLogger().info("[NetworkTools] Connected to mysql userDatabase!");
-            } catch (ClassNotFoundException | SQLException e) {
-                e.printStackTrace();
-                getLogger().severe("[NetworkTools] Unable to connect to mysql userDatabase!");
-            }
-        });
+        getLogger().info("Redis PUB/SUB setup!");
 
-        getLogger().info("[NetworkTools] Setting up BuycraftAPI...");
+        getLogger().info("Setting up BuycraftAPI...");
         Multithreading.runAsync(() -> {
             try {
                 //Buycraft buycraft = new Buycraft(fileManager.getNetworkingConfig().getString("buycraft.secret"));
-                getLogger().info("[NetworkTools] BuycraftAPI setup and ready to go!");
+                getLogger().info("BuycraftAPI setup and ready to go!");
             } catch (Exception e) {
                 e.printStackTrace();
-                getLogger().severe("[NetworkTools] Unable to set up BuycraftAPI");
+                getLogger().severe("Unable to set up BuycraftAPI");
             }
         });
 
@@ -268,14 +252,9 @@ public final class Main extends JavaPlugin {
         String password = conf.getString("mongo.password");
         int port = conf.getInt("mongo.port");
 
-        getLogger().info(user);
-        getLogger().info(db);
-        getLogger().info(host);
-        getLogger().info(password);
-
         mongo = new Mongo(user, db, password, host, port);
         userDatabase = new MongoUserDatabase(mongo);
-        getLogger().info("[NetworkTools] Setup MongoDB connection!");
+        getLogger().info("Setup MongoDB connection!");
 
         registerListeners();
         registerCommands();
@@ -295,6 +274,7 @@ public final class Main extends JavaPlugin {
         Stream.of(
                 new GamemodeCommand(),
                 new NoteCommand(this),
+                new WarpCommand(this),
                 new ChangeLogCommand(this),
                 new FindCommand(this),
                 new MessageCommand(this),
@@ -309,14 +289,15 @@ public final class Main extends JavaPlugin {
             plugin.getExpansionCloud().downloadExpansion(null, playerExpansion, playerExpansion.getLatestVersion());
         }
 
-        getLogger().info("[NetworkTools] Plugin started up and ready to go!");
+        getLogger().info("Plugin started up and ready to go!");
     }
 
     @Override
     public void onDisable() {
-        getLogger().info("[NetworkTools] Shutting down...");
+        getLogger().info("Shutting down...");
+        warpManager.saveWarps();
         redisManager.close();
-        getLogger().info("[NetworkTools] Shut down! Cya :D");
+        getLogger().info("Shut down! Cya :D");
     }
 
     private boolean setupEconomy() {
@@ -351,6 +332,14 @@ public final class Main extends JavaPlugin {
 
         vaultPermissions = rsp.getProvider();
         return vaultPermissions != null;
+    }
+
+    public LocalPlayerManager getLocalPlayerManager() {
+        return localPlayerManager;
+    }
+
+    public WarpManager getWarpManager() {
+        return warpManager;
     }
 
     public Chat getVaultChat() {
@@ -443,30 +432,6 @@ public final class Main extends JavaPlugin {
 
     public void setServerState(String serverState) {
         this.serverState = serverState;
-    }
-
-    public DatabaseManager getMySQL() {
-        return MySQL;
-    }
-
-    public String getMysqlhost() {
-        return mysqlhost;
-    }
-
-    public String getMysqlport() {
-        return mysqlport;
-    }
-
-    public String getMysqlpassword() {
-        return mysqlpassword;
-    }
-
-    public String getMysqldb() {
-        return mysqldb;
-    }
-
-    public String getDbuser() {
-        return dbuser;
     }
 
     public CommandHandler getCommandHandler() {
@@ -638,7 +603,6 @@ public final class Main extends JavaPlugin {
         getCommand("discord").setExecutor(new DiscordCommand());
         getCommand("store").setExecutor(new StoreCommand());
         getCommand("website").setExecutor(new WebsiteCommand());
-        getCommand("uniqueplayers").setExecutor(new UniquePlayersCommand(this));
         getCommand("title").setExecutor(new TitleCommand());
         getCommand("queuerestart").setExecutor(new QueueRestartCommand(this));
         getCommand("vanishlist").setExecutor(new VanishListCommand());

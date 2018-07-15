@@ -1,4 +1,4 @@
-package me.thesquadmc.objects;
+package me.thesquadmc.player;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;

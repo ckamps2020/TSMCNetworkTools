@@ -1,7 +1,6 @@
 package me.thesquadmc.utils.player;
 
 import com.google.common.collect.Lists;
-import me.gong.mcleaks.util.google.common.collect.Sets;
 import me.lucko.luckperms.api.Contexts;
 import me.lucko.luckperms.api.Group;
 import me.lucko.luckperms.api.LuckPermsApi;
@@ -15,7 +14,7 @@ import me.thesquadmc.Main;
 import me.thesquadmc.abstraction.MojangGameProfile;
 import me.thesquadmc.abstraction.NMSAbstract;
 import me.thesquadmc.abstraction.ProfileProperty;
-import me.thesquadmc.objects.TSMCUser;
+import me.thesquadmc.player.TSMCUser;
 import me.thesquadmc.utils.enums.Rank;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -34,9 +33,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public final class PlayerUtils {
 

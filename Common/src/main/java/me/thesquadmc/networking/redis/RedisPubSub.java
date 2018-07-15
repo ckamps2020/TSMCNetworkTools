@@ -4,9 +4,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
-import me.thesquadmc.utils.JsonUtils;
 import me.thesquadmc.utils.json.JSONUtils;
-import org.bukkit.Bukkit;
 import redis.clients.jedis.Client;
 import redis.clients.jedis.JedisPubSub;
 

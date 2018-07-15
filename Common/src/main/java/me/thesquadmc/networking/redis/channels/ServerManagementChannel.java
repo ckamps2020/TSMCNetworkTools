@@ -5,7 +5,7 @@ import me.thesquadmc.Main;
 import me.thesquadmc.abstraction.Sounds;
 import me.thesquadmc.commands.StaffmodeCommand;
 import me.thesquadmc.networking.redis.RedisChannel;
-import me.thesquadmc.objects.TSMCUser;
+import me.thesquadmc.player.TSMCUser;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.enums.RedisArg;
 import me.thesquadmc.utils.enums.RedisChannels;
@@ -54,7 +54,7 @@ public class ServerManagementChannel implements RedisChannel {
                                 StaffmodeCommand.getStaffmode().remove(p.getUniqueId());
                                 p.setGameMode(GameMode.SURVIVAL);
                                 StaffmodeCommand.getStaffmode().remove(p.getUniqueId());
-                                p.performCommand("spawn");
+                                p.performCommand("warp");
                                 p.sendMessage(CC.translate("&e&lSTOP &6■ &7Due to server restart you have been taken out of staffmode"));
                             }
 

@@ -3,7 +3,6 @@ package me.thesquadmc.utils.uuid;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import me.thesquadmc.Main;
-import me.thesquadmc.utils.JsonUtils;
 import me.thesquadmc.utils.json.JSONUtils;
 import org.bukkit.Bukkit;
 import redis.clients.jedis.Jedis;
@@ -76,7 +75,7 @@ public final class UUIDTranslator {
             String stored = jedis.hget("name-cache", player.toLowerCase());
             if (stored != null) {
                 // Found an entry value. Deserialize it.
-                CachedUUIDEntry entry = JsonUtils.getGson().fromJson(stored, CachedUUIDEntry.class);
+                CachedUUIDEntry entry = JSONUtils.getGson().fromJson(stored, CachedUUIDEntry.class);
 
                 // Check for expiry. If expired, delete values from Redis
                 if (entry.expired()) {
@@ -137,7 +136,7 @@ public final class UUIDTranslator {
             String stored = jedis.hget("name-cache", player.toString());
             if (stored != null) {
                 // Found an entry value. Deserialize it.
-                CachedUUIDEntry entry = JsonUtils.getGson().fromJson(stored, CachedUUIDEntry.class);
+                CachedUUIDEntry entry = JSONUtils.getGson().fromJson(stored, CachedUUIDEntry.class);
 
                 // Check for expiry:
                 if (entry.expired()) {

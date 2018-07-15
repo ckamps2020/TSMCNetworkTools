@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 import me.thesquadmc.Main;
 import me.thesquadmc.networking.redis.RedisChannel;
 import me.thesquadmc.networking.redis.RedisMesage;
-import me.thesquadmc.objects.TSMCUser;
+import me.thesquadmc.player.TSMCUser;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.enums.RedisArg;
 import me.thesquadmc.utils.enums.RedisChannels;

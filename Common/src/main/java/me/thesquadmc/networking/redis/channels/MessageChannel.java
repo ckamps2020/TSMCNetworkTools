@@ -2,7 +2,7 @@ package me.thesquadmc.networking.redis.channels;
 
 import com.google.gson.JsonObject;
 import me.thesquadmc.networking.redis.RedisChannel;
-import me.thesquadmc.objects.TSMCUser;
+import me.thesquadmc.player.TSMCUser;
 import me.thesquadmc.utils.msgs.CC;
 import me.thesquadmc.utils.msgs.Unicode;
 import org.bukkit.Bukkit;

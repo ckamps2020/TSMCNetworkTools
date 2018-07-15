@@ -2,8 +2,8 @@ package me.thesquadmc.networking.redis.channels;
 
 import com.google.gson.JsonObject;
 import me.thesquadmc.networking.redis.RedisChannel;
-import me.thesquadmc.objects.PlayerSetting;
-import me.thesquadmc.objects.TSMCUser;
+import me.thesquadmc.player.PlayerSetting;
+import me.thesquadmc.player.TSMCUser;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.enums.RedisArg;
 import me.thesquadmc.utils.enums.RedisChannels;

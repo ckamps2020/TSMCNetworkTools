@@ -1,7 +1,6 @@
 package me.thesquadmc.networking.mongo;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
-import me.thesquadmc.objects.TSMCUser;
+import me.thesquadmc.player.TSMCUser;
 
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;

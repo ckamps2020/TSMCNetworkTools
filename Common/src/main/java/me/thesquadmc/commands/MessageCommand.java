@@ -3,13 +3,11 @@ package me.thesquadmc.commands;
 import com.google.common.base.Joiner;
 import me.thesquadmc.Main;
 import me.thesquadmc.networking.redis.RedisMesage;
-import me.thesquadmc.objects.TSMCUser;
+import me.thesquadmc.player.TSMCUser;
 import me.thesquadmc.utils.command.Command;
 import me.thesquadmc.utils.command.CommandArgs;
 import me.thesquadmc.utils.enums.RedisChannels;
 import me.thesquadmc.utils.msgs.CC;
-import org.bson.Document;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;

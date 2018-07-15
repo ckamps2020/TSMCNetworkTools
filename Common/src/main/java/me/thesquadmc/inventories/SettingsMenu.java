@@ -1,7 +1,7 @@
 package me.thesquadmc.inventories;
 
-import me.thesquadmc.objects.PlayerSetting;
-import me.thesquadmc.objects.TSMCUser;
+import me.thesquadmc.player.PlayerSetting;
+import me.thesquadmc.player.TSMCUser;
 import me.thesquadmc.utils.inventory.InventorySize;
 import me.thesquadmc.utils.inventory.ItemBuilder;
 import org.bukkit.Bukkit;
