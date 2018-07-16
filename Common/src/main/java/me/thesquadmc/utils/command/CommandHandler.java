@@ -134,7 +134,7 @@ public class CommandHandler implements CommandExecutor {
 					System.out.println("Unable to register tab completer " + m.getName() + ". Return type must be a List of String");
 					continue;
 				}
-
+//
 				registerCompleter(comp.name(), m, obj);
 				for (String alias : comp.aliases()) {
 					registerCompleter(alias, m, obj);
@@ -151,8 +151,12 @@ public class CommandHandler implements CommandExecutor {
 		for (String s : commandMap.keySet()) {
 			if (!s.contains(".")) {
 				org.bukkit.command.Command cmd = map.getCommand(s);
-				HelpTopic topic = new GenericCommandHelpTopic(cmd);
-				help.add(topic);
+				try {
+					HelpTopic topic = new GenericCommandHelpTopic(cmd);
+					help.add(topic);
+				}catch (NullPointerException nfe){
+
+				}
 			}
 		}
 		IndexHelpTopic topic = new IndexHelpTopic(plugin.getName(), "All commands for " + plugin.getName(), null, help,

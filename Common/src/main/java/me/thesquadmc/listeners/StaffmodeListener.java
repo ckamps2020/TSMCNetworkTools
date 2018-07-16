@@ -129,12 +129,10 @@ public final class StaffmodeListener implements Listener {
 			for (Player p : Bukkit.getServer().getOnlinePlayers()) {
 				p.showPlayer(player);
 			}
-			for (ItemStack itemStack : StaffmodeCommand.getStaffmode().get(player.getUniqueId())) {
-				if (itemStack != null) {
-					player.getInventory().addItem(itemStack);
-				}
-			}
+			player.getInventory().setContents(StaffmodeCommand.getStaffmode().get(player.getUniqueId()));
+			player.getInventory().setArmorContents(StaffmodeCommand.getStaffmodeArmor().get(player.getUniqueId()));
 			StaffmodeCommand.getStaffmode().remove(player.getUniqueId());
+			StaffmodeCommand.getStaffmodeArmor().remove(player.getUniqueId());
 			StaffmodeCommand.getLocations().remove(player.getUniqueId());
 			player.sendMessage(CC.translate("&e&lSTAFFMODE &6■  &7Staff mode has been &edisabled&7"));
 		}
