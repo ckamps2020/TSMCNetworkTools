@@ -31,7 +31,7 @@ public final class EntityUtils {
 	public static void launchRandomFirework(Location location, boolean instant) {
 		Firework firework = location.getWorld().spawn(location, Firework.class);
 		FireworkMeta fireworkMeta = firework.getFireworkMeta();
-		Random random = new Random();
+		Random random = new Random();//
 		Color[] colours = new Color[]{Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN, Color.AQUA, Color.BLUE, Color.PURPLE};
 		fireworkMeta.addEffect(FireworkEffect.builder().with(FireworkEffect.Type.values()[random.nextInt(FireworkEffect.Type.values().length)]).withColor(colours[random.nextInt(colours.length)]).trail(false).build());
 		fireworkMeta.setPower(1);
