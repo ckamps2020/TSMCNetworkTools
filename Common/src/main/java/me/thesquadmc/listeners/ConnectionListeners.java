@@ -10,6 +10,7 @@ import me.thesquadmc.utils.enums.RedisArg;
 import me.thesquadmc.utils.enums.RedisChannels;
 import me.thesquadmc.utils.msgs.CC;
 import me.thesquadmc.utils.msgs.StringUtils;
+import me.thesquadmc.utils.msgs.Unicode;
 import me.thesquadmc.utils.server.Multithreading;
 import me.thesquadmc.utils.PlayerUtils;
 import me.thesquadmc.utils.server.ServerUtils;
@@ -97,9 +98,27 @@ public final class ConnectionListeners implements Listener {
             @Override
             public void run() {
                 if (Bukkit.getServerName().toUpperCase().startsWith("SKYBLOCK")) {
-
+                    player.sendMessage(CC.translate("&8&l&m------------------------------------"));
+                    player.sendMessage(" ");
+                    player.sendMessage(CC.translate("&6&lWelcome back, " + player.getName()));
+                    player.sendMessage(CC.translate("&8" + Unicode.SQUARE + " &7Global missions out now!"));
+                    player.sendMessage(CC.translate("&8" + Unicode.SQUARE + " &7Lucky blocks updated!"));
+                    player.sendMessage(CC.translate("&8" + Unicode.SQUARE + " &7Soul well now brewing..."));
+                    player.sendMessage(CC.translate(" "));
+                    player.sendMessage(CC.translate("&8" + Unicode.SQUARE + " &e&nstore.thesquadmc.net"));
+                    player.sendMessage(" ");
+                    player.sendMessage(CC.translate("&8&l&m------------------------------------"));
                 } else if (Bukkit.getServerName().toUpperCase().startsWith("HUB")) {
-                    
+                    player.sendMessage(CC.translate("&8&l&m------------------------------------"));
+                    player.sendMessage(" ");
+                    player.sendMessage(CC.translate("&6&lWelcome back, " + player.getName()));
+                    player.sendMessage(CC.translate("&8" + Unicode.SQUARE + " &7Global missions out now!"));
+                    player.sendMessage(CC.translate("&8" + Unicode.SQUARE + " &7Soul well is brewing something in Skyblock"));
+                    player.sendMessage(CC.translate("&8" + Unicode.SQUARE + " &7War is coming to Factions soon"));
+                    player.sendMessage(CC.translate(" "));
+                    player.sendMessage(CC.translate("&8" + Unicode.SQUARE + " &e&nstore.thesquadmc.net"));
+                    player.sendMessage(" ");
+                    player.sendMessage(CC.translate("&8&l&m------------------------------------"));
                 }
             }
         }, 40L);
