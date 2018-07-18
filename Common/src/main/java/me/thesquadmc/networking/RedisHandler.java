@@ -602,9 +602,15 @@ public final class RedisHandler {
 					Multithreading.runAsync(new Runnable() {
 						@Override
 						public void run() {
-							String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
-							Double count = Double.valueOf(String.valueOf(data.get(RedisArg.COUNT.getArg())));
-							main.getCountManager().getCount().put(server, count.intValue());
+
+
+							try {
+								String server = String.valueOf(data.get(RedisArg.SERVER.getArg()));
+								Double count = Double.valueOf(String.valueOf(data.get(RedisArg.COUNT.getArg())));
+								main.getCountManager().getCount().put(server, count.intValue());
+							}catch (NullPointerException nfe){
+
+							}
 						}
 					});
 				}
