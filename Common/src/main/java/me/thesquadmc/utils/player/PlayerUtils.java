@@ -1,14 +1,10 @@
 package me.thesquadmc.utils.player;
 
-import com.google.common.collect.Lists;
 import me.lucko.luckperms.api.Contexts;
 import me.lucko.luckperms.api.Group;
-import me.lucko.luckperms.api.LuckPermsApi;
 import me.lucko.luckperms.api.Node;
-import me.lucko.luckperms.api.Tristate;
 import me.lucko.luckperms.api.User;
 import me.lucko.luckperms.api.caching.MetaData;
-import me.lucko.luckperms.api.caching.PermissionData;
 import me.lucko.luckperms.api.caching.UserData;
 import me.thesquadmc.NetworkTools;
 import me.thesquadmc.abstraction.MojangGameProfile;
@@ -16,6 +12,7 @@ import me.thesquadmc.abstraction.NMSAbstract;
 import me.thesquadmc.abstraction.ProfileProperty;
 import me.thesquadmc.player.TSMCUser;
 import me.thesquadmc.utils.enums.Rank;
+import me.thesquadmc.utils.server.Multithreading;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -26,14 +23,16 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.BlockIterator;
+import redis.clients.jedis.Jedis;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public final class PlayerUtils {
 
@@ -71,6 +70,33 @@ public final class PlayerUtils {
             }
         }
         return found;
+    }
+
+    /**
+     * Checks whether a player is online across the network
+     *
+     * @param uuid the player to find
+     * @return if the player is online on the network
+     */
+    public static CompletableFuture<Boolean> isOnline(UUID uuid) {
+        return CompletableFuture.supplyAsync(() -> {
+            if (Bukkit.getPlayer(uuid) != null) {
+                return true;
+            }
+
+            try (Jedis jedis = NetworkTools.getInstance().getRedisManager().getResource()) {
+                Map<String, String> status = jedis.hgetAll("players:" + uuid.toString());
+                if (status == null) {
+                    return false;
+
+                } else if (status.containsKey("lastOnline")) {
+                    return false;
+                }
+            }
+
+            return true;
+
+        }, Multithreading.POOL);
     }
 
     public static Block getTargetBlock(Player player, int range) {
@@ -144,26 +170,6 @@ public final class PlayerUtils {
             }
         }
         return false;
-    }
-
-    public static Group getHighestGroup(Player player) {
-        LuckPermsApi api = NetworkTools.getInstance().getLuckPermsApi();
-
-        Comparator<Group> groupComparator = Comparator.comparing(group -> group.getWeight().orElse(0));
-
-        List<Group> groups = Lists.newArrayList(api.getGroups());
-        groups.sort(groupComparator.reversed());
-
-        User user = api.getUser(player.getUniqueId());
-        PermissionData data = user.getCachedData().getPermissionData(api.getContextsForPlayer(player));
-        for (Group group : groups) {
-            Tristate tristate = data.getPermissionValue("group." + group.getName());
-
-            if (tristate.asBoolean()) {
-                return group;
-            }
-        }
-        return null;
     }
 
     public static void refreshPlayer(Player player) {

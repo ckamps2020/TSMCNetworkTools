@@ -7,6 +7,7 @@ import me.thesquadmc.utils.command.Command;
 import me.thesquadmc.utils.command.CommandArgs;
 import me.thesquadmc.utils.enums.RedisChannels;
 import me.thesquadmc.utils.msgs.CC;
+import me.thesquadmc.utils.player.PlayerUtils;
 import me.thesquadmc.utils.server.Multithreading;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -54,19 +55,21 @@ public class MessageCommand {
                     return;
                 }
 
-                if (jedis.exists("players:" + uuid.toString())) {
-                    plugin.getRedisManager().sendMessage(RedisChannels.MESSAGE, RedisMesage.newMessage()
-                            .set("sender", player.getUniqueId())
-                            .set("sender_name", player.getName())
-                            .set("target", uuid)
-                            .set("message", message));
+                PlayerUtils.isOnline(uuid).whenComplete((online, throwable) -> {
+                    if (online) {
+                        plugin.getRedisManager().sendMessage(RedisChannels.MESSAGE, RedisMesage.newMessage()
+                                .set("sender", player.getUniqueId())
+                                .set("sender_name", player.getName())
+                                .set("target", uuid)
+                                .set("message", message));
 
-                    player.sendMessage(CC.translate("&6Me &7■ &6{0} &8» &e{1}", name, message));
-                    TSMCUser.fromPlayer(player).setLastMessager(uuid);
+                        player.sendMessage(CC.translate("&6Me &7■ &6{0} &8» &e{1}", name, message));
+                        TSMCUser.fromPlayer(player).setLastMessager(uuid);
 
-                } else {
-                    player.sendMessage(CC.RED + "Could not find " + name);
-                }
+                    } else {
+                        player.sendMessage(CC.RED + "Could not find " + name);
+                    }
+                });
             });
         }
     }
