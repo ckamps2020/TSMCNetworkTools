@@ -1,6 +1,6 @@
 package me.thesquadmc.commands;
 
-import me.thesquadmc.Main;
+import me.thesquadmc.NetworkTools;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.msgs.CC;
 import me.thesquadmc.utils.player.PlayerUtils;
@@ -15,10 +15,10 @@ import java.io.File;
 
 public final class StatusCommand implements CommandExecutor {
 
-	private final Main main;
+	private final NetworkTools networkTools;
 
-	public StatusCommand(Main main) {
-		this.main = main;
+	public StatusCommand(NetworkTools networkTools) {
+		this.networkTools = networkTools;
 	}
 
 	@Override
@@ -37,7 +37,7 @@ public final class StatusCommand implements CommandExecutor {
 				player.sendMessage(CC.translate("&e&lSTATUS &6■ &7Available Logical Processors: &e" + Runtime.getRuntime().availableProcessors()));
 				player.sendMessage(CC.translate("&e&lSTATUS &6■ &7Available Hard Drive Space: &e" + Math.round(new File("/").getTotalSpace() / (1024.0 * 1024.0 * 1024.0)) + "GB"));
 				player.sendMessage(CC.translate("&e&lSTATUS &6■ &7Request Was Served On Thread: &e" + Thread.currentThread().getName()));
-				player.sendMessage(CC.translate("&e&lSTATUS &6■ &7Uptime: &e" + TimeUtils.millisToRoundedTime(System.currentTimeMillis() - main.getStartup())));
+				player.sendMessage(CC.translate("&e&lSTATUS &6■ &7Uptime: &e" + TimeUtils.millisToRoundedTime(System.currentTimeMillis() - networkTools.getStartup())));
 				player.sendMessage(" ");
 			} else {
 				player.sendMessage(CC.translate("&e&lPERMISSIONS &6■ &7You do not have permission to use this command!"));

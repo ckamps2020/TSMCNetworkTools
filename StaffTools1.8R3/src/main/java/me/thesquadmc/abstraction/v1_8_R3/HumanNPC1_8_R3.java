@@ -1,15 +1,10 @@
 package me.thesquadmc.abstraction.v1_8_R3;
 
 import com.mojang.authlib.GameProfile;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.craftbukkit.v1_8_R3.CraftServer;
-import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
-import org.bukkit.entity.Player;
-
+import me.thesquadmc.NetworkTools;
+import me.thesquadmc.abstraction.HumanNPC;
+import me.thesquadmc.abstraction.MojangGameProfile;
+import me.thesquadmc.abstraction.NMSAbstract;
 import net.minecraft.server.v1_8_R3.EntityPlayer;
 import net.minecraft.server.v1_8_R3.MinecraftServer;
 import net.minecraft.server.v1_8_R3.PacketPlayOutEntityDestroy;
@@ -19,11 +14,13 @@ import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerInfo.EnumPlayerInfoAction
 import net.minecraft.server.v1_8_R3.PlayerConnection;
 import net.minecraft.server.v1_8_R3.PlayerInteractManager;
 import net.minecraft.server.v1_8_R3.WorldServer;
-
-import me.thesquadmc.Main;
-import me.thesquadmc.abstraction.HumanNPC;
-import me.thesquadmc.abstraction.MojangGameProfile;
-import me.thesquadmc.abstraction.NMSAbstract;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.craftbukkit.v1_8_R3.CraftServer;
+import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
+import org.bukkit.entity.Player;
 
 public class HumanNPC1_8_R3 implements HumanNPC {
 
@@ -43,7 +40,7 @@ public class HumanNPC1_8_R3 implements HumanNPC {
 	public void spawn(Player... players) {
 		@SuppressWarnings("deprecation") // Stupid Bukkit 1.8 -,-
 		OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(playerSkin);
-		NMSAbstract nmsAbstract = Main.getMain().getNMSAbstract();
+		NMSAbstract nmsAbstract = NetworkTools.getInstance().getNMSAbstract();
 		
 		MinecraftServer server = ((CraftServer) Bukkit.getServer()).getServer();
 		WorldServer world = ((CraftWorld) Bukkit.getWorlds().get(0)).getHandle();
@@ -64,8 +61,8 @@ public class HumanNPC1_8_R3 implements HumanNPC {
 			PlayerConnection connection = ((CraftPlayer) player).getHandle().playerConnection;
 			connection.sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.ADD_PLAYER, handle));
 			connection.sendPacket(new PacketPlayOutNamedEntitySpawn(handle));
-			
-			Bukkit.getScheduler().runTaskLater(Main.getMain(), () -> 
+
+			Bukkit.getScheduler().runTaskLater(NetworkTools.getInstance(), () ->
 				connection.sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.REMOVE_PLAYER, handle)),
 			40L);
 		}

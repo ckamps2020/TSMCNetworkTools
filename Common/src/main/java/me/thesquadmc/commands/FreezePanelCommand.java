@@ -1,6 +1,6 @@
 package me.thesquadmc.commands;
 
-import me.thesquadmc.Main;
+import me.thesquadmc.NetworkTools;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.msgs.CC;
 import me.thesquadmc.utils.player.PlayerUtils;
@@ -12,10 +12,10 @@ import org.bukkit.entity.Player;
 
 public final class FreezePanelCommand implements CommandExecutor {
 
-	private final Main main;
+	private final NetworkTools networkTools;
 
-	public FreezePanelCommand(Main main) {
-		this.main = main;
+	public FreezePanelCommand(NetworkTools networkTools) {
+		this.networkTools = networkTools;
 	}
 
 	@Override
@@ -31,8 +31,8 @@ public final class FreezePanelCommand implements CommandExecutor {
 					Player t = Bukkit.getPlayer(args[0]);
 					if (t != null) {
 						if (FreezeCommand.getFrozen().contains(t.getUniqueId())) {
-							main.getFrozenInventory().buildStaffGUI(player, t);
-							main.getFrozenInventory().getViewing().put(player.getUniqueId(), t.getUniqueId());
+							networkTools.getFrozenInventory().buildStaffGUI(player, t);
+							networkTools.getFrozenInventory().getViewing().put(player.getUniqueId(), t.getUniqueId());
 						} else {
 							player.sendMessage(CC.translate("&e&lFREEZE &6■ &7That player is not frozen!"));
 						}

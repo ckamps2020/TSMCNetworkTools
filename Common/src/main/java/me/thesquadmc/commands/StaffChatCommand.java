@@ -4,7 +4,7 @@ import me.lucko.luckperms.api.Contexts;
 import me.lucko.luckperms.api.User;
 import me.lucko.luckperms.api.caching.MetaData;
 import me.lucko.luckperms.api.caching.UserData;
-import me.thesquadmc.Main;
+import me.thesquadmc.NetworkTools;
 import me.thesquadmc.networking.redis.RedisMesage;
 import me.thesquadmc.player.PlayerSetting;
 import me.thesquadmc.player.TSMCUser;
@@ -21,17 +21,17 @@ import org.bukkit.entity.Player;
 
 public final class StaffChatCommand implements CommandExecutor {
 
-    private final Main main;
+    private final NetworkTools networkTools;
 
-    public StaffChatCommand(Main main) {
-        this.main = main;
+    public StaffChatCommand(NetworkTools networkTools) {
+        this.networkTools = networkTools;
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            User user = main.getLuckPermsApi().getUser(player.getUniqueId());
+            User user = networkTools.getLuckPermsApi().getUser(player.getUniqueId());
             if (PlayerUtils.isEqualOrHigherThen(player, Rank.TRAINEE)) {
                 TSMCUser tsmcUser = TSMCUser.fromPlayer(player);
                 if (args.length == 0) {
@@ -56,11 +56,11 @@ public final class StaffChatCommand implements CommandExecutor {
                     MetaData metaData = cachedData.getMetaData(contexts);
                     String finalMessage = "&8[&a&lSTAFFCHAT&8] " + metaData.getPrefix() + "" + player.getName() + " &8» &a" + stringBuilder.toString();
 
-                    main.getRedisManager().sendMessage(RedisChannels.STAFFCHAT, RedisMesage.newMessage()
+                    networkTools.getRedisManager().sendMessage(RedisChannels.STAFFCHAT, RedisMesage.newMessage()
                             .set(RedisArg.MESSAGE, finalMessage)
                             .set(RedisArg.SERVER, Bukkit.getServerName()));
 
-                    main.getRedisManager().sendMessage(RedisChannels.DISCORD_STAFFCHAT_DISCORD, RedisMesage.newMessage()
+                    networkTools.getRedisManager().sendMessage(RedisChannels.DISCORD_STAFFCHAT_DISCORD, RedisMesage.newMessage()
                             .set(RedisArg.PLAYER, player.getName())
                             .set(RedisArg.MESSAGE, stringBuilder.toString())
                             .set(RedisArg.SERVER, Bukkit.getServerName()));

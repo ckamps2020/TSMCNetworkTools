@@ -1,7 +1,7 @@
 package me.thesquadmc.networking.redis.channels;
 
 import com.google.gson.JsonObject;
-import me.thesquadmc.Main;
+import me.thesquadmc.NetworkTools;
 import me.thesquadmc.networking.redis.RedisChannel;
 import me.thesquadmc.networking.redis.RedisMesage;
 import me.thesquadmc.player.PlayerSetting;
@@ -19,9 +19,9 @@ import org.bukkit.entity.Player;
 
 public class MonitorChannel implements RedisChannel {
 
-    private final Main plugin;
+    private final NetworkTools plugin;
 
-    public MonitorChannel(Main plugin) {
+    public MonitorChannel(NetworkTools plugin) {
         this.plugin = plugin;
     }
 
@@ -38,7 +38,7 @@ public class MonitorChannel implements RedisChannel {
                         .set(RedisArg.MESSAGE.getName(), String.format("&7TPS = &e%s&7, Memory = &e%s&8/&e%s", ServerUtils.getTPS(0), ServerUtils.getUsedMemory(), ServerUtils.getTotalMemory())));
 
                 /*Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> Multithreading.runAsync(() -> {
-                    try (Jedis jedis = Main.getMain().getPool().getResource()) {
+                    try (Jedis jedis = NetworkTools.getInstance().getPool().getResource()) {
                         JedisTask.withName(UUID.randomUUID().toString())
                                 .withArg(RedisArg.SERVER.getName(), server)
                                 .withArg(RedisArg.UPTIME.getName(), TimeUtils.millisToRoundedTime(System.currentTimeMillis() - plugin.getStartup()))

@@ -1,7 +1,6 @@
 package me.thesquadmc.utils.file;
 
-import me.thesquadmc.Main;
-import org.bukkit.configuration.InvalidConfigurationException;
+import me.thesquadmc.NetworkTools;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -10,13 +9,13 @@ import java.io.IOException;
 
 public final class FileManager {
 
-    private Main plugin;
+    private NetworkTools plugin;
 
     private File networkingFile;
     private FileConfiguration networkingConfig;
 
-    public FileManager(Main main) {
-        this.plugin = main;
+    public FileManager(NetworkTools networkTools) {
+        this.plugin = networkTools;
     }
 
     public void setup() {

@@ -1,6 +1,6 @@
 package me.thesquadmc.utils.message;
 
-import me.thesquadmc.Main;
+import me.thesquadmc.NetworkTools;
 import me.thesquadmc.utils.msgs.CC;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -28,7 +28,7 @@ public class ClickableMessage implements Listener {
         this.command = UUID.randomUUID();
         this.consumer = consumer;
 
-        Bukkit.getPluginManager().registerEvents(this, Main.getMain());
+        Bukkit.getPluginManager().registerEvents(this, NetworkTools.getInstance());
 
         BaseComponent[] components = TextComponent.fromLegacyText(CC.translate(message));
         ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + command.toString());
@@ -55,7 +55,7 @@ public class ClickableMessage implements Listener {
         if (e.getMessage().replaceAll("/", "").equals(command.toString())) {
             e.setCancelled(true);
 
-            Main.getMain().getClickableMessageManager().addUsedCommand(e.getMessage());
+            NetworkTools.getInstance().getClickableMessageManager().addUsedCommand(e.getMessage());
 
             consumer.accept(player);
             HandlerList.unregisterAll(this);

@@ -1,7 +1,7 @@
 package me.thesquadmc.networking.mongo;
 
 import com.mongodb.client.MongoCollection;
-import me.thesquadmc.Main;
+import me.thesquadmc.NetworkTools;
 import me.thesquadmc.player.TSMCUser;
 import me.thesquadmc.utils.server.Multithreading;
 import org.bson.Document;
@@ -26,7 +26,7 @@ public class MongoUserDatabase implements UserDatabase {
             Document document = users.find(eq("_id", uuid)).first();
 
             if (document == null) {
-                Main.getMain().getLogger().info(MessageFormat.format("{0} had no document, fresh user!", uuid));
+                NetworkTools.getInstance().getLogger().info(MessageFormat.format("{0} had no document, fresh user!", uuid));
                 return TSMCUser.fromUUID(uuid);
             }
 

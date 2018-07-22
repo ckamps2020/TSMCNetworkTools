@@ -1,6 +1,6 @@
 package me.thesquadmc.commands;
 
-import me.thesquadmc.Main;
+import me.thesquadmc.NetworkTools;
 import me.thesquadmc.utils.command.Command;
 import me.thesquadmc.utils.command.CommandArgs;
 import me.thesquadmc.utils.msgs.CC;
@@ -12,9 +12,9 @@ import java.util.stream.Collectors;
 
 public class WarpCommand {
 
-    private final Main plugin;
+    private final NetworkTools plugin;
 
-    public WarpCommand(Main plugin) {
+    public WarpCommand(NetworkTools plugin) {
         this.plugin = plugin;
     }
 

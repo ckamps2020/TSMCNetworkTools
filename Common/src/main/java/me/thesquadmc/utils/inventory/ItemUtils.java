@@ -1,10 +1,10 @@
 package me.thesquadmc.utils.inventory;
 
-import me.thesquadmc.utils.msgs.StringUtils;
-import me.thesquadmc.utils.time.TimeUtils;
-import me.thesquadmc.Main;
+import me.thesquadmc.NetworkTools;
 import me.thesquadmc.abstraction.NMSAbstract;
 import me.thesquadmc.utils.msgs.CC;
+import me.thesquadmc.utils.msgs.StringUtils;
+import me.thesquadmc.utils.time.TimeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -23,8 +23,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public final class ItemUtils {
-	
-	private static final NMSAbstract NMS_ABSTRACT = Main.getMain().getNMSAbstract();
+
+	private static final NMSAbstract NMS_ABSTRACT = NetworkTools.getInstance().getNMSAbstract();
 
 	public static void spawnItem(ItemStack itemStack, Location location) {
 		location.getWorld().dropItemNaturally(location, itemStack);

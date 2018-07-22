@@ -3,7 +3,7 @@ package me.thesquadmc.commands;
 import com.google.common.collect.Sets;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Sorts;
-import me.thesquadmc.Main;
+import me.thesquadmc.NetworkTools;
 import me.thesquadmc.objects.logging.ChangeLog;
 import me.thesquadmc.utils.command.Command;
 import me.thesquadmc.utils.command.CommandArgs;
@@ -19,14 +19,14 @@ public class ChangeLogCommand {
     private final MongoCollection<Document> logCollection;
     private final TreeSet<ChangeLog> logs = Sets.newTreeSet(Comparator.comparingLong(ChangeLog::getTimestamp));
 
-    public ChangeLogCommand(Main main) {
-        logCollection = main.getMongo().getMongoDatabase().getCollection("changelog");
+    public ChangeLogCommand(NetworkTools networkTools) {
+        logCollection = networkTools.getMongo().getMongoDatabase().getCollection("changelog");
 
         for (Document document : logCollection.find().limit(10).sort(Sorts.descending("timestamp"))) {
             logs.add(ChangeLog.fromDocument(document));
         }
 
-        Bukkit.getScheduler().runTaskTimerAsynchronously(main, () -> {
+        Bukkit.getScheduler().runTaskTimerAsynchronously(networkTools, () -> {
             logs.clear();
 
             for (Document document : logCollection.find().limit(10).sort(Sorts.descending("timestamp"))) {

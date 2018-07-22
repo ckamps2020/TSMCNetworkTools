@@ -1,12 +1,15 @@
 package me.thesquadmc.listeners;
 
-import me.thesquadmc.Main;
+import me.thesquadmc.NetworkTools;
 import me.thesquadmc.commands.StaffmodeCommand;
-import me.thesquadmc.utils.handlers.UpdateEvent;
 import me.thesquadmc.utils.enums.UpdateType;
+import me.thesquadmc.utils.handlers.UpdateEvent;
 import me.thesquadmc.utils.inventory.InventorySize;
 import me.thesquadmc.utils.msgs.CC;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -19,24 +22,36 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemDamageEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.player.PlayerPortalEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public final class StaffmodeListener implements Listener {
 
-	private final Main main;
+	private final NetworkTools networkTools;
 	private Map<UUID, Integer> timeRemaining = new HashMap<>();
 	private Map<UUID, Map<UUID, Integer>> cps = new HashMap<>();
 	private Map<UUID, Integer> tempCPS = new HashMap<>();
 	private static List<UUID> mining = new ArrayList<>();
 	private static Map<UUID, Integer> blocksMined = new HashMap<>();
 
-	public StaffmodeListener(Main main) {
-		this.main = main;
+	public StaffmodeListener(NetworkTools networkTools) {
+		this.networkTools = networkTools;
 	}
 
 	@EventHandler
@@ -99,7 +114,7 @@ public final class StaffmodeListener implements Listener {
 				if (stack.getItemMeta() != null && stack.getItemMeta().getDisplayName().toUpperCase().contains("CONTROL PANEL")) {
 					if (e.getAction().toString().toUpperCase().contains("RIGHT")) {
 						player.closeInventory();
-						main.getStaffmodeInventory().buildStaffpanel(player);
+						networkTools.getStaffmodeInventory().buildStaffpanel(player);
 					} else if (e.getAction().toString().toUpperCase().contains("LEFT")) {
 						player.closeInventory();
 						player.performCommand("rtp");

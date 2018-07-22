@@ -1,6 +1,6 @@
 package me.thesquadmc.commands;
 
-import me.thesquadmc.Main;
+import me.thesquadmc.NetworkTools;
 import me.thesquadmc.networking.redis.RedisMesage;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.enums.RedisArg;
@@ -15,10 +15,10 @@ import org.bukkit.entity.Player;
 
 public final class StopCommand implements CommandExecutor {
 
-    private final Main main;
+    private final NetworkTools networkTools;
 
-    public StopCommand(Main main) {
-        this.main = main;
+    public StopCommand(NetworkTools networkTools) {
+        this.networkTools = networkTools;
     }
 
     @Override
@@ -34,17 +34,17 @@ public final class StopCommand implements CommandExecutor {
                     }
                     player.sendMessage(CC.translate("&e&lSTOP &6■ &7You have stopped &e" + server + " &7for &e" + stringBuilder.toString() + "&7"));
 
-                    main.getRedisManager().sendMessage(RedisChannels.STOP, RedisMesage.newMessage()
+                    networkTools.getRedisManager().sendMessage(RedisChannels.STOP, RedisMesage.newMessage()
                             .set(RedisArg.SERVER, server.toUpperCase())
                             .set(RedisArg.MESSAGE, stringBuilder.toString()));
 
-                    /*Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
+                    /*Bukkit.getScheduler().runTaskAsynchronously(networkTools, new Runnable() {
                         @Override
                         public void run() {
                             Multithreading.runAsync(new Runnable() {
                                 @Override
                                 public void run() {
-                                    try (Jedis jedis = Main.getMain().getPool().getResource()) {
+                                    try (Jedis jedis = NetworkTools.getInstance().getPool().getResource()) {
                                         JedisTask.withName(UUID.randomUUID().toString())
                                                 .withArg(RedisArg.SERVER.getArg(), server.toUpperCase())
                                                 .withArg(RedisArg.MESSAGE.getArg(), stringBuilder.toString())

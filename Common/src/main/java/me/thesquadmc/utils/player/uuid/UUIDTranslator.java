@@ -2,7 +2,7 @@ package me.thesquadmc.utils.player.uuid;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
-import me.thesquadmc.Main;
+import me.thesquadmc.NetworkTools;
 import me.thesquadmc.utils.json.JSONUtils;
 import org.bukkit.Bukkit;
 import redis.clients.jedis.Jedis;
@@ -24,11 +24,11 @@ import java.util.regex.Pattern;
 public final class UUIDTranslator {
     private static final Pattern UUID_PATTERN = Pattern.compile("[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}");
     private static final Pattern MOJANGIAN_UUID_PATTERN = Pattern.compile("[a-fA-F0-9]{32}");
-    private final Main plugin;
+    private final NetworkTools plugin;
     private final Map<String, CachedUUIDEntry> nameToUuidMap = new ConcurrentHashMap<>(128, 0.5f, 4);
     private final Map<UUID, CachedUUIDEntry> uuidToNameMap = new ConcurrentHashMap<>(128, 0.5f, 4);
 
-    public UUIDTranslator(Main plugin) {
+    public UUIDTranslator(NetworkTools plugin) {
         this.plugin = plugin;
     }
 

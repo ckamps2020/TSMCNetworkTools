@@ -1,7 +1,7 @@
 package me.thesquadmc.networking.redis.channels;
 
 import com.google.gson.JsonObject;
-import me.thesquadmc.Main;
+import me.thesquadmc.NetworkTools;
 import me.thesquadmc.networking.redis.RedisChannel;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.enums.RedisArg;
@@ -15,9 +15,9 @@ import org.bukkit.entity.Player;
 
 public class WhitelistChannel implements RedisChannel {
 
-    private final Main plugin;
+    private final NetworkTools plugin;
 
-    public WhitelistChannel(Main plugin) {
+    public WhitelistChannel(NetworkTools plugin) {
         this.plugin = plugin;
     }
 

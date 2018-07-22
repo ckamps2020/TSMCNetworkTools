@@ -1,6 +1,6 @@
 package me.thesquadmc.commands;
 
-import me.thesquadmc.Main;
+import me.thesquadmc.NetworkTools;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.msgs.CC;
 import me.thesquadmc.utils.player.PlayerUtils;
@@ -14,10 +14,10 @@ import java.util.Random;
 
 public final class UndisguisePlayerCommand implements CommandExecutor {
 
-	private final Main main;
+	private final NetworkTools networkTools;
 
-	public UndisguisePlayerCommand(Main main) {
-		this.main = main;
+	public UndisguisePlayerCommand(NetworkTools networkTools) {
+		this.networkTools = networkTools;
 	}
 
 	@Override
@@ -28,19 +28,19 @@ public final class UndisguisePlayerCommand implements CommandExecutor {
 				if (args.length == 1) {
 					String user = args[0];
 					if (user.equalsIgnoreCase("all")) {
-						if (!main.getSig().equalsIgnoreCase("NONE")) {
+						if (!networkTools.getSig().equalsIgnoreCase("NONE")) {
 							for (Player p : Bukkit.getOnlinePlayers()) {
 								Random random = new Random();
 								int n = random.nextInt(20) + 1;
-								Bukkit.getScheduler().runTaskLater(main, new Runnable() {
+								Bukkit.getScheduler().runTaskLater(networkTools, new Runnable() {
 									@Override
 									public void run() {
 										PlayerUtils.restorePlayerTextures(p);
 									}
 								}, n);
 							}
-							main.setSig("NONE");
-							main.setValue("NONE");
+							networkTools.setSig("NONE");
+							networkTools.setValue("NONE");
 							player.sendMessage(CC.translate("&e&lDISGUISE &6■ &7You have undisguised the server!"));
 						} else {
 							player.sendMessage(CC.translate("&e&lDISGUISE &6■ &7The server is not disguised!"));

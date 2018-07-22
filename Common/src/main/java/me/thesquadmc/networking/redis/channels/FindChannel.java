@@ -1,7 +1,7 @@
 package me.thesquadmc.networking.redis.channels;
 
 import com.google.gson.JsonObject;
-import me.thesquadmc.Main;
+import me.thesquadmc.NetworkTools;
 import me.thesquadmc.commands.StafflistCommand;
 import me.thesquadmc.networking.redis.RedisChannel;
 import me.thesquadmc.networking.redis.RedisMesage;
@@ -18,9 +18,9 @@ import java.util.UUID;
 
 public class FindChannel implements RedisChannel {
 
-    private final Main plugin;
+    private final NetworkTools plugin;
 
-    public FindChannel(Main plugin) {
+    public FindChannel(NetworkTools plugin) {
         this.plugin = plugin;
     }
 

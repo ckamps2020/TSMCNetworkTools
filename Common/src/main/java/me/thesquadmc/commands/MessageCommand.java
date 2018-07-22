@@ -1,7 +1,7 @@
 package me.thesquadmc.commands;
 
 import com.google.common.base.Joiner;
-import me.thesquadmc.Main;
+import me.thesquadmc.NetworkTools;
 import me.thesquadmc.networking.redis.RedisMesage;
 import me.thesquadmc.player.TSMCUser;
 import me.thesquadmc.utils.command.Command;
@@ -15,9 +15,9 @@ import java.util.UUID;
 
 public class MessageCommand {
 
-    private final Main plugin;
+    private final NetworkTools plugin;
 
-    public MessageCommand(Main plugin) {
+    public MessageCommand(NetworkTools plugin) {
         this.plugin = plugin;
     }
 

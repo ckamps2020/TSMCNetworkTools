@@ -1,15 +1,14 @@
 package me.thesquadmc.utils.nms;
 
-import java.util.Set;
-
+import me.thesquadmc.NetworkTools;
+import me.thesquadmc.abstraction.BossBarManager;
 import org.bukkit.entity.Player;
 
-import me.thesquadmc.Main;
-import me.thesquadmc.abstraction.BossBarManager;
+import java.util.Set;
 
 public final class BarUtils {
-	
-	private static final BossBarManager BOSS_BAR_MANAGER = Main.getMain().getNMSAbstract().getBossBarManager();
+
+	private static final BossBarManager BOSS_BAR_MANAGER = NetworkTools.getInstance().getNMSAbstract().getBossBarManager();
 
 	public static void setBar(Player p, String text, float healthPercent) {
 		BOSS_BAR_MANAGER.setBar(p, text, healthPercent);

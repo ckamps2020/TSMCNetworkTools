@@ -7,7 +7,7 @@ import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.EnumWrappers.PlayerInfoAction;
 import com.comphenix.protocol.wrappers.PlayerInfoData;
 import com.comphenix.protocol.wrappers.WrappedGameProfile;
-import me.thesquadmc.Main;
+import me.thesquadmc.NetworkTools;
 import me.thesquadmc.player.TSMCUser;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -24,9 +24,9 @@ public class TagAdaptionListener extends PacketAdapter {
 	
 	private final Map<Integer, UUID> entityIdMap = new HashMap<>();
 	private final List<PlayerInfoData> playerInfoDataNew = new ArrayList<>();
-	
-	public TagAdaptionListener(Main main) {
-		super(main, PacketType.Play.Server.PLAYER_INFO);
+
+	public TagAdaptionListener(NetworkTools networkTools) {
+		super(networkTools, PacketType.Play.Server.PLAYER_INFO);
 	}
 
 	@Override

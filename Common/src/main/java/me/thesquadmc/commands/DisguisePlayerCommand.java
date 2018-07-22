@@ -1,6 +1,6 @@
 package me.thesquadmc.commands;
 
-import me.thesquadmc.Main;
+import me.thesquadmc.NetworkTools;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.msgs.CC;
 import me.thesquadmc.utils.player.PlayerUtils;
@@ -12,10 +12,10 @@ import org.bukkit.entity.Player;
 
 public final class DisguisePlayerCommand implements CommandExecutor {
 
-	private final Main main;
+	private final NetworkTools networkTools;
 
-	public DisguisePlayerCommand(Main main) {
-		this.main = main;
+	public DisguisePlayerCommand(NetworkTools networkTools) {
+		this.networkTools = networkTools;
 	}
 
 	@Override
@@ -28,7 +28,7 @@ public final class DisguisePlayerCommand implements CommandExecutor {
 					String name = args[1];
 					if (user.equalsIgnoreCase("all")) {
 						PlayerUtils.updateGlobalSkin(name);
-						Bukkit.getScheduler().runTaskLater(main, new Runnable() {
+						Bukkit.getScheduler().runTaskLater(networkTools, new Runnable() {
 							@Override
 							public void run() {
 								player.sendMessage(CC.translate("&e&lDISGUISE &6■ &7You have disguised the entire server to &e" + name));

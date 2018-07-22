@@ -1,7 +1,7 @@
 package me.thesquadmc.kit;
 
 import com.google.common.collect.Sets;
-import me.thesquadmc.Main;
+import me.thesquadmc.NetworkTools;
 import me.thesquadmc.utils.json.JSONUtils;
 
 import java.io.File;
@@ -21,11 +21,11 @@ import static sun.audio.AudioPlayer.player;
  */
 public class KitManager {
 
-    private final Main plugin;
+    private final NetworkTools plugin;
 
     private final Set<Kit> warps = Sets.newHashSet();
 
-    public KitManager(Main plugin) {
+    public KitManager(NetworkTools plugin) {
         this.plugin = plugin;
 
         File file = new File(plugin.getDataFolder(), "kits");

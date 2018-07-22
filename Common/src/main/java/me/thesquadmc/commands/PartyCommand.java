@@ -3,7 +3,7 @@ package me.thesquadmc.commands;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Multimap;
-import me.thesquadmc.Main;
+import me.thesquadmc.NetworkTools;
 import me.thesquadmc.managers.PartyManager;
 import me.thesquadmc.networking.redis.RedisMesage;
 import me.thesquadmc.objects.Party;
@@ -29,16 +29,16 @@ import java.util.UUID;
 public final class PartyCommand implements CommandExecutor {
 
     private final Multimap<UUID, UUID> partyRequests = HashMultimap.create();
-    private final Main main;
+    private final NetworkTools networkTools;
 
-    public PartyCommand(Main main) {
-        this.main = main;
+    public PartyCommand(NetworkTools networkTools) {
+        this.networkTools = networkTools;
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            this.main.getLogger().info("Only players are permitted to use this command");
+            this.networkTools.getLogger().info("Only players are permitted to use this command");
             return true;
         }
 
@@ -49,7 +49,7 @@ public final class PartyCommand implements CommandExecutor {
             return true;
         }
 
-        PartyManager partyManager = main.getPartyManager();
+        PartyManager partyManager = networkTools.getPartyManager();
 
         if (args[0].equalsIgnoreCase("invite") || args[0].equalsIgnoreCase("add")) {
             if (args.length < 2) {
@@ -122,17 +122,17 @@ public final class PartyCommand implements CommandExecutor {
             final Party p = party;
 
             // Update cross-server
-            main.getRedisManager().sendMessage(RedisChannels.PARTY_UPDATE, RedisMesage.newMessage()
+            networkTools.getRedisManager().sendMessage(RedisChannels.PARTY_UPDATE, RedisMesage.newMessage()
                     .set(RedisArg.PARTY, p)
                     .set(RedisArg.REASON, "JOIN"));
             /*
-            Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
+            Bukkit.getScheduler().runTaskAsynchronously(networkTools, new Runnable() {
                 @Override
                 public void run() {
                     Multithreading.runAsync(new Runnable() {
                         @Override
                         public void run() {
-                            try (Jedis jedis = Main.getMain().getPool().getResource()) {
+                            try (Jedis jedis = NetworkTools.getInstance().getPool().getResource()) {
                                 JedisTask.withName(UUID.randomUUID().toString())
                                         .withArg(RedisArg.PARTY.getArg(), p)
                                         .withArg(RedisArg.REASON.getArg(), "JOIN")
@@ -182,17 +182,17 @@ public final class PartyCommand implements CommandExecutor {
                 target.getPlayer().sendMessage(CC.translate("&e&lPARTY &6■ &7You have been &ekicked &7from &e" + player.getName() + "&7's party!"));
 
             // Update cross-server
-            main.getRedisManager().sendMessage(RedisChannels.PARTY_UPDATE, RedisMesage.newMessage()
+            networkTools.getRedisManager().sendMessage(RedisChannels.PARTY_UPDATE, RedisMesage.newMessage()
                     .set(RedisArg.PARTY, party)
                     .set(RedisArg.REASON, "KICK"));
 
-/*            Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
+/*            Bukkit.getScheduler().runTaskAsynchronously(networkTools, new Runnable() {
                 @Override
                 public void run() {
                     Multithreading.runAsync(new Runnable() {
                         @Override
                         public void run() {
-                            try (Jedis jedis = Main.getMain().getPool().getResource()) {
+                            try (Jedis jedis = NetworkTools.getInstance().getPool().getResource()) {
                                 JedisTask.withName(UUID.randomUUID().toString())
                                         .withArg(RedisArg.PARTY.getArg(), party)
                                         .withArg(RedisArg.REASON.getArg(), "KICK")
@@ -227,21 +227,21 @@ public final class PartyCommand implements CommandExecutor {
             // Update party cross-server
             if (party.getMemberCount(true) == 0) {
                 party.destroy();
-                main.getRedisManager().sendMessage(RedisChannels.PARTY_DISBAND, RedisMesage.newMessage()
+                networkTools.getRedisManager().sendMessage(RedisChannels.PARTY_DISBAND, RedisMesage.newMessage()
                         .set(RedisArg.PARTY, party));
             } else {
-                main.getRedisManager().sendMessage(RedisChannels.PARTY_UPDATE, RedisMesage.newMessage()
+                networkTools.getRedisManager().sendMessage(RedisChannels.PARTY_UPDATE, RedisMesage.newMessage()
                         .set(RedisArg.PARTY, party)
                         .set(RedisArg.REASON, "LEAVE"));
             }
 
-/*            Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
+/*            Bukkit.getScheduler().runTaskAsynchronously(networkTools, new Runnable() {
                 @Override
                 public void run() {
                     Multithreading.runAsync(new Runnable() {
                         @Override
                         public void run() {
-                            try (Jedis jedis = Main.getMain().getPool().getResource()) {
+                            try (Jedis jedis = NetworkTools.getInstance().getPool().getResource()) {
                                 if (party.getMemberCount(true) == 0) {
                                     party.destroy();
                                     JedisTask.withName(UUID.randomUUID().toString())
@@ -280,16 +280,16 @@ public final class PartyCommand implements CommandExecutor {
             player.sendMessage(CC.translate("&e&lPARTY &6■ &7Your &eparty &7has been &edisbanded&7!"));
 
             // Update cross-server
-            main.getRedisManager().sendMessage(RedisChannels.PARTY_DISBAND, RedisMesage.newMessage()
+            networkTools.getRedisManager().sendMessage(RedisChannels.PARTY_DISBAND, RedisMesage.newMessage()
                     .set(RedisArg.PARTY, party));
 
-            /*Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
+            /*Bukkit.getScheduler().runTaskAsynchronously(networkTools, new Runnable() {
                 @Override
                 public void run() {
                     Multithreading.runAsync(new Runnable() {
                         @Override
                         public void run() {
-                            try (Jedis jedis = Main.getMain().getPool().getResource()) {
+                            try (Jedis jedis = NetworkTools.getInstance().getPool().getResource()) {
                                 JedisTask.withName(UUID.randomUUID().toString())
                                         .withArg(RedisArg.PARTY.getArg(), party)
                                         .send(RedisChannels.PARTY_DISBAND.getChannelName(), jedis);

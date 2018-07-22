@@ -1,7 +1,7 @@
 package me.thesquadmc.networking.redis.channels;
 
 import com.google.gson.JsonObject;
-import me.thesquadmc.Main;
+import me.thesquadmc.NetworkTools;
 import me.thesquadmc.managers.PartyManager;
 import me.thesquadmc.networking.redis.RedisChannel;
 import me.thesquadmc.objects.Party;
@@ -21,7 +21,7 @@ public class PartyChannel implements RedisChannel {
                 return;
             }
 
-            Main.getMain().getPartyManager().addParty(party);
+            NetworkTools.getInstance().getPartyManager().addParty(party);
 
         } else if (channel.equals(RedisChannels.PARTY_UPDATE.getName())) {
             Party party =JSONUtils.getGson().fromJson(object.get(RedisArg.PARTY.getName()).getAsJsonObject(), Party.class);
@@ -30,7 +30,7 @@ public class PartyChannel implements RedisChannel {
             }
 
             // Looks ugly, but it works
-            PartyManager manager = Main.getMain().getPartyManager();
+            PartyManager manager = NetworkTools.getInstance().getPartyManager();
             if (manager.removeParty(party)) {
                 manager.addParty(party);
             }
@@ -41,7 +41,7 @@ public class PartyChannel implements RedisChannel {
                 return;
             }
 
-            Main.getMain().getPartyManager().removeParty(party);
+            NetworkTools.getInstance().getPartyManager().removeParty(party);
             for (OfflinePlayer member : party.getMembers()) {
                 if (!member.isOnline()) {
                     return;

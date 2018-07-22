@@ -8,7 +8,7 @@ import com.mongodb.client.model.BulkWriteOptions;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.UpdateOneModel;
 import com.mongodb.client.model.UpdateOptions;
-import me.thesquadmc.Main;
+import me.thesquadmc.NetworkTools;
 import me.thesquadmc.chat.listener.ChatListener;
 import me.thesquadmc.utils.file.FileUtils;
 import me.thesquadmc.utils.server.Multithreading;
@@ -28,7 +28,7 @@ public class ChatManager {
 
     private static final int MAX_WRITE = 100;
 
-    private final Main plugin;
+    private final NetworkTools plugin;
     private final Queue<ChatMessage> chatMessages = new ConcurrentLinkedDeque<>();
 
     private final Map<Integer, ChatFormat> formats = Maps.newTreeMap();
@@ -37,7 +37,7 @@ public class ChatManager {
     private boolean silenced = false;
     private int chatDelay = 0;
 
-    public ChatManager(Main plugin) {
+    public ChatManager(NetworkTools plugin) {
         this.plugin = plugin;
 
         Bukkit.getPluginManager().registerEvents(new ChatListener(plugin), plugin);

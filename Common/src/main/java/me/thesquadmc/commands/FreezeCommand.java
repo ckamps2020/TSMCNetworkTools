@@ -1,6 +1,6 @@
 package me.thesquadmc.commands;
 
-import me.thesquadmc.Main;
+import me.thesquadmc.NetworkTools;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.msgs.CC;
 import me.thesquadmc.utils.player.PlayerUtils;
@@ -16,11 +16,11 @@ import java.util.UUID;
 
 public final class FreezeCommand implements CommandExecutor {
 
-	private final Main main;
+	private final NetworkTools networkTools;
 	private static List<UUID> frozen = new ArrayList<>();
 
-	public FreezeCommand(Main main) {
-		this.main = main;
+	public FreezeCommand(NetworkTools networkTools) {
+		this.networkTools = networkTools;
 	}
 
 	@Override
@@ -41,9 +41,9 @@ public final class FreezeCommand implements CommandExecutor {
 								PlayerUtils.freezePlayer(t);
 								t.sendMessage(CC.translate("&c&lYou have been frozen by staff, do not log out at all. Please follow staffs instructions at all time"));
 								frozen.add(t.getUniqueId());
-								main.getFrozenInventory().buildFrozenInventory(t);
-								main.getFrozenInventory().buildStaffGUI(player, t);
-								main.getFrozenInventory().getViewing().put(player.getUniqueId(), t.getUniqueId());
+								networkTools.getFrozenInventory().buildFrozenInventory(t);
+								networkTools.getFrozenInventory().buildStaffGUI(player, t);
+								networkTools.getFrozenInventory().getViewing().put(player.getUniqueId(), t.getUniqueId());
 								player.sendMessage(CC.translate("&e&lFREEZE &6■ &7You have frozen &e" + t.getName() + "&7!"));
 							} else {
 								player.sendMessage(CC.translate("&e&lFREEZE &6■ &7That player is already frozen!"));

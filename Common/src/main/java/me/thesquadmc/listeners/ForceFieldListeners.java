@@ -1,6 +1,6 @@
 package me.thesquadmc.listeners;
 
-import me.thesquadmc.Main;
+import me.thesquadmc.NetworkTools;
 import me.thesquadmc.abstraction.Sounds;
 import me.thesquadmc.player.PlayerSetting;
 import me.thesquadmc.player.TSMCUser;
@@ -18,10 +18,10 @@ import java.util.List;
 
 public final class ForceFieldListeners implements Listener {
 
-	private final Main main;
+	private final NetworkTools networkTools;
 
-	public ForceFieldListeners(Main main) {
-		this.main = main;
+	public ForceFieldListeners(NetworkTools networkTools) {
+		this.networkTools = networkTools;
 	}
 
 	@EventHandler

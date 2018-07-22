@@ -1,6 +1,6 @@
 package me.thesquadmc.utils.file;
 
-import me.thesquadmc.Main;
+import me.thesquadmc.NetworkTools;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -71,10 +71,10 @@ public final class FileUtils {
 	}
 
 	public static YamlConfiguration getConfig(String name) {
-		File file = new File(Main.getMain().getDataFolder(), name + ".yml");
+		File file = new File(NetworkTools.getInstance().getDataFolder(), name + ".yml");
 		if (!file.exists()) {
 			file.getParentFile().mkdirs();
-			Main.getMain().saveResource(name + ".yml", false);
+			NetworkTools.getInstance().saveResource(name + ".yml", false);
 		}
 
 		YamlConfiguration config = new YamlConfiguration();

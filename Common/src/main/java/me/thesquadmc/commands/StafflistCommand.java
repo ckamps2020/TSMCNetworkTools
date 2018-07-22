@@ -1,6 +1,6 @@
 package me.thesquadmc.commands;
 
-import me.thesquadmc.Main;
+import me.thesquadmc.NetworkTools;
 import me.thesquadmc.networking.redis.RedisMesage;
 import me.thesquadmc.utils.enums.RedisArg;
 import me.thesquadmc.utils.enums.RedisChannels;
@@ -18,11 +18,11 @@ import java.util.UUID;
 
 public final class StafflistCommand implements CommandExecutor {
 
-    private final Main main;
+    private final NetworkTools networkTools;
     private static Map<UUID, Map<RedisArg, String>> stafflist = new HashMap<>();
 
-    public StafflistCommand(Main main) {
-        this.main = main;
+    public StafflistCommand(NetworkTools networkTools) {
+        this.networkTools = networkTools;
     }
 
     @Override
@@ -31,11 +31,11 @@ public final class StafflistCommand implements CommandExecutor {
             Player player = (Player) sender;
 
             stafflist.put(player.getUniqueId(), new HashMap<>());
-            main.getRedisManager().sendMessage(RedisChannels.REQUEST_LIST, RedisMesage.newMessage()
+            networkTools.getRedisManager().sendMessage(RedisChannels.REQUEST_LIST, RedisMesage.newMessage()
                     .set(RedisArg.SERVER, Bukkit.getServerName())
                     .set(RedisArg.PLAYER, player.getName()));
 
-            Bukkit.getScheduler().runTaskLater(main, () -> {
+            Bukkit.getScheduler().runTaskLater(networkTools, () -> {
                 String trainee = "";
                 String helper = "";
                 String mod = "";
@@ -125,19 +125,19 @@ public final class StafflistCommand implements CommandExecutor {
                 stafflist.remove(player.getUniqueId());
             }, 5L);
 
-			/*Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
+			/*Bukkit.getScheduler().runTaskAsynchronously(networkTools, new Runnable() {
 				@Override
 				public void run() {
 					Multithreading.runAsync(new Runnable() {
 						@Override
 						public void run() {
 							stafflist.put(player.getUniqueId(), new HashMap<>());
-							try (Jedis jedis = main.getPool().getResource()) {
+							try (Jedis jedis = networkTools.getPool().getResource()) {
 								JedisTask.withName(UUID.randomUUID().toString())
 										.withArg(RedisArg.SERVER.getArg(), Bukkit.getServerName())
 										.withArg(RedisArg.PLAYER.getArg(), player.getName())
 										.send(RedisChannels.REQUEST_LIST.getChannelName(), jedis);
-								Bukkit.getScheduler().runTaskLater(main, () -> {
+								Bukkit.getScheduler().runTaskLater(networkTools, () -> {
 									String trainee = "";
 									String helper = "";
 									String mod = "";

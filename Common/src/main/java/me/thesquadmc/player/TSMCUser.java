@@ -3,7 +3,7 @@ package me.thesquadmc.player;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import me.thesquadmc.Main;
+import me.thesquadmc.NetworkTools;
 import me.thesquadmc.objects.logging.IPInfo;
 import me.thesquadmc.objects.logging.Note;
 import me.thesquadmc.utils.DocumentUtils;
@@ -267,7 +267,7 @@ public class TSMCUser {
         USERS.remove(user.uuid);
 
         if (save) {
-            Main.getMain().getUserDatabase().saveUser(user);
+            NetworkTools.getInstance().getUserDatabase().saveUser(user);
         }
     }
 

@@ -1,7 +1,7 @@
 package me.thesquadmc.managers;
 
 import com.google.common.collect.Lists;
-import me.thesquadmc.Main;
+import me.thesquadmc.NetworkTools;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -15,7 +15,7 @@ public class ClickableMessageManager implements Listener {
 
     private final List<String> usedCommands = Lists.newArrayList();
 
-    public ClickableMessageManager(Main plugin) {
+    public ClickableMessageManager(NetworkTools plugin) {
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 

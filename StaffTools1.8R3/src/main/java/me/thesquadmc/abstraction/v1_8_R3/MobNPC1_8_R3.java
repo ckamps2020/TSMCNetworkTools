@@ -1,18 +1,16 @@
 package me.thesquadmc.abstraction.v1_8_R3;
 
+import me.thesquadmc.NetworkTools;
+import me.thesquadmc.abstraction.MobNPC;
+import me.thesquadmc.managers.HologramManager;
+import me.thesquadmc.objects.Hologram;
+import me.thesquadmc.utils.nms.EntityUtils;
+import net.minecraft.server.v1_8_R3.NavigationAbstract;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftCreature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
-
-import net.minecraft.server.v1_8_R3.NavigationAbstract;
-
-import me.thesquadmc.Main;
-import me.thesquadmc.abstraction.MobNPC;
-import me.thesquadmc.managers.HologramManager;
-import me.thesquadmc.objects.Hologram;
-import me.thesquadmc.utils.nms.EntityUtils;
 
 public class MobNPC1_8_R3 implements MobNPC {
 
@@ -39,7 +37,7 @@ public class MobNPC1_8_R3 implements MobNPC {
 		}
 		
 		// TODO: This can be cleaned up
-		HologramManager hologramManager = Main.getMain().getHologramManager();
+		HologramManager hologramManager = NetworkTools.getInstance().getHologramManager();
 		hologramManager.createHologram(name, displayName, location);
 		this.hologram = hologramManager.getHologram(name);
 	}
@@ -47,7 +45,7 @@ public class MobNPC1_8_R3 implements MobNPC {
 	@Override
 	public void destroy() {
 		this.entity.remove();
-		Main.getMain().getHologramManager().getHologram(name).despawn();
+		NetworkTools.getInstance().getHologramManager().getHologram(name).despawn();
 	}
 
 	@Override

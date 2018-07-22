@@ -1,6 +1,6 @@
 package me.thesquadmc.utils.nms;
 
-import me.thesquadmc.Main;
+import me.thesquadmc.NetworkTools;
 import me.thesquadmc.abstraction.NMSAbstract;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
@@ -15,7 +15,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public final class EntityUtils {
 
     private static final Color[] COLOURS = new Color[]{Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN, Color.AQUA, Color.BLUE, Color.PURPLE};
-	private static final NMSAbstract NMS_ABSTRACT = Main.getMain().getNMSAbstract();
+	private static final NMSAbstract NMS_ABSTRACT = NetworkTools.getInstance().getNMSAbstract();
 
 	public static void setLookDirection(Entity entity, float yaw, float pitch) {
 		NMS_ABSTRACT.setLookDirection(entity, pitch, yaw);
@@ -44,7 +44,7 @@ public final class EntityUtils {
 	}
 
 	public static void setAI(LivingEntity entity, boolean enabled) {
-		Main.getMain().getNMSAbstract().setAI(entity, enabled);
+		NetworkTools.getInstance().getNMSAbstract().setAI(entity, enabled);
 	}
 
 }

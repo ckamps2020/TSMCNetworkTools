@@ -1,6 +1,6 @@
 package me.thesquadmc.objects;
 
-import me.thesquadmc.Main;
+import me.thesquadmc.NetworkTools;
 import me.thesquadmc.utils.msgs.CC;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
@@ -68,7 +68,7 @@ public final class Hologram {
 
 	public void unregisterMulti() {
 		for (int i = 0; i < texts.size(); i++) {
-			Main.getMain().getHologramManager().unregisterHologram(name + texts.get(i));
+			NetworkTools.getInstance().getHologramManager().unregisterHologram(name + texts.get(i));
 		}
 	}
 
@@ -93,7 +93,7 @@ public final class Hologram {
 			} else {
 				location.subtract(0, 0.3, 0);
 			}
-			Main.getMain().getHologramManager().registerHologram(this.name + "-" + texts.get(i), this);
+			NetworkTools.getInstance().getHologramManager().registerHologram(this.name + "-" + texts.get(i), this);
 		}
 	}
 

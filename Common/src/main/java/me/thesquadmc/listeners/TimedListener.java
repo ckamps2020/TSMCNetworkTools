@@ -1,6 +1,6 @@
 package me.thesquadmc.listeners;
 
-import me.thesquadmc.Main;
+import me.thesquadmc.NetworkTools;
 import me.thesquadmc.abstraction.Sounds;
 import me.thesquadmc.utils.enums.UpdateType;
 import me.thesquadmc.utils.handlers.UpdateEvent;
@@ -12,10 +12,10 @@ import org.bukkit.event.Listener;
 
 public final class TimedListener implements Listener {
 
-	private final Main main;
+	private final NetworkTools networkTools;
 
-	public TimedListener(Main main) {
-		this.main = main;
+	public TimedListener(NetworkTools networkTools) {
+		this.networkTools = networkTools;
 	}
 
 	@EventHandler
@@ -27,13 +27,13 @@ public final class TimedListener implements Listener {
 					|| Bukkit.getServerName().toUpperCase().contains("PRISON")
 					|| Bukkit.getServerName().toUpperCase().contains("TROLLWARS")
 					|| Bukkit.getServerName().toUpperCase().contains("CREATIVE")) {
-				main.setRestartTime(main.getRestartTime() + 1);
-				if (main.getRestartTime() == 720) {
+				networkTools.setRestartTime(networkTools.getRestartTime() + 1);
+				if (networkTools.getRestartTime() == 720) {
 					for (Player player : Bukkit.getOnlinePlayers()) {
 						player.kickPlayer(CC.translate("&e&lRESTART &6■ &7Daily server restart"));
 					}
 					Bukkit.shutdown();
-				} else if (main.getRestartTime() == 715) {
+				} else if (networkTools.getRestartTime() == 715) {
 					Bukkit.broadcastMessage(" ");
 					Bukkit.broadcastMessage(" ");
 					Bukkit.broadcastMessage(CC.translate("&e&lRESTART &6■ &7Daily server restart in &e5 &7min"));
@@ -42,7 +42,7 @@ public final class TimedListener implements Listener {
 					for (Player player : Bukkit.getOnlinePlayers()) {
 						player.playSound(player.getLocation(), Sounds.NOTE_PLING.bukkitSound(), 1.0f, 1.0f);
 					}
-				} else if (main.getRestartTime() == 719) {
+				} else if (networkTools.getRestartTime() == 719) {
 					Bukkit.broadcastMessage(" ");
 					Bukkit.broadcastMessage(" ");
 					Bukkit.broadcastMessage(CC.translate("&e&lRESTART &6■ &7Daily server restart in &e1 &7min"));

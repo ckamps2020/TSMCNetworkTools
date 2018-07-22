@@ -1,7 +1,7 @@
 package me.thesquadmc.warp;
 
 import com.google.common.collect.Sets;
-import me.thesquadmc.Main;
+import me.thesquadmc.NetworkTools;
 import me.thesquadmc.utils.json.JSONUtils;
 
 import java.io.File;
@@ -21,11 +21,11 @@ import static sun.audio.AudioPlayer.player;
  */
 public class WarpManager {
 
-    private final Main plugin;
+    private final NetworkTools plugin;
 
     private final Set<Warp> warps = Sets.newHashSet();
 
-    public WarpManager(Main plugin) {
+    public WarpManager(NetworkTools plugin) {
         this.plugin = plugin;
 
         File file = new File(plugin.getDataFolder(), "warps");

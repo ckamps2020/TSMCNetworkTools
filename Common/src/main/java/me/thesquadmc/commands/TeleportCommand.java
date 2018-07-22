@@ -1,7 +1,7 @@
 package me.thesquadmc.commands;
 
 import com.google.common.collect.Maps;
-import me.thesquadmc.Main;
+import me.thesquadmc.NetworkTools;
 import me.thesquadmc.player.PlayerSetting;
 import me.thesquadmc.player.TSMCUser;
 import me.thesquadmc.player.local.LocalPlayer;
@@ -26,10 +26,10 @@ public class TeleportCommand {
 
     private static final int DEFAUFT = Integer.MIN_VALUE;
 
-    private final Main plugin;
+    private final NetworkTools plugin;
     private final Map<UUID, Location> locations = Maps.newHashMap();
 
-    public TeleportCommand(Main plugin) {
+    public TeleportCommand(NetworkTools plugin) {
         this.plugin = plugin;
     }
 

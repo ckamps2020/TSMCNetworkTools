@@ -1,6 +1,6 @@
 package me.thesquadmc.utils.server;
 
-import me.thesquadmc.Main;
+import me.thesquadmc.NetworkTools;
 import me.thesquadmc.managers.PartyManager;
 import me.thesquadmc.networking.redis.RedisMesage;
 import me.thesquadmc.objects.Party;
@@ -23,12 +23,12 @@ public final class ConnectionUtils {
     public static void sendPlayer(Player player, String server, boolean sendParty) {
         player.sendMessage(CC.translate("&e&lTRANSPORT &6■ &7Sending you to &e" + server + "&7..."));
 
-        Main.getMain().getRedisManager().sendMessage(RedisChannels.TRANSPORT, RedisMesage.newMessage()
+        NetworkTools.getInstance().getRedisManager().sendMessage(RedisChannels.TRANSPORT, RedisMesage.newMessage()
                 .set(RedisArg.PLAYER, player.getName())
                 .set(RedisArg.SERVER, server));
 
         // Account for sending a party to a server
-        PartyManager partyManager = Main.getMain().getPartyManager();
+        PartyManager partyManager = NetworkTools.getInstance().getPartyManager();
         Party party = partyManager.getOwnedParty(player);
         if (sendParty && party != null) {
             party.destroy();
@@ -38,7 +38,7 @@ public final class ConnectionUtils {
                 ConnectionUtils.sendPlayer(member.getPlayer(), server); // WOO! Recursion!
             }
 
-            Main.getMain().getRedisManager().sendMessage(RedisChannels.PARTY_JOIN_SERVER, RedisMesage.newMessage()
+            NetworkTools.getInstance().getRedisManager().sendMessage(RedisChannels.PARTY_JOIN_SERVER, RedisMesage.newMessage()
                     .set(RedisArg.PARTY, party));
 
             partyManager.removeParty(party); // Unregister the party from this instance of NetworkTools
@@ -54,18 +54,18 @@ public final class ConnectionUtils {
             player.sendMessage(CC.translate(GameMsgs.GAME_PREFIX + "Finding you an open " + serverType + " server..."));
 
             int i = 1;
-            if (Main.getMain().getPartyManager().hasParty(player.getUniqueId())) {
-                i = Main.getMain().getPartyManager().getParty(player.getUniqueId()).getMemberCount();
+            if (NetworkTools.getInstance().getPartyManager().hasParty(player.getUniqueId())) {
+                i = NetworkTools.getInstance().getPartyManager().getParty(player.getUniqueId()).getMemberCount();
             }
 
             fetching.add(player.getUniqueId());
-            Main.getMain().getRedisManager().sendMessage(RedisChannels.REQUEST_SERVER, RedisMesage.newMessage()
+            NetworkTools.getInstance().getRedisManager().sendMessage(RedisChannels.REQUEST_SERVER, RedisMesage.newMessage()
                     .set(RedisArg.COUNT, i)
                     .set(RedisArg.ORIGIN_PLAYER, player.getName())
                     .set(RedisArg.ORIGIN_SERVER, Bukkit.getServerName())
                     .set(RedisArg.SERVER, serverType));
 
-            Bukkit.getScheduler().runTaskLater(Main.getMain(), () -> {
+            Bukkit.getScheduler().runTaskLater(NetworkTools.getInstance(), () -> {
                 if (fetching.contains(player.getUniqueId())) {
                     fetching.remove(player.getUniqueId());
                     if (Bukkit.getPlayer(player.getUniqueId()) != null) {

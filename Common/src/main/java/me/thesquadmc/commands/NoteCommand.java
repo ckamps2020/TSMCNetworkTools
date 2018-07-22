@@ -1,6 +1,6 @@
 package me.thesquadmc.commands;
 
-import me.thesquadmc.Main;
+import me.thesquadmc.NetworkTools;
 import me.thesquadmc.objects.logging.Note;
 import me.thesquadmc.player.TSMCUser;
 import me.thesquadmc.utils.command.Command;
@@ -18,9 +18,9 @@ import java.util.UUID;
 
 public class NoteCommand {
 
-    private final Main plugin;
+    private final NetworkTools plugin;
 
-    public NoteCommand(Main plugin) {
+    public NoteCommand(NetworkTools plugin) {
         this.plugin = plugin;
     }
 

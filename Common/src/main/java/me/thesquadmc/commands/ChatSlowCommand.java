@@ -1,6 +1,6 @@
 package me.thesquadmc.commands;
 
-import me.thesquadmc.Main;
+import me.thesquadmc.NetworkTools;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.msgs.CC;
 import me.thesquadmc.utils.player.PlayerUtils;
@@ -12,10 +12,10 @@ import org.bukkit.entity.Player;
 
 public final class ChatSlowCommand implements CommandExecutor {
 
-	private final Main main;
+	private final NetworkTools networkTools;
 
-	public ChatSlowCommand(Main main) {
-		this.main = main;
+	public ChatSlowCommand(NetworkTools networkTools) {
+		this.networkTools = networkTools;
 	}
 
 	@Override
@@ -37,7 +37,7 @@ public final class ChatSlowCommand implements CommandExecutor {
 							Bukkit.broadcastMessage(" ");
 						}
 
-						main.getChatManager().setChatDelay(i);
+						networkTools.getChatManager().setChatDelay(i);
 					} catch (Exception e) {
 						player.sendMessage(CC.translate("&e&lCHAT &6■ &7That is not a valid number!"));
 					}

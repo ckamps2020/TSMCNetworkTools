@@ -1,7 +1,7 @@
 package me.thesquadmc.commands;
 
 import com.google.common.base.Preconditions;
-import me.thesquadmc.Main;
+import me.thesquadmc.NetworkTools;
 import me.thesquadmc.networking.redis.RedisMesage;
 import me.thesquadmc.utils.enums.RedisChannels;
 import me.thesquadmc.utils.msgs.CC;
@@ -14,11 +14,11 @@ import java.util.Arrays;
 
 public final class MOTDCommand implements CommandExecutor {
 
-    private final Main main;
+    private final NetworkTools networkTools;
     private final int line;
 
-    public MOTDCommand(Main main, int line) {
-        this.main = main;
+    public MOTDCommand(NetworkTools networkTools, int line) {
+        this.networkTools = networkTools;
         Preconditions.checkState(line == 1 || line == 2, "Line must be 1 or 2");
 
         this.line = line;
@@ -36,9 +36,9 @@ public final class MOTDCommand implements CommandExecutor {
         String motd = CC.translate(StringUtils.join(args, " "));
         System.out.println(line);
 
-        main.getRedisManager().sendMessage(RedisChannels.MOTD, RedisMesage.newMessage()
+        networkTools.getRedisManager().sendMessage(RedisChannels.MOTD, RedisMesage.newMessage()
                 .set(String.valueOf(line), motd));
-        main.getRedisManager().executeJedisAsync(jedis -> jedis.set(String.valueOf(line), motd));
+        networkTools.getRedisManager().executeJedisAsync(jedis -> jedis.set(String.valueOf(line), motd));
 
         sender.sendMessage(CC.translate("&aMOTD &6■ &7Set MOTD Line " + line + " to: " + motd));
         return true;

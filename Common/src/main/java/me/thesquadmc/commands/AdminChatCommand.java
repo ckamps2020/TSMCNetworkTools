@@ -4,7 +4,7 @@ import me.lucko.luckperms.api.Contexts;
 import me.lucko.luckperms.api.User;
 import me.lucko.luckperms.api.caching.MetaData;
 import me.lucko.luckperms.api.caching.UserData;
-import me.thesquadmc.Main;
+import me.thesquadmc.NetworkTools;
 import me.thesquadmc.networking.redis.RedisMesage;
 import me.thesquadmc.player.PlayerSetting;
 import me.thesquadmc.player.TSMCUser;
@@ -20,17 +20,17 @@ import org.bukkit.entity.Player;
 
 public final class AdminChatCommand implements CommandExecutor {
 
-    private final Main main;
+    private final NetworkTools networkTools;
 
-    public AdminChatCommand(Main main) {
-        this.main = main;
+    public AdminChatCommand(NetworkTools networkTools) {
+        this.networkTools = networkTools;
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            User user = main.getLuckPermsApi().getUser(player.getUniqueId());
+            User user = networkTools.getLuckPermsApi().getUser(player.getUniqueId());
             if (PlayerUtils.isEqualOrHigherThen(player, Rank.ADMIN)) {
                 TSMCUser tsmcUser = TSMCUser.fromPlayer(player);
                 if (args.length == 0) {
@@ -56,17 +56,17 @@ public final class AdminChatCommand implements CommandExecutor {
                     Contexts contexts = Contexts.allowAll();
                     MetaData metaData = cachedData.getMetaData(contexts);
                     String finalMessage = "&8[&c&lADMINCHAT&8] " + metaData.getPrefix() + "" + player.getName() + " &8» &c" + stringBuilder.toString();
-                    main.getRedisManager().sendMessage(RedisChannels.ADMINCHAT, RedisMesage.newMessage()
+                    networkTools.getRedisManager().sendMessage(RedisChannels.ADMINCHAT, RedisMesage.newMessage()
                             .set(RedisArg.MESSAGE, finalMessage));
 
                     /*
-                    Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
+                    Bukkit.getScheduler().runTaskAsynchronously(networkTools, new Runnable() {
                         @Override
                         public void run() {
                             Multithreading.runAsync(new Runnable() {
                                 @Override
                                 public void run() {
-                                    try (Jedis jedis = main.getPool().getResource()) {
+                                    try (Jedis jedis = networkTools.getPool().getResource()) {
                                         JedisTask.withName(UUID.randomUUID().toString())
                                                 .withArg(RedisArg.MESSAGE.getArg(), finalMessage)
                                                 .send(RedisChannels.ADMINCHAT.getChannelName(), jedis);

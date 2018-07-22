@@ -10,7 +10,7 @@ import me.lucko.luckperms.api.User;
 import me.lucko.luckperms.api.caching.MetaData;
 import me.lucko.luckperms.api.caching.PermissionData;
 import me.lucko.luckperms.api.caching.UserData;
-import me.thesquadmc.Main;
+import me.thesquadmc.NetworkTools;
 import me.thesquadmc.abstraction.MojangGameProfile;
 import me.thesquadmc.abstraction.NMSAbstract;
 import me.thesquadmc.abstraction.ProfileProperty;
@@ -37,7 +37,7 @@ import java.util.UUID;
 
 public final class PlayerUtils {
 
-    private static final NMSAbstract NMS_ABSTRACT = Main.getMain().getNMSAbstract();
+    private static final NMSAbstract NMS_ABSTRACT = NetworkTools.getInstance().getNMSAbstract();
 
     public static void sit(Player p) {
         NMS_ABSTRACT.sit(p);
@@ -133,7 +133,7 @@ public final class PlayerUtils {
     }
 
     public static boolean isEqualOrHigherThen(Player player, Rank rank) {
-        User user = Main.getMain().getLuckPermsApi().getUser(player.getUniqueId());
+        User user = NetworkTools.getInstance().getLuckPermsApi().getUser(player.getUniqueId());
         if (user.getPrimaryGroup() != null) {
             for (Rank r : Rank.values()) {
                 if (r.getName().equalsIgnoreCase(user.getPrimaryGroup())) {
@@ -147,7 +147,7 @@ public final class PlayerUtils {
     }
 
     public static Group getHighestGroup(Player player) {
-        LuckPermsApi api = Main.getMain().getLuckPermsApi();
+        LuckPermsApi api = NetworkTools.getInstance().getLuckPermsApi();
 
         Comparator<Group> groupComparator = Comparator.comparing(group -> group.getWeight().orElse(0));
 
@@ -179,7 +179,7 @@ public final class PlayerUtils {
             return;
 
         target.hidePlayer(player);
-        Bukkit.getScheduler().runTaskLater(Main.getMain(), () -> target.showPlayer(player), 2L);
+        Bukkit.getScheduler().runTaskLater(NetworkTools.getInstance(), () -> target.showPlayer(player), 2L);
     }
 
     public static void refreshPlayer(Player player, Collection<Player> targets) {
@@ -191,7 +191,7 @@ public final class PlayerUtils {
     }
 
     public static String getPlayerPrefix(Player player) {
-        User user = Main.getMain().getLuckPermsApi().getUser(player.getUniqueId());
+        User user = NetworkTools.getInstance().getLuckPermsApi().getUser(player.getUniqueId());
         UserData cachedData = user.getCachedData();
         Contexts contexts = Contexts.allowAll();
         MetaData metaData = cachedData.getMetaData(contexts);
@@ -199,7 +199,7 @@ public final class PlayerUtils {
     }
 
     public static String getPlayerSuffix(Player player) {
-        User user = Main.getMain().getLuckPermsApi().getUser(player.getUniqueId());
+        User user = NetworkTools.getInstance().getLuckPermsApi().getUser(player.getUniqueId());
         UserData cachedData = user.getCachedData();
         Contexts contexts = Contexts.allowAll();
         MetaData metaData = cachedData.getMetaData(contexts);
@@ -207,7 +207,7 @@ public final class PlayerUtils {
     }
 
     public static boolean isEqualOrHigherThen(UUID uuid, Rank rank) {
-        User user = Main.getMain().getLuckPermsApi().getUser(uuid);
+        User user = NetworkTools.getInstance().getLuckPermsApi().getUser(uuid);
         if (user.getPrimaryGroup() != null) {
             for (Rank r : Rank.values()) {
                 if (r.getName().equalsIgnoreCase(user.getPrimaryGroup())) {
@@ -221,7 +221,7 @@ public final class PlayerUtils {
     }
 
     public static boolean doesRankMatch(Player player, Rank rank) {
-        User user = Main.getMain().getLuckPermsApi().getUser(player.getUniqueId());
+        User user = NetworkTools.getInstance().getLuckPermsApi().getUser(player.getUniqueId());
         if (user.getPrimaryGroup() != null) {
             for (Rank r : Rank.values()) {
                 if (r.getName().equalsIgnoreCase(user.getPrimaryGroup())) {
@@ -244,7 +244,7 @@ public final class PlayerUtils {
     }
 
     public static boolean hasPermission(Player player, String permission) {
-        return Main.getMain().getVaultPermissions().has(player, permission);
+        return NetworkTools.getInstance().getVaultPermissions().has(player, permission);
     }
 
     public static void setName(Player player, String name) {
@@ -252,11 +252,11 @@ public final class PlayerUtils {
     }
 
     public static void updateGlobalSkin(String name) {
-        Main main = Main.getMain();
+        NetworkTools networkTools = NetworkTools.getInstance();
         ProfileProperty property = NMS_ABSTRACT.getSkinProperty(name);
 
-        main.setValue(property.getValue());
-        main.setValue(property.getSignature());
+        networkTools.setValue(property.getValue());
+        networkTools.setValue(property.getSignature());
     }
 
     public static void removePlayerTextures(Player player) {
@@ -296,8 +296,8 @@ public final class PlayerUtils {
         MojangGameProfile profile = NMS_ABSTRACT.getGameProfile(player);
         profile.removeProperty("textures");
 
-        Main main = Main.getMain();
-        ProfileProperty property = NMS_ABSTRACT.createNewProperty("textures", main.getValue(), main.getSig());
+        NetworkTools networkTools = NetworkTools.getInstance();
+        ProfileProperty property = NMS_ABSTRACT.createNewProperty("textures", networkTools.getValue(), networkTools.getSig());
         if (property != null) {
             profile.addProperty("textures", property);
         }

@@ -1,7 +1,7 @@
 package me.thesquadmc.networking.redis.channels;
 
 import com.google.gson.JsonObject;
-import me.thesquadmc.Main;
+import me.thesquadmc.NetworkTools;
 import me.thesquadmc.abstraction.Sounds;
 import me.thesquadmc.commands.StaffmodeCommand;
 import me.thesquadmc.networking.redis.RedisChannel;
@@ -23,9 +23,9 @@ import org.bukkit.inventory.ItemStack;
 
 public class ServerManagementChannel implements RedisChannel {
 
-    private final Main plugin;
+    private final NetworkTools plugin;
 
-    public ServerManagementChannel(Main plugin) {
+    public ServerManagementChannel(NetworkTools plugin) {
         this.plugin = plugin;
     }
 

@@ -1,6 +1,6 @@
 package me.thesquadmc.commands;
 
-import me.thesquadmc.Main;
+import me.thesquadmc.NetworkTools;
 import me.thesquadmc.utils.command.Command;
 import me.thesquadmc.utils.command.CommandArgs;
 import me.thesquadmc.utils.msgs.CC;
@@ -14,9 +14,9 @@ import java.util.UUID;
 
 public class FindCommand {
 
-    private final Main plugin;
+    private final NetworkTools plugin;
 
-    public FindCommand(Main plugin) {
+    public FindCommand(NetworkTools plugin) {
         this.plugin = plugin;
     }
 

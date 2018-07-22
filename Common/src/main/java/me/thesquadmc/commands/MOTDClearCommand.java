@@ -1,6 +1,6 @@
 package me.thesquadmc.commands;
 
-import me.thesquadmc.Main;
+import me.thesquadmc.NetworkTools;
 import me.thesquadmc.networking.redis.RedisMesage;
 import me.thesquadmc.utils.enums.RedisChannels;
 import me.thesquadmc.utils.msgs.CC;
@@ -10,10 +10,10 @@ import org.bukkit.command.CommandSender;
 
 public final class MOTDClearCommand implements CommandExecutor {
 
-    private final Main main;
+    private final NetworkTools networkTools;
 
-    public MOTDClearCommand(Main main) {
-        this.main = main;
+    public MOTDClearCommand(NetworkTools networkTools) {
+        this.networkTools = networkTools;
     }
 
     @Override
@@ -23,11 +23,11 @@ public final class MOTDClearCommand implements CommandExecutor {
             return false;
         }
 
-        main.getRedisManager().sendMessage(RedisChannels.MOTD, RedisMesage.newMessage()
+        networkTools.getRedisManager().sendMessage(RedisChannels.MOTD, RedisMesage.newMessage()
                 .set(String.valueOf(1), " ")
                 .set(String.valueOf(2), " "));
 
-        main.getRedisManager().executeJedisAsync(jedis -> {
+        networkTools.getRedisManager().executeJedisAsync(jedis -> {
             jedis.set("motd-line1", "");
             jedis.set("motd-line2", "");
 

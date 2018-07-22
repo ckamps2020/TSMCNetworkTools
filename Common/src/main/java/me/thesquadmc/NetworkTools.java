@@ -123,11 +123,11 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.stream.Stream;
 
-public final class Main extends JavaPlugin {
+public final class NetworkTools extends JavaPlugin {
 
     private UUIDTranslator uuidTranslator;
 
-    private static Main main;
+    private static NetworkTools networkTools;
     private LuckPermsApi luckPermsApi;
     private String whitelistMessage = ChatColor.translateAlternateColorCodes('&', "&cServer currently whitelisted!");
     private long startup = System.currentTimeMillis();
@@ -162,124 +162,8 @@ public final class Main extends JavaPlugin {
 
     private RedisManager redisManager;
 
-    @Override
-    public void onEnable() {
-        getLogger().info("Starting the plugin up...");
-
-        main = this;
-        version = getDescription().getVersion();
-
-        if (!setupNMSAbstract()) {
-            getLogger().severe("This jar was not built for this server implementation!");
-            Bukkit.getPluginManager().disablePlugin(this);
-            return;
-        }
-
-        getLogger().info("Server implementation set for " + nmsAbstract.getVersionMin() + " - " + nmsAbstract.getVersionMax());
-
-        luckPermsApi = LuckPerms.getApi();
-        mcLeaksAPI = MCLeaksAPI.builder().threadCount(2).expireAfter(10, TimeUnit.MINUTES).build();
-
-        setupEconomy();
-        setupChat();
-        setupPermissions();
-
-        frozenInventory = new FrozenInventory();
-        staffmodeInventory = new StaffmodeInventory();
-
-        UpdateHandler updateHandler = new UpdateHandler(this);
-        updateHandler.run();
-
-        localPlayerManager = new LocalPlayerManager();
-        warpManager = new WarpManager(this);
-        chatManager = new ChatManager(this);
-        hologramManager = new HologramManager();
-        npcManager = new NPCManager();
-        commandHandler = new CommandHandler(this);
-        partyManager = new PartyManager();
-        countManager = new CountManager();
-        clickableMessageManager = new ClickableMessageManager(this);
-        fileManager = new FileManager(this);
-        fileManager.setup();
-
-        AbstractGUI.initializeListeners(this);
-
-        String host1 = fileManager.getNetworkingConfig().getString("redis.host");
-        int port1 = fileManager.getNetworkingConfig().getInt("redis.port");
-        String password1 = fileManager.getNetworkingConfig().getString("redis.password");
-        getLogger().info("Loading Redis PUB/SUB...");
-
-        uuidTranslator = new UUIDTranslator(this);
-
-        redisManager = new RedisManager(host1, port1, password1);
-        redisManager.registerChannel(new FindChannel(this), RedisChannels.FIND, RedisChannels.FOUND, RedisChannels.REQUEST_LIST, RedisChannels.RETURN_REQUEST_LIST);
-        redisManager.registerChannel(new ServerManagementChannel(this), RedisChannels.STARTUP_REQUEST, RedisChannels.PLAYER_COUNT, RedisChannels.RETURN_SERVER, RedisChannels.STOP);
-        redisManager.registerChannel(new WhitelistChannel(this), RedisChannels.WHITELIST, RedisChannels.WHITELIST_ADD, RedisChannels.WHITELIST_REMOVE);
-        redisManager.registerChannel(new PartyChannel(), RedisChannels.PARTY_JOIN_SERVER, RedisChannels.PARTY_DISBAND, RedisChannels.PARTY_UPDATE);
-        redisManager.registerChannel(new MonitorChannel(this), RedisChannels.MONITOR_INFO, RedisChannels.MONITOR_REQUEST);
-        redisManager.registerChannel(new AnnounceChannel(), RedisChannels.ANNOUNCEMENT);
-        //redisManager.registerChannel(new FriendsChannel(this), RedisChannels.LEAVE);
-        redisManager.registerChannel(new MessageChannel(), RedisChannels.MESSAGE);
-        redisManager.registerChannel(new StaffChatChannels(), RedisChannels.STAFFCHAT, RedisChannels.ADMINCHAT, RedisChannels.MANAGERCHAT, RedisChannels.DISCORD_STAFFCHAT_SERVER);
-
-        getLogger().info("Redis PUB/SUB setup!");
-
-        getLogger().info("Setting up BuycraftAPI...");
-        Multithreading.runAsync(() -> {
-            try {
-                //Buycraft buycraft = new Buycraft(fileManager.getNetworkingConfig().getString("buycraft.secret"));
-                getLogger().info("BuycraftAPI setup and ready to go!");
-            } catch (Exception e) {
-                e.printStackTrace();
-                getLogger().severe("Unable to set up BuycraftAPI");
-            }
-        });
-
-        Configuration conf = fileManager.getNetworkingConfig();
-        String user = conf.getString("mongo.user");
-        String db = conf.getString("mongo.database");
-        String host = conf.getString("mongo.host");
-        String password = conf.getString("mongo.password");
-        int port = conf.getInt("mongo.port");
-
-        mongo = new Mongo(user, db, password, host, port);
-        userDatabase = new MongoUserDatabase(mongo);
-        getLogger().info("Setup MongoDB connection!");
-
-        registerListeners();
-        registerCommands();
-
-        ServerUtils.calculateServerType();
-        //Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> redisManager.sendMessage(RedisChannels.PLAYER_COUNT, RedisMesage.newMessage()
-        //        .set(RedisArg.SERVER.getName(), Bukkit.getServerName())
-        //        .set(RedisArg.COUNT.getName(), Bukkit.getOnlinePlayers().size())), 20L, 20L);
-
-        if (serverType.startsWith(ServerType.MINIGAME_HUB)) {
-            redisManager.sendMessage(RedisChannels.STARTUP_REQUEST, RedisMesage.newMessage()
-                    .set(RedisArg.SERVER, "ALL"));
-        }
-
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> BarUtils.getPlayers().forEach(nmsAbstract.getBossBarManager()::teleportBar), 1, 20L);
-
-        Stream.of(
-                //new GamemodeCommand(),
-                new NoteCommand(this),
-                new WarpCommand(this),
-                new ChangeLogCommand(this),
-                new FindCommand(this),
-                new MessageCommand(this),
-                new EssentialCommands(),
-                new TeleportCommand(this),
-                new HealCommand()
-        ).forEach(o -> commandHandler.registerCommands(o));
-
-        PlaceholderAPIPlugin plugin = PlaceholderAPIPlugin.getInstance();
-        CloudExpansion playerExpansion = plugin.getExpansionCloud().getCloudExpansion("Player");
-        if (playerExpansion != null) {
-            plugin.getExpansionCloud().downloadExpansion(null, playerExpansion, playerExpansion.getLatestVersion());
-        }
-
-        getLogger().info("Plugin started up and ready to go!");
+    public static NetworkTools getInstance() {
+        return networkTools;
     }
 
     @Override
@@ -469,8 +353,124 @@ public final class Main extends JavaPlugin {
         return fileManager;
     }
 
-    public static Main getMain() {
-        return main;
+    @Override
+    public void onEnable() {
+        getLogger().info("Starting the plugin up...");
+
+        networkTools = this;
+        version = getDescription().getVersion();
+
+        if (!setupNMSAbstract()) {
+            getLogger().severe("This jar was not built for this server implementation!");
+            Bukkit.getPluginManager().disablePlugin(this);
+            return;
+        }
+
+        getLogger().info("Server implementation set for " + nmsAbstract.getVersionMin() + " - " + nmsAbstract.getVersionMax());
+
+        luckPermsApi = LuckPerms.getApi();
+        mcLeaksAPI = MCLeaksAPI.builder().threadCount(2).expireAfter(10, TimeUnit.MINUTES).build();
+
+        setupEconomy();
+        setupChat();
+        setupPermissions();
+
+        frozenInventory = new FrozenInventory();
+        staffmodeInventory = new StaffmodeInventory();
+
+        UpdateHandler updateHandler = new UpdateHandler(this);
+        updateHandler.run();
+
+        localPlayerManager = new LocalPlayerManager();
+        warpManager = new WarpManager(this);
+        chatManager = new ChatManager(this);
+        hologramManager = new HologramManager();
+        npcManager = new NPCManager();
+        commandHandler = new CommandHandler(this);
+        partyManager = new PartyManager();
+        countManager = new CountManager();
+        clickableMessageManager = new ClickableMessageManager(this);
+        fileManager = new FileManager(this);
+        fileManager.setup();
+
+        AbstractGUI.initializeListeners(this);
+
+        String host1 = fileManager.getNetworkingConfig().getString("redis.host");
+        int port1 = fileManager.getNetworkingConfig().getInt("redis.port");
+        String password1 = fileManager.getNetworkingConfig().getString("redis.password");
+        getLogger().info("Loading Redis PUB/SUB...");
+
+        uuidTranslator = new UUIDTranslator(this);
+
+        redisManager = new RedisManager(host1, port1, password1);
+        redisManager.registerChannel(new FindChannel(this), RedisChannels.FIND, RedisChannels.FOUND, RedisChannels.REQUEST_LIST, RedisChannels.RETURN_REQUEST_LIST);
+        redisManager.registerChannel(new ServerManagementChannel(this), RedisChannels.STARTUP_REQUEST, RedisChannels.PLAYER_COUNT, RedisChannels.RETURN_SERVER, RedisChannels.STOP);
+        redisManager.registerChannel(new WhitelistChannel(this), RedisChannels.WHITELIST, RedisChannels.WHITELIST_ADD, RedisChannels.WHITELIST_REMOVE);
+        redisManager.registerChannel(new PartyChannel(), RedisChannels.PARTY_JOIN_SERVER, RedisChannels.PARTY_DISBAND, RedisChannels.PARTY_UPDATE);
+        redisManager.registerChannel(new MonitorChannel(this), RedisChannels.MONITOR_INFO, RedisChannels.MONITOR_REQUEST);
+        redisManager.registerChannel(new AnnounceChannel(), RedisChannels.ANNOUNCEMENT);
+        //redisManager.registerChannel(new FriendsChannel(this), RedisChannels.LEAVE);
+        redisManager.registerChannel(new MessageChannel(), RedisChannels.MESSAGE);
+        redisManager.registerChannel(new StaffChatChannels(), RedisChannels.STAFFCHAT, RedisChannels.ADMINCHAT, RedisChannels.MANAGERCHAT, RedisChannels.DISCORD_STAFFCHAT_SERVER);
+
+        getLogger().info("Redis PUB/SUB setup!");
+
+        getLogger().info("Setting up BuycraftAPI...");
+        Multithreading.runAsync(() -> {
+            try {
+                //Buycraft buycraft = new Buycraft(fileManager.getNetworkingConfig().getString("buycraft.secret"));
+                getLogger().info("BuycraftAPI setup and ready to go!");
+            } catch (Exception e) {
+                e.printStackTrace();
+                getLogger().severe("Unable to set up BuycraftAPI");
+            }
+        });
+
+        Configuration conf = fileManager.getNetworkingConfig();
+        String user = conf.getString("mongo.user");
+        String db = conf.getString("mongo.database");
+        String host = conf.getString("mongo.host");
+        String password = conf.getString("mongo.password");
+        int port = conf.getInt("mongo.port");
+
+        mongo = new Mongo(user, db, password, host, port);
+        userDatabase = new MongoUserDatabase(mongo);
+        getLogger().info("Setup MongoDB connection!");
+
+        registerListeners();
+        registerCommands();
+
+        ServerUtils.calculateServerType();
+        //Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> redisManager.sendMessage(RedisChannels.PLAYER_COUNT, RedisMesage.newMessage()
+        //        .set(RedisArg.SERVER.getName(), Bukkit.getServerName())
+        //        .set(RedisArg.COUNT.getName(), Bukkit.getOnlinePlayers().size())), 20L, 20L);
+
+        if (serverType.startsWith(ServerType.MINIGAME_HUB)) {
+            redisManager.sendMessage(RedisChannels.STARTUP_REQUEST, RedisMesage.newMessage()
+                    .set(RedisArg.SERVER, "ALL"));
+        }
+
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> BarUtils.getPlayers().forEach(nmsAbstract.getBossBarManager()::teleportBar), 1, 20L);
+
+        Stream.of(
+                //new GamemodeCommand(),
+                new NoteCommand(this),
+                new WarpCommand(this),
+                new ChangeLogCommand(this),
+                new FindCommand(this),
+                new MessageCommand(this),
+                new EssentialCommands(),
+                new TeleportCommand(this),
+                new HealCommand()
+        ).forEach(o -> commandHandler.registerCommands(o));
+
+        PlaceholderAPIPlugin plugin = PlaceholderAPIPlugin.getInstance();
+        CloudExpansion playerExpansion = plugin.getExpansionCloud().getCloudExpansion("Player");
+        if (playerExpansion != null) {
+            plugin.getExpansionCloud().downloadExpansion(null, playerExpansion, playerExpansion.getLatestVersion());
+        }
+
+        getLogger().info("Plugin started up and ready to go!");
     }
 
     /**
@@ -490,7 +490,7 @@ public final class Main extends JavaPlugin {
                 JarEntry entry = entries.nextElement();
                 String entryName = entry.getName().replace("/", ".");
 
-                if (!entryName.startsWith(Main.class.getPackage().getName())) continue;
+                if (!entryName.startsWith(NetworkTools.class.getPackage().getName())) continue;
                 entryName = entryName.replace(".class", ""); // Remove the .class file extension
                 if (org.apache.commons.lang.StringUtils.countMatches(entryName, ".") > 2) continue;
 
@@ -592,8 +592,8 @@ public final class Main extends JavaPlugin {
         getCommand("onlinecount").setExecutor(new OnlineCountCommand(this));
         getCommand("logs").setExecutor(new LogsCommand());
         getCommand("party").setExecutor(new PartyCommand(this));
-        getCommand("l1").setExecutor(new MOTDCommand(main, 1));
-        getCommand("l2").setExecutor(new MOTDCommand(main, 2));
-        getCommand("motdclear").setExecutor(new MOTDClearCommand(main));
+        getCommand("l1").setExecutor(new MOTDCommand(networkTools, 1));
+        getCommand("l2").setExecutor(new MOTDCommand(networkTools, 2));
+        getCommand("motdclear").setExecutor(new MOTDClearCommand(networkTools));
     }
 }

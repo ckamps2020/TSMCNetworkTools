@@ -1,6 +1,6 @@
 package me.thesquadmc.commands;
 
-import me.thesquadmc.Main;
+import me.thesquadmc.NetworkTools;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.msgs.CC;
 import me.thesquadmc.utils.player.PlayerUtils;
@@ -17,11 +17,11 @@ import java.util.UUID;
 
 public final class LaunchCommand implements CommandExecutor {
 
-	private final Main main;
+	private final NetworkTools networkTools;
 	private static List<UUID> launched = new ArrayList<>();
 
-	public LaunchCommand(Main main) {
-		this.main = main;
+	public LaunchCommand(NetworkTools networkTools) {
+		this.networkTools = networkTools;
 	}
 
 	@Override
@@ -35,7 +35,7 @@ public final class LaunchCommand implements CommandExecutor {
 							p.setVelocity(new Vector(0, 10, 0));
 							p.sendMessage(CC.translate("&c&lWHOOSH!"));
 							launched.add(p.getUniqueId());
-							Bukkit.getScheduler().runTaskLater(main, new Runnable() {
+							Bukkit.getScheduler().runTaskLater(networkTools, new Runnable() {
 								@Override
 								public void run() {
 									launched.remove(p.getUniqueId());
@@ -49,7 +49,7 @@ public final class LaunchCommand implements CommandExecutor {
 							t.setVelocity(new Vector(0, 10, 0));
 							t.sendMessage(CC.translate("&c&lWHOOSH!"));
 							launched.add(t.getUniqueId());
-							Bukkit.getScheduler().runTaskLater(main, new Runnable() {
+							Bukkit.getScheduler().runTaskLater(networkTools, new Runnable() {
 								@Override
 								public void run() {
 									launched.remove(t.getUniqueId());
@@ -64,7 +64,7 @@ public final class LaunchCommand implements CommandExecutor {
 						p.setVelocity(new Vector(0, 10, 0));
 						p.sendMessage(CC.translate("&c&lWHOOSH!"));
 						launched.add(p.getUniqueId());
-						Bukkit.getScheduler().runTaskLater(main, new Runnable() {
+						Bukkit.getScheduler().runTaskLater(networkTools, new Runnable() {
 							@Override
 							public void run() {
 								launched.remove(p.getUniqueId());

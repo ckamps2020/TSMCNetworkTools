@@ -1,6 +1,6 @@
 package me.thesquadmc.commands;
 
-import me.thesquadmc.Main;
+import me.thesquadmc.NetworkTools;
 import me.thesquadmc.networking.redis.RedisMesage;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.enums.RedisArg;
@@ -16,10 +16,10 @@ import org.bukkit.entity.Player;
 
 public final class WhitelistCommand implements CommandExecutor {
 
-    private final Main main;
+    private final NetworkTools networkTools;
 
-    public WhitelistCommand(Main main) {
-        this.main = main;
+    public WhitelistCommand(NetworkTools networkTools) {
+        this.networkTools = networkTools;
     }
 
     @Override
@@ -47,17 +47,17 @@ public final class WhitelistCommand implements CommandExecutor {
                         String server = args[2];
                         player.sendMessage(CC.translate("&e&lWHITELIST &6■ &7You have added &e" + name + " &7to the whitelist on server &e" + server));
 
-                        main.getRedisManager().sendMessage(RedisChannels.WHITELIST_ADD, RedisMesage.newMessage()
+                        networkTools.getRedisManager().sendMessage(RedisChannels.WHITELIST_ADD, RedisMesage.newMessage()
                                 .set(RedisArg.SERVER, server.toUpperCase())
                                 .set(RedisArg.PLAYER, name));
                         /*
-                        Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
+                        Bukkit.getScheduler().runTaskAsynchronously(networkTools, new Runnable() {
                             @Override
                             public void run() {
                                 Multithreading.runAsync(new Runnable() {
                                     @Override
                                     public void run() {
-                                        try (Jedis jedis = main.getPool().getResource()) {
+                                        try (Jedis jedis = networkTools.getPool().getResource()) {
                                             JedisTask.withName(UUID.randomUUID().toString())
                                                     .withArg(RedisArg.SERVER.getArg(), server.toUpperCase())
                                                     .withArg(RedisArg.PLAYER.getArg(), name)
@@ -72,17 +72,17 @@ public final class WhitelistCommand implements CommandExecutor {
                         String server = args[2];
                         player.sendMessage(CC.translate("&e&lWHITELIST &6■ &7You have removed &e" + name + " &7to the whitelist on server &e" + server));
 
-                        main.getRedisManager().sendMessage(RedisChannels.WHITELIST_REMOVE, RedisMesage.newMessage()
+                        networkTools.getRedisManager().sendMessage(RedisChannels.WHITELIST_REMOVE, RedisMesage.newMessage()
                                 .set(RedisArg.SERVER, server.toUpperCase())
                                 .set(RedisArg.PLAYER, name));
 
-                        /*Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
+                        /*Bukkit.getScheduler().runTaskAsynchronously(networkTools, new Runnable() {
                             @Override
                             public void run() {
                                 Multithreading.runAsync(new Runnable() {
                                     @Override
                                     public void run() {
-                                        try (Jedis jedis = main.getPool().getResource()) {
+                                        try (Jedis jedis = networkTools.getPool().getResource()) {
                                             JedisTask.withName(UUID.randomUUID().toString())
                                                     .withArg(RedisArg.SERVER.getArg(), server.toUpperCase())
                                                     .withArg(RedisArg.PLAYER.getArg(), name)
@@ -116,18 +116,18 @@ public final class WhitelistCommand implements CommandExecutor {
                             stringBuilder.append(args[i] + " ");
                         }
 
-                        main.getRedisManager().sendMessage(RedisChannels.WHITELIST, RedisMesage.newMessage()
+                        networkTools.getRedisManager().sendMessage(RedisChannels.WHITELIST, RedisMesage.newMessage()
                                 .set(RedisArg.SERVER, server.toUpperCase())
                                 .set(RedisArg.ONOFF, onoff)
                                 .set(RedisArg.MESSAGE, stringBuilder.toString()));
                         /*
-                        Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
+                        Bukkit.getScheduler().runTaskAsynchronously(networkTools, new Runnable() {
                             @Override
                             public void run() {
                                 Multithreading.runAsync(new Runnable() {
                                     @Override
                                     public void run() {
-                                        try (Jedis jedis = main.getPool().getResource()) {
+                                        try (Jedis jedis = networkTools.getPool().getResource()) {
                                             JedisTask.withName(UUID.randomUUID().toString())
                                                     .withArg(RedisArg.SERVER.getArg(), server.toUpperCase())
                                                     .withArg(RedisArg.ONOFF.getArg(), onoff)

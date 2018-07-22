@@ -1,7 +1,7 @@
 package me.thesquadmc.chat.listener;
 
 import com.google.common.collect.Maps;
-import me.thesquadmc.Main;
+import me.thesquadmc.NetworkTools;
 import me.thesquadmc.chat.ChatFormat;
 import me.thesquadmc.chat.ChatMessage;
 import me.thesquadmc.utils.enums.Rank;
@@ -26,10 +26,10 @@ public class ChatListener implements Listener {
 
     private static final String FILTER_PREFIX = CC.B_YELLOW + "FILTER " + CC.D_GRAY + Unicode.SQUARE + CC.GRAY + " ";
 
-    private final Main plugin;
+    private final NetworkTools plugin;
     private final Map<UUID, ChatMessage> lastMessage = Maps.newHashMap();
 
-    public ChatListener(Main plugin) {
+    public ChatListener(NetworkTools plugin) {
         this.plugin = plugin;
     }
 

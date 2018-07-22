@@ -1,6 +1,6 @@
 package me.thesquadmc.commands;
 
-import me.thesquadmc.Main;
+import me.thesquadmc.NetworkTools;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.msgs.CC;
 import me.thesquadmc.utils.player.PlayerUtils;
@@ -11,10 +11,10 @@ import org.bukkit.entity.Player;
 
 public final class StaffMenuCommand implements CommandExecutor {
 
-	private final Main main;
+	private final NetworkTools networkTools;
 
-	public StaffMenuCommand(Main main) {
-		this.main = main;
+	public StaffMenuCommand(NetworkTools networkTools) {
+		this.networkTools = networkTools;
 	}
 
 	@Override
@@ -23,7 +23,7 @@ public final class StaffMenuCommand implements CommandExecutor {
 			Player player = (Player) sender;
 			if (PlayerUtils.isEqualOrHigherThen(player, Rank.MOD)) {
 				if (StaffmodeCommand.getStaffmode().containsKey(player.getUniqueId())) {
-					main.getStaffmodeInventory().buildStaffpanel(player);
+					networkTools.getStaffmodeInventory().buildStaffpanel(player);
 				} else {
 					player.sendMessage(CC.translate("&e&lSTAFFMODE &6■ &7You are not in staffmode!"));
 				}

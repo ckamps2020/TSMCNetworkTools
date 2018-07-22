@@ -1,7 +1,7 @@
 package me.thesquadmc.utils.server;
 
 import com.sun.management.OperatingSystemMXBean;
-import me.thesquadmc.Main;
+import me.thesquadmc.NetworkTools;
 import me.thesquadmc.networking.redis.RedisMesage;
 import me.thesquadmc.utils.enums.RedisArg;
 import me.thesquadmc.utils.enums.RedisChannels;
@@ -25,25 +25,25 @@ public final class ServerUtils {
     public static void calculateServerType() {
         String m = Bukkit.getServerName().toUpperCase();
         if (m.startsWith(ServerType.BEDWARS_DUOS)) {
-            Main.getMain().setServerType(ServerType.BEDWARS_DUOS);
+            NetworkTools.getInstance().setServerType(ServerType.BEDWARS_DUOS);
         } else if (m.startsWith(ServerType.BEDWARS_FOURS)) {
-            Main.getMain().setServerType(ServerType.BEDWARS_FOURS);
+            NetworkTools.getInstance().setServerType(ServerType.BEDWARS_FOURS);
         } else if (m.startsWith(ServerType.BEDWARS_SOLO)) {
-            Main.getMain().setServerType(ServerType.BEDWARS_SOLO);
+            NetworkTools.getInstance().setServerType(ServerType.BEDWARS_SOLO);
         } else if (m.startsWith(ServerType.BEDWARS_THREES)) {
-            Main.getMain().setServerType(ServerType.BEDWARS_THREES);
+            NetworkTools.getInstance().setServerType(ServerType.BEDWARS_THREES);
         } else if (m.startsWith(ServerType.MINIGAME_HUB)) {
-            Main.getMain().setServerType(ServerType.MINIGAME_HUB);
+            NetworkTools.getInstance().setServerType(ServerType.MINIGAME_HUB);
         } else if (m.startsWith(ServerType.FACTIONS)) {
-            Main.getMain().setServerType(ServerType.FACTIONS);
+            NetworkTools.getInstance().setServerType(ServerType.FACTIONS);
         } else if (m.startsWith(ServerType.SKYBLOCK)) {
-            Main.getMain().setServerType(ServerType.SKYBLOCK);
+            NetworkTools.getInstance().setServerType(ServerType.SKYBLOCK);
         } else if (m.startsWith(ServerType.PRISON)) {
-            Main.getMain().setServerType(ServerType.PRISON);
+            NetworkTools.getInstance().setServerType(ServerType.PRISON);
         } else if (m.startsWith(ServerType.TROLLWARS)) {
-            Main.getMain().setServerType(ServerType.TROLLWARS);
+            NetworkTools.getInstance().setServerType(ServerType.TROLLWARS);
         } else if (m.startsWith(ServerType.HUB)) {
-            Main.getMain().setServerType(ServerType.HUB);
+            NetworkTools.getInstance().setServerType(ServerType.HUB);
         }
     }
 
@@ -52,7 +52,7 @@ public final class ServerUtils {
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.kickPlayer(CC.translate("&e&lSTOP &6■ &7Server is restarting!"));
         }
-        Bukkit.getScheduler().runTaskLater(Main.getMain(), Bukkit::shutdown, 3 * 20);
+        Bukkit.getScheduler().runTaskLater(NetworkTools.getInstance(), Bukkit::shutdown, 3 * 20);
     }
 
     public static String getTPS(int time) {
@@ -67,17 +67,17 @@ public final class ServerUtils {
     }
 
     public static void savePropertiesFile() {
-        Main.getMain().getNMSAbstract().savePropertiesFile();
+        NetworkTools.getInstance().getNMSAbstract().savePropertiesFile();
     }
 
     public static <T> void setServerProperty(ServerProperty<T> property, T value) {
-        Main.getMain().getNMSAbstract().setServerProperty(property, value);
+        NetworkTools.getInstance().getNMSAbstract().setServerProperty(property, value);
     }
 
     public static void updateServerState(String serverState) {
-        Main.getMain().setServerState(serverState);
+        NetworkTools.getInstance().setServerState(serverState);
 
-        Main.getMain().getRedisManager().sendMessage(RedisChannels.SERVER_STATE, RedisMesage.newMessage()
+        NetworkTools.getInstance().getRedisManager().sendMessage(RedisChannels.SERVER_STATE, RedisMesage.newMessage()
                 .set(RedisArg.SERVER, Bukkit.getServerName())
                 .set(RedisArg.SERVER_STATE, serverState));
     }

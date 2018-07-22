@@ -1,6 +1,6 @@
 package me.thesquadmc.commands;
 
-import me.thesquadmc.Main;
+import me.thesquadmc.NetworkTools;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.msgs.CC;
 import me.thesquadmc.utils.player.PlayerUtils;
@@ -13,10 +13,10 @@ import org.bukkit.entity.Player;
 public final class UnFreezeCommand implements CommandExecutor {
 
 
-	private final Main main;
+	private final NetworkTools networkTools;
 
-	public UnFreezeCommand(Main main) {
-		this.main = main;
+	public UnFreezeCommand(NetworkTools networkTools) {
+		this.networkTools = networkTools;
 	}
 
 	@Override
@@ -31,11 +31,11 @@ public final class UnFreezeCommand implements CommandExecutor {
 						if (!PlayerUtils.isEqualOrHigherThen(t, Rank.MOD)) {
 							if (FreezeCommand.getFrozen().contains(t.getUniqueId())) {
 								PlayerUtils.unfreezePlayer(t);
-								main.getFrozenInventory().getScreenshare().remove(player.getUniqueId());
-								main.getFrozenInventory().getAdmitMenu().remove(player.getUniqueId());
-								main.getFrozenInventory().getAdmitted().remove(player.getUniqueId());
-								main.getFrozenInventory().getDenying().remove(player.getUniqueId());
-								main.getFrozenInventory().getScreenshare().remove(player.getUniqueId());
+								networkTools.getFrozenInventory().getScreenshare().remove(player.getUniqueId());
+								networkTools.getFrozenInventory().getAdmitMenu().remove(player.getUniqueId());
+								networkTools.getFrozenInventory().getAdmitted().remove(player.getUniqueId());
+								networkTools.getFrozenInventory().getDenying().remove(player.getUniqueId());
+								networkTools.getFrozenInventory().getScreenshare().remove(player.getUniqueId());
 								FreezeCommand.getFrozen().remove(t.getUniqueId());
 								t.closeInventory();
 								t.sendMessage(CC.translate("&e&lFREEZE &6■ &7You have been &eunfrozen&7. Thank you for your &epatience&7"));

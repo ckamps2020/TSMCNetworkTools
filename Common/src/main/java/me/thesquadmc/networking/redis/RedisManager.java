@@ -2,7 +2,7 @@ package me.thesquadmc.networking.redis;
 
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import me.thesquadmc.Main;
+import me.thesquadmc.NetworkTools;
 import me.thesquadmc.utils.enums.RedisChannels;
 import me.thesquadmc.utils.json.JSONUtils;
 import me.thesquadmc.utils.server.Multithreading;
@@ -48,7 +48,7 @@ public class RedisManager {
             }
         });
 
-        Bukkit.getScheduler().runTaskTimerAsynchronously(Main.getMain(), () -> System.out.println(getPoolCurrentUsage()), 0L, 20 * 60);
+        Bukkit.getScheduler().runTaskTimerAsynchronously(NetworkTools.getInstance(), () -> System.out.println(getPoolCurrentUsage()), 0L, 20 * 60);
     }
 
     public void sendMessage(RedisChannels channel, RedisMesage message) {

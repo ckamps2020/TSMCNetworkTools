@@ -1,7 +1,6 @@
 package me.thesquadmc.utils.msgs;
 
 
-import me.thesquadmc.Main;
 import me.thesquadmc.utils.player.PlayerUtils;
 import org.bukkit.entity.Player;
 

@@ -1,6 +1,6 @@
 package me.thesquadmc.commands;
 
-import me.thesquadmc.Main;
+import me.thesquadmc.NetworkTools;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.msgs.CC;
 import me.thesquadmc.utils.player.PlayerUtils;
@@ -14,9 +14,9 @@ import java.text.MessageFormat;
 
 public final class ChatSilenceCommand implements CommandExecutor {
 
-	private final Main plugin;
+	private final NetworkTools plugin;
 
-	public ChatSilenceCommand(Main plugin) {
+	public ChatSilenceCommand(NetworkTools plugin) {
 		this.plugin = plugin;
 	}
 

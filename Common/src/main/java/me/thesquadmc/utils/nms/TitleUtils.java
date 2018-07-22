@@ -1,13 +1,12 @@
 package me.thesquadmc.utils.nms;
 
+import me.thesquadmc.NetworkTools;
+import me.thesquadmc.abstraction.NMSAbstract;
 import org.bukkit.entity.Player;
 
-import me.thesquadmc.Main;
-import me.thesquadmc.abstraction.NMSAbstract;
-
 public final class TitleUtils {
-	
-	private static final NMSAbstract NMS_ABSTRACT = Main.getMain().getNMSAbstract();
+
+	private static final NMSAbstract NMS_ABSTRACT = NetworkTools.getInstance().getNMSAbstract();
 
 	public static void sendTitleToPlayer(String title, String subtitle, int in, int stay, int out, Player player) {
 		NMS_ABSTRACT.sendTitle(player, title, subtitle, in, stay, out);

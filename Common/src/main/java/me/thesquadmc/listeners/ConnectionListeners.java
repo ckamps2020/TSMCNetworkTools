@@ -1,6 +1,6 @@
 package me.thesquadmc.listeners;
 
-import me.thesquadmc.Main;
+import me.thesquadmc.NetworkTools;
 import me.thesquadmc.abstraction.MojangGameProfile;
 import me.thesquadmc.player.PlayerSetting;
 import me.thesquadmc.player.TSMCUser;
@@ -26,10 +26,10 @@ import java.io.IOException;
 
 public final class ConnectionListeners implements Listener {
 
-    private final Main plugin;
+    private final NetworkTools plugin;
     private final File dataFolder;
 
-    public ConnectionListeners(Main plugin) {
+    public ConnectionListeners(NetworkTools plugin) {
         this.plugin = plugin;
 
         dataFolder = new File(plugin.getDataFolder(), "userdata");
@@ -132,7 +132,7 @@ public final class ConnectionListeners implements Listener {
                 }
             }
 
-            if (!Main.getMain().getSig().equalsIgnoreCase("NONE")) {
+            if (!NetworkTools.getInstance().getSig().equalsIgnoreCase("NONE")) {
                 PlayerUtils.setSameSkin(player);
             }
 

@@ -1,6 +1,6 @@
 package me.thesquadmc.commands;
 
-import me.thesquadmc.Main;
+import me.thesquadmc.NetworkTools;
 import me.thesquadmc.networking.redis.RedisMesage;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.enums.RedisArg;
@@ -15,10 +15,10 @@ import org.bukkit.entity.Player;
 
 public final class ProxyListCommand implements CommandExecutor {
 
-    private final Main main;
+    private final NetworkTools networkTools;
 
-    public ProxyListCommand(Main main) {
-        this.main = main;
+    public ProxyListCommand(NetworkTools networkTools) {
+        this.networkTools = networkTools;
     }
 
     @Override
@@ -26,17 +26,17 @@ public final class ProxyListCommand implements CommandExecutor {
         if (sender instanceof Player) {
             Player player = (Player) sender;
             if (PlayerUtils.isEqualOrHigherThen(player, Rank.TRAINEE)) {
-                main.getRedisManager().sendMessage(RedisChannels.PROXY_REQUEST, RedisMesage.newMessage()
+                networkTools.getRedisManager().sendMessage(RedisChannels.PROXY_REQUEST, RedisMesage.newMessage()
                         .set(RedisArg.SERVER, Bukkit.getServerName())
                         .set(RedisArg.PLAYER, player.getName()));
                 /*
-                Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
+                Bukkit.getScheduler().runTaskAsynchronously(networkTools, new Runnable() {
                     @Override
                     public void run() {
                         Multithreading.runAsync(new Runnable() {
                             @Override
                             public void run() {
-                                try (Jedis jedis = main.getPool().getResource()) {
+                                try (Jedis jedis = networkTools.getPool().getResource()) {
                                     JedisTask.withName(UUID.randomUUID().toString())
                                             .withArg(RedisArg.SERVER.getArg(), Bukkit.getServerName())
                                             .withArg(RedisArg.PLAYER.getArg(), player.getName())
