@@ -1,18 +1,24 @@
 package me.thesquadmc.networking.mongo;
 
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import me.thesquadmc.networking.mongo.codecs.IPInfoCodec;
+import me.thesquadmc.networking.mongo.codecs.NoteCodec;
 import org.bson.BSON;
 import org.bson.BsonBinary;
 import org.bson.BsonDocument;
 import org.bson.BsonDocumentWriter;
 import org.bson.Document;
 import org.bson.UuidRepresentation;
+import org.bson.codecs.Codec;
 import org.bson.codecs.EncoderContext;
 import org.bson.codecs.UuidCodec;
+import org.bson.codecs.configuration.CodecRegistries;
+import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.types.Binary;
 
 import java.util.Arrays;
@@ -40,13 +46,23 @@ public final class Mongo {
         });
     }
 
+    private final CodecRegistry codecRegistry;
+
     private MongoClient mongoClient;
     private MongoDatabase mongoDatabase;
 
     public Mongo(String user, String db, String password, String host, int port) {
+        Codec<Document> defaultDocumentCodec = MongoClient.getDefaultCodecRegistry().get(Document.class);
+        codecRegistry = CodecRegistries.fromRegistries(MongoClient.getDefaultCodecRegistry(),
+                CodecRegistries.fromCodecs(
+                        new NoteCodec(defaultDocumentCodec),
+                        new IPInfoCodec(defaultDocumentCodec)
+                ));
+
         MongoCredential credential = MongoCredential.createCredential(user, db, password.toCharArray());
-        mongoClient = new MongoClient(new ServerAddress(host, port),
-                Arrays.asList(credential));
+        MongoClientOptions options = MongoClientOptions.builder().codecRegistry(codecRegistry).build();
+
+        mongoClient = new MongoClient(new ServerAddress(host, port), Arrays.asList(credential), options);
         mongoDatabase = mongoClient.getDatabase(db);
 
         Logger mongoLogger = Logger.getLogger("org.mongodb.driver");
@@ -63,5 +79,9 @@ public final class Mongo {
 
     public MongoCollection<Document> getCollection(String name) {
         return mongoDatabase.getCollection(name);
+    }
+
+    public CodecRegistry getCodecRegistry() {
+        return codecRegistry;
     }
 }

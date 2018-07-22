@@ -1,5 +1,6 @@
 package me.thesquadmc.commands;
 
+import me.thesquadmc.player.PlayerSetting;
 import me.thesquadmc.player.TSMCUser;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.msgs.CC;
@@ -22,11 +23,11 @@ public final class XrayVerboseCommand implements CommandExecutor {
 					player.sendMessage(CC.translate("&8[&4&lAntiCheat&8] &4[XRAY] &fYou are not allowed to use this command here!"));
 					return true;
 				}
-				if (!user.isXray()) {
-					user.setXray(true);
+                if (!user.getSetting(PlayerSetting.XRAY_NOTIFICATION)) {
+                    user.updateSetting(PlayerSetting.XRAY_NOTIFICATION, true);
 					player.sendMessage(CC.translate("&8[&4&lAntiCheat&8] &4[XRAY] &fYou enabled Xray Verbose"));
 				} else {
-					user.setXray(false);
+                    user.updateSetting(PlayerSetting.XRAY_NOTIFICATION, false);
 					player.sendMessage(CC.translate("&8[&4&lAntiCheat&8] &4[XRAY] &fYou disabled Xray Verbose"));
 				}
 			} else {

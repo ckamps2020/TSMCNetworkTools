@@ -1,5 +1,6 @@
 package me.thesquadmc.commands;
 
+import me.thesquadmc.player.PlayerSetting;
 import me.thesquadmc.player.TSMCUser;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.inventory.ItemBuilder;
@@ -34,7 +35,7 @@ public final class StaffmodeCommand implements CommandExecutor {
 				}
 				if (!staffmode.containsKey(player.getUniqueId())) {
 					PlayerUtils.hidePlayerSpectatorStaff(player);
-					user.setVanished(true);
+                    user.updateSetting(PlayerSetting.VANISHED, true);
 					player.sendMessage(CC.translate("&e&lVANISH &6■ &7You toggled vanish &eon&7! No one will be able to see you"));
 					staffmode.put(player.getUniqueId(), player.getInventory().getContents());
 					player.getInventory().clear();
@@ -53,7 +54,7 @@ public final class StaffmodeCommand implements CommandExecutor {
 					}
 					staffmode.remove(player.getUniqueId());
 					PlayerUtils.showPlayerSpectator(player);
-					user.setVanished(false);
+                    user.updateSetting(PlayerSetting.VANISHED, false);
 					player.sendMessage(CC.translate("&e&lVANISH &6■ &7You toggled vanish &eoff&7! Everyone will be able to see you"));
 					player.setGameMode(GameMode.SURVIVAL);
 					player.sendMessage(CC.translate("&e&lSTAFFMODE &6■  &7Staff mode has been &edisabled&7"));

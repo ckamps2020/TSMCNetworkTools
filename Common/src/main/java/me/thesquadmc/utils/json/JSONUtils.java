@@ -97,6 +97,7 @@ public final class JSONUtils {
 
 	private static final JsonParser PARSER = new JsonParser();
 	private static final Gson GSON = new GsonBuilder()
+            .setPrettyPrinting()
 			.registerTypeAdapter(Location.class, new LocationTypeAdapter())
 			.create();
 

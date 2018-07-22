@@ -1,10 +1,12 @@
 package me.thesquadmc.networking.mongo;
 
 import com.mongodb.client.MongoCollection;
+import me.thesquadmc.Main;
 import me.thesquadmc.player.TSMCUser;
 import me.thesquadmc.utils.server.Multithreading;
 import org.bson.Document;
 
+import java.text.MessageFormat;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -24,20 +26,8 @@ public class MongoUserDatabase implements UserDatabase {
             Document document = users.find(eq("_id", uuid)).first();
 
             if (document == null) {
-                return  TSMCUser.fromUUID(uuid);
-            }
-
-            return TSMCUser.fromDocument(document);
-        }, Multithreading.POOL);
-    }
-
-    @Override
-    public CompletableFuture<TSMCUser> getUser(String name) {
-        return CompletableFuture.supplyAsync(() -> {
-            Document document = users.find(eq(UserDatabase.NAME, name)).first();
-
-            if (document == null) {
-                return null;
+                Main.getMain().getLogger().info(MessageFormat.format("{0} had no document, fresh user!", uuid));
+                return TSMCUser.fromUUID(uuid);
             }
 
             return TSMCUser.fromDocument(document);
@@ -47,10 +37,10 @@ public class MongoUserDatabase implements UserDatabase {
     @Override
     public CompletableFuture<Void> saveUser(TSMCUser user) {
         return CompletableFuture.runAsync(() -> {
-            Document document = users.find(eq("_id", user.getUuid())).first();
+            Document document = users.find(eq("_id", user.getUUID())).first();
 
             if (document != null) {
-                users.replaceOne(eq("_id", user.getUuid()), TSMCUser.toDocument(user));
+                users.findOneAndReplace(eq("_id", user.getUUID()), TSMCUser.toDocument(user));
 
             } else {
                 users.insertOne(TSMCUser.toDocument(user));

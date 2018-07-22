@@ -2,6 +2,7 @@ package me.thesquadmc.listeners;
 
 import me.thesquadmc.Main;
 import me.thesquadmc.abstraction.Sounds;
+import me.thesquadmc.player.PlayerSetting;
 import me.thesquadmc.player.TSMCUser;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.enums.UpdateType;
@@ -25,16 +26,13 @@ public final class ForceFieldListeners implements Listener {
 
 	@EventHandler
 	public void onUpdate(UpdateEvent e) {
-		if (e.getUpdateType() == UpdateType.SEC) {
-            main.getQueueManager().getSoloBW().remove("null");
-            main.getQueueManager().getSoloBW().remove(null);
-		} else if (e.getUpdateType() == UpdateType.HALF_SEC) {
+		if (e.getUpdateType() == UpdateType.HALF_SEC) {
 			for (Player player : Bukkit.getOnlinePlayers()) {
-				if (TSMCUser.fromPlayer(player).hasForcefield()) {
+				if (TSMCUser.fromPlayer(player).getSetting(PlayerSetting.FORCEFIELD)) {
 					List<Player> players = PlayerUtils.getNearbyPlayers(player.getLocation(), 8);
 					for (Player p : players) {
 						if (p.getName() != null) {
-							if (!PlayerUtils.isEqualOrHigherThen(p, Rank.YOUTUBE)) {
+							if (!PlayerUtils.isEqualOrHigherThen(p, Rank.MOD)) {
 								double x = p.getLocation().getX();
 								double y = p.getLocation().getY();
 								double z = p.getLocation().getZ();

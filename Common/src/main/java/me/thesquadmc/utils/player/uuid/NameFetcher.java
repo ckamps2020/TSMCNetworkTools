@@ -1,4 +1,4 @@
-package me.thesquadmc.utils.uuid;
+package me.thesquadmc.utils.player.uuid;
 
 import com.google.gson.reflect.TypeToken;
 import me.thesquadmc.utils.json.JSONUtils;

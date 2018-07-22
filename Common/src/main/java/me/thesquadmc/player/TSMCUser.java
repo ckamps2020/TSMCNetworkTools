@@ -3,7 +3,10 @@ package me.thesquadmc.player;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import me.thesquadmc.Main;
+import me.thesquadmc.objects.logging.IPInfo;
 import me.thesquadmc.objects.logging.Note;
+import me.thesquadmc.utils.DocumentUtils;
 import me.thesquadmc.utils.player.PlayerUtils;
 import org.bson.Document;
 import org.bukkit.Bukkit;
@@ -12,40 +15,47 @@ import org.bukkit.entity.Player;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static me.thesquadmc.networking.mongo.UserDatabase.FORCEFIELD;
 import static me.thesquadmc.networking.mongo.UserDatabase.FRIENDS;
-import static me.thesquadmc.networking.mongo.UserDatabase.MONITOR;
+import static me.thesquadmc.networking.mongo.UserDatabase.IPS;
+import static me.thesquadmc.networking.mongo.UserDatabase.LAST_MESSAGER;
 import static me.thesquadmc.networking.mongo.UserDatabase.NAME;
+import static me.thesquadmc.networking.mongo.UserDatabase.NICKNAME;
 import static me.thesquadmc.networking.mongo.UserDatabase.NOTES;
 import static me.thesquadmc.networking.mongo.UserDatabase.PREVIOUS_NAMES;
-import static me.thesquadmc.networking.mongo.UserDatabase.REPORTS;
 import static me.thesquadmc.networking.mongo.UserDatabase.REQUESTS;
+import static me.thesquadmc.networking.mongo.UserDatabase.SETTINGS;
 import static me.thesquadmc.networking.mongo.UserDatabase.SIGNATURE;
 import static me.thesquadmc.networking.mongo.UserDatabase.SKIN_KEY;
-import static me.thesquadmc.networking.mongo.UserDatabase.VANISHED;
-import static me.thesquadmc.networking.mongo.UserDatabase.XRAY;
-import static me.thesquadmc.networking.mongo.UserDatabase.YT_VANISHED;
 
 public class TSMCUser {
 
     private static final Map<UUID, TSMCUser> USERS = new HashMap<>();
 
-    /** The UUID of the player **/
+    /**
+     * The UUID of the player
+     **/
     private final UUID uuid;
-
-    /** The player's current name **/
-    private String name;
-
-    private String nickname;
-
-    /** All previous names the player has had **/
+    /**
+     * All previous names the player has had
+     **/
     private final Set<String> previousNames = Sets.newHashSet();
+    /**
+     * A list of {@link IPInfo} that this player has
+     */
+    private final Set<IPInfo> ips = Sets.newHashSet();
+    /**
+     * The player's current name
+     **/
+    private String name;
 
     /**
      * A list of friends that this player has
@@ -61,13 +71,15 @@ public class TSMCUser {
      * A list of {@link Note} that this player has
      */
     private final Set<Note> notes = Sets.newHashSet();
+    /**
+     * The player's current nickname
+     **/
+    private String nickname;
 
     /**
      * The player's settings
      */
     private Map<PlayerSetting<?>, Object> settings = Maps.newHashMap();
-
-    private Map<String, String> serverNicknames = Maps.newHashMap();
 
     /**
      * The last player to send this player a message
@@ -75,41 +87,30 @@ public class TSMCUser {
      */
     private UUID lastMessager;
 
-    /**
-     * The time at which the player logged in
-     */
-    @Deprecated  private long loginTime;
-
-    private boolean vanished = false, ytVanished = false;
-    private boolean xray, monitor = true, reports = true;
-    private boolean forcefield = false;
     private String skinKey = "", signature = "";
 
     public TSMCUser(OfflinePlayer player) {
         Preconditions.checkNotNull(player, "Cannot construct a TSMCUser from a null user");
         this.uuid = player.getUniqueId();
         this.name = player.getName();
-        this.xray = Bukkit.getServerName().toUpperCase().contains("FACTIONS");
     }
 
     public TSMCUser(UUID player) {
         Preconditions.checkNotNull(player, "Cannot construct a TSMCUser from a null UUID");
         this.uuid = player;
-        this.xray = Bukkit.getServerName().toUpperCase().contains("FACTIONS");
         this.name = Bukkit.getOfflinePlayer(player).getName();
     }
 
     public TSMCUser(UUID player, String name) {
         Preconditions.checkNotNull(player, "Cannot construct a TSMCUser from a null UUID");
         this.uuid = player;
-        this.xray = Bukkit.getServerName().toUpperCase().contains("FACTIONS");
         this.name = name;
     }
 
-    public java.util.UUID getUuid() {
-        return uuid;
+    public static void loadUser(TSMCUser user) {
+        Preconditions.checkNotNull(user, "User cannot be null");
+        USERS.put(user.getUUID(), user);
     }
-
 
     public OfflinePlayer getOfflinePlayer() {
         return Bukkit.getOfflinePlayer(uuid);
@@ -216,14 +217,6 @@ public class TSMCUser {
                 .cast(settings.getOrDefault(setting, setting.getDefaultValue())) : null;
     }
 
-    public void setServerNickname(String server, String nickname) {
-        serverNicknames.put(server, nickname);
-    }
-
-    public String getServerNickname(String server) {
-        return serverNicknames.get(server);
-    }
-
     public void resetSettingsToDefault() {
         this.settings.clear();
         for (PlayerSetting<?> setting : PlayerSetting.values()) {
@@ -270,60 +263,64 @@ public class TSMCUser {
         notes.add(note);
     }
 
+    public static void unloadUser(TSMCUser user, boolean save) {
+        USERS.remove(user.uuid);
+
+        if (save) {
+            Main.getMain().getUserDatabase().saveUser(user);
+        }
+    }
+
+    public static TSMCUser fromDocument(Document document) {
+        TSMCUser user = new TSMCUser(document.get("_id", UUID.class), document.getString("name"));
+
+        document.forEach((s, o) -> {
+            System.out.print(s);
+        });
+
+        Set<String> previousNames = DocumentUtils.documentToStringSet(document, PREVIOUS_NAMES);
+        previousNames.addAll(user.previousNames);
+
+        Set<UUID> friends = DocumentUtils.documentToUUIDSet(document, FRIENDS);
+        friends.addAll(user.friends);
+
+        Set<UUID> requests = DocumentUtils.documentToUUIDSet(document, REQUESTS);
+        if (requests != null) {
+            requests.addAll(user.requests);
+        }
+
+        List<Document> notes = (List<Document>) document.get(NOTES);
+        if (notes != null) {
+            user.notes.addAll(notes.stream().map(Note::fromDocument).collect(Collectors.toList()));
+        }
+
+        List<Document> ips = (List<Document>) document.get(IPS);
+        if (ips != null) {
+            user.ips.addAll(ips.stream().map(IPInfo::fromDocument).collect(Collectors.toList()));
+        }
+
+        user.nickname = document.getString(NICKNAME);
+        user.skinKey = document.getString(SKIN_KEY);
+        user.signature = document.getString(SIGNATURE);
+        user.lastMessager = document.get(LAST_MESSAGER, UUID.class);
+
+        Document settingsDocument = (Document) document.get(SETTINGS);
+        for (PlayerSetting<?> setting : PlayerSetting.values()) {
+            if (settingsDocument.containsKey(setting.getName())) {
+                setting.getSettingType().cast(user.settings.put(setting, settingsDocument.get(setting.getName(), setting.getSettingType())));
+            }
+        }
+
+        loadUser(user);
+        return user;
+    }
+
     public Set<String> getPreviousNames() {
         return previousNames;
     }
 
     public void addPreviousName(String name) {
         previousNames.add(name);
-    }
-
-    public void setVanished(boolean vanished) {
-        this.vanished = vanished;
-    }
-
-    public boolean isVanished() {
-        return vanished;
-    }
-
-    public void setYtVanished(boolean ytVanished) {
-        this.ytVanished = ytVanished;
-    }
-
-    public boolean isYtVanished() {
-        return ytVanished;
-    }
-
-    public void setXray(boolean xray) {
-        this.xray = xray;
-    }
-
-    public boolean isXray() {
-        return xray;
-    }
-
-    public void setMonitor(boolean monitor) {
-        this.monitor = monitor;
-    }
-
-    public boolean hasMonitor() {
-        return monitor;
-    }
-
-    public void setReports(boolean reports) {
-        this.reports = reports;
-    }
-
-    public boolean showReports() {
-        return reports;
-    }
-
-    public void setForcefield(boolean forcefield) {
-        this.forcefield = forcefield;
-    }
-
-    public boolean hasForcefield() {
-        return forcefield;
     }
 
     public void setSkinKey(String skinKey) {
@@ -365,9 +362,24 @@ public class TSMCUser {
         return (player != null) ? USERS.computeIfAbsent(player, TSMCUser::new) : null;
     }
 
-    public static void loadUser(TSMCUser user) {
-        Preconditions.checkNotNull(user, "User cannot be null");
-        USERS.put(user.getUuid(), user);
+    public static Document toDocument(TSMCUser user) {
+        Map<String, Object> settings = Maps.newHashMapWithExpectedSize(user.settings.size());
+        user.settings.forEach((setting, object) -> settings.put(setting.getName(), object));
+
+        return new Document("_id", user.uuid)
+                .append(NAME, user.name)
+
+                .append(PREVIOUS_NAMES, user.previousNames)
+                .append(FRIENDS, user.friends)
+                .append(IPS, user.ips)
+                .append(REQUESTS, user.requests)
+                .append(NOTES, user.notes)
+                .append(SETTINGS, settings)
+
+                .append(SKIN_KEY, user.skinKey)
+                .append(SIGNATURE, user.signature)
+
+                .append(LAST_MESSAGER, user.lastMessager);
     }
 
     public static boolean isLoaded(OfflinePlayer player) {
@@ -378,8 +390,8 @@ public class TSMCUser {
         return USERS.containsKey(player);
     }
 
-    public static void unloadUser(TSMCUser user) {
-        USERS.remove(user.uuid);
+    public java.util.UUID getUUID() {
+        return uuid;
     }
 
     public static void unloadUser(OfflinePlayer player) {
@@ -399,59 +411,24 @@ public class TSMCUser {
         USERS.clear();
     }
 
-    public static TSMCUser fromDocument(Document document) {
-        TSMCUser user = new TSMCUser(document.get("_id", UUID.class), document.getString("name"));
-
-        Set<String> previousNames = (Set<String>) document.get(PREVIOUS_NAMES, Set.class);
-        if (previousNames != null) {
-            previousNames.addAll(user.previousNames);
-        }
-
-        Set<UUID> friends = (Set<UUID>) document.get(FRIENDS, Set.class);
-        if (friends != null) {
-            friends.addAll(user.friends);
-        }
-
-        Set<UUID> requests = (Set<UUID>) document.get(REQUESTS, Set.class);
-        if (requests != null) {
-            requests.addAll(user.requests);
-        }
-
-        Set<Document> notes = (Set<Document>) document.get(NOTES, Set.class);
-        if (notes != null) {
-            notes.stream().map(Note::fromDocument).collect(Collectors.toList()).addAll(user.notes);
-        }
-
-        user.vanished = document.getBoolean(VANISHED, false);
-        user.ytVanished = document.getBoolean(YT_VANISHED, false);
-        user.xray = document.getBoolean(XRAY, false);
-        user.monitor = document.getBoolean(MONITOR, false);
-        user.reports = document.getBoolean(REPORTS, false);
-        user.forcefield = document.getBoolean(FORCEFIELD, false);
-        user.skinKey = document.getString(SKIN_KEY);
-        user.signature = document.getString(SIGNATURE);
-
-        loadUser(user);
-        return user;
+    public Set<IPInfo> getIPs() {
+        return Collections.unmodifiableSet(ips);
     }
 
-    public static Document toDocument(TSMCUser user) {
-        return new Document("_id", user.uuid)
-                .append(NAME, user.name)
+    public void addIP(String ip) {
+        Optional<IPInfo> optional = ips.stream()
+                .filter(info1 -> info1.getIP().equals(ip))
+                .findFirst();
 
-                .append(FRIENDS, user.friends)
-                .append(REQUESTS, user.requests)
-                .append(NOTES, user.notes)
+        if (optional.isPresent()) {
+            IPInfo ipInfo = optional.get();
 
-                .append(VANISHED, user.vanished)
-                .append(YT_VANISHED, user.ytVanished)
-                .append(XRAY, user.xray)
-                .append(MONITOR, user.monitor)
-                .append(REPORTS, user.reports)
-                .append(FORCEFIELD, user.forcefield)
+            ipInfo.setLastJoined(new Date());
+            ipInfo.setCount(ipInfo.getCount() + 1);
 
-                .append(SKIN_KEY, user.skinKey)
-                .append(SIGNATURE, user.signature);
+        } else {
+            ips.add(new IPInfo(ip, new Date(), new Date()));
+        }
     }
 
 }

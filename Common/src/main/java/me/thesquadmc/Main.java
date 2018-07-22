@@ -21,13 +21,11 @@ import me.thesquadmc.commands.FindCommand;
 import me.thesquadmc.commands.ForceFieldCommand;
 import me.thesquadmc.commands.FreezeCommand;
 import me.thesquadmc.commands.FreezePanelCommand;
-import me.thesquadmc.commands.GamemodeCommand;
 import me.thesquadmc.commands.HealCommand;
 import me.thesquadmc.commands.InvseeCommand;
 import me.thesquadmc.commands.LaunchCommand;
 import me.thesquadmc.commands.LogsCommand;
 import me.thesquadmc.commands.LookupCommand;
-import me.thesquadmc.commands.MGCommand;
 import me.thesquadmc.commands.MOTDClearCommand;
 import me.thesquadmc.commands.MOTDCommand;
 import me.thesquadmc.commands.ManagerChatCommand;
@@ -39,8 +37,6 @@ import me.thesquadmc.commands.OnlineCountCommand;
 import me.thesquadmc.commands.PartyCommand;
 import me.thesquadmc.commands.PingCommand;
 import me.thesquadmc.commands.ProxyTransportCommand;
-import me.thesquadmc.commands.QueueManagerCommand;
-import me.thesquadmc.commands.QueueRestartCommand;
 import me.thesquadmc.commands.RandomTPCommand;
 import me.thesquadmc.commands.RestartTimeCommand;
 import me.thesquadmc.commands.SmiteCommand;
@@ -77,13 +73,11 @@ import me.thesquadmc.listeners.TimedListener;
 import me.thesquadmc.listeners.VanishListener;
 import me.thesquadmc.listeners.WhitelistListener;
 import me.thesquadmc.listeners.XrayListener;
-import me.thesquadmc.managers.BootManager;
 import me.thesquadmc.managers.ClickableMessageManager;
 import me.thesquadmc.managers.CountManager;
 import me.thesquadmc.managers.HologramManager;
 import me.thesquadmc.managers.NPCManager;
 import me.thesquadmc.managers.PartyManager;
-import me.thesquadmc.managers.QueueManager;
 import me.thesquadmc.networking.mongo.Mongo;
 import me.thesquadmc.networking.mongo.MongoUserDatabase;
 import me.thesquadmc.networking.mongo.UserDatabase;
@@ -106,10 +100,10 @@ import me.thesquadmc.utils.handlers.UpdateHandler;
 import me.thesquadmc.utils.inventory.builder.AbstractGUI;
 import me.thesquadmc.utils.msgs.ServerType;
 import me.thesquadmc.utils.nms.BarUtils;
+import me.thesquadmc.utils.player.uuid.UUIDTranslator;
 import me.thesquadmc.utils.server.Multithreading;
 import me.thesquadmc.utils.server.ServerState;
 import me.thesquadmc.utils.server.ServerUtils;
-import me.thesquadmc.utils.uuid.UUIDTranslator;
 import me.thesquadmc.warp.WarpManager;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
@@ -157,8 +151,6 @@ public final class Main extends JavaPlugin {
     private StaffmodeInventory staffmodeInventory;
     private HologramManager hologramManager;
     private NPCManager npcManager;
-    private QueueManager queueManager;
-    private BootManager bootManager;
     private CommandHandler commandHandler;
     private PartyManager partyManager;
     private MCLeaksAPI mcLeaksAPI;
@@ -203,8 +195,6 @@ public final class Main extends JavaPlugin {
         chatManager = new ChatManager(this);
         hologramManager = new HologramManager();
         npcManager = new NPCManager();
-        queueManager = new QueueManager();
-        bootManager = new BootManager();
         commandHandler = new CommandHandler(this);
         partyManager = new PartyManager();
         countManager = new CountManager();
@@ -260,9 +250,9 @@ public final class Main extends JavaPlugin {
         registerCommands();
 
         ServerUtils.calculateServerType();
-        Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> redisManager.sendMessage(RedisChannels.PLAYER_COUNT, RedisMesage.newMessage()
-                .set(RedisArg.SERVER.getName(), Bukkit.getServerName())
-                .set(RedisArg.COUNT.getName(), Bukkit.getOnlinePlayers().size())), 20L, 20L);
+        //Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> redisManager.sendMessage(RedisChannels.PLAYER_COUNT, RedisMesage.newMessage()
+        //        .set(RedisArg.SERVER.getName(), Bukkit.getServerName())
+        //        .set(RedisArg.COUNT.getName(), Bukkit.getOnlinePlayers().size())), 20L, 20L);
 
         if (serverType.startsWith(ServerType.MINIGAME_HUB)) {
             redisManager.sendMessage(RedisChannels.STARTUP_REQUEST, RedisMesage.newMessage()
@@ -272,14 +262,14 @@ public final class Main extends JavaPlugin {
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> BarUtils.getPlayers().forEach(nmsAbstract.getBossBarManager()::teleportBar), 1, 20L);
 
         Stream.of(
-                new GamemodeCommand(),
+                //new GamemodeCommand(),
                 new NoteCommand(this),
                 new WarpCommand(this),
                 new ChangeLogCommand(this),
                 new FindCommand(this),
                 new MessageCommand(this),
                 new EssentialCommands(),
-                new TeleportCommand(),
+                new TeleportCommand(this),
                 new HealCommand()
         ).forEach(o -> commandHandler.registerCommands(o));
 
@@ -374,7 +364,7 @@ public final class Main extends JavaPlugin {
         return mongo;
     }
 
-    public UserDatabase getMongoDatabase() {
+    public UserDatabase getUserDatabase() {
         return userDatabase;
     }
 
@@ -388,14 +378,6 @@ public final class Main extends JavaPlugin {
 
     public PartyManager getPartyManager() {
         return partyManager;
-    }
-
-    public BootManager getBootManager() {
-        return bootManager;
-    }
-
-    public QueueManager getQueueManager() {
-        return queueManager;
     }
 
     public void setServerType(String serverType) {
@@ -604,11 +586,8 @@ public final class Main extends JavaPlugin {
         getCommand("store").setExecutor(new StoreCommand());
         getCommand("website").setExecutor(new WebsiteCommand());
         getCommand("title").setExecutor(new TitleCommand());
-        getCommand("queuerestart").setExecutor(new QueueRestartCommand(this));
         getCommand("vanishlist").setExecutor(new VanishListCommand());
         getCommand("ntversion").setExecutor(new NTVersionCommand(this));
-        getCommand("mg").setExecutor(new MGCommand(this));
-        getCommand("queuemanager").setExecutor(new QueueManagerCommand(this));
         getCommand("staffalert").setExecutor(new StaffAlertCommand());
         getCommand("onlinecount").setExecutor(new OnlineCountCommand(this));
         getCommand("logs").setExecutor(new LogsCommand());

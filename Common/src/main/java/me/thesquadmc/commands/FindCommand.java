@@ -20,29 +20,30 @@ public class FindCommand {
         this.plugin = plugin;
     }
 
-    @Command(name = {"find2", "whereis2"}, permission = "group.helper")
+    @Command(name = {"find", "whereis", "locate"})
     public void find(CommandArgs args) {
         CommandSender sender = args.getSender();
 
         if (args.length() == 0) {
-            sender.sendMessage(CC.RED + "/find <player>");
+            sender.sendMessage(CC.RED + "/whereis <player>");
             return;
         }
+
         String name = args.getArg(0);
 
-        sender.sendMessage(CC.translate("&e&lFIND&6■ &7Trying to find &e" + name + "&7..."));
+        sender.sendMessage(CC.translate("&e&lWHEREIS&6■ &7Trying to find &e" + name + "&7..."));
         sender.sendMessage(" ");
         plugin.getRedisManager().executeJedisAsync(jedis -> {
             UUID uuid = plugin.getUUIDTranslator().getUUID(name, true);
 
             if (uuid == null) {
-                sender.sendMessage(CC.translate("&e&lFIND&6■ &7Unable to find player &e" + name));
+                sender.sendMessage(CC.translate("&e&lWHEREIS&6■ &7Unable to find player &e" + name));
                 return;
             }
 
             Map<String, String> server = jedis.hgetAll("players:" + uuid.toString());
             if (server == null) {
-                sender.sendMessage(CC.translate("&e&lFIND&6■ &7Something went wrong with getting &e" + name));
+                sender.sendMessage(CC.translate("&e&lWHEREIS&6■ &7Something went wrong with getting &e" + name));
                 return;
             }
 
@@ -63,7 +64,7 @@ public class FindCommand {
                 sender.sendMessage(CC.GRAY + Unicode.SQUARE +  " Online Since: " + CC.WHITE + TimeUtils.getFormattedTime(timestamp));
 
             } else {
-                sender.sendMessage(CC.translate("&e&lFIND&6■ &7Unable to find player &e" + name));
+                sender.sendMessage(CC.translate("&e&lWHEREIS&6■ &7Unable to find player &e" + name));
             }
         });
     }

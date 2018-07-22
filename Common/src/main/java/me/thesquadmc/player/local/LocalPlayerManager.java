@@ -15,6 +15,14 @@ public class LocalPlayerManager {
         playerMap.put(uuid, player);
     }
 
+    public LocalPlayer removePlayer(Player player) {
+        return playerMap.remove(player.getUniqueId());
+    }
+
+    public LocalPlayer removePlayer(UUID uuid) {
+        return playerMap.remove(uuid);
+    }
+
     public LocalPlayer getPlayer(Player player) {
         return getPlayer(player.getUniqueId());
     }

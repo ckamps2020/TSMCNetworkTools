@@ -3,7 +3,6 @@ package me.thesquadmc.networking.redis;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
 import me.thesquadmc.utils.json.JSONUtils;
 import redis.clients.jedis.Client;
 import redis.clients.jedis.JedisPubSub;
@@ -27,7 +26,7 @@ public class RedisPubSub extends JedisPubSub {
             if (redisChannel != null) {
                 redisChannel.handle(channel, object.getAsJsonObject("message"));
             }
-        } catch (JsonSyntaxException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -35,7 +34,10 @@ public class RedisPubSub extends JedisPubSub {
     public void subscribe(RedisChannel listener, String... channels) {
         Preconditions.checkState(connected, "PubSub has not been subscribed!");
 
-        Arrays.stream(channels).forEach(s -> listeners.put(s, listener));
+        Arrays.stream(channels).forEach(s -> {
+            System.out.println(s);
+            listeners.put(s, listener);
+        });
         super.subscribe(channels);
     }
 

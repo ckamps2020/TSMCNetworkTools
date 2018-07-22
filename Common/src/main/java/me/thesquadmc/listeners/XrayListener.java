@@ -1,5 +1,6 @@
 package me.thesquadmc.listeners;
 
+import me.thesquadmc.player.PlayerSetting;
 import me.thesquadmc.player.TSMCUser;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.enums.UpdateType;
@@ -40,7 +41,7 @@ public final class XrayListener implements Listener {
 				int spawners = spawnerMined.getOrDefault(miner, 0);
 
 				for (Player staff : Bukkit.getOnlinePlayers()) {
-					if (PlayerUtils.isEqualOrHigherThen(staff, Rank.TRAINEE) && TSMCUser.fromPlayer(staff).isXray()) {
+                    if (PlayerUtils.isEqualOrHigherThen(staff, Rank.TRAINEE) && TSMCUser.fromPlayer(staff).getSetting(PlayerSetting.XRAY_NOTIFICATION)) {
                         int diamondThreshhold = 13;
                         if (diamonds >= diamondThreshhold) {
 							staff.sendMessage(CC.translate("&8[&4&lAnitCheat&8] &4[XRAY] &f" + player.getName() + " is suspected for XRAY. Mined " + diamonds + " diamonds in the last MINUTE! World&4=&f" + player.getWorld().getName() + ""));

@@ -1,5 +1,6 @@
 package me.thesquadmc.commands;
 
+import me.thesquadmc.player.PlayerSetting;
 import me.thesquadmc.player.TSMCUser;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.msgs.CC;
@@ -17,14 +18,14 @@ public final class YtVanishCommand implements CommandExecutor {
 			Player player = (Player) sender;
 			if (PlayerUtils.isEqualOrHigherThen(player, Rank.YOUTUBE)) {
 				TSMCUser user = TSMCUser.fromPlayer(player);
-				if (!user.isVanished()) {
-					if (!user.isYtVanished()) {
+                if (!user.getSetting(PlayerSetting.VANISHED)) {
+                    if (!user.getSetting(PlayerSetting.YOUTUBE_VANISHED)) {
 						player.sendMessage(CC.translate("&e&lYT VANISH &6■ &7Vanish has been &eenabled"));
-						user.setYtVanished(true);
+                        user.updateSetting(PlayerSetting.YOUTUBE_VANISHED, true);
 						PlayerUtils.hidePlayerSpectatorYT(player);
 					} else {
 						player.sendMessage(CC.translate("&e&lYT VANISH &6■ &7Vanish has been &edisabled"));
-						user.setYtVanished(false);
+                        user.updateSetting(PlayerSetting.YOUTUBE_VANISHED, false);
 						PlayerUtils.showPlayerSpectator(player);
 					}
 				} else {

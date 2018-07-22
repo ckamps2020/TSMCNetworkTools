@@ -11,27 +11,29 @@ public interface UserDatabase {
 
     String UUID = "uuid";
     String NAME = "name";
+    String NICKNAME = "name";
 
     String PREVIOUS_NAMES = "previous_names";
     String FRIENDS = "friends";
     String REQUESTS = "requests";
     String NOTES = "notes";
-
-    String VANISHED = "vanished";
-    String YT_VANISHED = "ytVanished";
-    String XRAY = "xray";
-    String MONITOR = "monitor";
-    String REPORTS = "reports";
-    String FORCEFIELD = "forcefield";
+    String SETTINGS = "settings";
 
     String SKIN_KEY = "skinKey";
     String SIGNATURE = "signature";
 
     String TIMESTAMP = "timestamp";
 
-    String NOTE_CREATOR = "creator";
-    String NOTE_CREATOR_NAME = "creatorName";
-    String NOTE_MESSAGE = "message";
+    String IPS = "ips";
+    String IP = "ip";
+    String FIRST_JOINED = "first_joined";
+    String LAST_JOINED = "last_joined";
+    String COUNT = "count";
+
+    String LAST_MESSAGER = "last_messager";
+    String CREATOR = "creator";
+    String CREATOR_NAME = "creator_name";
+    String MESSAGE = "message";
 
     /**
      * Loads a user from the database using
@@ -43,16 +45,6 @@ public interface UserDatabase {
      * @return the user
      */
     CompletableFuture<TSMCUser> getUser(UUID uuid);
-
-    /**
-     * Loads a user from the database using
-     * the player's name. If a player was not
-     * found, it will return null
-     *
-     * @param name name of the player to load
-     * @return the user
-     */
-    CompletableFuture<TSMCUser> getUser(String name);
 
     /**
      * Saves a user to the database

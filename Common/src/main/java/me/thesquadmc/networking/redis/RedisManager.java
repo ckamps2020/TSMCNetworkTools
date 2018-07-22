@@ -28,8 +28,8 @@ public class RedisManager {
         ClassLoader previous = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
 
-        config = new JedisPoolConfig();
         int maxConnections = 200;
+        config = new JedisPoolConfig();
         config.setMaxTotal(maxConnections);
         config.setMaxIdle(maxConnections);
         config.setMinIdle(50);
@@ -39,7 +39,7 @@ public class RedisManager {
         this.pool = new JedisPool(config, host, port, 40 * 1000, pass);
         Thread.currentThread().setContextClassLoader(previous);
 
-        Jedis redisSubscriber = pool.getResource();
+        Jedis redisSubscriber = pool.getResource(); //Do not remove this line, it breaks Redis if you do!!!
         pubSub = new RedisPubSub();
 
         Multithreading.runAsync(() -> {
@@ -54,7 +54,10 @@ public class RedisManager {
     public void sendMessage(RedisChannels channel, RedisMesage message) {
         message.set("channel", channel.getName());
 
-        executeJedisAsync(jedis -> jedis.publish(channel.getName(), JSONUtils.toJson(message)));
+        executeJedisAsync(jedis -> {
+            Long r = jedis.publish(channel.getName(), JSONUtils.toJson(message));
+            System.out.println(r);
+        });
     }
 
     public void executeJedisAsync(Consumer<Jedis> consumer) {

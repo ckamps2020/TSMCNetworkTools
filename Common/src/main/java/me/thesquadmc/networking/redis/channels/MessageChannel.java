@@ -17,7 +17,7 @@ public class MessageChannel implements RedisChannel {
         UUID sender = UUID.fromString(object.get("sender").getAsString());
         UUID target = UUID.fromString(object.get("target").getAsString());
 
-        String senderName = object.get("senderName").getAsString();
+        String senderName = object.get("sender_name").getAsString();
         String message = object.get("senderName").getAsString();
 
         Player player = Bukkit.getPlayer(target);

@@ -44,8 +44,8 @@ public final class SettingsMenu {
 		
 		TSMCUser user = TSMCUser.fromPlayer(player);
 		for (PlayerSetting<?> setting : PlayerSetting.values()) {
-			if (setting == PlayerSetting.NOTIFICATIONS) {
-				if (user.getSetting(PlayerSetting.NOTIFICATIONS)) {
+            if (setting == PlayerSetting.FRIEND_NOTIFICATIONS) {
+                if (user.getSetting(PlayerSetting.FRIEND_NOTIFICATIONS)) {
 					inventory.setItem(19, new ItemBuilder(Material.INK_SACK, 10).name("&a&lNOTIFICATIONS On")
 							.lore("&7NOTIFICATIONS are toggled on!", "&7Click to toggle off").build());
 				} else {

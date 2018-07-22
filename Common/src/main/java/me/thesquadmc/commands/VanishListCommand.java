@@ -1,5 +1,6 @@
 package me.thesquadmc.commands;
 
+import me.thesquadmc.player.PlayerSetting;
 import me.thesquadmc.player.TSMCUser;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.msgs.CC;
@@ -19,13 +20,13 @@ public final class VanishListCommand implements CommandExecutor {
 			if (PlayerUtils.isEqualOrHigherThen(player, Rank.TRAINEE)) {
 				StringBuilder stringBuilder = new StringBuilder();
 				for (Player p : Bukkit.getOnlinePlayers()) {
-					if (TSMCUser.fromPlayer(p).isYtVanished()) {
+                    if (TSMCUser.fromPlayer(p).getSetting(PlayerSetting.YOUTUBE_VANISHED)) {
 						stringBuilder.append(p.getName() + " ");
 					}
 				}
 				StringBuilder sb = new StringBuilder();
 				for (Player p : Bukkit.getOnlinePlayers()) {
-					if (TSMCUser.fromPlayer(p).isVanished()) {
+                    if (TSMCUser.fromPlayer(p).getSetting(PlayerSetting.VANISHED)) {
 						sb.append(p.getName() + " ");
 					}
 				}

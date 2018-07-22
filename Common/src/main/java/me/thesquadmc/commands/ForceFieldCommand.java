@@ -1,5 +1,6 @@
 package me.thesquadmc.commands;
 
+import me.thesquadmc.player.PlayerSetting;
 import me.thesquadmc.player.TSMCUser;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.msgs.CC;
@@ -17,12 +18,12 @@ public final class ForceFieldCommand implements CommandExecutor {
 			Player player = (Player) sender;
 			if (PlayerUtils.isEqualOrHigherThen(player, Rank.YOUTUBE)) {
 				TSMCUser user = TSMCUser.fromPlayer(player);
-				if (!user.hasForcefield()) {
+				if (!user.getSetting(PlayerSetting.FORCEFIELD)) {
 					player.sendMessage(CC.translate("&e&lFORCEFIELD &6■ &7Forcefield has been &eenabled"));
-					user.setForcefield(true);
+					user.updateSetting(PlayerSetting.FORCEFIELD, true);
 				} else {
 					player.sendMessage(CC.translate("&e&lFORCEFIELD &6■ &7Forcefield has been &edisabled"));
-					user.setForcefield(false);
+					user.updateSetting(PlayerSetting.FORCEFIELD, false);
 				}
 			} else {
 				player.sendMessage(CC.translate("&e&lPERMISSIONS &6■ &7You do not have permission to use this command!"));

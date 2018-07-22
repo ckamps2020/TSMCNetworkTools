@@ -5,6 +5,7 @@ import me.thesquadmc.Main;
 import me.thesquadmc.abstraction.Sounds;
 import me.thesquadmc.commands.StaffmodeCommand;
 import me.thesquadmc.networking.redis.RedisChannel;
+import me.thesquadmc.player.PlayerSetting;
 import me.thesquadmc.player.TSMCUser;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.enums.RedisArg;
@@ -58,10 +59,10 @@ public class ServerManagementChannel implements RedisChannel {
                                 p.sendMessage(CC.translate("&e&lSTOP &6■ &7Due to server restart you have been taken out of staffmode"));
                             }
 
-                            if (user.isVanished() || user.isYtVanished()) {
+                            if (user.getSetting(PlayerSetting.VANISHED) || user.getSetting(PlayerSetting.YOUTUBE_VANISHED)) {
                                 PlayerUtils.showPlayerSpectator(p);
-                                user.setVanished(false);
-                                user.setYtVanished(false);
+                                user.updateSetting(PlayerSetting.VANISHED, false);
+                                user.updateSetting(PlayerSetting.YOUTUBE_VANISHED, false);
                                 p.sendMessage(CC.translate("&e&lSTOP &6■ &7Due to server restart you have been taken out of vanish"));
                             }
                         }
@@ -103,10 +104,13 @@ public class ServerManagementChannel implements RedisChannel {
             Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> Multithreading.runAsync(() -> ServerUtils.updateServerState(plugin.getServerState())));
 
         } else if (channel.equalsIgnoreCase(RedisChannels.PLAYER_COUNT.getName())) {
-            String server = object.get(RedisArg.SERVER.getName()).getAsString();
-            int count = object.get(RedisArg.COUNT.getName()).getAsInt();
+            try { //TODO Remove
+                String server = object.get(RedisArg.SERVER.getName()).getAsString();
+                int count = object.get(RedisArg.COUNT.getName()).getAsInt();
 
-            plugin.getCountManager().getCount().put(server, count);
+                plugin.getCountManager().getCount().put(server, count);
+            } catch (NullPointerException ignored) {
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 package me.thesquadmc.listeners;
 
 import me.thesquadmc.commands.StaffmodeCommand;
+import me.thesquadmc.player.PlayerSetting;
 import me.thesquadmc.player.TSMCUser;
 import me.thesquadmc.utils.enums.UpdateType;
 import me.thesquadmc.utils.handlers.UpdateEvent;
@@ -19,7 +20,7 @@ public final class VanishListener implements Listener {
 			for (Player player : Bukkit.getOnlinePlayers()) {
 				TSMCUser user = TSMCUser.fromPlayer(player);
 
-				if (user.isYtVanished()) {
+				if (user.getSetting(PlayerSetting.YOUTUBE_VANISHED)) {
 					if (user.isNicknamed()) {
 						TitleUtils.sendActionBarToPlayer("&e&lVanished &7and nicknamed as &e&l" + player.getName(), player);
 					} else {
@@ -29,7 +30,7 @@ public final class VanishListener implements Listener {
 					TitleUtils.sendActionBarToPlayer("&7Nicked as &e&l" + player.getName() + "&7", player);
 				} else if (StaffmodeCommand.getStaffmode().containsKey(player.getUniqueId())) {
 					TitleUtils.sendActionBarToPlayer("&7Staffmode is &e&lenabled", player);
-				} else if (user.isVanished()) {
+				} else if (user.getSetting(PlayerSetting.VANISHED)) {
 					TitleUtils.sendActionBarToPlayer("&7Vanish is &e&lenabled", player);
 				}
 			}

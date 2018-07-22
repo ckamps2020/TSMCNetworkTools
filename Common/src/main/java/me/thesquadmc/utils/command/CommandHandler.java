@@ -1,16 +1,5 @@
 package me.thesquadmc.utils.command;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.AbstractMap;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.TreeSet;
-
 import me.thesquadmc.utils.msgs.CC;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
@@ -24,6 +13,17 @@ import org.bukkit.help.HelpTopicComparator;
 import org.bukkit.help.IndexHelpTopic;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.SimplePluginManager;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.AbstractMap;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class CommandHandler implements CommandExecutor {
 
@@ -89,17 +89,29 @@ public class CommandHandler implements CommandExecutor {
 				}
 
 				try {
-					method.invoke(methodObject, new CommandArgs(sender, cmd, label, args,
-							cmdLabel.split("\\.").length - 1));
+					int length = cmdLabel.split("\\.").length - 1;
+
+					if (length < 0) {
+						method.invoke(methodObject, new CommandArgs(sender, cmd, label, args, 1));
+
+					} else {
+						method.invoke(methodObject, new CommandArgs(sender, cmd, label, args, length));
+
+					}
 				} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
 					e.printStackTrace();
 				}
+
 				return true;
 			}
 		}
 
 		defaultCommand(new CommandArgs(sender, cmd, label, args, 0));
 		return true;
+	}
+
+	public CommandMap getMap() {
+		return map;
 	}
 
 	/**

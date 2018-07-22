@@ -7,8 +7,6 @@ depend: [LuckPerms, PlaceholderAPI]
 commands:
     adminchat:
         aliases: [ac, a, achat]
-    find:
-        aliases: [whereis, locate, findplayer, locateplayer, findp, locatep]
     freeze:
     freezepanel:
     invsee:
@@ -66,11 +64,9 @@ commands:
     website:
     uniqueplayers:
     title:
-    queuerestart:
     vanishlist:
         aliases: [vlist]
     ntversion:
-    mg:
     queuemanager:
         aliases: [qm]
     staffalert:

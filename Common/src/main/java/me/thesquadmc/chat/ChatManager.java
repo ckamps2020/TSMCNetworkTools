@@ -73,8 +73,6 @@ public class ChatManager {
                     if (result.getModifiedCount() <= 0) {
                         plugin.getLogger().severe(MessageFormat.format("Failed insert for {0} messages: {1}", bulk.size(), result));
 
-                    } else {
-                        plugin.getLogger().severe(MessageFormat.format("Inserted {0} chat messages to the database", bulk.size()));
                     }
                 }
             });

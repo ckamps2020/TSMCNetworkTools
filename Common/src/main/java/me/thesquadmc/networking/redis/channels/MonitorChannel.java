@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import me.thesquadmc.Main;
 import me.thesquadmc.networking.redis.RedisChannel;
 import me.thesquadmc.networking.redis.RedisMesage;
+import me.thesquadmc.player.PlayerSetting;
 import me.thesquadmc.player.TSMCUser;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.enums.RedisArg;
@@ -57,7 +58,7 @@ public class MonitorChannel implements RedisChannel {
                 String tps = object.get(RedisArg.TPS.getName()).getAsString();
                 if (!uptime.equalsIgnoreCase("0")) {
                     for (Player player : Bukkit.getOnlinePlayers()) {
-                        if (PlayerUtils.isEqualOrHigherThen(player, Rank.ADMIN) && TSMCUser.fromPlayer(player).hasMonitor()) {
+                        if (PlayerUtils.isEqualOrHigherThen(player, Rank.ADMIN) && TSMCUser.fromPlayer(player).getSetting(PlayerSetting.MONITOR)) {
                             if (!tps.equalsIgnoreCase("null") && Double.valueOf(tps) > 15.0) {
                                 player.sendMessage(CC.translate("&8&m-------------------------------------------------"));
                                 player.sendMessage(CC.translate("&6&l[MONITOR REPORT] &f" + server + " &7" + count + "&8/&7200"));
@@ -77,7 +78,7 @@ public class MonitorChannel implements RedisChannel {
                     }
                 } else {
                     for (Player player : Bukkit.getOnlinePlayers()) {
-                        if (PlayerUtils.isEqualOrHigherThen(player, Rank.ADMIN) && TSMCUser.fromPlayer(player).hasMonitor()) {
+                        if (PlayerUtils.isEqualOrHigherThen(player, Rank.ADMIN) && TSMCUser.fromPlayer(player).getSetting(PlayerSetting.MONITOR)) {
                             player.sendMessage(CC.translate("&8&m-------------------------------------------------"));
                             player.sendMessage(CC.translate("&6&l[MONITOR REPORT] &f" + server + " &7" + count + "&8/&7200"));
                             player.sendMessage(CC.translate("&7"));

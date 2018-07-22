@@ -1,5 +1,6 @@
 package me.thesquadmc.commands;
 
+import me.thesquadmc.player.PlayerSetting;
 import me.thesquadmc.player.TSMCUser;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.inventory.ItemBuilder;
@@ -19,17 +20,17 @@ public final class VanishCommand implements CommandExecutor {
 			Player player = (Player) sender;
 			if (PlayerUtils.isEqualOrHigherThen(player, Rank.HELPER)) {
 				TSMCUser user = TSMCUser.fromPlayer(player);
-				if (!user.isYtVanished()) {
-					if (!user.isVanished()) {
+                if (!user.getSetting(PlayerSetting.YOUTUBE_VANISHED)) {
+                    if (!user.getSetting(PlayerSetting.VANISHED)) {
 						PlayerUtils.hidePlayerSpectatorStaff(player);
-						user.setVanished(true);
+                        user.updateSetting(PlayerSetting.VANISHED, true);
 						if (StaffmodeCommand.getStaffmode().containsKey(player.getUniqueId())) {
 							player.getInventory().setItem(4, new ItemBuilder(Material.INK_SACK, 10).name("&e&lToggle Vanish &7off").lore("&7Toggle vanish on or off").build());
 						}
 						player.sendMessage(CC.translate("&e&lVANISH &6■ &7You toggled vanish &eon&7! No one will be able to see you"));
 					} else {
 						PlayerUtils.showPlayerSpectator(player);
-						user.setVanished(false);
+                        user.updateSetting(PlayerSetting.VANISHED, false);
 						if (StaffmodeCommand.getStaffmode().containsKey(player.getUniqueId())) {
 							player.getInventory().setItem(4, new ItemBuilder(Material.INK_SACK, 8).name("&e&lToggle Vanish &7on").lore("&7Toggle vanish on or off").build());
 						}

@@ -2,8 +2,11 @@ package me.thesquadmc.listeners;
 
 import me.thesquadmc.Main;
 import me.thesquadmc.abstraction.MojangGameProfile;
+import me.thesquadmc.player.PlayerSetting;
 import me.thesquadmc.player.TSMCUser;
+import me.thesquadmc.player.local.LocalPlayer;
 import me.thesquadmc.utils.enums.Rank;
+import me.thesquadmc.utils.json.JSONUtils;
 import me.thesquadmc.utils.msgs.CC;
 import me.thesquadmc.utils.msgs.StringUtils;
 import me.thesquadmc.utils.player.PlayerUtils;
@@ -16,23 +19,37 @@ import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
 public final class ConnectionListeners implements Listener {
 
-    private final Main main;
-  
-    public ConnectionListeners(Main main) {
-        this.main = main;
+    private final Main plugin;
+    private final File dataFolder;
+
+    public ConnectionListeners(Main plugin) {
+        this.plugin = plugin;
+
+        dataFolder = new File(plugin.getDataFolder(), "userdata");
+        if (!dataFolder.exists() || !dataFolder.isDirectory()) {
+            plugin.getLogger().info("No `userdata` folder present, creating one...");
+            dataFolder.mkdirs();
+        }
     }
 
     @EventHandler
     public void on(AsyncPlayerPreLoginEvent e) {
-        main.getMongoDatabase().getUser(e.getUniqueId()).thenApply(user -> {
+        plugin.getUserDatabase().getUser(e.getUniqueId()).thenApply(user -> {
             if (user == null) {
                 e.setKickMessage(CC.RED + "Cannot load your account! \nPlease contact a Staff!");
                 e.setLoginResult(AsyncPlayerPreLoginEvent.Result.KICK_OTHER);
 
                 return false;
             }
+
+            user.addIP(e.getAddress().getHostAddress());
 
             TSMCUser.loadUser(user);
             if (!user.getName().equalsIgnoreCase(e.getName())) {
@@ -43,12 +60,30 @@ public final class ConnectionListeners implements Listener {
             return true;
         });
 
-        //Bukkit.getScheduler().runTask(main, () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "ban " + e.getName() + " Compromised Account"));
-			/*for (Player p : Bukkit.getOnlinePlayers()) {
-				if (PlayerUtils.isEqualOrHigherThen(p, Rank.TRAINEE)) {
-					p.sendMessage(CC.translate("&8[&4&lAnitCheat&8] &4[MCLeaks] &f" + e.getName() + " is a verified MCLeaks account!"));
-				}
-			} */
+        LocalPlayer player = null;
+        try {
+            File loadFile = new File(dataFolder, e.getUniqueId().toString() + ".json");
+            if (loadFile.exists()) {
+                player = JSONUtils.getGson().fromJson(
+                        new FileReader(loadFile),
+                        LocalPlayer.class
+                );
+            }
+        } catch (IOException ignored) {
+        }
+
+        if (player == null) {
+            player = new LocalPlayer(e.getUniqueId(), e.getName());
+        }
+
+        //Please run any checks before this block of code
+        //to prevent the player object from being added
+        //to the map
+        if (e.getLoginResult() != AsyncPlayerPreLoginEvent.Result.ALLOWED) {
+            return;
+        }
+
+        plugin.getLocalPlayerManager().addPlayer(e.getUniqueId(), player);
     }
 
     @EventHandler
@@ -56,8 +91,8 @@ public final class ConnectionListeners implements Listener {
         Player player = e.getPlayer();
 
         Multithreading.runAsync(() -> {
-            if (main.getMcLeaksAPI().checkAccount(e.getPlayer().getUniqueId()).isMCLeaks()) {
-                Bukkit.getScheduler().runTask(main, () -> {
+            if (plugin.getMcLeaksAPI().checkAccount(e.getPlayer().getUniqueId()).isMCLeaks()) {
+                Bukkit.getScheduler().runTask(plugin, () -> {
                     if (!e.getPlayer().isOnline()) { //Incase they log off before response comes
                         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), e.getPlayer().getName() + " is an MCLeaks account!");
                         return;
@@ -69,14 +104,14 @@ public final class ConnectionListeners implements Listener {
         });
 
         TSMCUser user = TSMCUser.fromPlayer(player);
-        MojangGameProfile profile = main.getNMSAbstract().getGameProfile(player);
+        MojangGameProfile profile = plugin.getNMSAbstract().getGameProfile(player);
         profile.getPropertyMap().values().forEach(p -> {
             user.setSkinKey(p.getValue());
             user.setSignature(p.getSignature());
         });
 
         PlayerUtils.unfreezePlayer(player);
-        Bukkit.getScheduler().runTaskLater(main, () -> {
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
             if (Bukkit.getServerName().toUpperCase().startsWith("MG")
                     || Bukkit.getServerName().toUpperCase().startsWith("FACTIONS")
                     || Bukkit.getServerName().toUpperCase().startsWith("HUB")
@@ -103,10 +138,10 @@ public final class ConnectionListeners implements Listener {
 
             for (Player p : Bukkit.getOnlinePlayers()) {
                 TSMCUser targetUser = TSMCUser.fromPlayer(p);
-                if (targetUser.isVanished()) {
-                    PlayerUtils.hidePlayerSpectatorStaff(p);
-                } else if (targetUser.isYtVanished()) {
+                if (targetUser.getSetting(PlayerSetting.YOUTUBE_VANISHED)) {
                     PlayerUtils.hidePlayerSpectatorYT(p);
+                } else if (targetUser.getSetting(PlayerSetting.VANISHED)) {
+                    PlayerUtils.hidePlayerSpectatorStaff(p);
                 }
             }
         }, 3L);
@@ -120,13 +155,25 @@ public final class ConnectionListeners implements Listener {
         player.performCommand("party leave");
 
         for (Player p : Bukkit.getServer().getOnlinePlayers()) {
-            if (TSMCUser.fromPlayer(p).isYtVanished()) {
+            if (TSMCUser.fromPlayer(p).getSetting(PlayerSetting.YOUTUBE_VANISHED)) {
                 p.showPlayer(player);
             }
         }
 
-        main.getMongoDatabase().saveUser(TSMCUser.fromPlayer(player))
-                .whenComplete((aVoid, throwable) -> TSMCUser.unloadUser(player));
+        TSMCUser.unloadUser(TSMCUser.fromPlayer(player), true);
+
+        LocalPlayer localPlayer = plugin.getLocalPlayerManager().removePlayer(player);
+        try (FileWriter writer = new FileWriter(new File(dataFolder, player.getUniqueId() + ".json"))) {
+            JSONUtils.getGson().toJson(
+                    localPlayer,
+                    writer
+            );
+
+        } catch (IOException exception) {
+            exception.printStackTrace();
+
+            plugin.getLogger().severe("Could not save data of user " + player.getName());
+        }
     }
 
 }

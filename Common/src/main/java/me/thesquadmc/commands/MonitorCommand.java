@@ -1,5 +1,6 @@
 package me.thesquadmc.commands;
 
+import me.thesquadmc.player.PlayerSetting;
 import me.thesquadmc.player.TSMCUser;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.msgs.CC;
@@ -17,11 +18,11 @@ public final class MonitorCommand implements CommandExecutor {
 			Player player = (Player) sender;
 			if (PlayerUtils.isEqualOrHigherThen(player, Rank.ADMIN)) {
 				TSMCUser user = TSMCUser.fromPlayer(player);
-				if (!user.hasMonitor()) {
-					user.setMonitor(true);
+                if (!user.getSetting(PlayerSetting.MONITOR)) {
+                    user.updateSetting(PlayerSetting.MONITOR, true);
 					player.sendMessage(CC.translate("&e&lMONITOR &6■ &7You toggled Network Monitor &eon&7!"));
 				} else {
-					user.setMonitor(false);
+                    user.updateSetting(PlayerSetting.MONITOR, false);
 					player.sendMessage(CC.translate("&e&lMONITOR &6■ &7You toggled Network Monitor &eoff&7!"));
 				}
 			} else {
