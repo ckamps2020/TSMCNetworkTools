@@ -22,6 +22,10 @@ public class MongoUserDatabase implements UserDatabase {
 
     @Override
     public CompletableFuture<TSMCUser> getUser(UUID uuid) {
+        if (TSMCUser.isLoaded(uuid)) {
+            return CompletableFuture.completedFuture(TSMCUser.fromUUID(uuid));
+        }
+
         return CompletableFuture.supplyAsync(() -> {
             Document document = users.find(eq("_id", uuid)).first();
 

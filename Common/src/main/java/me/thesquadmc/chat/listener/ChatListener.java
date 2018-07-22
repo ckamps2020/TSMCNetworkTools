@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import me.thesquadmc.NetworkTools;
 import me.thesquadmc.chat.ChatFormat;
 import me.thesquadmc.chat.ChatMessage;
+import me.thesquadmc.player.TSMCUser;
 import me.thesquadmc.utils.enums.Rank;
 import me.thesquadmc.utils.msgs.CC;
 import me.thesquadmc.utils.msgs.FormatUtil;
@@ -106,7 +107,9 @@ public class ChatListener implements Listener {
         String prefix = format.toFancyMessage(player, message).toJSONString();
         String msg = format.getChatColor() + message;
 
-        Bukkit.getOnlinePlayers().forEach(p -> plugin.getNMSAbstract().sendMessage(p, prefix, msg)); //TODO Check if the player is ignored
+        Bukkit.getOnlinePlayers().stream()
+                .filter(p -> !TSMCUser.fromPlayer(p).isIgnored(player.getUniqueId()))
+                .forEach(p -> plugin.getNMSAbstract().sendMessage(p, prefix, msg));
 
         lastMessage.put(player.getUniqueId(), chatMessage);
         plugin.getChatManager().addMessage(chatMessage);

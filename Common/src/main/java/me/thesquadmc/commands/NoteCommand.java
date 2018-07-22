@@ -7,14 +7,12 @@ import me.thesquadmc.utils.command.Command;
 import me.thesquadmc.utils.command.CommandArgs;
 import me.thesquadmc.utils.msgs.CC;
 import me.thesquadmc.utils.random.RandomUtils;
-import me.thesquadmc.utils.server.Multithreading;
 import me.thesquadmc.utils.time.TimeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
-import java.util.UUID;
 
 public class NoteCommand {
 
@@ -40,19 +38,14 @@ public class NoteCommand {
 
         } else {
             sender.sendMessage(CC.GRAY + "Loading...");
-            Multithreading.runAsync(() -> {
-                UUID uuid = plugin.getUUIDTranslator().getUUID(name, true);
+            plugin.getUUIDTranslator().getUUID(name, true).thenAccept(uuid -> plugin.getUserDatabase().getUser(uuid).thenAccept(user -> {
+                if (user == null) {
+                    sender.sendMessage(CC.RED + "Could not find " + name);
+                    return;
+                }
 
-                plugin.getUserDatabase().getUser(uuid).thenApply(user -> {
-                    if (user == null) {
-                        sender.sendMessage(CC.RED + "Could not find " + name);
-                        return false;
-                    }
-
-                    sendNotes(sender, user);
-                    return true;
-                });
-            });
+                sendNotes(sender, user);
+            }));
         }
     }
 
@@ -78,20 +71,18 @@ public class NoteCommand {
         } else {
             sender.sendMessage(CC.YELLOW + "Loading...");
 
-            Multithreading.runAsync(() -> {
-                UUID uuid = plugin.getUUIDTranslator().getUUID(name, true);
+            plugin.getUUIDTranslator().getUUID(name, true).thenAccept(uuid -> {
 
-                plugin.getUserDatabase().getUser(uuid).thenApply(user -> {
+                plugin.getUserDatabase().getUser(uuid).thenAccept(user -> {
                     if (user == null) {
                         sender.sendMessage(CC.RED + "Could not find " + name);
-                        return false;
+                        return;
                     }
 
                     user.addNote(note);
                     TSMCUser.unloadUser(user, true);
 
                     sender.sendMessage(CC.translate("&e&lNOTES &6■ &7Added note: &e{0}", note.getNote()));
-                    return true;
                 });
             });
         }

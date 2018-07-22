@@ -10,7 +10,6 @@ import me.thesquadmc.utils.time.TimeUtils;
 import org.bukkit.command.CommandSender;
 
 import java.util.Map;
-import java.util.UUID;
 
 public class FindCommand {
 
@@ -34,38 +33,38 @@ public class FindCommand {
         sender.sendMessage(CC.translate("&e&lWHEREIS&6■ &7Trying to find &e" + name + "&7..."));
         sender.sendMessage(" ");
         plugin.getRedisManager().executeJedisAsync(jedis -> {
-            UUID uuid = plugin.getUUIDTranslator().getUUID(name, true);
+            plugin.getUUIDTranslator().getUUID(name, true).thenAcceptAsync(uuid -> {
+                if (uuid == null) {
+                    sender.sendMessage(CC.translate("&e&lWHEREIS&6■ &7Unable to find player &e" + name));
+                    return;
+                }
 
-            if (uuid == null) {
-                sender.sendMessage(CC.translate("&e&lWHEREIS&6■ &7Unable to find player &e" + name));
-                return;
-            }
+                Map<String, String> server = jedis.hgetAll("players:" + uuid.toString());
+                if (server == null) {
+                    sender.sendMessage(CC.translate("&e&lWHEREIS&6■ &7Something went wrong with getting &e" + name));
+                    return;
+                }
 
-            Map<String, String> server = jedis.hgetAll("players:" + uuid.toString());
-            if (server == null) {
-                sender.sendMessage(CC.translate("&e&lWHEREIS&6■ &7Something went wrong with getting &e" + name));
-                return;
-            }
+                long timestamp;
+                if (server.containsKey("lastOnline")) {
+                    timestamp = System.currentTimeMillis() - Long.parseLong(server.get("lastOnline"));
 
-            long timestamp;
-            if (server.containsKey("lastOnline")) {
-                timestamp = System.currentTimeMillis() - Long.parseLong(server.get("lastOnline"));
+                    sender.sendMessage(CC.B_YELLOW + name);
+                    sender.sendMessage(CC.GRAY + Unicode.SQUARE + " Status: " + CC.RED + "Offline");
+                    sender.sendMessage(CC.GRAY + Unicode.SQUARE + " Offline for: " + CC.WHITE + TimeUtils.getFormattedTime(timestamp));
 
-                sender.sendMessage(CC.B_YELLOW + name);
-                sender.sendMessage(CC.GRAY + Unicode.SQUARE  + " Status: " + CC.RED + "Offline");
-                sender.sendMessage(CC.GRAY + Unicode.SQUARE  + " Offline for: " + CC.WHITE + TimeUtils.getFormattedTime(timestamp));
+                } else if (server.containsKey("onlineSince")) {
+                    timestamp = System.currentTimeMillis() - Long.parseLong(server.get("onlineSince"));
 
-            } else if (server.containsKey("onlineSince")) {
-                timestamp = System.currentTimeMillis() - Long.parseLong(server.get("onlineSince"));
+                    sender.sendMessage(CC.B_YELLOW + name);
+                    sender.sendMessage(CC.GRAY + Unicode.SQUARE + " Status: " + CC.GREEN + "Online");
+                    sender.sendMessage(CC.GRAY + Unicode.SQUARE + " Server: " + CC.WHITE + StringUtils.capitalize(server.get("server")));
+                    sender.sendMessage(CC.GRAY + Unicode.SQUARE + " Online Since: " + CC.WHITE + TimeUtils.getFormattedTime(timestamp));
 
-                sender.sendMessage(CC.B_YELLOW + name);
-                sender.sendMessage(CC.GRAY + Unicode.SQUARE  + " Status: " + CC.GREEN + "Online");
-                sender.sendMessage(CC.GRAY + Unicode.SQUARE  + " Server: " + CC.WHITE + StringUtils.capitalize(server.get("server")));
-                sender.sendMessage(CC.GRAY + Unicode.SQUARE +  " Online Since: " + CC.WHITE + TimeUtils.getFormattedTime(timestamp));
-
-            } else {
-                sender.sendMessage(CC.translate("&e&lWHEREIS&6■ &7Unable to find player &e" + name));
-            }
+                } else {
+                    sender.sendMessage(CC.translate("&e&lWHEREIS&6■ &7Unable to find player &e" + name));
+                }
+            });
         });
     }
 }

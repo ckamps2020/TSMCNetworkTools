@@ -68,9 +68,15 @@ public class TSMCUser {
     private final Set<UUID> requests = Sets.newHashSet();
 
     /**
+     * A list of players this player has ignored
+     */
+    private final Set<UUID> ignored = Sets.newHashSet();
+
+    /**
      * A list of {@link Note} that this player has
      */
     private final Set<Note> notes = Sets.newHashSet();
+
     /**
      * The player's current nickname
      **/
@@ -156,6 +162,22 @@ public class TSMCUser {
 
     public void clearFriends() {
         this.friends.clear();
+    }
+
+    public void addIgnoredPlayer(UUID uuid) {
+        ignored.add(uuid);
+    }
+
+    public void removeIgnoredPlayer(UUID uuid) {
+        ignored.remove(uuid);
+    }
+
+    public boolean isIgnored(UUID uuid) {
+        return ignored.contains(uuid);
+    }
+
+    public Set<UUID> getIgnoredPlayers() {
+        return Collections.unmodifiableSet(ignored);
     }
 
     public void addRequest(OfflinePlayer request) {

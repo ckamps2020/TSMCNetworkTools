@@ -120,6 +120,9 @@ public class ChatFormat {
                 .suggest(suggest)
                 .tooltip(tooltip);
 
+        fancyMessage.then();
+        fancyMessage.text(chatColor + message);
+
         return fancyMessage;
     }
 }

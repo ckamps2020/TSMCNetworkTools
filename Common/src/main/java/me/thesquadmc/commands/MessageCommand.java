@@ -8,7 +8,6 @@ import me.thesquadmc.utils.command.CommandArgs;
 import me.thesquadmc.utils.enums.RedisChannels;
 import me.thesquadmc.utils.msgs.CC;
 import me.thesquadmc.utils.player.PlayerUtils;
-import me.thesquadmc.utils.server.Multithreading;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -38,6 +37,11 @@ public class MessageCommand {
         if (Bukkit.getPlayer(name) != null) {
             Player target = Bukkit.getPlayer(name);
 
+            if (TSMCUser.fromPlayer(target).isIgnored(player.getUniqueId())) {
+                player.sendMessage(CC.RED + "You cannot send messages to this player!");
+                return;
+            }
+
             player.sendMessage(CC.translate("&6Me &7■ &6{0} &8» &e{1}", target.getName(), message));
             target.sendMessage(CC.translate("&6{0} &7■ &6Me &8» &e{1}", player.getName(), message));
 
@@ -47,28 +51,34 @@ public class MessageCommand {
             TSMCUser.fromPlayer(target).setLastMessager(player.getUniqueId());
 
         } else {
-            plugin.getRedisManager().executeJedisAsync(jedis -> {
-                UUID uuid = plugin.getUUIDTranslator().getUUID(name, true);
-
+            plugin.getUUIDTranslator().getUUID(name, true).thenAccept(uuid -> {
                 if (uuid == null) {
                     player.sendMessage(CC.RED + "Could not find " + name);
                     return;
                 }
 
-                PlayerUtils.isOnline(uuid).whenComplete((online, throwable) -> {
-                    if (online) {
-                        plugin.getRedisManager().sendMessage(RedisChannels.MESSAGE, RedisMesage.newMessage()
-                                .set("sender", player.getUniqueId())
-                                .set("sender_name", player.getName())
-                                .set("target", uuid)
-                                .set("message", message));
-
-                        player.sendMessage(CC.translate("&6Me &7■ &6{0} &8» &e{1}", name, message));
-                        TSMCUser.fromPlayer(player).setLastMessager(uuid);
-
-                    } else {
-                        player.sendMessage(CC.RED + "Could not find " + name);
+                plugin.getUserDatabase().getUser(uuid).thenAccept(user -> {
+                    if (user != null && user.isIgnored(player.getUniqueId())) {
+                        player.sendMessage(CC.RED + "You cannot send messages to this player!");
+                        return;
                     }
+
+
+                    PlayerUtils.isOnline(uuid).thenAccept(online -> {
+                        if (online) {
+                            plugin.getRedisManager().sendMessage(RedisChannels.MESSAGE, RedisMesage.newMessage()
+                                    .set("sender", player.getUniqueId())
+                                    .set("sender_name", player.getName())
+                                    .set("target", uuid)
+                                    .set("message", message));
+
+                            player.sendMessage(CC.translate("&6Me &7■ &6{0} &8» &e{1}", name, message));
+                            TSMCUser.fromPlayer(player).setLastMessager(uuid);
+
+                        } else {
+                            player.sendMessage(CC.RED + "Could not find " + name);
+                        }
+                    });
                 });
             });
         }
@@ -86,26 +96,25 @@ public class MessageCommand {
             return;
         }
 
-        Multithreading.runAsync(() -> {
-            PlayerUtils.isOnline(uuid).whenComplete((online, throwable) -> {
-                if (online) {
-                    String message = String.join(" ", Arrays.copyOfRange(args.getArgs(), 0, args.length()));
+        PlayerUtils.isOnline(uuid).whenComplete((online, throwable) -> {
+            if (online) {
+                String message = String.join(" ", Arrays.copyOfRange(args.getArgs(), 0, args.length()));
 
-                    String name = plugin.getUUIDTranslator().getName(uuid, true);
+                plugin.getRedisManager().sendMessage(RedisChannels.MESSAGE, RedisMesage.newMessage()
+                        .set("sender", player.getUniqueId())
+                        .set("sender_name", player.getName())
+                        .set("target", uuid)
+                        .set("message", message));
 
-                    plugin.getRedisManager().sendMessage(RedisChannels.MESSAGE, RedisMesage.newMessage()
-                            .set("sender", player.getUniqueId())
-                            .set("sender_name", player.getName())
-                            .set("target", uuid)
-                            .set("message", message));
+                TSMCUser.fromPlayer(player).setLastMessager(uuid);
 
+                plugin.getUUIDTranslator().getName(uuid, true).thenAccept(name -> {
                     player.sendMessage(CC.translate("&6Me &7■ &6{0} &8» &e{1}", name, message));
-                    TSMCUser.fromPlayer(player).setLastMessager(uuid);
+                });
 
-                } else {
-                    player.sendMessage(CC.RED + "Could not find the last player you messaged!");
-                }
-            });
+            } else {
+                player.sendMessage(CC.RED + "Could not find the last player you messaged!");
+            }
         });
     }
 }

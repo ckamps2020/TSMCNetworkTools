@@ -159,17 +159,7 @@ public final class PlayerUtils {
     }
 
     public static boolean isEqualOrHigherThen(Player player, Rank rank) {
-        User user = NetworkTools.getInstance().getLuckPermsApi().getUser(player.getUniqueId());
-        if (user.getPrimaryGroup() != null) {
-            for (Rank r : Rank.values()) {
-                if (r.getName().equalsIgnoreCase(user.getPrimaryGroup())) {
-                    if (r.getPriority() >= rank.getPriority()) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
+        return isEqualOrHigherThen(player.getUniqueId(), rank);
     }
 
     public static void refreshPlayer(Player player) {
@@ -214,7 +204,12 @@ public final class PlayerUtils {
 
     public static boolean isEqualOrHigherThen(UUID uuid, Rank rank) {
         User user = NetworkTools.getInstance().getLuckPermsApi().getUser(uuid);
-        if (user.getPrimaryGroup() != null) {
+        if (user == null) {
+            NetworkTools.getInstance().getLuckPermsApi().getStorage().loadUser(uuid);
+            user = NetworkTools.getInstance().getLuckPermsApi().getUser(uuid);
+        }
+
+        if (user != null) {
             for (Rank r : Rank.values()) {
                 if (r.getName().equalsIgnoreCase(user.getPrimaryGroup())) {
                     if (r.getPriority() >= rank.getPriority()) {
@@ -223,6 +218,7 @@ public final class PlayerUtils {
                 }
             }
         }
+
         return false;
     }
 
