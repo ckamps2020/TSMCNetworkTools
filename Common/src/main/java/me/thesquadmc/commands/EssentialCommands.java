@@ -2,6 +2,7 @@ package me.thesquadmc.commands;
 
 import com.google.common.collect.Lists;
 import com.google.common.primitives.Ints;
+import me.thesquadmc.NetworkTools;
 import me.thesquadmc.utils.command.Command;
 import me.thesquadmc.utils.command.CommandArgs;
 import me.thesquadmc.utils.message.ClickableMessage;
@@ -26,8 +27,15 @@ import org.bukkit.util.Vector;
 import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public class EssentialCommands {
+
+    private final NetworkTools plugin;
+
+    public EssentialCommands(NetworkTools plugin) {
+        this.plugin = plugin;
+    }
 
     @Command(name = {"workbench", "wb"}, permission = "essentials.workbench", playerOnly = true)
     public void workbench(CommandArgs args) {
@@ -155,11 +163,11 @@ public class EssentialCommands {
     }
 
     // /give <player> <item> [amount]
-    // /give <item> [item]
+    // /give <item> [amount]
 
     @Command(name = {"i", "give"}, permission = "essentials.give")
     public void give(CommandArgs args) {
-        if (args.length() > 2) {
+        if (args.length() > 2 && args.getSender().hasPermission("essentials.give.others")) {
             CommandSender sender = args.getSender();
 
             Player target = Bukkit.getPlayer(args.getArg(0));
@@ -168,7 +176,52 @@ public class EssentialCommands {
                 return;
             }
 
-            //TODO Finish this
+            if (target.getInventory().firstEmpty() == -1) {
+                sender.sendMessage(CC.RED + target.getName() + "'s inventory is full!");
+                return;
+            }
+
+            Integer amount = Ints.tryParse(args.getArg(2));
+            if (amount == null) {
+                sender.sendMessage(CC.RED + "Cannot parse " + args.getArg(2) + " as a number!");
+                return;
+            }
+
+            Optional<ItemStack> itemStack = plugin.getItemManager().getItem(args.getArg(1), amount);
+            if (itemStack.isPresent()) {
+                target.getInventory().addItem(itemStack.get());
+                sender.sendMessage(CC.translate("&e&lGIVE &6■ &7You gave {0} a {1}", target.getName(), args.getArg(1)));
+
+            } else {
+                sender.sendMessage(CC.RED + "Could not parse " + args.getArg(1) + " as an item!");
+            }
+
+        } else {
+            if (!args.isPlayer()) {
+                args.getSender().sendMessage(CC.RED + "You must be a player to do this!");
+                return;
+            }
+
+            Player player = args.getPlayer();
+            if (player.getInventory().firstEmpty() == -1) {
+                player.sendMessage(CC.RED + "Your inventory is full!");
+                return;
+            }
+
+            Integer amount = Ints.tryParse(args.getArg(1));
+            if (amount == null) {
+                amount = 1;
+            }
+
+            Optional<ItemStack> itemStack = plugin.getItemManager().getItem(args.getArg(0), amount);
+            if (itemStack.isPresent()) {
+                player.getInventory().addItem(itemStack.get());
+                player.sendMessage(CC.translate("&e&lGIVE &6■ &7You gave yourself a {0}", args.getArg(0)));
+
+            } else {
+                player.sendMessage(CC.RED + "Could not parse " + args.getArg(1) + " as an item!");
+            }
+
         }
     }
 
