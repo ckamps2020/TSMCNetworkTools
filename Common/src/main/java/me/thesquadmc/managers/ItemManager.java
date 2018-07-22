@@ -2,6 +2,7 @@ package me.thesquadmc.managers;
 
 import me.thesquadmc.utils.file.FileUtils;
 import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
@@ -12,14 +13,17 @@ import java.util.Set;
 
 public class ItemManager {
 
-    private HashMap<ItemData, Set<String>> items = new HashMap<>();
+    private final FileConfiguration config;
+    private final HashMap<ItemData, Set<String>> items = new HashMap<>();
 
     public ItemManager() {
+        config = FileUtils.getConfig("items");
+
         load();
     }
 
     private void load() {
-        for (String sID : FileUtils.getConfig("items").getConfigurationSection("items").getKeys(false)) {
+        for (String sID : config.getStringList("items")) {
             String[] split = sID.split(",");
             String name = split[0];
             int matID = Integer.parseInt(split[1]);
