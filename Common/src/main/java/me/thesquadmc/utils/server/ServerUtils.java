@@ -24,17 +24,7 @@ public final class ServerUtils {
 
     public static void calculateServerType() {
         String m = Bukkit.getServerName().toUpperCase();
-        if (m.startsWith(ServerType.BEDWARS_DUOS)) {
-            NetworkTools.getInstance().setServerType(ServerType.BEDWARS_DUOS);
-        } else if (m.startsWith(ServerType.BEDWARS_FOURS)) {
-            NetworkTools.getInstance().setServerType(ServerType.BEDWARS_FOURS);
-        } else if (m.startsWith(ServerType.BEDWARS_SOLO)) {
-            NetworkTools.getInstance().setServerType(ServerType.BEDWARS_SOLO);
-        } else if (m.startsWith(ServerType.BEDWARS_THREES)) {
-            NetworkTools.getInstance().setServerType(ServerType.BEDWARS_THREES);
-        } else if (m.startsWith(ServerType.MINIGAME_HUB)) {
-            NetworkTools.getInstance().setServerType(ServerType.MINIGAME_HUB);
-        } else if (m.startsWith(ServerType.FACTIONS)) {
+        if (m.startsWith(ServerType.FACTIONS)) {
             NetworkTools.getInstance().setServerType(ServerType.FACTIONS);
         } else if (m.startsWith(ServerType.SKYBLOCK)) {
             NetworkTools.getInstance().setServerType(ServerType.SKYBLOCK);

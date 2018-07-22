@@ -21,13 +21,11 @@ import me.thesquadmc.commands.FindCommand;
 import me.thesquadmc.commands.ForceFieldCommand;
 import me.thesquadmc.commands.FreezeCommand;
 import me.thesquadmc.commands.FreezePanelCommand;
+import me.thesquadmc.commands.GamemodeCommand;
 import me.thesquadmc.commands.HealCommand;
 import me.thesquadmc.commands.InvseeCommand;
 import me.thesquadmc.commands.LaunchCommand;
-import me.thesquadmc.commands.LogsCommand;
 import me.thesquadmc.commands.LookupCommand;
-import me.thesquadmc.commands.MOTDClearCommand;
-import me.thesquadmc.commands.MOTDCommand;
 import me.thesquadmc.commands.ManagerChatCommand;
 import me.thesquadmc.commands.MessageCommand;
 import me.thesquadmc.commands.MonitorCommand;
@@ -40,7 +38,6 @@ import me.thesquadmc.commands.ProxyTransportCommand;
 import me.thesquadmc.commands.RandomTPCommand;
 import me.thesquadmc.commands.RestartTimeCommand;
 import me.thesquadmc.commands.SmiteCommand;
-import me.thesquadmc.commands.StaffAlertCommand;
 import me.thesquadmc.commands.StaffChatCommand;
 import me.thesquadmc.commands.StaffMenuCommand;
 import me.thesquadmc.commands.StafflistCommand;
@@ -98,7 +95,6 @@ import me.thesquadmc.utils.enums.RedisChannels;
 import me.thesquadmc.utils.file.FileManager;
 import me.thesquadmc.utils.handlers.UpdateHandler;
 import me.thesquadmc.utils.inventory.builder.AbstractGUI;
-import me.thesquadmc.utils.msgs.ServerType;
 import me.thesquadmc.utils.nms.BarUtils;
 import me.thesquadmc.utils.player.uuid.UUIDTranslator;
 import me.thesquadmc.utils.server.Multithreading;
@@ -441,19 +437,14 @@ public final class NetworkTools extends JavaPlugin {
         registerCommands();
 
         ServerUtils.calculateServerType();
-        //Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> redisManager.sendMessage(RedisChannels.PLAYER_COUNT, RedisMesage.newMessage()
-        //        .set(RedisArg.SERVER.getName(), Bukkit.getServerName())
-        //        .set(RedisArg.COUNT.getName(), Bukkit.getOnlinePlayers().size())), 20L, 20L);
-
-        if (serverType.startsWith(ServerType.MINIGAME_HUB)) {
-            redisManager.sendMessage(RedisChannels.STARTUP_REQUEST, RedisMesage.newMessage()
-                    .set(RedisArg.SERVER, "ALL"));
-        }
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> redisManager.sendMessage(RedisChannels.PLAYER_COUNT, RedisMesage.newMessage()
+                .set(RedisArg.SERVER.getName(), Bukkit.getServerName())
+                .set(RedisArg.COUNT.getName(), Bukkit.getOnlinePlayers().size())), 20L, 20L);
 
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> BarUtils.getPlayers().forEach(nmsAbstract.getBossBarManager()::teleportBar), 1, 20L);
 
         Stream.of(
-                //new GamemodeCommand(),
+                new GamemodeCommand(),
                 new NoteCommand(this),
                 new WarpCommand(this),
                 new ChangeLogCommand(this),
@@ -588,12 +579,7 @@ public final class NetworkTools extends JavaPlugin {
         getCommand("title").setExecutor(new TitleCommand());
         getCommand("vanishlist").setExecutor(new VanishListCommand());
         getCommand("ntversion").setExecutor(new NTVersionCommand(this));
-        getCommand("staffalert").setExecutor(new StaffAlertCommand());
         getCommand("onlinecount").setExecutor(new OnlineCountCommand(this));
-        getCommand("logs").setExecutor(new LogsCommand());
         getCommand("party").setExecutor(new PartyCommand(this));
-        getCommand("l1").setExecutor(new MOTDCommand(networkTools, 1));
-        getCommand("l2").setExecutor(new MOTDCommand(networkTools, 2));
-        getCommand("motdclear").setExecutor(new MOTDClearCommand(networkTools));
     }
 }

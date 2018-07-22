@@ -54,10 +54,7 @@ public class RedisManager {
     public void sendMessage(RedisChannels channel, RedisMesage message) {
         message.set("channel", channel.getName());
 
-        executeJedisAsync(jedis -> {
-            Long r = jedis.publish(channel.getName(), JSONUtils.toJson(message));
-            System.out.println(r);
-        });
+        executeJedisAsync(jedis -> jedis.publish(channel.getName(), JSONUtils.toJson(message)));
     }
 
     public void executeJedisAsync(Consumer<Jedis> consumer) {

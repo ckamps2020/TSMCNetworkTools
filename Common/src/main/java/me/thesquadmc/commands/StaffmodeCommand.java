@@ -29,7 +29,7 @@ public final class StaffmodeCommand implements CommandExecutor {
 			Player player = (Player) sender;
 			if (PlayerUtils.isEqualOrHigherThen(player, Rank.HELPER)) {
 				TSMCUser user = TSMCUser.fromPlayer(player);
-				if (Bukkit.getServerName().toUpperCase().contains("HUB") || Bukkit.getServerName().toUpperCase().startsWith("BW") || Bukkit.getServerName().toUpperCase().startsWith("CREATIVE")) {
+                if (Bukkit.getServerName().toUpperCase().contains("HUB") || Bukkit.getServerName().toUpperCase().startsWith("CREATIVE")) {
 					player.sendMessage(CC.translate("&e&lSTAFFMODE &6■ &7You are not allowed to use this command here!"));
 					return true;
 				}

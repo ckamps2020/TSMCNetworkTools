@@ -58,23 +58,6 @@ public final class AdminChatCommand implements CommandExecutor {
                     String finalMessage = "&8[&c&lADMINCHAT&8] " + metaData.getPrefix() + "" + player.getName() + " &8» &c" + stringBuilder.toString();
                     networkTools.getRedisManager().sendMessage(RedisChannels.ADMINCHAT, RedisMesage.newMessage()
                             .set(RedisArg.MESSAGE, finalMessage));
-
-                    /*
-                    Bukkit.getScheduler().runTaskAsynchronously(networkTools, new Runnable() {
-                        @Override
-                        public void run() {
-                            Multithreading.runAsync(new Runnable() {
-                                @Override
-                                public void run() {
-                                    try (Jedis jedis = networkTools.getPool().getResource()) {
-                                        JedisTask.withName(UUID.randomUUID().toString())
-                                                .withArg(RedisArg.MESSAGE.getArg(), finalMessage)
-                                                .send(RedisChannels.ADMINCHAT.getChannelName(), jedis);
-                                    }
-                                }
-                            });
-                        }
-                    });*/
                 }
             } else {
                 player.sendMessage(CC.translate("&e&lPERMISSIONS &6■ &7You do not have permission to use this command!"));

@@ -38,22 +38,6 @@ public final class StopCommand implements CommandExecutor {
                             .set(RedisArg.SERVER, server.toUpperCase())
                             .set(RedisArg.MESSAGE, stringBuilder.toString()));
 
-                    /*Bukkit.getScheduler().runTaskAsynchronously(networkTools, new Runnable() {
-                        @Override
-                        public void run() {
-                            Multithreading.runAsync(new Runnable() {
-                                @Override
-                                public void run() {
-                                    try (Jedis jedis = NetworkTools.getInstance().getPool().getResource()) {
-                                        JedisTask.withName(UUID.randomUUID().toString())
-                                                .withArg(RedisArg.SERVER.getArg(), server.toUpperCase())
-                                                .withArg(RedisArg.MESSAGE.getArg(), stringBuilder.toString())
-                                                .send(RedisChannels.STOP.getChannelName(), jedis);
-                                    }
-                                }
-                            });
-                        }
-                    });*/
                 } else {
                     player.sendMessage(CC.translate("&e&lSTOP &6■ &7Usage: /stop <servertype|server|all> <reason>"));
                 }

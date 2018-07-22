@@ -22,7 +22,7 @@ public final class InvseeCommand implements CommandExecutor {
 		if (sender instanceof Player) {
 			Player player = (Player) sender;
 			if (PlayerUtils.isEqualOrHigherThen(player, Rank.MOD)) {
-				if (Bukkit.getServerName().toUpperCase().contains("HUB") || Bukkit.getServerName().toUpperCase().startsWith("BW")) {
+                if (Bukkit.getServerName().toUpperCase().contains("HUB")) {
 					player.sendMessage(CC.translate("&e&lINVSEE &6■ &7You are not allowed to use this command here!"));
 					return true;
 				}

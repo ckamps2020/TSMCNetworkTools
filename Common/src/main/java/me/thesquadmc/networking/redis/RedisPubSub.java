@@ -34,10 +34,7 @@ public class RedisPubSub extends JedisPubSub {
     public void subscribe(RedisChannel listener, String... channels) {
         Preconditions.checkState(connected, "PubSub has not been subscribed!");
 
-        Arrays.stream(channels).forEach(s -> {
-            System.out.println(s);
-            listeners.put(s, listener);
-        });
+        Arrays.stream(channels).forEach(s -> listeners.put(s, listener));
         super.subscribe(channels);
     }
 

@@ -19,7 +19,7 @@ public final class XrayVerboseCommand implements CommandExecutor {
 			Player player = (Player) sender;
 			if (PlayerUtils.isEqualOrHigherThen(player, Rank.TRAINEE)) {
 				TSMCUser user = TSMCUser.fromPlayer(player);
-				if (Bukkit.getServerName().toUpperCase().contains("HUB") || Bukkit.getServerName().toUpperCase().startsWith("BW")) {
+                if (Bukkit.getServerName().toUpperCase().contains("HUB")) {
 					player.sendMessage(CC.translate("&8[&4&lAntiCheat&8] &4[XRAY] &fYou are not allowed to use this command here!"));
 					return true;
 				}

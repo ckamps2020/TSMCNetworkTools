@@ -38,25 +38,6 @@ public final class AlertCommand implements CommandExecutor {
                     networkTools.getRedisManager().sendMessage(RedisChannels.ANNOUNCEMENT, RedisMesage.newMessage()
                             .set(RedisArg.SERVER, server.toUpperCase())
                             .set(RedisArg.MESSAGE, stringBuilder.toString()));
-
-                    /*
-                    Bukkit.getScheduler().runTaskAsynchronously(networkTools, new Runnable() {
-                        @Override
-                        public void run() {
-                            Multithreading.runAsync(new Runnable() {
-                                @Override
-                                public void run() {
-                                    try (Jedis jedis = networkTools.getPool().getResource()) {
-                                        JedisTask.withName(UUID.randomUUID().toString())
-                                                .withArg(RedisArg.SERVER.getArg(), server.toUpperCase())
-                                                .withArg(RedisArg.MESSAGE.getArg(), stringBuilder.toString())
-                                                .send(RedisChannels.ANNOUNCEMENT.getChannelName(), jedis);
-                                    }
-                                }
-                            });
-                        }
-                    });
-                    */
                 } else {
                     player.sendMessage(CC.translate("&e&lALERT &6■ &7Usage: /alert <servertype|server|all> <message>"));
                 }

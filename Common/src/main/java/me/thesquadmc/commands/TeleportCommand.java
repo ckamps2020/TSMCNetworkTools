@@ -37,7 +37,6 @@ public class TeleportCommand {
     public void teleport(CommandArgs args) {
         CommandSender sender = args.getSender();
 
-
         switch (args.length()) {
             case 1: { //TODO Clean this logic up
                 if (sender instanceof Player) {

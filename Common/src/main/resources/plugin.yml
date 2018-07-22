@@ -27,10 +27,6 @@ commands:
     vanish:
         aliases: [v, iv]
     xray:
-    report:
-        aliases: [reporthacks]
-    managereports:
-        aliases: [reports]
     alert:
         aliases: [global, announce]
     stop:
@@ -67,15 +63,7 @@ commands:
     vanishlist:
         aliases: [vlist]
     ntversion:
-    queuemanager:
-        aliases: [qm]
     staffalert:
     onlinecount:
-    logs:
-        aliases: [chatlogs, clogs]
-    l1:
-    l2:
-    motdclear:
     party:
-    motdclear:
     rename:
