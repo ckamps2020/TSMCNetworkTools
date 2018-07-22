@@ -79,20 +79,33 @@ public class MessageCommand {
         Player player = args.getPlayer();
 
         TSMCUser user = TSMCUser.fromPlayer(player);
-        if (user.getLastMessager() == null) {
+        UUID uuid = user.getLastMessager();
+
+        if (uuid == null) {
             player.sendMessage(CC.RED + "You have no one to reply to!");
             return;
         }
 
         Multithreading.runAsync(() -> {
-            String name = plugin.getUUIDTranslator().getName(user.getLastMessager(), true);
+            PlayerUtils.isOnline(uuid).whenComplete((online, throwable) -> {
+                if (online) {
+                    String message = String.join(" ", Arrays.copyOfRange(args.getArgs(), 0, args.length()));
 
-            if (name == null) {
-                player.sendMessage(CC.RED + "Could not find the last person you replied to!");
-                return;
-            }
+                    String name = plugin.getUUIDTranslator().getName(uuid, true);
 
-            Bukkit.getScheduler().runTask(plugin, () -> player.chat("/msg " + name + " " + String.join(" ", args.getArgs())));
+                    plugin.getRedisManager().sendMessage(RedisChannels.MESSAGE, RedisMesage.newMessage()
+                            .set("sender", player.getUniqueId())
+                            .set("sender_name", player.getName())
+                            .set("target", uuid)
+                            .set("message", message));
+
+                    player.sendMessage(CC.translate("&6Me &7■ &6{0} &8» &e{1}", name, message));
+                    TSMCUser.fromPlayer(player).setLastMessager(uuid);
+
+                } else {
+                    player.sendMessage(CC.RED + "Could not find the last player you messaged!");
+                }
+            });
         });
     }
 }

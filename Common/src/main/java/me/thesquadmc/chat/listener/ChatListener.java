@@ -101,8 +101,8 @@ public class ChatListener implements Listener {
         }
 
         e.setCancelled(true);
-
         ChatFormat format = plugin.getChatManager().getPlayerFormat(player);
+
         String prefix = format.toFancyMessage(player, message).toJSONString();
         String msg = format.getChatColor() + message;
 
