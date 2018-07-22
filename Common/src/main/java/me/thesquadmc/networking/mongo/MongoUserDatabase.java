@@ -16,7 +16,7 @@ public class MongoUserDatabase implements UserDatabase {
 
     private final MongoCollection<Document> users;
 
-    public MongoUserDatabase(Mongo plugin) {
+    public MongoUserDatabase(MongoManager plugin) {
         this.users = plugin.getMongoDatabase().getCollection(UserDatabase.USER_DATABASE, Document.class);
     }
 

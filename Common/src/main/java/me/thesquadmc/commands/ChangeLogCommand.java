@@ -20,7 +20,7 @@ public class ChangeLogCommand {
     private final TreeSet<ChangeLog> logs = Sets.newTreeSet(Comparator.comparingLong(ChangeLog::getTimestamp));
 
     public ChangeLogCommand(NetworkTools networkTools) {
-        logCollection = networkTools.getMongo().getMongoDatabase().getCollection("changelog");
+        logCollection = networkTools.getMongoManager().getMongoDatabase().getCollection("changelog");
 
         for (Document document : logCollection.find().limit(10).sort(Sorts.descending("timestamp"))) {
             logs.add(ChangeLog.fromDocument(document));

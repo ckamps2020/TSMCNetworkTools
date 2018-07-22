@@ -10,6 +10,7 @@ import me.thesquadmc.abstraction.NMSAbstract;
 import me.thesquadmc.abstraction.ProfileProperty;
 import me.thesquadmc.utils.json.JSONUtils;
 import me.thesquadmc.utils.msgs.CC;
+import me.thesquadmc.utils.msgs.StringUtils;
 import me.thesquadmc.utils.server.ServerProperty;
 import net.minecraft.server.v1_8_R3.EntityHorse;
 import net.minecraft.server.v1_8_R3.EntityHuman;
@@ -62,6 +63,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import static net.minecraft.server.v1_8_R3.IChatBaseComponent.ChatSerializer;
 
 public class NMSAbstract1_8_R3 implements NMSAbstract {
 
@@ -184,8 +187,8 @@ public class NMSAbstract1_8_R3 implements NMSAbstract {
 
     @Override
     public void sendTitle(Player player, String title, String subtitle, int in, int stay, int out) {
-        PacketPlayOutTitle titlePacket = new PacketPlayOutTitle(EnumTitleAction.TITLE, IChatBaseComponent.ChatSerializer.a("{\"text\": \"\"}").a(CC.translate(title)));
-        PacketPlayOutTitle subtitlePacket = new PacketPlayOutTitle(EnumTitleAction.SUBTITLE, IChatBaseComponent.ChatSerializer.a("{\"text\": \"\"}").a(CC.translate(subtitle)));
+        PacketPlayOutTitle titlePacket = new PacketPlayOutTitle(EnumTitleAction.TITLE, ChatSerializer.a("{\"text\": \"\"}").a(CC.translate(title)));
+        PacketPlayOutTitle subtitlePacket = new PacketPlayOutTitle(EnumTitleAction.SUBTITLE, ChatSerializer.a("{\"text\": \"\"}").a(CC.translate(subtitle)));
         PacketPlayOutTitle timingsPacket = new PacketPlayOutTitle(in, stay, out);
 
         PlayerConnection connection = ((CraftPlayer) player).getHandle().playerConnection;
@@ -195,16 +198,17 @@ public class NMSAbstract1_8_R3 implements NMSAbstract {
     }
 
     @Override
-    public void sendMessage(Player player, String message) {
-        final PacketPlayOutChat packet = new PacketPlayOutChat(IChatBaseComponent.ChatSerializer.a(message));
+    public void sendMessage(Player player, String prefix, String message) {
+        String json = StringUtils.translateColorCode(message);
 
+        final PacketPlayOutChat packet = new PacketPlayOutChat(ChatSerializer.a(prefix).addSibling(ChatSerializer.a(json)));
         ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
     }
 
     @Override
     public void broadcastTitle(String title, String subtitle, int in, int stay, int out) {
-        PacketPlayOutTitle titlePacket = new PacketPlayOutTitle(EnumTitleAction.TITLE, IChatBaseComponent.ChatSerializer.a("{\"text\": \"\"}").a(CC.translate(title)));
-        PacketPlayOutTitle subtitlePacket = new PacketPlayOutTitle(EnumTitleAction.SUBTITLE, IChatBaseComponent.ChatSerializer.a("{\"text\": \"\"}").a(CC.translate(subtitle)));
+        PacketPlayOutTitle titlePacket = new PacketPlayOutTitle(EnumTitleAction.TITLE, ChatSerializer.a("{\"text\": \"\"}").a(CC.translate(title)));
+        PacketPlayOutTitle subtitlePacket = new PacketPlayOutTitle(EnumTitleAction.SUBTITLE, ChatSerializer.a("{\"text\": \"\"}").a(CC.translate(subtitle)));
         PacketPlayOutTitle timingsPacket = new PacketPlayOutTitle(in, stay, out);
 
         for (Player player : Bukkit.getOnlinePlayers()) {
@@ -217,13 +221,13 @@ public class NMSAbstract1_8_R3 implements NMSAbstract {
 
     @Override
     public void sendActionBar(Player player, String text) {
-        PacketPlayOutChat packet = new PacketPlayOutChat(IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + CC.translate(text) + "\"}"), (byte) 2);
+        PacketPlayOutChat packet = new PacketPlayOutChat(ChatSerializer.a("{\"text\": \"" + CC.translate(text) + "\"}"), (byte) 2);
         ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
     }
 
     @Override
     public void broadcastActionBar(String text) {
-        PacketPlayOutChat packet = new PacketPlayOutChat(IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + CC.translate(text) + "\"}"), (byte) 2);
+        PacketPlayOutChat packet = new PacketPlayOutChat(ChatSerializer.a("{\"text\": \"" + CC.translate(text) + "\"}"), (byte) 2);
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
@@ -354,8 +358,8 @@ public class NMSAbstract1_8_R3 implements NMSAbstract {
     }
 
     private PacketPlayOutPlayerListHeaderFooter preparePlayerListPacket(String header, String footer) {
-        IChatBaseComponent headerComponent = IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + CC.translate(header) + "\"}");
-        IChatBaseComponent footerComponent = IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + CC.translate(footer) + "\"}");
+        IChatBaseComponent headerComponent = ChatSerializer.a("{\"text\": \"" + CC.translate(header) + "\"}");
+        IChatBaseComponent footerComponent = ChatSerializer.a("{\"text\": \"" + CC.translate(footer) + "\"}");
         PacketPlayOutPlayerListHeaderFooter packet = new PacketPlayOutPlayerListHeaderFooter();
 
         try {

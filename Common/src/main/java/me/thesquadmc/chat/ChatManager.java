@@ -67,7 +67,7 @@ public class ChatManager {
 
             Multithreading.runAsync(() -> {
                 if (bulk.size() > 0) {
-                    MongoCollection<Document> collection = plugin.getMongo().getCollection("messages");
+                    MongoCollection<Document> collection = plugin.getMongoManager().getCollection("messages");
                     BulkWriteResult result = collection.bulkWrite(bulk, new BulkWriteOptions().ordered(true));
 
                     if (result.getModifiedCount() <= 0) {

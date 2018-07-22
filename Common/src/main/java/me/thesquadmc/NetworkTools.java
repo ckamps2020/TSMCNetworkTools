@@ -75,7 +75,7 @@ import me.thesquadmc.managers.CountManager;
 import me.thesquadmc.managers.HologramManager;
 import me.thesquadmc.managers.NPCManager;
 import me.thesquadmc.managers.PartyManager;
-import me.thesquadmc.networking.mongo.Mongo;
+import me.thesquadmc.networking.mongo.MongoManager;
 import me.thesquadmc.networking.mongo.MongoUserDatabase;
 import me.thesquadmc.networking.mongo.UserDatabase;
 import me.thesquadmc.networking.redis.RedisManager;
@@ -153,7 +153,7 @@ public final class NetworkTools extends JavaPlugin {
     private CountManager countManager;
     private ClickableMessageManager clickableMessageManager;
     private NMSAbstract nmsAbstract;
-    private Mongo mongo;
+    private MongoManager mongoManager;
     private UserDatabase userDatabase;
 
     private RedisManager redisManager;
@@ -240,8 +240,8 @@ public final class NetworkTools extends JavaPlugin {
         return redisManager;
     }
 
-    public Mongo getMongo() {
-        return mongo;
+    public MongoManager getMongoManager() {
+        return mongoManager;
     }
 
     public UserDatabase getUserDatabase() {
@@ -423,14 +423,14 @@ public final class NetworkTools extends JavaPlugin {
         });
 
         Configuration conf = fileManager.getNetworkingConfig();
-        String user = conf.getString("mongo.user");
-        String db = conf.getString("mongo.database");
-        String host = conf.getString("mongo.host");
-        String password = conf.getString("mongo.password");
-        int port = conf.getInt("mongo.port");
+        String user = conf.getString("mongoManager.user");
+        String db = conf.getString("mongoManager.database");
+        String host = conf.getString("mongoManager.host");
+        String password = conf.getString("mongoManager.password");
+        int port = conf.getInt("mongoManager.port");
 
-        mongo = new Mongo(user, db, password, host, port);
-        userDatabase = new MongoUserDatabase(mongo);
+        mongoManager = new MongoManager(user, db, password, host, port);
+        userDatabase = new MongoUserDatabase(mongoManager);
         getLogger().info("Setup MongoDB connection!");
 
         registerListeners();

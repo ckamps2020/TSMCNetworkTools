@@ -103,9 +103,10 @@ public class ChatListener implements Listener {
         e.setCancelled(true);
 
         ChatFormat format = plugin.getChatManager().getPlayerFormat(player);
-        String json = format.toFancyMessage(player, message).toJSONString();
+        String prefix = format.toFancyMessage(player, message).toJSONString();
+        String msg = format.getChatColor() + message;
 
-        Bukkit.getOnlinePlayers().forEach(p -> plugin.getNMSAbstract().sendMessage(p, json)); //TODO Check if the player is ignored
+        Bukkit.getOnlinePlayers().forEach(p -> plugin.getNMSAbstract().sendMessage(p, prefix, msg)); //TODO Check if the player is ignored
 
         lastMessage.put(player.getUniqueId(), chatMessage);
         plugin.getChatManager().addMessage(chatMessage);

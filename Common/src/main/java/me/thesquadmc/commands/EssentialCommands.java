@@ -17,6 +17,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Fireball;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.inventory.ItemStack;
@@ -44,7 +45,7 @@ public class EssentialCommands {
 
 
         } else {
-            new ClickableMessage(player, CC.YELLOW + "Click to open a workbench", null, p -> p.openWorkbench(null, true));
+            player.openWorkbench(null, true);
         }
     }
 
@@ -199,7 +200,6 @@ public class EssentialCommands {
             player.sendMessage(CC.translate("&e&lBROADCAST &6■ &7/broadcast <message>"));
 
         } else {
-            Bukkit.broadcastMessage(CC.B_YELLOW + "INFO " + CC.D_GRAY + Unicode.SQUARE + CC.GRAY + " " + CC.translate(String.join(" ", args.getArgs())));
             Bukkit.broadcastMessage(CC.translate("&e&lINFO &8{0} &e{1}", Unicode.SQUARE, String.join(" ", args.getArgs())));
         }
     }
@@ -530,21 +530,32 @@ public class EssentialCommands {
         final StringBuilder output = new StringBuilder();
         final long radiusSquared = radius * radius;
 
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            if (!player.equals(p) || player.canSee(p)) {
-                final Location playerLoc = player.getLocation();
-                if (playerLoc.getWorld() != world) {
-                    continue;
+        for (LivingEntity livingEntity : player.getWorld().getLivingEntities()) {
+            if (!(livingEntity instanceof Player)) {
+                continue;
+            }
+
+            Player p = (Player) livingEntity;
+            if (player == p) {
+                continue;
+            }
+
+            if (!player.canSee(p)) {
+                continue;
+            }
+
+            final Location playerLoc = player.getLocation();
+            if (playerLoc.getWorld() != world) {
+                continue;
+            }
+
+            final long delta = (long) playerLoc.distanceSquared(loc);
+            if (delta < radiusSquared) {
+                if (output.length() > 0) {
+                    output.append(", ");
                 }
 
-                final long delta = (long) playerLoc.distanceSquared(loc);
-                if (delta < radiusSquared) {
-                    if (output.length() > 0) {
-                        output.append(", ");
-                    }
-
-                    output.append(player.getDisplayName()).append("§f(§4").append((long) Math.sqrt(delta)).append("m§f)");
-                }
+                output.append(player.getName()).append("§7(§4").append((long) Math.sqrt(delta)).append("m§7)");
             }
         }
 
