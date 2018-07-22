@@ -486,9 +486,14 @@ public final class NetworkTools extends JavaPlugin {
                 JarEntry entry = entries.nextElement();
                 String entryName = entry.getName().replace("/", ".");
 
-                if (!entryName.startsWith(NetworkTools.class.getPackage().getName())) continue;
+                if (!entryName.startsWith(NetworkTools.class.getPackage().getName())) {
+                    continue;
+                }
+
                 entryName = entryName.replace(".class", ""); // Remove the .class file extension
-                if (org.apache.commons.lang.StringUtils.countMatches(entryName, ".") > 2) continue;
+                if (org.apache.commons.lang.StringUtils.countMatches(entryName, ".") > 3) {
+                    continue;
+                }
 
                 Class<?> clazz;
                 try {
@@ -497,8 +502,10 @@ public final class NetworkTools extends JavaPlugin {
                     continue;
                 }
 
-                if (!clazz.isAnnotationPresent(AbstractionModule.class))
+                if (!clazz.isAnnotationPresent(AbstractionModule.class)) {
+                    getLogger().info("not an abstract module");
                     continue; // Not an abstraction module... ignore
+                }
 
                 Object moduleInstance = clazz.newInstance();
                 Method[] methods = clazz.getDeclaredMethods();
@@ -509,7 +516,7 @@ public final class NetworkTools extends JavaPlugin {
 
                 Method method = methods[0];
                 if (method.getReturnType() != NMSAbstract.class) {
-                    throw new IllegalStateException("Abstraction module methods must return me.thesquadmc.abstraction.NMSAbstract");
+                    throw new IllegalStateException("Abstraction module methods must return com.thesquadmc.networktools.abstraction.NMSAbstract");
                 }
                 if (method.getParameterTypes().length != 0) {
                     throw new IllegalStateException("Abstraction module methods must not have any parameters");

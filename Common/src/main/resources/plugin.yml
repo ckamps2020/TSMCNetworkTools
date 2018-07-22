@@ -1,6 +1,6 @@
 name: TSMCNetworkTools
 version: 2.5.0
-main: me.thesquadmc.NetworkTools
+main: com.thesquadmc.networktools.NetworkTools
 author: ckamps
 depend: [LuckPerms, PlaceholderAPI]
 
