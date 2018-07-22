@@ -1,13 +1,18 @@
 package me.thesquadmc.chat;
 
 import me.clip.placeholderapi.PlaceholderAPI;
-import me.thesquadmc.fanciful.FancyMessage;
 import me.thesquadmc.utils.msgs.CC;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -102,27 +107,24 @@ public class ChatFormat {
         return nameToolTip;
     }
 
-    public FancyMessage toFancyMessage(Player sender, String message) {
-        FancyMessage fancyMessage = new FancyMessage();
-
+    public TextComponent toTextComponent(Player sender, String message) {
         String name = prefix.replace("%display_name%", sender.getName());
         String suggest = PlaceholderAPI.setPlaceholders(sender, nameSuggestCommand);
         List<String> tooltip = PlaceholderAPI.setPlaceholders(sender, nameToolTip);
+        List<BaseComponent> toolTipComponents = new ArrayList<>();
+        tooltip.forEach(s -> toolTipComponents.addAll(Arrays.asList(TextComponent.fromLegacyText(s))));
 
-        fancyMessage
-                .text(PlaceholderAPI.setPlaceholders(sender, name))
-                .suggest(suggest)
-                .tooltip(tooltip);
+        TextComponent prefix = new TextComponent(TextComponent.fromLegacyText(PlaceholderAPI.setPlaceholders(sender, name)));
+        prefix.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, suggest));
+        prefix.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, toolTipComponents.toArray(new BaseComponent[]{})));
 
-        fancyMessage.then();
+        TextComponent compSuffix = new TextComponent(TextComponent.fromLegacyText(PlaceholderAPI.setPlaceholders(sender, suffix)));
+        compSuffix.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, suggest));
+        compSuffix.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, toolTipComponents.toArray(new BaseComponent[]{})));
+        prefix.addExtra(compSuffix);
 
-        fancyMessage.text(PlaceholderAPI.setPlaceholders(sender, suffix))
-                .suggest(suggest)
-                .tooltip(tooltip);
-
-        fancyMessage.then();
-        fancyMessage.text(chatColor + message);
-
-        return fancyMessage;
+        TextComponent text = new TextComponent(TextComponent.fromLegacyText(chatColor + message));
+        prefix.addExtra(text);
+        return prefix;
     }
 }

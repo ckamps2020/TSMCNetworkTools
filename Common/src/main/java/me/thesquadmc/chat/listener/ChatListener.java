@@ -11,6 +11,7 @@ import me.thesquadmc.utils.msgs.FormatUtil;
 import me.thesquadmc.utils.msgs.StringUtils;
 import me.thesquadmc.utils.msgs.Unicode;
 import me.thesquadmc.utils.player.PlayerUtils;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -102,14 +103,13 @@ public class ChatListener implements Listener {
         }
 
         e.setCancelled(true);
-        ChatFormat format = plugin.getChatManager().getPlayerFormat(player);
 
-        String prefix = format.toFancyMessage(player, message).toJSONString();
-        String msg = format.getChatColor() + message;
+        ChatFormat format = plugin.getChatManager().getPlayerFormat(player);
+        TextComponent msg = format.toTextComponent(player, message);
 
         Bukkit.getOnlinePlayers().stream()
                 .filter(p -> !TSMCUser.fromPlayer(p).isIgnored(player.getUniqueId()))
-                .forEach(p -> plugin.getNMSAbstract().sendMessage(p, prefix, msg));
+                .forEach(p -> p.spigot().sendMessage(msg));
 
         lastMessage.put(player.getUniqueId(), chatMessage);
         plugin.getChatManager().addMessage(chatMessage);
