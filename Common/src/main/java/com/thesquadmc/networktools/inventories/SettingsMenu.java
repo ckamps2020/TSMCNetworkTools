@@ -1,5 +1,6 @@
 package com.thesquadmc.networktools.inventories;
 
+import com.thesquadmc.networktools.NetworkTools;
 import com.thesquadmc.networktools.player.PlayerSetting;
 import com.thesquadmc.networktools.player.TSMCUser;
 import com.thesquadmc.networktools.utils.inventory.InventorySize;
@@ -43,7 +44,7 @@ public final class SettingsMenu {
         ).build());
 
         TSMCUser user = TSMCUser.fromPlayer(player);
-        for (PlayerSetting<?> setting : PlayerSetting.values()) {
+        for (PlayerSetting<?> setting : NetworkTools.getInstance().getPlayerSettings()) {
             if (setting == PlayerSetting.FRIEND_NOTIFICATIONS) {
                 if (user.getSetting(PlayerSetting.FRIEND_NOTIFICATIONS)) {
                     inventory.setItem(19, new ItemBuilder(Material.INK_SACK, 10).name("&a&lNOTIFICATIONS On")

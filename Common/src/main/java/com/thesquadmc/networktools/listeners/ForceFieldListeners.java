@@ -1,6 +1,5 @@
 package com.thesquadmc.networktools.listeners;
 
-import com.thesquadmc.networktools.NetworkTools;
 import com.thesquadmc.networktools.abstraction.Sounds;
 import com.thesquadmc.networktools.player.PlayerSetting;
 import com.thesquadmc.networktools.player.TSMCUser;
@@ -18,17 +17,12 @@ import java.util.List;
 
 public final class ForceFieldListeners implements Listener {
 
-    private final NetworkTools networkTools;
-
-    public ForceFieldListeners(NetworkTools networkTools) {
-        this.networkTools = networkTools;
-    }
-
     @EventHandler
     public void onUpdate(UpdateEvent e) {
         if (e.getUpdateType() == UpdateType.HALF_SEC) {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 if (TSMCUser.fromPlayer(player).getSetting(PlayerSetting.FORCEFIELD)) {
+
                     List<Player> players = PlayerUtils.getNearbyPlayers(player.getLocation(), 8);
                     for (Player p : players) {
                         if (p.getName() != null) {

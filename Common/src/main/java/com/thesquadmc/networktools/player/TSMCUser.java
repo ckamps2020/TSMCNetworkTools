@@ -155,7 +155,7 @@ public class TSMCUser {
         user.lastMessager = document.get(LAST_MESSAGER, UUID.class);
 
         Document settingsDocument = (Document) document.get(SETTINGS);
-        for (PlayerSetting<?> setting : PlayerSetting.values()) {
+        for (PlayerSetting<?> setting : NetworkTools.getInstance().getPlayerSettings()) {
             if (settingsDocument.containsKey(setting.getName())) {
                 setting.getSettingType().cast(user.settings.put(setting, settingsDocument.get(setting.getName(), setting.getSettingType())));
             }
@@ -341,7 +341,7 @@ public class TSMCUser {
 
     public void resetSettingsToDefault() {
         this.settings.clear();
-        for (PlayerSetting<?> setting : PlayerSetting.values()) {
+        for (PlayerSetting<?> setting : NetworkTools.getInstance().getPlayerSettings()) {
             this.settings.put(setting, setting.getDefaultValue());
         }
     }

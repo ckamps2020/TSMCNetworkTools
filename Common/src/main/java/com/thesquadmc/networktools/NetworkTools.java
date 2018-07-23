@@ -1,5 +1,6 @@
 package com.thesquadmc.networktools;
 
+import com.google.common.collect.Sets;
 import com.thesquadmc.networktools.abstraction.AbstractionModule;
 import com.thesquadmc.networktools.abstraction.NMSAbstract;
 import com.thesquadmc.networktools.chat.ChatManager;
@@ -84,6 +85,7 @@ import com.thesquadmc.networktools.networking.redis.channels.PartyChannel;
 import com.thesquadmc.networktools.networking.redis.channels.ServerManagementChannel;
 import com.thesquadmc.networktools.networking.redis.channels.StaffChatChannels;
 import com.thesquadmc.networktools.networking.redis.channels.WhitelistChannel;
+import com.thesquadmc.networktools.player.PlayerSetting;
 import com.thesquadmc.networktools.player.local.LocalPlayerManager;
 import com.thesquadmc.networktools.utils.command.CommandHandler;
 import com.thesquadmc.networktools.utils.enums.RedisArg;
@@ -115,6 +117,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Enumeration;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -123,6 +126,9 @@ import java.util.stream.Stream;
 public final class NetworkTools extends JavaPlugin {
 
     private static NetworkTools networkTools;
+
+    private final Set<PlayerSetting<?>> playerSettings = Sets.newHashSet();
+
     private UUIDTranslator uuidTranslator;
     private LuckPermsApi luckPermsApi;
     private String whitelistMessage = ChatColor.translateAlternateColorCodes('&', "&cServer currently whitelisted!");
@@ -277,6 +283,7 @@ public final class NetworkTools extends JavaPlugin {
         }
 
         getLogger().info("Plugin started up and ready to go!");
+        System.out.println(PlayerSetting.FORCEFIELD);
     }
 
     @Override
@@ -319,6 +326,14 @@ public final class NetworkTools extends JavaPlugin {
 
         vaultPermissions = rsp.getProvider();
         return vaultPermissions != null;
+    }
+
+    public void registerPlayerSetting(PlayerSetting setting) {
+        playerSettings.add(setting);
+    }
+
+    public Set<PlayerSetting<?>> getPlayerSettings() {
+        return playerSettings;
     }
 
     public ItemManager getItemManager() {
@@ -539,7 +554,7 @@ public final class NetworkTools extends JavaPlugin {
         Stream.of(
                 new ConnectionListeners(this),
                 //new FilterListener(this),
-                new ForceFieldListeners(this),
+                new ForceFieldListeners(),
                 new FreezeListener(this),
                 new LaunchListener(),
                 new LightningListener(),
