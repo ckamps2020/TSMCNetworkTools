@@ -49,8 +49,8 @@ public class EssentialCommands {
             }
 
             target.openWorkbench(null, true);
-            player.sendMessage(CC.translate("&e&lWORKBENCH &6■ &7Opened a workbench for " + target.getDisplayName()));
 
+            player.sendMessage(CC.translate("&e&lWORKBENCH &6■ &7Opened a workbench for " + target.getDisplayName()));
 
         } else {
             player.openWorkbench(null, true);
@@ -167,6 +167,12 @@ public class EssentialCommands {
 
     @Command(name = {"i", "give"}, permission = "essentials.give")
     public void give(CommandArgs args) {
+        if (args.length() == 0) {
+            args.getSender().sendMessage(CC.RED + "/give <item> [amount]");
+            args.getSender().sendMessage(CC.RED + "/give <player> <item> [amount]");
+            return;
+        }
+
         if (args.length() > 2 && args.getSender().hasPermission("essentials.give.others")) {
             CommandSender sender = args.getSender();
 
@@ -208,9 +214,12 @@ public class EssentialCommands {
                 return;
             }
 
-            Integer amount = Ints.tryParse(args.getArg(1));
-            if (amount == null) {
-                amount = 1;
+            Integer amount = 1;
+            if (args.length() > 1) {
+                amount = Ints.tryParse(args.getArg(1));
+                if (amount == null) {
+                    amount = 1;
+                }
             }
 
             Optional<ItemStack> itemStack = plugin.getItemManager().getItem(args.getArg(0), amount);
@@ -332,13 +341,13 @@ public class EssentialCommands {
         }
 
         try {
-            Location location = LocationUtil.getSafeDestination(player.getLocation());
-
-            for (int x = 0; x <= amount; x++) {
-                mob.spawn(player.getWorld(), location);
+            for (int x = 1; x <= amount; x++) {
+                mob.spawn(player.getWorld(), LocationUtil.getTarget(player));
             }
         } catch (Mob.MobException e) {
             player.sendMessage(CC.RED + "Something went wrong with spawning the mobs in, do they exist?");
+
+        } catch (Exception ignored) {
         }
     }
 
@@ -367,7 +376,7 @@ public class EssentialCommands {
             speed = 10;
         }
 
-        player.setWalkSpeed(speed.floatValue());
+        player.setWalkSpeed(speed.floatValue() / 10);
         player.sendMessage(CC.translate("&e&lSPEED &6■ &7Set your walk speed to {0}", speed));
     }
 
@@ -376,7 +385,7 @@ public class EssentialCommands {
         Player player = args.getPlayer();
 
         if (args.length() == 0) {
-            player.sendMessage(CC.RED + "/walkspeed <speed>");
+            player.sendMessage(CC.RED + "/flyspeed <speed>");
             return;
         }
 
@@ -396,7 +405,7 @@ public class EssentialCommands {
             speed = 10;
         }
 
-        player.setFlySpeed(speed.floatValue());
+        player.setFlySpeed(speed.floatValue() / 10);
         player.sendMessage(CC.translate("&e&lSPEED &6■ &7Set your flight speed to {0}", speed));
     }
 
@@ -446,11 +455,6 @@ public class EssentialCommands {
         ItemStack itemStack = player.getItemInHand();
         if (itemStack == null || itemStack.getType() == Material.AIR) {
             player.sendMessage(CC.RED + "You must have an item to put on your head!");
-            return;
-        }
-
-        if (itemStack.getType().getMaxDurability() == 0) {
-            player.sendMessage(CC.RED + "You cannot place this on your head!");
             return;
         }
 
@@ -593,10 +597,6 @@ public class EssentialCommands {
                 continue;
             }
 
-            if (!player.canSee(p)) {
-                continue;
-            }
-
             final Location playerLoc = player.getLocation();
             if (playerLoc.getWorld() != world) {
                 continue;
@@ -608,7 +608,7 @@ public class EssentialCommands {
                     output.append(", ");
                 }
 
-                output.append(player.getName()).append("§7(§4").append((long) Math.sqrt(delta)).append("m§7)");
+                output.append(CC.YELLOW).append(player.getName()).append("§7(§4").append((long) Math.sqrt(delta)).append("m§7)");
             }
         }
 

@@ -9,7 +9,6 @@ import com.thesquadmc.networktools.utils.command.Command;
 import com.thesquadmc.networktools.utils.command.CommandArgs;
 import com.thesquadmc.networktools.utils.msgs.CC;
 import com.thesquadmc.networktools.utils.msgs.Unicode;
-import com.thesquadmc.networktools.utils.player.LocationUtil;
 import com.thesquadmc.networktools.utils.time.TimeUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.Bukkit;
@@ -64,14 +63,14 @@ public class TeleportCommand {
                         return;
                     }
 
-                    Player where = Bukkit.getPlayer(args.getArg(1));
-                    if (where == null) {
+                    Player target = Bukkit.getPlayer(args.getArg(1));
+                    if (target == null) {
                         sender.sendMessage(CC.RED + args.getArg(0) + " is not online!");
                         return;
                     }
 
-                    teleport(toTeleport, where);
-                    sender.sendMessage(CC.B_YELLOW + "TELEPORT " + Unicode.SQUARE + CC.GRAY + " Teleported " + toTeleport.getName() + " to " + where.getName());
+                    teleport(toTeleport, target);
+                    sender.sendMessage(CC.B_YELLOW + "TELEPORT " + Unicode.SQUARE + CC.GRAY + " Teleported " + toTeleport.getName() + " to " + target.getName());
 
                 } else {
                     sender.sendMessage(CC.RED + "You cannot teleport to other players!");
@@ -195,7 +194,10 @@ public class TeleportCommand {
             return;
         }
 
-        //TODO Check if player is ignored
+        if (user.isIgnored(player.getUniqueId())) {
+            player.sendMessage(CC.RED + "You cannot teleport to this player!");
+            return;
+        }
 
         LocalPlayer localTarget = plugin.getLocalPlayerManager().getPlayer(target);
         localTarget.requestTeleport(player, true);
@@ -273,19 +275,14 @@ public class TeleportCommand {
         sender.sendMessage(CC.translate("&e&lTELEPORT &6■ &e{0} &7denied your teleport request", player.getPlayer().getName()));
     }
 
-    private boolean teleport(Player teleporting, Player where) {
-        return teleport(teleporting, where.getLocation());
+    private void teleport(Player teleporting, Player where) {
+        teleport(teleporting, where.getLocation());
     }
 
-    private boolean teleport(Player teleporting, Location to) {
-        if (LocationUtil.isBlockUnsafe(to)) {
-            return false;
-        }
-
+    private void teleport(Player teleporting, Location to) {
         locations.put(teleporting.getUniqueId(), teleporting.getLocation());
         teleporting.teleport(to);
 
-        return true;
     }
 
 }
