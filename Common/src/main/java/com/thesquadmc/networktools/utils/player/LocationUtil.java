@@ -197,6 +197,10 @@ public class LocationUtil {
         return isBlockAboveAir(world, x, y, z);
     }
 
+    public static boolean isBlockUnsafeForUser(final Player player, Location location) {
+        return isBlockUnsafeForUser(player, location.getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
+    }
+
     public static boolean isBlockUnsafe(final World world, final int x, final int y, final int z) {
         if (isBlockDamaging(world, x, y, z)) {
             return true;

@@ -9,13 +9,13 @@ import com.thesquadmc.networktools.utils.command.Command;
 import com.thesquadmc.networktools.utils.command.CommandArgs;
 import com.thesquadmc.networktools.utils.msgs.CC;
 import com.thesquadmc.networktools.utils.msgs.Unicode;
+import com.thesquadmc.networktools.utils.player.TimedTeleport;
 import com.thesquadmc.networktools.utils.time.TimeUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.Map;
 import java.util.UUID;
@@ -244,16 +244,13 @@ public class TeleportCommand {
 
         if (localPlayer.isTpRequestHere()) {
             Location location = localPlayer.getTpRequestLocation();
-            player.teleport(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
-
-            player.sendMessage(CC.translate("&e&lTELEPORT &6■ &7Teleporting to &e{0}", sender.getName()));
-            sender.sendMessage(CC.translate("&e&lTELEPORT &6■ &7Teleporting &e{0}", player.getName()));
+            new TimedTeleport(player, sender, location, 5 * 1000);
+            player.sendMessage(CC.translate("&e&lTELEPORT &6■ &e&lDon't move! &7Teleporting you in &e5 seconds"));
 
         } else {
-            sender.teleport(player.getLocation());
+            new TimedTeleport(sender, player, player.getLocation(), 5 * 1000);
 
-            player.sendMessage(CC.translate("&e&lTELEPORT &6■ &7Teleporting to &e{0}", player.getName()));
-            sender.sendMessage(CC.translate("&e&lTELEPORT &6■ &7Teleporting &e{0}", sender.getName()));
+            sender.sendMessage(CC.translate("&e&lTELEPORT &6■ &e&lDon't move! &7Teleporting you in &e5 seconds"));
         }
 
         localPlayer.requestTeleport(null, false);
