@@ -1,6 +1,5 @@
 package com.thesquadmc.networktools.commands;
 
-import com.google.common.collect.Maps;
 import com.thesquadmc.networktools.NetworkTools;
 import com.thesquadmc.networktools.player.PlayerSetting;
 import com.thesquadmc.networktools.player.TSMCUser;
@@ -17,7 +16,6 @@ import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -26,7 +24,6 @@ public class TeleportCommand {
     private static final int DEFAUFT = Integer.MIN_VALUE;
 
     private final NetworkTools plugin;
-    private final Map<UUID, Location> locations = Maps.newHashMap();
 
     public TeleportCommand(NetworkTools plugin) {
         this.plugin = plugin;
@@ -45,7 +42,7 @@ public class TeleportCommand {
                         return;
                     }
 
-                    teleport((Player) sender, target);
+                    ((Player) sender).teleport(target);
                     sender.sendMessage(CC.B_YELLOW + "TELEPORT " + Unicode.SQUARE + CC.GRAY + " You teleported to " + target.getName());
 
                 } else {
@@ -69,7 +66,7 @@ public class TeleportCommand {
                         return;
                     }
 
-                    teleport(toTeleport, target);
+                    toTeleport.teleport(target);
                     sender.sendMessage(CC.B_YELLOW + "TELEPORT " + Unicode.SQUARE + CC.GRAY + " Teleported " + toTeleport.getName() + " to " + target.getName());
 
                 } else {
@@ -271,15 +268,4 @@ public class TeleportCommand {
         player.getPlayer().sendMessage(CC.translate("&e&lTELEPORT &6■ &7You denied &e{0}''s &7teleport request", sender.getName()));
         sender.sendMessage(CC.translate("&e&lTELEPORT &6■ &e{0} &7denied your teleport request", player.getPlayer().getName()));
     }
-
-    private void teleport(Player teleporting, Player where) {
-        teleport(teleporting, where.getLocation());
-    }
-
-    private void teleport(Player teleporting, Location to) {
-        locations.put(teleporting.getUniqueId(), teleporting.getLocation());
-        teleporting.teleport(to);
-
-    }
-
 }

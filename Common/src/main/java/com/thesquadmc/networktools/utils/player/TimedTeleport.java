@@ -38,9 +38,16 @@ public class TimedTeleport implements Runnable {
         this.x = Math.round(player.getLocation().getX() * MOVE_CONSTANT);
         this.y = Math.round(player.getLocation().getY() * MOVE_CONSTANT);
         this.z = Math.round(player.getLocation().getZ() * MOVE_CONSTANT);
+
         this.canMove = player.hasPermission("essentials.teleport.timer.move");
 
-        task = Bukkit.getScheduler().runTaskTimerAsynchronously(NetworkTools.getInstance(), this, 20, 20).getTaskId();
+        if (player.hasPermission("essentials.teleport.instant")) {
+            Bukkit.getScheduler().scheduleSyncDelayedTask(NetworkTools.getInstance(), new DelayedTeleportTask());
+
+        } else {
+            task = Bukkit.getScheduler().runTaskTimerAsynchronously(NetworkTools.getInstance(), this, 20, 20).getTaskId();
+
+        }
     }
 
     @Override
@@ -57,30 +64,32 @@ public class TimedTeleport implements Runnable {
             return;
         }
 
-        class DelayedTeleportTask implements Runnable {
-            @Override
-            public void run() {
-                health = player.getHealth();  // in case user healed, then later gets injured
-                final long now = System.currentTimeMillis();
+        Bukkit.getScheduler().scheduleSyncDelayedTask(NetworkTools.getInstance(), new DelayedTeleportTask());
+    }
 
-                if (now > (started + delay)) {
-                    cancelTimer(false);
+    private class DelayedTeleportTask implements Runnable {
+        @Override
+        public void run() {
+            health = player.getHealth();  // in case user healed, then later gets injured
+            final long now = System.currentTimeMillis();
 
-                    player.sendMessage(CC.translate("&e&lTELEPORT &6■ &7Teleporting to &e{0}", targetPlayer.getName()));
-                    targetPlayer.sendMessage(CC.translate("&e&lTELEPORT &6■ &7Teleporting &e{0}", player.getName()));
+            if (now > (started + delay)) {
+                cancelTimer(false);
 
-                    if (LocationUtil.isBlockUnsafeForUser(player, target)) {
-                        player.teleport(LocationUtil.getSafeDestination(player, target), TeleportCause.PLUGIN);
+                player.sendMessage(CC.translate("&e&lTELEPORT &6■ &7Teleporting to &e{0}", targetPlayer.getName()));
+                targetPlayer.sendMessage(CC.translate("&e&lTELEPORT &6■ &7Teleporting &e{0}", player.getName()));
 
-                    } else {
-                        player.teleport(target, TeleportCause.PLUGIN);
-                    }
+                if (LocationUtil.isBlockUnsafeForUser(player, target)) {
+                    player.teleport(LocationUtil.getSafeDestination(player, target), TeleportCause.PLUGIN);
 
+                } else {
+                    player.teleport(target, TeleportCause.PLUGIN);
                 }
+
+                NetworkTools.getInstance().getLocalPlayerManager().getPlayer(player);
+
             }
         }
-
-        Bukkit.getScheduler().scheduleSyncDelayedTask(NetworkTools.getInstance(), new DelayedTeleportTask());
     }
 
     private boolean isOnline(Player player) {
