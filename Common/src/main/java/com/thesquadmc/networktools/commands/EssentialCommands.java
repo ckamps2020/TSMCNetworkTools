@@ -342,7 +342,7 @@ public class EssentialCommands {
 
         try {
             for (int x = 1; x <= amount; x++) {
-                mob.spawn(player.getWorld(), LocationUtil.getTarget(player));
+                mob.spawn(player.getWorld(), LocationUtil.getSafeDestination(LocationUtil.getTarget(player)));
             }
         } catch (Mob.MobException e) {
             player.sendMessage(CC.RED + "Something went wrong with spawning the mobs in, do they exist?");
@@ -413,7 +413,7 @@ public class EssentialCommands {
     public void repair(CommandArgs args) {
         Player player = args.getPlayer();
 
-        if (args.length() > 1 && player.hasPermission("essentials.repair.all")) {
+        if (args.length() > 0 && args.getArg(0).equalsIgnoreCase("all") && player.hasPermission("essentials.repair.all")) {
             List<ItemStack> items = Lists.newArrayList();
             Collections.addAll(items, player.getInventory().getContents());
             Collections.addAll(items, player.getInventory().getArmorContents());
@@ -421,10 +421,10 @@ public class EssentialCommands {
             for (ItemStack itemStack : items) {
                 if (itemStack == null || itemStack.getType() == Material.AIR) return;
 
-
                 itemStack.setDurability((short) 0);
-                player.sendMessage(CC.translate("&e&lREPAIR &6■ &7Repaired all your items"));
             }
+
+            player.sendMessage(CC.translate("&e&lREPAIR &6■ &7Repaired all your items"));
 
         } else {
             ItemStack held = player.getInventory().getItemInHand();
@@ -439,7 +439,7 @@ public class EssentialCommands {
             }
 
             if (held.getDurability() == 0) {
-                player.sendMessage(name + CC.RED + " is already at full durability!");
+                player.sendMessage(name.trim() + CC.RED + " is already at full durability!");
                 return;
             }
 
@@ -486,7 +486,9 @@ public class EssentialCommands {
             return;
         }
 
+
         target.setFireTicks(time * 20);
+        System.out.println(target.getFireTicks());
         player.sendMessage(CC.translate("&e&lBURN &6■ &7You set &e{0} &7on &cfire &7for &e{1} seconds", target.getName(), time));
     }
 
@@ -548,7 +550,7 @@ public class EssentialCommands {
         ExpUtil.resetEXP(player);
         player.giveExp(exp);
 
-        sender.sendMessage(CC.translate(MessageFormat.format("&e&lEXP &6■ &7Set &e{0}'s &7exp to &e{1}", player.getName(), exp.toString())));
+        sender.sendMessage(CC.translate("&e&lEXP &6■ &7Set &e{0}'s &7exp to &e{1}", player.getName(), exp));
     }
 
     @Command(name = {"exp give", "xp give"}, permission = "essentials.exp.give")

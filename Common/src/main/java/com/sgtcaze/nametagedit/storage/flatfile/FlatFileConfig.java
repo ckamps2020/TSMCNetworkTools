@@ -7,6 +7,7 @@ import com.sgtcaze.nametagedit.api.data.PlayerData;
 import com.sgtcaze.nametagedit.storage.AbstractConfig;
 import com.sgtcaze.nametagedit.utils.UUIDFetcher;
 import com.sgtcaze.nametagedit.utils.Utils;
+import com.thesquadmc.networktools.NetworkTools;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -37,10 +38,11 @@ public class FlatFileConfig implements AbstractConfig {
 
     @Override
     public void load() {
-        groupsFile = new File(plugin.getDataFolder(), "groups.yml");
-        groups = Utils.getConfig(groupsFile, "groups.yml", plugin);
-        playersFile = new File(plugin.getDataFolder(), "players.yml");
-        players = Utils.getConfig(playersFile, "players.yml", plugin);
+        groupsFile = new File(NetworkTools.getInstance().getDataFolder(), "groups.yml");
+        groups = Utils.getConfig(groupsFile, "groups.yml", NetworkTools.getInstance());
+        playersFile = new File(NetworkTools.getInstance().getDataFolder(), "players.yml");
+        players = Utils.getConfig(playersFile, "players.yml", NetworkTools.getInstance());
+
         loadGroups();
         loadPlayers();
 
@@ -49,7 +51,7 @@ public class FlatFileConfig implements AbstractConfig {
             public void run() {
                 handler.applyTags();
             }
-        }.runTask(plugin);
+        }.runTask(NetworkTools.getInstance());
     }
 
     @Override
@@ -61,7 +63,7 @@ public class FlatFileConfig implements AbstractConfig {
             public void run() {
                 load();
             }
-        }.runTaskAsynchronously(plugin);
+        }.runTaskAsynchronously(NetworkTools.getInstance());
     }
 
     @Override
@@ -100,7 +102,7 @@ public class FlatFileConfig implements AbstractConfig {
 
                 save(groups, groupsFile);
             }
-        }.runTaskAsynchronously(plugin);
+        }.runTaskAsynchronously(NetworkTools.getInstance());
     }
 
     @Override
@@ -115,7 +117,7 @@ public class FlatFileConfig implements AbstractConfig {
                 return;
             }
 
-            UUIDFetcher.lookupUUID(key, plugin, uuid -> {
+            UUIDFetcher.lookupUUID(key, NetworkTools.getInstance(), uuid -> {
                 if (players.contains("Players." + uuid.toString())) {
                     players.set("Players." + uuid.toString(), priority);
                     save(players, playersFile);
@@ -185,6 +187,7 @@ public class FlatFileConfig implements AbstractConfig {
 
     private void loadGroups() {
         List<GroupData> groupData = new ArrayList<>();
+
         for (String groupName : groups.getConfigurationSection("Groups").getKeys(false)) {
             GroupData data = new GroupData();
             data.setGroupName(groupName);

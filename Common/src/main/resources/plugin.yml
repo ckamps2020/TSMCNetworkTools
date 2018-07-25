@@ -5,6 +5,7 @@ author: [ckamps, ItsEternity, TimLampen, AsyncNick]
 depend: [LuckPerms, PlaceholderAPI, MVdWPlaceholderAPI]
 
 commands:
+
     adminchat:
         aliases: [ac, a, achat]
     freeze:
@@ -67,3 +68,5 @@ commands:
     onlinecount:
     party:
     rename:
+    ne:
+      aliases: [nametagedit, nte]

@@ -10,7 +10,6 @@ import com.thesquadmc.networktools.abstraction.NMSAbstract;
 import com.thesquadmc.networktools.abstraction.ProfileProperty;
 import com.thesquadmc.networktools.utils.json.JSONUtils;
 import com.thesquadmc.networktools.utils.msgs.CC;
-import com.thesquadmc.networktools.utils.msgs.StringUtils;
 import com.thesquadmc.networktools.utils.server.ServerProperty;
 import net.minecraft.server.v1_12_R1.ChatMessageType;
 import net.minecraft.server.v1_12_R1.EntityHorse;
@@ -182,14 +181,6 @@ public class NMSAbstract1_12_R1 implements NMSAbstract {
     @Override
     public void sendTitle(Player player, String title, String subtitle, int in, int stay, int out) {
         player.sendTitle(CC.translate(title), CC.translate(subtitle), in, stay, out);
-    }
-
-    @Override
-    public void sendMessage(Player player, String prefix, String message) {
-        String json = StringUtils.translateColorCode(message);
-
-        final PacketPlayOutChat packet = new PacketPlayOutChat(ChatSerializer.a(prefix).addSibling(ChatSerializer.a(json)));
-        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
     }
 
     @Override

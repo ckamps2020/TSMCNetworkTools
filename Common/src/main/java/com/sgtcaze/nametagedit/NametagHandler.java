@@ -9,6 +9,7 @@ import com.sgtcaze.nametagedit.storage.flatfile.FlatFileConfig;
 import com.sgtcaze.nametagedit.utils.Configuration;
 import com.sgtcaze.nametagedit.utils.UUIDFetcher;
 import com.sgtcaze.nametagedit.utils.Utils;
+import com.thesquadmc.networktools.NetworkTools;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -40,7 +41,6 @@ public class NametagHandler implements Listener {
 
     private boolean tabListEnabled;
     private boolean longNametagsEnabled;
-    private boolean refreshTagOnWorldChange;
 
     private BukkitTask clearEmptyTeamTask;
     private BukkitTask refreshNametagTask;
@@ -56,10 +56,10 @@ public class NametagHandler implements Listener {
     private NametagManager nametagManager;
 
     public NametagHandler(NametagEdit plugin, NametagManager nametagManager) {
-        this.config = getCustomConfig(plugin);
+        this.config = getCustomConfig(NetworkTools.getInstance());
         this.plugin = plugin;
         this.nametagManager = nametagManager;
-        Bukkit.getPluginManager().registerEvents(this, plugin);
+        Bukkit.getPluginManager().registerEvents(this, NetworkTools.getInstance());
 
         // Apply config properties
         this.applyConfig();
@@ -71,7 +71,7 @@ public class NametagHandler implements Listener {
             public void run() {
                 abstractConfig.load();
             }
-        }.runTaskAsynchronously(plugin);
+        }.runTaskAsynchronously(NetworkTools.getInstance());
     }
 
     /**
@@ -127,7 +127,7 @@ public class NametagHandler implements Listener {
             public void run() {
                 abstractConfig.load(player, true);
             }
-        }.runTaskLaterAsynchronously(plugin, 1);
+        }.runTaskLaterAsynchronously(NetworkTools.getInstance(), 1);
     }
 
     private void handleClear(UUID uuid, String player) {
@@ -265,19 +265,8 @@ public class NametagHandler implements Listener {
         if (input == null) return "";
         if (player == null) return input;
 
-        if (Bukkit.getPluginManager().isPluginEnabled("MVdWPlaceholderAPI")) {
-            plugin.debug("Trying to use MVdWPlaceholderAPI for placeholders");
-            if (be.maximvdw.placeholderapi.PlaceholderAPI.getLoadedPlaceholderCount() != 0) {
-                input = be.maximvdw.placeholderapi.PlaceholderAPI.replacePlaceholders(player, input);
-            } else {
-                Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[NametagEdit] As the error above suggests, you " +
-                        "do NOT have any placeholder plugins installed. The placeholder API is merely an interface, it " +
-                        "requires other plugins to function. This is NOT an issue with NametagEdit.");
-            }
-        }
-
         // The string can become null again at this point. Add another check.
-        if (input != null && Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             plugin.debug("Trying to use PlaceholderAPI for placeholders");
             input = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, input);
         }
@@ -291,7 +280,7 @@ public class NametagHandler implements Listener {
         }
 
         if (config.getInt(path, -1) <= 0) return null;
-        return Bukkit.getScheduler().runTaskTimer(plugin, runnable, 0, 20 * config.getInt(path));
+        return Bukkit.getScheduler().runTaskTimer(NetworkTools.getInstance(), runnable, 0, 20 * config.getInt(path));
     }
 
     public void reload() {
@@ -305,7 +294,6 @@ public class NametagHandler implements Listener {
         this.debug = config.getBoolean("Debug");
         this.tabListEnabled = config.getBoolean("Tablist.Enabled");
         this.longNametagsEnabled = config.getBoolean("Tablist.LongTags");
-        this.refreshTagOnWorldChange = config.getBoolean("RefreshTagOnWorldChange");
         DISABLE_PUSH_ALL_TAGS = config.getBoolean("DisablePush");
 
         clearEmptyTeamTask = createTask("ClearEmptyTeamsInterval", clearEmptyTeamTask, new Runnable() {
@@ -331,7 +319,7 @@ public class NametagHandler implements Listener {
                 public void run() {
                     applyTags();
                 }
-            }.runTask(plugin);
+            }.runTask(NetworkTools.getInstance());
             return;
         }
 
@@ -352,7 +340,7 @@ public class NametagHandler implements Listener {
                 public void run() {
                     applyTagToPlayer(player, loggedIn);
                 }
-            }.runTaskAsynchronously(plugin);
+            }.runTaskAsynchronously(NetworkTools.getInstance());
             return;
         }
 
@@ -387,7 +375,7 @@ public class NametagHandler implements Listener {
                     }
                 }
             }
-        }.runTask(plugin);
+        }.runTask(NetworkTools.getInstance());
     }
 
     void clear(final CommandSender sender, final String player) {
@@ -397,14 +385,11 @@ public class NametagHandler implements Listener {
             return;
         }
 
-        UUIDFetcher.lookupUUID(player, plugin, new UUIDFetcher.UUIDLookup() {
-            @Override
-            public void response(UUID uuid) {
-                if (uuid == null) {
-                    NametagMessages.UUID_LOOKUP_FAILED.send(sender);
-                } else {
-                    handleClear(uuid, player);
-                }
+        UUIDFetcher.lookupUUID(player, NetworkTools.getInstance(), uuid -> {
+            if (uuid == null) {
+                NametagMessages.UUID_LOOKUP_FAILED.send(sender);
+            } else {
+                handleClear(uuid, player);
             }
         });
     }
@@ -459,105 +444,26 @@ public class NametagHandler implements Listener {
         }
 
         final PlayerData finalData = data;
-        UUIDFetcher.lookupUUID(targetName, plugin, new UUIDFetcher.UUIDLookup() {
-            @Override
-            public void response(UUID uuid) {
-                if (uuid == null) {
-                    NametagMessages.UUID_LOOKUP_FAILED.send(sender);
-                } else {
-                    storePlayerData(uuid, finalData);
-                    finalData.setUuid(uuid);
-                    abstractConfig.save(finalData);
-                }
+        UUIDFetcher.lookupUUID(targetName, NetworkTools.getInstance(), uuid -> {
+            if (uuid == null) {
+                NametagMessages.UUID_LOOKUP_FAILED.send(sender);
+            } else {
+                storePlayerData(uuid, finalData);
+                finalData.setUuid(uuid);
+                abstractConfig.save(finalData);
             }
         });
-    }
-
-    public boolean isDebug() {
-        return debug;
-    }
-
-    public void setDebug(boolean debug) {
-        this.debug = debug;
-    }
-
-    public boolean isTabListEnabled() {
-        return tabListEnabled;
-    }
-
-    public void setTabListEnabled(boolean tabListEnabled) {
-        this.tabListEnabled = tabListEnabled;
     }
 
     public boolean isLongNametagsEnabled() {
         return longNametagsEnabled;
     }
 
-    public void setLongNametagsEnabled(boolean longNametagsEnabled) {
-        this.longNametagsEnabled = longNametagsEnabled;
-    }
-
-    public boolean isRefreshTagOnWorldChange() {
-        return refreshTagOnWorldChange;
-    }
-
-    public void setRefreshTagOnWorldChange(boolean refreshTagOnWorldChange) {
-        this.refreshTagOnWorldChange = refreshTagOnWorldChange;
-    }
-
-    public BukkitTask getClearEmptyTeamTask() {
-        return clearEmptyTeamTask;
-    }
-
-    public void setClearEmptyTeamTask(BukkitTask clearEmptyTeamTask) {
-        this.clearEmptyTeamTask = clearEmptyTeamTask;
-    }
-
-    public BukkitTask getRefreshNametagTask() {
-        return refreshNametagTask;
-    }
-
-    public void setRefreshNametagTask(BukkitTask refreshNametagTask) {
-        this.refreshNametagTask = refreshNametagTask;
-    }
-
     public AbstractConfig getAbstractConfig() {
         return abstractConfig;
     }
 
-    public void setAbstractConfig(AbstractConfig abstractConfig) {
-        this.abstractConfig = abstractConfig;
-    }
-
-    public Configuration getConfig() {
-        return config;
-    }
-
-    public void setConfig(Configuration config) {
-        this.config = config;
-    }
-
-    public Map<UUID, PlayerData> getPlayerData() {
-        return playerData;
-    }
-
-    public void setPlayerData(Map<UUID, PlayerData> playerData) {
-        this.playerData = playerData;
-    }
-
     public NametagEdit getPlugin() {
         return plugin;
-    }
-
-    public void setPlugin(NametagEdit plugin) {
-        this.plugin = plugin;
-    }
-
-    public NametagManager getNametagManager() {
-        return nametagManager;
-    }
-
-    public void setNametagManager(NametagManager nametagManager) {
-        this.nametagManager = nametagManager;
     }
 }
