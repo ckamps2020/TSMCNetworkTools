@@ -28,7 +28,6 @@ import static com.thesquadmc.networktools.networking.mongo.UserDatabase.FRIENDS;
 import static com.thesquadmc.networktools.networking.mongo.UserDatabase.IPS;
 import static com.thesquadmc.networktools.networking.mongo.UserDatabase.LAST_MESSAGER;
 import static com.thesquadmc.networktools.networking.mongo.UserDatabase.NAME;
-import static com.thesquadmc.networktools.networking.mongo.UserDatabase.NICKNAME;
 import static com.thesquadmc.networktools.networking.mongo.UserDatabase.NOTES;
 import static com.thesquadmc.networktools.networking.mongo.UserDatabase.PREVIOUS_NAMES;
 import static com.thesquadmc.networktools.networking.mongo.UserDatabase.REQUESTS;
@@ -72,10 +71,11 @@ public class TSMCUser {
      * The player's current name
      **/
     private String name;
+
     /**
      * The player's current nickname
      **/
-    private String nickname;
+    // private String nickname;
 
     /**
      * The player's settings
@@ -149,7 +149,7 @@ public class TSMCUser {
             user.ips.addAll(ips.stream().map(IPInfo::fromDocument).collect(Collectors.toList()));
         }
 
-        user.nickname = document.getString(NICKNAME);
+        //user.nickname = document.getString(NICKNAME);
         user.skinKey = document.getString(SKIN_KEY);
         user.signature = document.getString(SIGNATURE);
         user.lastMessager = document.get(LAST_MESSAGER, UUID.class);
@@ -347,7 +347,8 @@ public class TSMCUser {
     }
 
     public void setNickname(String nickname, boolean refresh) {
-        this.nickname = nickname;
+        updateSetting(PlayerSetting.NICKNAME, nickname);
+
         if (refresh) {
             PlayerUtils.refreshPlayer(getPlayerOnline());
         }
@@ -362,19 +363,21 @@ public class TSMCUser {
     }
 
     public String getNickname() {
-        return nickname;
+        return getSetting(PlayerSetting.NICKNAME);
     }
 
     public void setNickname(String nickname) {
+        PlayerUtils.setName(getPlayerOnline(), name);
+
         this.setNickname(nickname, true);
     }
 
     public boolean isNicknamed() {
-        if (nickname == null) {
+        if (getNickname() == null || getNickname().isEmpty()) {
             return false; //didn't know I needed this but oh well
         }
 
-        return !name.equals(nickname);
+        return !name.equals(getNickname());
     }
 
     public Set<Note> getNotes() {

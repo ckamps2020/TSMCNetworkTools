@@ -22,8 +22,8 @@ public final class YtNickCommand implements CommandExecutor {
                     if (args.length == 1) {
                         String name = args[0];
                         player.sendMessage(CC.translate("&e&lYT NICK &6■ &7You are now nicked as &e" + name));
+
                         user.setNickname(name);
-                        PlayerUtils.setName(player, name);
 
                     } else {
                         player.sendMessage(CC.translate("&e&lYT NICK &6■ &7Usage: /ytnick (name)"));

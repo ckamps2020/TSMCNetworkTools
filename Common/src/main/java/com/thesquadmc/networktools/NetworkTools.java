@@ -1,6 +1,7 @@
 package com.thesquadmc.networktools;
 
 import com.google.common.collect.Sets;
+import com.sgtcaze.nametagedit.NametagEdit;
 import com.thesquadmc.networktools.abstraction.AbstractionModule;
 import com.thesquadmc.networktools.abstraction.NMSAbstract;
 import com.thesquadmc.networktools.chat.ChatManager;
@@ -162,6 +163,7 @@ public final class NetworkTools extends JavaPlugin {
     private MongoManager mongoManager;
     private UserDatabase userDatabase;
     private ItemManager itemManager;
+    private NametagEdit nametagEdit;
 
     private RedisManager redisManager;
 
@@ -209,6 +211,8 @@ public final class NetworkTools extends JavaPlugin {
         itemManager = new ItemManager();
         fileManager = new FileManager(this);
         fileManager.setup();
+        nametagEdit = new NametagEdit();
+        nametagEdit.onEnable();
 
         AbstractGUI.initializeListeners(this);
 
@@ -289,6 +293,7 @@ public final class NetworkTools extends JavaPlugin {
     @Override
     public void onDisable() {
         getLogger().info("Shutting down...");
+        nametagEdit.onDisable();
         warpManager.saveWarps();
         redisManager.close();
         getLogger().info("Shut down! Cya :D");

@@ -1,8 +1,8 @@
 name: TSMCNetworkTools
 version: 2.5.0
 main: com.thesquadmc.networktools.NetworkTools
-author: ckamps
-depend: [LuckPerms, PlaceholderAPI]
+author: [ckamps, ItsEternity, TimLampen, AsyncNick]
+depend: [LuckPerms, PlaceholderAPI, MVdWPlaceholderAPI]
 
 commands:
     adminchat:

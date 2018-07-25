@@ -1,5 +1,6 @@
 package com.thesquadmc.networktools.utils.player;
 
+import com.sgtcaze.nametagedit.NametagEdit;
 import com.thesquadmc.networktools.NetworkTools;
 import com.thesquadmc.networktools.abstraction.MojangGameProfile;
 import com.thesquadmc.networktools.abstraction.NMSAbstract;
@@ -251,6 +252,8 @@ public final class PlayerUtils {
 
     public static void setName(Player player, String name) {
         NMS_ABSTRACT.getGameProfile(player).setName(name);
+
+        NametagEdit.getApi().reloadNametag(player);
     }
 
     public static void updateGlobalSkin(String name) {

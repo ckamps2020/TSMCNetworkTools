@@ -66,14 +66,16 @@ public class MessageCommand {
 
                     PlayerUtils.isOnline(uuid).thenAccept(online -> {
                         if (online) {
+                            TSMCUser p = TSMCUser.fromPlayer(player);
+
                             plugin.getRedisManager().sendMessage(RedisChannels.MESSAGE, RedisMesage.newMessage()
                                     .set("sender", player.getUniqueId())
-                                    .set("sender_name", player.getName())
+                                    .set("sender_name", p.getName())
                                     .set("target", uuid)
                                     .set("message", message));
 
                             player.sendMessage(CC.translate("&6Me &7■ &6{0} &8» &e{1}", name, message));
-                            TSMCUser.fromPlayer(player).setLastMessager(uuid);
+                            p.setLastMessager(uuid);
 
                         } else {
                             player.sendMessage(CC.RED + "Could not find " + name);
