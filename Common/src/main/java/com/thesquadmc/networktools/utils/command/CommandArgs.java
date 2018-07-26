@@ -1,9 +1,15 @@
 package com.thesquadmc.networktools.utils.command;
 
-import com.thesquadmc.networktools.utils.msgs.CC;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+/**
+ * Command Framework - CommandArgs <br>
+ * This class is passed to the command methods and contains various utilities as
+ * well as the command info.
+ *
+ * @author minnymin3
+ */
 public class CommandArgs {
 
     private CommandSender sender;
@@ -11,35 +17,27 @@ public class CommandArgs {
     private String label;
     private String[] args;
 
-    protected CommandArgs(CommandSender sender, org.bukkit.command.Command command, String label, String[] args, int subCommand) {
-        try {
-            String[] modArgs = new String[args.length - subCommand];
-            System.arraycopy(args, subCommand, modArgs, 0, args.length - subCommand);
+    protected CommandArgs(CommandSender sender, org.bukkit.command.Command command, String label, String[] args,
+                          int subCommand) {
+        String[] modArgs = new String[args.length - subCommand];
+        System.arraycopy(args, subCommand, modArgs, 0, args.length - subCommand);
 
-            StringBuilder builder = new StringBuilder();
-            builder.append(label);
-            for (int x = 0; x < subCommand; x++) {
-                builder.append(" ").append(args[x]);
-            }
-
-            String cmdLabel = builder.toString();
-            this.sender = sender;
-            this.command = command;
-            this.label = cmdLabel;
-            this.args = modArgs;
-
-        } catch (NegativeArraySizeException e) { //hacky solution
-            this.sender = sender;
-            this.command = command;
-            this.label = command.getName();
-            this.args = new String[0];
-
-            sender.sendMessage(CC.RED + "Please use the proper command!");
+        StringBuilder buffer = new StringBuilder();
+        buffer.append(label);
+        for (int x = 0; x < subCommand; x++) {
+            buffer.append(".").append(args[x]);
         }
+        String cmdLabel = buffer.toString();
+        this.sender = sender;
+        this.command = command;
+        this.label = cmdLabel;
+        this.args = modArgs;
     }
 
     /**
      * Gets the command sender
+     *
+     * @return
      */
     public CommandSender getSender() {
         return sender;
@@ -47,6 +45,8 @@ public class CommandArgs {
 
     /**
      * Gets the original command object
+     *
+     * @return
      */
     public org.bukkit.command.Command getCommand() {
         return command;
@@ -55,7 +55,7 @@ public class CommandArgs {
     /**
      * Gets the label including sub command labels of this command
      *
-     * @return Something like 'command subcommand'
+     * @return Something like 'test.subcommand'
      */
     public String getLabel() {
         return label;
@@ -63,8 +63,10 @@ public class CommandArgs {
 
     /**
      * Gets all the arguments after the command's label. ie. if the command
-     * label was command subcommand and the arguments were subcommand foo foo, it
+     * label was test.subcommand and the arguments were subcommand foo foo, it
      * would only return 'foo foo' because 'subcommand' is part of the command
+     *
+     * @return
      */
     public String[] getArgs() {
         return args;
@@ -94,7 +96,11 @@ public class CommandArgs {
     }
 
     public Player getPlayer() {
-        return isPlayer() ? (Player) sender : null;
+        if (sender instanceof Player) {
+            return (Player) sender;
+        } else {
+            return null;
+        }
     }
 
 }

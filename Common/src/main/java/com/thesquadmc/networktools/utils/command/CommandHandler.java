@@ -1,6 +1,5 @@
 package com.thesquadmc.networktools.utils.command;
 
-import com.thesquadmc.networktools.utils.msgs.CC;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandMap;
@@ -25,9 +24,15 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 
+/**
+ * Command Framework - CommandHandler <br>
+ * The main command framework class used for controlling the framework.
+ *
+ * @author minnymin3
+ */
 public class CommandHandler implements CommandExecutor {
 
-    private Map<String, Entry<Method, Object>> commandMap = new HashMap<>();
+    private Map<String, Entry<Method, Object>> commandMap = new HashMap<String, Entry<Method, Object>>();
     private CommandMap map;
     private Plugin plugin;
 
@@ -36,14 +41,13 @@ public class CommandHandler implements CommandExecutor {
      */
     public CommandHandler(Plugin plugin) {
         this.plugin = plugin;
-
         if (plugin.getServer().getPluginManager() instanceof SimplePluginManager) {
             SimplePluginManager manager = (SimplePluginManager) plugin.getServer().getPluginManager();
             try {
                 Field field = SimplePluginManager.class.getDeclaredField("commandMap");
                 field.setAccessible(true);
                 map = (CommandMap) field.get(manager);
-            } catch (IllegalArgumentException | SecurityException | IllegalAccessException | NoSuchFieldException e) {
+            } catch (IllegalArgumentException | SecurityException | NoSuchFieldException | IllegalAccessException e) {
                 e.printStackTrace();
             }
         }
@@ -64,54 +68,37 @@ public class CommandHandler implements CommandExecutor {
      * @param args   The arguments parsed from onCommand
      * @return Always returns true for simplicity's sake in onCommand
      */
-    private boolean handleCommand(CommandSender sender, org.bukkit.command.Command cmd, String label, String[] args) {
+    public boolean handleCommand(CommandSender sender, org.bukkit.command.Command cmd, String label, String[] args) {
         for (int i = args.length; i >= 0; i--) {
-            StringBuilder builder = new StringBuilder();
-            builder.append(label.toLowerCase());
+            StringBuffer buffer = new StringBuffer();
+            buffer.append(label.toLowerCase());
             for (int x = 0; x < i; x++) {
-                builder.append(".").append(args[x].toLowerCase());
+                buffer.append("." + args[x].toLowerCase());
             }
-
-            String cmdLabel = builder.toString();
+            String cmdLabel = buffer.toString();
             if (commandMap.containsKey(cmdLabel)) {
                 Method method = commandMap.get(cmdLabel).getKey();
                 Object methodObject = commandMap.get(cmdLabel).getValue();
                 Command command = method.getAnnotation(Command.class);
-
                 if (!command.permission().equals("") && !sender.hasPermission(command.permission())) {
-                    sender.sendMessage(CC.translate(command.noPermission()));
+                    sender.sendMessage(command.noPerm());
                     return true;
                 }
-
                 if (command.playerOnly() && !(sender instanceof Player)) {
-                    sender.sendMessage("Console cannot run this command!");
+                    sender.sendMessage("This command is only performable in game");
                     return true;
                 }
-
                 try {
-                    int length = cmdLabel.split("\\.").length - 1;
-
-                    if (length < 0) {
-                        method.invoke(methodObject, new CommandArgs(sender, cmd, label, args, 1));
-
-                    } else {
-                        method.invoke(methodObject, new CommandArgs(sender, cmd, label, args, length));
-
-                    }
+                    method.invoke(methodObject, new CommandArgs(sender, cmd, label, args,
+                            cmdLabel.split("\\.").length - 1));
                 } catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
                     e.printStackTrace();
                 }
-
                 return true;
             }
         }
-
         defaultCommand(new CommandArgs(sender, cmd, label, args, 0));
         return true;
-    }
-
-    public CommandMap getMap() {
-        return map;
     }
 
     /**
@@ -122,8 +109,6 @@ public class CommandHandler implements CommandExecutor {
      */
     public void registerCommands(Object obj) {
         for (Method m : obj.getClass().getMethods()) {
-
-            // Check for commands
             if (m.getAnnotation(Command.class) != null) {
                 Command command = m.getAnnotation(Command.class);
                 if (m.getParameterTypes().length > 1 || m.getParameterTypes()[0] != CommandArgs.class) {
@@ -132,10 +117,8 @@ public class CommandHandler implements CommandExecutor {
                 }
 
                 for (String alias : command.name()) {
-                    registerCommand(command, alias.replaceAll(" ", "."), m, obj);
+                    registerCommand(command, alias, m, obj);
                 }
-
-                // Look for command completion
             } else if (m.getAnnotation(Completer.class) != null) {
                 Completer comp = m.getAnnotation(Completer.class);
                 if (m.getParameterTypes().length > 1 || m.getParameterTypes().length == 0
@@ -144,14 +127,12 @@ public class CommandHandler implements CommandExecutor {
                             + ". Unexpected method arguments");
                     continue;
                 }
-
                 if (m.getReturnType() != List.class) {
-                    System.out.println("Unable to register tab completer " + m.getName() + ". Return type must be a List of String");
+                    System.out.println("Unable to register tab completer " + m.getName() + ". Unexpected return type");
                     continue;
                 }
-
-                for (String alias : comp.name()) {
-                    registerCompleter(alias.replaceAll(" ", "."), m, obj);
+                for (String alias : comp.aliases()) {
+                    registerCompleter(alias, m, obj);
                 }
             }
         }
@@ -161,9 +142,9 @@ public class CommandHandler implements CommandExecutor {
      * Registers all the commands under the plugin's help
      */
     public void registerHelp() {
-        Set<HelpTopic> help = new TreeSet<>(HelpTopicComparator.helpTopicComparatorInstance());
+        Set<HelpTopic> help = new TreeSet<HelpTopic>(HelpTopicComparator.helpTopicComparatorInstance());
         for (String s : commandMap.keySet()) {
-            if (!s.contains(" ")) {
+            if (!s.contains(".")) {
                 org.bukkit.command.Command cmd = map.getCommand(s);
                 HelpTopic topic = new GenericCommandHelpTopic(cmd);
                 help.add(topic);
@@ -174,36 +155,32 @@ public class CommandHandler implements CommandExecutor {
         Bukkit.getServer().getHelpMap().addTopic(topic);
     }
 
-    private void registerCommand(Command command, String label, Method m, Object obj) {
-        commandMap.put(label.toLowerCase(), new AbstractMap.SimpleEntry<>(m, obj));
-        commandMap.put(this.plugin.getName() + ':' + label.toLowerCase(), new AbstractMap.SimpleEntry<>(m, obj));
-
-        String cmdLabel = label.split(" ")[0].toLowerCase();
+    public void registerCommand(Command command, String label, Method m, Object obj) {
+        commandMap.put(label.toLowerCase(), new AbstractMap.SimpleEntry<Method, Object>(m, obj));
+        commandMap.put(this.plugin.getName() + ':' + label.toLowerCase(), new AbstractMap.SimpleEntry<Method, Object>(m, obj));
+        String cmdLabel = label.split("\\.")[0].toLowerCase();
         if (map.getCommand(cmdLabel) == null) {
-            org.bukkit.command.Command cmd = new BaseCommand(cmdLabel, this, plugin);
+            org.bukkit.command.Command cmd = new BukkitCommand(cmdLabel, this, plugin);
             map.register(plugin.getName(), cmd);
         }
-
-        if (!command.description().equalsIgnoreCase("") && cmdLabel.equals(label)) {
+        if (!command.description().equalsIgnoreCase("") && cmdLabel == label) {
             map.getCommand(cmdLabel).setDescription(command.description());
         }
-
-        if (!command.usage().equalsIgnoreCase("") && cmdLabel.equals(label)) {
+        if (!command.usage().equalsIgnoreCase("") && cmdLabel == label) {
             map.getCommand(cmdLabel).setUsage(command.usage());
         }
     }
 
-    private void registerCompleter(String label, Method m, Object obj) {
-        String cmdLabel = label.split(" ")[0].toLowerCase();
-
+    public void registerCompleter(String label, Method m, Object obj) {
+        String cmdLabel = label.split("\\.")[0].toLowerCase();
         if (map.getCommand(cmdLabel) == null) {
-            org.bukkit.command.Command command = new BaseCommand(cmdLabel, this, plugin);
+            org.bukkit.command.Command command = new BukkitCommand(cmdLabel, this, plugin);
             map.register(plugin.getName(), command);
         }
-        if (map.getCommand(cmdLabel) instanceof BaseCommand) {
-            BaseCommand command = (BaseCommand) map.getCommand(cmdLabel);
+        if (map.getCommand(cmdLabel) instanceof BukkitCommand) {
+            BukkitCommand command = (BukkitCommand) map.getCommand(cmdLabel);
             if (command.completer == null) {
-                command.completer = new BaseCompleter();
+                command.completer = new BukkitCompleter();
             }
             command.completer.addCompleter(label, m, obj);
         } else if (map.getCommand(cmdLabel) instanceof PluginCommand) {
@@ -212,11 +189,11 @@ public class CommandHandler implements CommandExecutor {
                 Field field = command.getClass().getDeclaredField("completer");
                 field.setAccessible(true);
                 if (field.get(command) == null) {
-                    BaseCompleter completer = new BaseCompleter();
+                    BukkitCompleter completer = new BukkitCompleter();
                     completer.addCompleter(label, m, obj);
                     field.set(command, completer);
-                } else if (field.get(command) instanceof BaseCompleter) {
-                    BaseCompleter completer = (BaseCompleter) field.get(command);
+                } else if (field.get(command) instanceof BukkitCompleter) {
+                    BukkitCompleter completer = (BukkitCompleter) field.get(command);
                     completer.addCompleter(label, m, obj);
                 } else {
                     System.out.println("Unable to register tab completer " + m.getName()

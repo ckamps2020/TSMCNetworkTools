@@ -4,6 +4,7 @@ import org.bson.Document;
 import org.bukkit.entity.Player;
 
 import java.util.Date;
+import java.util.Objects;
 import java.util.UUID;
 
 public class ChatMessage {
@@ -65,6 +66,35 @@ public class ChatMessage {
         }
 
         return document;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChatMessage that = (ChatMessage) o;
+        return Objects.equals(player, that.player) &&
+                Objects.equals(message, that.message) &&
+                Objects.equals(server, that.server) &&
+                type == that.type &&
+                Objects.equals(timestamp, that.timestamp) &&
+                Objects.equals(target, that.target);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(player, message, server, type, timestamp, target);
+    }
+
+    @Override
+    public String toString() {
+        return "ChatMessage{" +
+                "player=" + player +
+                ", message='" + message + '\'' +
+                ", server='" + server + '\'' +
+                ", type=" + type +
+                ", timestamp=" + timestamp +
+                '}';
     }
 
     public enum ChatType {

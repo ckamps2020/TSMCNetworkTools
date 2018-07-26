@@ -11,7 +11,6 @@ import com.thesquadmc.networktools.utils.msgs.FormatUtil;
 import com.thesquadmc.networktools.utils.msgs.StringUtils;
 import com.thesquadmc.networktools.utils.msgs.Unicode;
 import com.thesquadmc.networktools.utils.player.PlayerUtils;
-import com.thesquadmc.networktools.utils.time.TimeUtils;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -66,8 +65,9 @@ public class ChatListener implements Listener {
                 //Check if there is a chat delay
                 if (plugin.getChatManager().getChatDelay() > 0) {
                     System.out.println(System.currentTimeMillis() - chatMessage.getTimestamp().getTime());
+                    System.out.println(plugin.getChatManager().getChatDelay() * 1000);
 
-                    if (TimeUtils.elapsed(chatMessage.getTimestamp().getTime(), plugin.getChatManager().getChatDelay() * 1000)) {
+                    if (System.currentTimeMillis() - chatMessage.getTimestamp().getTime() < plugin.getChatManager().getChatDelay() * 1000) {
                         player.sendMessage(FILTER_PREFIX + "You are sending messages too fast!");
 
                         e.setCancelled(true);
@@ -111,7 +111,8 @@ public class ChatListener implements Listener {
                 .filter(p -> !TSMCUser.fromPlayer(p).isIgnored(player.getUniqueId()))
                 .forEach(p -> p.spigot().sendMessage(msg));
 
-        lastMessage.put(player.getUniqueId(), chatMessage);
+        ChatMessage message1 = lastMessage.put(player.getUniqueId(), chatMessage);
+        System.out.println(message1);
         plugin.getChatManager().addMessage(chatMessage);
     }
 

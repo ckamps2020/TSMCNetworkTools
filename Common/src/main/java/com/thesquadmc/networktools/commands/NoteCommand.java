@@ -49,7 +49,7 @@ public class NoteCommand {
         }
     }
 
-    @Command(name = {"note add", "notes add"}, permission = "group.trainee", playerOnly = true)
+    @Command(name = {"note.add", "notes.add"}, permission = "group.trainee", playerOnly = true)
     public void add(CommandArgs args) {
         Player sender = args.getPlayer();
 

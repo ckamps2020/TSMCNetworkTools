@@ -16,12 +16,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -42,19 +39,9 @@ public final class StringUtils {
             // Our stuff
             "thesquadmc.net"
     );
-    public static Map<UUID, String> lastMsg = new HashMap<>();
-    public static Map<String, ArrayList<String>> logs = new HashMap<>();
 
     private StringUtils() {
         populate();
-    }
-
-    public static Map<String, ArrayList<String>> getLogs() {
-        return logs;
-    }
-
-    public static Map<UUID, String> getLastMsg() {
-        return lastMsg;
     }
 
     public static String translateColorCode(String message) {

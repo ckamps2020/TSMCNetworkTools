@@ -5,43 +5,58 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Command Framework - Command <br>
+ * The command annotation used to designate methods as commands. All methods
+ * should have a single CommandArgs argument
+ *
+ * @author minnymin3
+ */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Command {
 
     /**
-     * A list of  names that the command is executed under. If it is a sub command then its values would be
-     * separated by periods. ie. a command that would be a subcommand of test
-     * would be 'command subcommand'
-     */
-    String[] name();
-
-    /**
      * Gets the required permission of the command
+     *
+     * @return
      */
     String permission() default "";
-
-    //TODO Add rank support
-    //Rank rank() default Rank.;
 
     /**
      * The message sent to the player when they do not have permission to
      * execute it
+     *
+     * @return
      */
-    String noPermission() default "&cYou do not have permission to perform that command";
+    String noPerm() default "You do not have permission to perform that action";
+
+    /**
+     * A list of alternate names that the command is executed under. See
+     * name() for details on how names work
+     *
+     * @return
+     */
+    String[] name();
 
     /**
      * The description that will appear in /help of the command
+     *
+     * @return
      */
-    String description() default "There is no description :(";
+    String description() default "";
 
     /**
      * The usage that will appear in /help (commandname)
+     *
+     * @return
      */
     String usage() default "";
 
     /**
      * Whether or not the command is available to players only
+     *
+     * @return
      */
     boolean playerOnly() default false;
 }

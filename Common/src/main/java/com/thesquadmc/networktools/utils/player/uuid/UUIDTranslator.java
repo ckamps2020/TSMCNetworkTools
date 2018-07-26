@@ -159,7 +159,7 @@ public final class UUIDTranslator {
                 if (!expensiveLookups || !Bukkit.getServer().getOnlineMode())
                     return null;
 
-                // That didn't work. Let's ask Mojang. This call may fail, because Mojang is insane.
+                // That didn't work. Let's ask Mojang. This call may fail, because it's Mojang
                 String name;
                 try {
                     List<String> nameHist = NameFetcher.nameHistoryFromUuid(player);

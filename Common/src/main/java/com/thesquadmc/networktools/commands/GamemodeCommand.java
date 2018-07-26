@@ -11,13 +11,20 @@ import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public final class GamemodeCommand {
 
-    @Completer(name = {"gamemode", "gm"})
+    private static final List<String> SUBCOMMANDS = Arrays.asList("creative", "c", "survival", "s", "spectator", "sp", "a", "adventure");
+
+    @Completer(aliases = {"gamemode", "gm"})
     public List<String> complete(CommandArgs args) {
         if (args.length() == 1) {
-            return Arrays.asList("creative", "c", "survival", "s", "spectator", "sp", "a", "adventure");
+            String string = args.getArg(0);
+
+            return SUBCOMMANDS.stream()
+                    .filter(string::startsWith)
+                    .collect(Collectors.toList());
         }
 
         return null;
@@ -30,22 +37,22 @@ public final class GamemodeCommand {
         }
     }
 
-    @Command(name = {"gamemode c", "gamemode creative", "gm c", "gmc"}, permission = "essentials.gamemode")
+    @Command(name = {"gamemode.c", "gamemode creative", "gm.c", "gmc"}, permission = "essentials.gamemode")
     public void creative(CommandArgs args) {
         handleArgs(args, GameMode.CREATIVE);
     }
 
-    @Command(name = {"gamemode s", "gamemode survival", "gm s", "gms"}, permission = "essentials.gamemode")
+    @Command(name = {"gamemode.s", "gamemode survival", "gm.s", "gms"}, permission = "essentials.gamemode")
     public void survival(CommandArgs args) {
         handleArgs(args, GameMode.SURVIVAL);
     }
 
-    @Command(name = {"gamemode sp", "gamemode spectator", "gm sp", "gmsp"}, permission = "essentials.gamemode")
+    @Command(name = {"gamemode.sp", "gamemode spectator", "gm.sp", "gmsp"}, permission = "essentials.gamemode")
     public void spectator(CommandArgs args) {
         handleArgs(args, GameMode.SPECTATOR);
     }
 
-    @Command(name = {"gamemode a", "gamemode adventure", "gm a", "gma"}, permission = "essentials.gamemode")
+    @Command(name = {"gamemode.a", "gamemode adventure", "gm.a", "gma"}, permission = "essentials.gamemode")
     public void adventure(CommandArgs args) {
         handleArgs(args, GameMode.ADVENTURE);
     }

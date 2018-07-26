@@ -9,6 +9,8 @@ import com.thesquadmc.networktools.utils.msgs.CC;
 import com.thesquadmc.networktools.utils.player.PlayerUtils;
 import org.bukkit.entity.Player;
 
+import java.util.stream.Stream;
+
 public class IgnoreCommand {
 
     private static final Rank[] CANNOT_IGNORE = new Rank[]{Rank.TRAINEE, Rank.MOD, Rank.SRMOD};
@@ -23,6 +25,20 @@ public class IgnoreCommand {
     public void ignore(CommandArgs args) {
         Player player = args.getPlayer();
 
+        Stream.of(
+                CC.translate("&6—————————————————————"),
+                CC.translate("&e/ignore &8- &6Sends you this message"),
+                CC.translate("&e/ignore add <player> &8- &6Adds the player to your ignored list"),
+                CC.translate("&e/ignore remove <player> &8- &6Removes a player from your ignored list"),
+                CC.translate("&e/ignore check <player> &8- &6Checks if you are ignoring a player")
+        ).forEach(player::sendMessage);
+    }
+
+    @Command(name = "ignore.add", playerOnly = true)
+    public void add(CommandArgs args) {
+        Player player = args.getPlayer();
+        TSMCUser user = TSMCUser.fromPlayer(player);
+
         for (Rank rank : CANNOT_IGNORE) {
             if (PlayerUtils.doesRankMatch(player, rank)) {
                 player.sendMessage(CC.RED + "You cannot ignore players!");
@@ -31,25 +47,68 @@ public class IgnoreCommand {
         }
 
         if (args.length() == 0) {
-            player.sendMessage(CC.RED + "/ignore <player name>");
+            player.sendMessage(CC.RED + "You must specify a player!");
             return;
         }
 
         String name = args.getArg(0);
         plugin.getUUIDTranslator().getUUID(name, true).thenAccept(uuid -> {
-            if (uuid == null) {
-                player.sendMessage(CC.RED + "Unable to find the information for " + name);
-                return;
-            }
+            if (user.isIgnored(uuid)) {
+                player.sendMessage(CC.translate("&e&lIGNORE &6■ &7You are already ignoring &e{0}", name));
 
-            if (PlayerUtils.isEqualOrHigherThen(uuid, Rank.TRAINEE)) {
-                player.sendMessage(CC.RED + "You cannot ignore staff members!");
-                return;
-            }
+            } else {
+                if (PlayerUtils.isEqualOrHigherThen(uuid, Rank.TRAINEE)) {
+                    player.sendMessage(CC.RED + "You cannot ignore staff members!");
+                    return;
+                }
 
-            TSMCUser.fromPlayer(player).addIgnoredPlayer(uuid);
-            player.sendMessage(CC.translate("&e&lIGNORE &6■ &e{0} &7is now ignored!", name));
+                user.addIgnoredPlayer(uuid);
+                player.sendMessage(CC.translate("&e&lIGNORE &6■ &7You are now ignoring &e{0}", name));
+            }
         });
+    }
 
+    @Command(name = "ignore.remove", playerOnly = true)
+    public void remove(CommandArgs args) {
+        Player player = args.getPlayer();
+        TSMCUser user = TSMCUser.fromPlayer(player);
+
+        if (args.length() == 0) {
+            player.sendMessage(CC.RED + "You must specify a player!");
+            return;
+        }
+
+        String name = args.getArg(0);
+        plugin.getUUIDTranslator().getUUID(name, true).thenAccept(uuid -> {
+            if (user.isIgnored(uuid)) {
+                user.removeIgnoredPlayer(uuid);
+                player.sendMessage(CC.translate("&e&lIGNORE &6■ &7You are no longer ignoring &e{0}", name));
+
+            } else {
+                player.sendMessage(CC.translate("&e&lIGNORE &6■ &7You are not ignoring &e{0}", name));
+            }
+        });
+    }
+
+    @Command(name = "ignore.check", playerOnly = true)
+    public void list(CommandArgs args) {
+        Player player = args.getPlayer();
+        TSMCUser user = TSMCUser.fromPlayer(player);
+
+        if (args.length() == 0) {
+            player.sendMessage(CC.RED + "You must specify a player!");
+            return;
+        }
+
+        String name = args.getArg(0);
+
+        plugin.getUUIDTranslator().getUUID(name, true).thenAccept(uuid -> {
+            if (user.isIgnored(uuid)) {
+                player.sendMessage(CC.translate("&e&lIGNORE &6■ &7You are ignoring &e{0}", name));
+
+            } else {
+                player.sendMessage(CC.translate("&e&lIGNORE &6■ &7You are not ignoring &e{0}", name));
+            }
+        });
     }
 }

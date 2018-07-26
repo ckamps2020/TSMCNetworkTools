@@ -20,6 +20,7 @@ import com.thesquadmc.networktools.commands.FreezeCommand;
 import com.thesquadmc.networktools.commands.FreezePanelCommand;
 import com.thesquadmc.networktools.commands.GamemodeCommand;
 import com.thesquadmc.networktools.commands.HealCommand;
+import com.thesquadmc.networktools.commands.IgnoreCommand;
 import com.thesquadmc.networktools.commands.InvseeCommand;
 import com.thesquadmc.networktools.commands.LaunchCommand;
 import com.thesquadmc.networktools.commands.LookupCommand;
@@ -277,6 +278,7 @@ public final class NetworkTools extends JavaPlugin {
                 new MessageCommand(this),
                 new EssentialCommands(this),
                 new TeleportCommand(this),
+                new IgnoreCommand(this),
                 new HealCommand()
         ).forEach(o -> commandHandler.registerCommands(o));
 
@@ -287,7 +289,6 @@ public final class NetworkTools extends JavaPlugin {
         }
 
         getLogger().info("Plugin started up and ready to go!");
-        System.out.println(PlayerSetting.FORCEFIELD);
     }
 
     @Override

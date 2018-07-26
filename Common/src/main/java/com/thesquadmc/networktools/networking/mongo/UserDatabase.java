@@ -11,7 +11,7 @@ public interface UserDatabase {
 
     String UUID = "uuid";
     String NAME = "name";
-    String NICKNAME = "name";
+    String NICKNAME = "nickname";
 
     String PREVIOUS_NAMES = "previous_names";
     String FRIENDS = "friends";

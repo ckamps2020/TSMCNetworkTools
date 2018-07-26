@@ -9,13 +9,26 @@ import org.bukkit.plugin.Plugin;
 
 import java.util.List;
 
-public class BaseCommand extends org.bukkit.command.Command {
+/**
+ * Command Framework - BukkitCommand <br>
+ * An implementation of Bukkit's Command class allowing for registering of
+ * commands without plugin.yml
+ *
+ * @author minnymin3
+ */
+public class BukkitCommand extends org.bukkit.command.Command {
 
     private final Plugin owningPlugin;
-    protected BaseCompleter completer;
+    protected BukkitCompleter completer;
     private CommandExecutor executor;
 
-    protected BaseCommand(String label, CommandExecutor executor, Plugin owner) {
+    /**
+     * A slimmed down PluginCommand
+     *
+     * @param name
+     * @param owner
+     */
+    protected BukkitCommand(String label, CommandExecutor executor, Plugin owner) {
         super(label);
         this.executor = executor;
         this.owningPlugin = owner;
@@ -24,7 +37,7 @@ public class BaseCommand extends org.bukkit.command.Command {
 
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
-        boolean success;
+        boolean success = false;
 
         if (!owningPlugin.isEnabled()) {
             return false;
@@ -62,11 +75,9 @@ public class BaseCommand extends org.bukkit.command.Command {
             if (completer != null) {
                 completions = completer.onTabComplete(sender, this, alias, args);
             }
-
             if (completions == null && executor instanceof TabCompleter) {
                 completions = ((TabCompleter) executor).onTabComplete(sender, this, alias, args);
             }
-
         } catch (Throwable ex) {
             StringBuilder message = new StringBuilder();
             message.append("Unhandled exception during tab completion for command '/").append(alias).append(' ');

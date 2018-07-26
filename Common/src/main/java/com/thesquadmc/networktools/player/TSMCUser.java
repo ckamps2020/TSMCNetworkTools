@@ -28,6 +28,7 @@ import static com.thesquadmc.networktools.networking.mongo.UserDatabase.FRIENDS;
 import static com.thesquadmc.networktools.networking.mongo.UserDatabase.IPS;
 import static com.thesquadmc.networktools.networking.mongo.UserDatabase.LAST_MESSAGER;
 import static com.thesquadmc.networktools.networking.mongo.UserDatabase.NAME;
+import static com.thesquadmc.networktools.networking.mongo.UserDatabase.NICKNAME;
 import static com.thesquadmc.networktools.networking.mongo.UserDatabase.NOTES;
 import static com.thesquadmc.networktools.networking.mongo.UserDatabase.PREVIOUS_NAMES;
 import static com.thesquadmc.networktools.networking.mongo.UserDatabase.REQUESTS;
@@ -43,39 +44,46 @@ public class TSMCUser {
      * The UUID of the player
      **/
     private final UUID uuid;
-    /**
-     * All previous names the player has had
-     **/
-    private final Set<String> previousNames = Sets.newHashSet();
-    /**
-     * A list of {@link IPInfo} that this player has
-     */
-    private final Set<IPInfo> ips = Sets.newHashSet();
-    /**
-     * A list of friends that this player has
-     */
-    private final Set<UUID> friends = Sets.newHashSet();
-    /**
-     * A list of friend requests this player has
-     */
-    private final Set<UUID> requests = Sets.newHashSet();
-    /**
-     * A list of players this player has ignored
-     */
-    private final Set<UUID> ignored = Sets.newHashSet();
-    /**
-     * A list of {@link Note} that this player has
-     */
-    private final Set<Note> notes = Sets.newHashSet();
+
     /**
      * The player's current name
      **/
     private String name;
 
     /**
+     * All previous names the player has had
+     **/
+    private final Set<String> previousNames = Sets.newHashSet();
+
+    /**
+     * A list of {@link IPInfo} that this player has
+     */
+    private final Set<IPInfo> ips = Sets.newHashSet();
+
+    /**
+     * A list of friends that this player has
+     */
+    private final Set<UUID> friends = Sets.newHashSet();
+
+    /**
+     * A list of friend requests this player has
+     */
+    private final Set<UUID> requests = Sets.newHashSet();
+
+    /**
+     * A list of players this player has ignored
+     */
+    private final Set<UUID> ignored = Sets.newHashSet();
+
+    /**
+     * A list of {@link Note} that this player has
+     */
+    private final Set<Note> notes = Sets.newHashSet();
+
+    /**
      * The player's current nickname
      **/
-    // private String nickname;
+    private String nickname;
 
     /**
      * The player's settings
@@ -124,10 +132,6 @@ public class TSMCUser {
     public static TSMCUser fromDocument(Document document) {
         TSMCUser user = new TSMCUser(document.get("_id", UUID.class), document.getString("name"));
 
-        document.forEach((s, o) -> {
-            System.out.print(s);
-        });
-
         Set<String> previousNames = DocumentUtils.documentToStringSet(document, PREVIOUS_NAMES);
         previousNames.addAll(user.previousNames);
 
@@ -149,7 +153,7 @@ public class TSMCUser {
             user.ips.addAll(ips.stream().map(IPInfo::fromDocument).collect(Collectors.toList()));
         }
 
-        //user.nickname = document.getString(NICKNAME);
+        user.nickname = document.getString(NICKNAME);
         user.skinKey = document.getString(SKIN_KEY);
         user.signature = document.getString(SIGNATURE);
         user.lastMessager = document.get(LAST_MESSAGER, UUID.class);
@@ -179,6 +183,7 @@ public class TSMCUser {
 
         return new Document("_id", user.uuid)
                 .append(NAME, user.name)
+                .append(NICKNAME, user.nickname)
 
                 .append(PREVIOUS_NAMES, user.previousNames)
                 .append(FRIENDS, user.friends)
@@ -347,7 +352,7 @@ public class TSMCUser {
     }
 
     public void setNickname(String nickname, boolean refresh) {
-        updateSetting(PlayerSetting.NICKNAME, nickname);
+        this.nickname = nickname;
 
         if (refresh) {
             PlayerUtils.refreshPlayer(getPlayerOnline());
@@ -363,17 +368,17 @@ public class TSMCUser {
     }
 
     public String getNickname() {
-        return getSetting(PlayerSetting.NICKNAME);
+        return nickname;
     }
 
     public void setNickname(String nickname) {
-        PlayerUtils.setName(getPlayerOnline(), name);
+        PlayerUtils.setName(getPlayerOnline(), nickname);
 
         this.setNickname(nickname, true);
     }
 
     public boolean isNicknamed() {
-        if (getNickname() == null || getNickname().isEmpty()) {
+        if (getNickname() == null || getNickname().isEmpty() || getNickname().equalsIgnoreCase(name)) {
             return false; //didn't know I needed this but oh well
         }
 

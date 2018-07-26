@@ -8,7 +8,6 @@ import com.thesquadmc.networktools.player.local.LocalPlayer;
 import com.thesquadmc.networktools.utils.enums.Rank;
 import com.thesquadmc.networktools.utils.json.JSONUtils;
 import com.thesquadmc.networktools.utils.msgs.CC;
-import com.thesquadmc.networktools.utils.msgs.StringUtils;
 import com.thesquadmc.networktools.utils.player.PlayerUtils;
 import com.thesquadmc.networktools.utils.server.Multithreading;
 import org.bukkit.Bukkit;
@@ -104,6 +103,10 @@ public final class ConnectionListeners implements Listener {
         });
 
         TSMCUser user = TSMCUser.fromPlayer(player);
+        if (user.isNicknamed()) {
+            PlayerUtils.setName(player, user.getNickname());
+        }
+
         MojangGameProfile profile = plugin.getNMSAbstract().getGameProfile(player);
         profile.getPropertyMap().values().forEach(p -> {
             user.setSkinKey(p.getValue());
@@ -150,7 +153,6 @@ public final class ConnectionListeners implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent e) {
         Player player = e.getPlayer();
-        StringUtils.lastMsg.remove(player.getUniqueId());
 
         player.performCommand("party leave");
 
@@ -163,17 +165,19 @@ public final class ConnectionListeners implements Listener {
         TSMCUser.unloadUser(TSMCUser.fromPlayer(player), true);
 
         LocalPlayer localPlayer = plugin.getLocalPlayerManager().removePlayer(player);
-        try (FileWriter writer = new FileWriter(new File(dataFolder, player.getUniqueId() + ".json"))) {
-            JSONUtils.getGson().toJson(
-                    localPlayer,
-                    writer
-            );
+        Multithreading.runAsync(() -> {
+            try (FileWriter writer = new FileWriter(new File(dataFolder, player.getUniqueId() + ".json"))) {
+                JSONUtils.getGson().toJson(
+                        localPlayer,
+                        writer
+                );
 
-        } catch (IOException exception) {
-            exception.printStackTrace();
+            } catch (IOException exception) {
+                exception.printStackTrace();
 
-            plugin.getLogger().severe("Could not save data of user " + player.getName());
-        }
+                plugin.getLogger().severe("Could not save data of user " + player.getName());
+            }
+        });
     }
 
 }

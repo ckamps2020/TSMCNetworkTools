@@ -465,33 +465,6 @@ public class EssentialCommands {
         player.sendMessage(CC.translate("&e&lHAT &6■ &7You have set your hat"));
     }
 
-    @Command(name = {"burn"}, permission = "essentials.burn", playerOnly = true)
-    public void burn(CommandArgs args) {
-        Player player = args.getPlayer();
-
-        if (args.length() < 2) {
-            player.sendMessage(CC.RED + "/burn <player> <time in seconds>");
-            return;
-        }
-
-        Player target = Bukkit.getPlayer(args.getArg(0));
-        if (target == null) {
-            player.sendMessage(CC.RED + args.getArg(0) + " is not online!");
-            return;
-        }
-
-        Integer time = Ints.tryParse(args.getArg(1));
-        if (time == null || time <= 0) {
-            player.sendMessage(CC.RED + "Burn time must be above a number above 0!");
-            return;
-        }
-
-
-        target.setFireTicks(time * 20);
-        System.out.println(target.getFireTicks());
-        player.sendMessage(CC.translate("&e&lBURN &6■ &7You set &e{0} &7on &cfire &7for &e{1} seconds", target.getName(), time));
-    }
-
     @Command(name = {"more"}, permission = "essentials.more", playerOnly = true)
     public void more(CommandArgs args) {
         Player player = args.getPlayer();
@@ -526,7 +499,7 @@ public class EssentialCommands {
         player.sendMessage(getXPMessage(target, player));
     }
 
-    @Command(name = {"exp set", "xp set"}, permission = "essentials.exp.set")
+    @Command(name = {"exp.set", "xp.set"}, permission = "essentials.exp.set")
     public void setEXP(CommandArgs args) {
         CommandSender sender = args.getSender();
 
@@ -553,7 +526,7 @@ public class EssentialCommands {
         sender.sendMessage(CC.translate("&e&lEXP &6■ &7Set &e{0}'s &7exp to &e{1}", player.getName(), exp));
     }
 
-    @Command(name = {"exp give", "xp give"}, permission = "essentials.exp.give")
+    @Command(name = {"exp.give", "xp.give"}, permission = "essentials.exp.give")
     public void giveEXP(CommandArgs args) {
         CommandSender sender = args.getSender();
 

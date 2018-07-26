@@ -25,8 +25,6 @@ public class PlayerSetting<T> {
     public static final PlayerSetting<Boolean> VANISHED = new PlayerSetting<>("VANISHED", Boolean.class, false);
     public static final PlayerSetting<Boolean> YOUTUBE_VANISHED = new PlayerSetting<>("YOUTUBE_VANISHED", Boolean.class, false);
 
-    public static final PlayerSetting<String> NICKNAME = new PlayerSetting<>("NICKNAME", String.class, "");
-
     private final String name;
     private final Class<T> settingType;
     private final T defaultValue;
