@@ -8,6 +8,7 @@ import com.thesquadmc.networktools.objects.logging.IPInfo;
 import com.thesquadmc.networktools.objects.logging.Note;
 import com.thesquadmc.networktools.utils.DocumentUtils;
 import com.thesquadmc.networktools.utils.player.PlayerUtils;
+import com.thesquadmc.networktools.utils.server.ServerType;
 import org.bson.Document;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -59,6 +60,11 @@ public class TSMCUser {
      * A list of {@link IPInfo} that this player has
      */
     private final Set<IPInfo> ips = Sets.newHashSet();
+
+    /**
+     * Logs how long a player has played on each server type
+     */
+    private Map<ServerType, Long> timePlayed = Maps.newHashMap();
 
     /**
      * A list of friends that this player has
@@ -144,6 +150,7 @@ public class TSMCUser {
         }
 
         List<Document> notes = (List<Document>) document.get(NOTES);
+        System.out.println("notes: " + notes);
         if (notes != null) {
             user.notes.addAll(notes.stream().map(Note::fromDocument).collect(Collectors.toList()));
         }
@@ -152,6 +159,9 @@ public class TSMCUser {
         if (ips != null) {
             user.ips.addAll(ips.stream().map(IPInfo::fromDocument).collect(Collectors.toList()));
         }
+
+        user.timePlayed = (Map<ServerType, Long>) document.get("time_played");
+        System.out.println(user.timePlayed);
 
         user.nickname = document.getString(NICKNAME);
         user.skinKey = document.getString(SKIN_KEY);
@@ -191,6 +201,7 @@ public class TSMCUser {
                 .append(REQUESTS, user.requests)
                 .append(NOTES, user.notes)
                 .append(SETTINGS, settings)
+                .append("time_played", user.timePlayed)
 
                 .append(SKIN_KEY, user.skinKey)
                 .append(SIGNATURE, user.signature)
@@ -267,6 +278,14 @@ public class TSMCUser {
 
     public void clearFriends() {
         this.friends.clear();
+    }
+
+    public void addTimePlayed(ServerType type, Long time) {
+        timePlayed.put(type, timePlayed.getOrDefault(type, 0L) + time);
+    }
+
+    public long getTimePlayed(ServerType type) {
+        return timePlayed.getOrDefault(type, 0L);
     }
 
     public void addIgnoredPlayer(UUID uuid) {
@@ -390,6 +409,8 @@ public class TSMCUser {
     }
 
     public void addNote(Note note) {
+        System.out.println(notes);
+
         notes.add(note);
     }
 

@@ -240,12 +240,23 @@ public class TeleportCommand {
         }
 
         if (localPlayer.isTpRequestHere()) {
-            Location location = localPlayer.getTpRequestLocation();
-            new TimedTeleport(player, sender, location, 5 * 1000);
+            new TimedTeleport.Builder(sender, localPlayer.getTpRequestLocation())
+                    .targetPlayer(player)
+                    .whenComplete(() -> {
+                        player.sendMessage(CC.translate("&e&lTELEPORT &6■ &7Teleporting to &e{0}", sender.getName()));
+                        sender.sendMessage(CC.translate("&e&lTELEPORT &6■ &7Teleporting &e{0}", player.getName()));
+                    })
+                    .build();
             player.sendMessage(CC.translate("&e&lTELEPORT &6■ &e&lDon't move! &7Teleporting you in &e5 seconds"));
 
         } else {
-            new TimedTeleport(sender, player, player.getLocation(), 5 * 1000);
+            new TimedTeleport.Builder(sender, player.getLocation())
+                    .targetPlayer(player)
+                    .whenComplete(() -> {
+                        sender.sendMessage(CC.translate("&e&lTELEPORT &6■ &7Teleporting to &e{0}", player.getName()));
+                        player.sendMessage(CC.translate("&e&lTELEPORT &6■ &7Teleporting &e{0}", sender.getName()));
+                    })
+                    .build();
 
             sender.sendMessage(CC.translate("&e&lTELEPORT &6■ &e&lDon't move! &7Teleporting you in &e5 seconds"));
         }

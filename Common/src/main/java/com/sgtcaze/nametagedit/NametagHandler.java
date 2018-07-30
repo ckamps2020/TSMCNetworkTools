@@ -265,6 +265,13 @@ public class NametagHandler implements Listener {
         if (input == null) return "";
         if (player == null) return input;
 
+        if (Bukkit.getPluginManager().isPluginEnabled("MVdWPlaceholderAPI")) {
+            plugin.debug("Trying to use MVdWPlaceholderAPI for placeholders");
+            if (be.maximvdw.placeholderapi.PlaceholderAPI.getLoadedPlaceholderCount() != 0) {
+                input = be.maximvdw.placeholderapi.PlaceholderAPI.replacePlaceholders(player, input);
+            }
+        }
+
         // The string can become null again at this point. Add another check.
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             plugin.debug("Trying to use PlaceholderAPI for placeholders");

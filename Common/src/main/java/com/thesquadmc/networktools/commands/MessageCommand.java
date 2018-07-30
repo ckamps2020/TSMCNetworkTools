@@ -86,6 +86,11 @@ public class MessageCommand {
         }
     }
 
+    @Command(name = {"togglemessage", "togglepms"}, playerOnly = true)
+    public void toggle(CommandArgs args) {
+        TSMCUser user = TSMCUser.fromPlayer(args.getPlayer());
+    }
+
     @Command(name = {"reply", "r"}, playerOnly = true)
     public void reply(CommandArgs args) {
         Player player = args.getPlayer();

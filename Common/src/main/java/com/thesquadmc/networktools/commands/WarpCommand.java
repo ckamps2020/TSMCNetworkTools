@@ -4,6 +4,7 @@ import com.thesquadmc.networktools.NetworkTools;
 import com.thesquadmc.networktools.utils.command.Command;
 import com.thesquadmc.networktools.utils.command.CommandArgs;
 import com.thesquadmc.networktools.utils.msgs.CC;
+import com.thesquadmc.networktools.utils.player.TimedTeleport;
 import com.thesquadmc.networktools.warp.Warp;
 import org.bukkit.entity.Player;
 
@@ -38,9 +39,9 @@ public class WarpCommand {
         } else {
             Optional<Warp> warp = plugin.getWarpManager().getWarp(args.getArg(0));
             if (warp.isPresent()) {
-                player.teleport(warp.get().getLocation());
-
-                //TODO Delayed teleport task
+                new TimedTeleport.Builder(player, warp.get().getLocation())
+                        .whenComplete(() -> player.sendMessage(CC.translate("&e&lWARP &6■ &7Teleported to &ewarp {0}", warp.get().getName())))
+                        .build();
 
             } else {
                 player.sendMessage(CC.RED + "Could not find a warp with that name!");
@@ -55,7 +56,9 @@ public class WarpCommand {
 
         Optional<Warp> warp = plugin.getWarpManager().getWarp("spawn");
         if (warp.isPresent()) {
-            player.teleport(warp.get().getLocation());
+            new TimedTeleport.Builder(player, warp.get().getLocation())
+                    .whenComplete(() -> player.sendMessage(CC.translate("&e&lWARP &6■ &7Teleported to &espawn")))
+                    .build();
 
         } else {
             player.sendMessage(CC.RED + "There is no warp to spawn set!");

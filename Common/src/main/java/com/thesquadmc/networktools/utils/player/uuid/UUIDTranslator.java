@@ -47,6 +47,7 @@ public final class UUIDTranslator {
     }
 
     public final CompletableFuture<UUID> getUUID(String player, boolean expensiveLookups) {
+        long start = System.nanoTime();
         // If the player is online, give them their UUID.
         if (Bukkit.getPlayer(player) != null)
             return CompletableFuture.completedFuture(Bukkit.getPlayer(player).getUniqueId());
@@ -118,6 +119,7 @@ public final class UUIDTranslator {
 
             return null; // Couldn't find it :(
         });
+
     }
 
     public final CompletableFuture<String> getName(UUID player, boolean expensiveLookups) {

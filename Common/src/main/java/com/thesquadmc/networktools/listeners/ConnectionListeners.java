@@ -1,5 +1,6 @@
 package com.thesquadmc.networktools.listeners;
 
+import com.google.common.collect.Maps;
 import com.thesquadmc.networktools.NetworkTools;
 import com.thesquadmc.networktools.abstraction.MojangGameProfile;
 import com.thesquadmc.networktools.player.PlayerSetting;
@@ -22,11 +23,15 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Map;
+import java.util.UUID;
 
 public final class ConnectionListeners implements Listener {
 
     private final NetworkTools plugin;
     private final File dataFolder;
+
+    private final Map<UUID, Long> loginTimes = Maps.newHashMap();
 
     public ConnectionListeners(NetworkTools plugin) {
         this.plugin = plugin;
@@ -102,6 +107,8 @@ public final class ConnectionListeners implements Listener {
             }
         });
 
+        loginTimes.put(player.getUniqueId(), System.currentTimeMillis());
+
         TSMCUser user = TSMCUser.fromPlayer(player);
         if (user.isNicknamed()) {
             PlayerUtils.setName(player, user.getNickname());
@@ -162,7 +169,12 @@ public final class ConnectionListeners implements Listener {
             }
         }
 
-        TSMCUser.unloadUser(TSMCUser.fromPlayer(player), true);
+        TSMCUser user = TSMCUser.fromPlayer(player);
+
+        long time = System.currentTimeMillis() - loginTimes.remove(player.getUniqueId());
+        user.addTimePlayed(plugin.getServerType(), time);
+
+        TSMCUser.unloadUser(user, true);
 
         LocalPlayer localPlayer = plugin.getLocalPlayerManager().removePlayer(player);
         Multithreading.runAsync(() -> {

@@ -111,8 +111,7 @@ public class ChatListener implements Listener {
                 .filter(p -> !TSMCUser.fromPlayer(p).isIgnored(player.getUniqueId()))
                 .forEach(p -> p.spigot().sendMessage(msg));
 
-        ChatMessage message1 = lastMessage.put(player.getUniqueId(), chatMessage);
-        System.out.println(message1);
+        lastMessage.put(player.getUniqueId(), chatMessage);
         plugin.getChatManager().addMessage(chatMessage);
     }
 

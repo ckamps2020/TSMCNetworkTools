@@ -77,6 +77,7 @@ import com.thesquadmc.networktools.managers.PartyManager;
 import com.thesquadmc.networktools.networking.mongo.MongoManager;
 import com.thesquadmc.networktools.networking.mongo.MongoUserDatabase;
 import com.thesquadmc.networktools.networking.mongo.UserDatabase;
+import com.thesquadmc.networktools.networking.redis.RedisChannel;
 import com.thesquadmc.networktools.networking.redis.RedisManager;
 import com.thesquadmc.networktools.networking.redis.RedisMesage;
 import com.thesquadmc.networktools.networking.redis.channels.AnnounceChannel;
@@ -99,6 +100,7 @@ import com.thesquadmc.networktools.utils.nms.BarUtils;
 import com.thesquadmc.networktools.utils.player.uuid.UUIDTranslator;
 import com.thesquadmc.networktools.utils.server.Multithreading;
 import com.thesquadmc.networktools.utils.server.ServerState;
+import com.thesquadmc.networktools.utils.server.ServerType;
 import com.thesquadmc.networktools.utils.server.ServerUtils;
 import com.thesquadmc.networktools.warp.WarpManager;
 import me.clip.placeholderapi.PlaceholderAPIPlugin;
@@ -140,7 +142,7 @@ public final class NetworkTools extends JavaPlugin {
     private int restartTime = 0;
 
     private String version;
-    private String serverType = "UNKNOWN";
+    private ServerType serverType;
     private String serverState = ServerState.LOADING;
 
     private Chat vaultChat;
@@ -177,6 +179,8 @@ public final class NetworkTools extends JavaPlugin {
         getLogger().info("Starting the plugin up...");
 
         networkTools = this;
+
+        serverType = ServerType.getServerType(Bukkit.getServerName().toUpperCase());
         version = getDescription().getVersion();
 
         if (!setupNMSAbstract()) {
@@ -232,7 +236,7 @@ public final class NetworkTools extends JavaPlugin {
         redisManager.registerChannel(new MonitorChannel(this), RedisChannels.MONITOR_INFO, RedisChannels.MONITOR_REQUEST);
         redisManager.registerChannel(new AnnounceChannel(), RedisChannels.ANNOUNCEMENT);
         //redisManager.registerChannel(new FriendsChannel(this), RedisChannels.LEAVE);
-        redisManager.registerChannel(new MessageChannel(), RedisChannels.MESSAGE);
+        redisManager.registerChannel(new MessageChannel(), RedisChannels.MESSAGE, RedisChannels.MESSAGE, RedisChannels.NOTES);
         redisManager.registerChannel(new StaffChatChannels(), RedisChannels.STAFFCHAT, RedisChannels.ADMINCHAT, RedisChannels.MANAGERCHAT, RedisChannels.DISCORD_STAFFCHAT_SERVER);
 
         getLogger().info("Redis PUB/SUB setup!");
@@ -262,7 +266,6 @@ public final class NetworkTools extends JavaPlugin {
         registerListeners();
         registerCommands();
 
-        ServerUtils.calculateServerType();
         Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> redisManager.sendMessage(RedisChannels.PLAYER_COUNT, RedisMesage.newMessage()
                 .set(RedisArg.SERVER.getName(), Bukkit.getServerName())
                 .set(RedisArg.COUNT.getName(), Bukkit.getOnlinePlayers().size())), 20L, 20L);
@@ -402,11 +405,11 @@ public final class NetworkTools extends JavaPlugin {
         return partyManager;
     }
 
-    public String getServerType() {
+    public ServerType getServerType() {
         return serverType;
     }
 
-    public void setServerType(String serverType) {
+    public void setServerType(ServerType serverType) {
         this.serverType = serverType;
     }
 

@@ -6,7 +6,6 @@ import com.thesquadmc.networktools.networking.redis.RedisMesage;
 import com.thesquadmc.networktools.utils.enums.RedisArg;
 import com.thesquadmc.networktools.utils.enums.RedisChannels;
 import com.thesquadmc.networktools.utils.msgs.CC;
-import com.thesquadmc.networktools.utils.msgs.ServerType;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -21,21 +20,6 @@ public final class ServerUtils {
     private static final String version = name.substring(name.lastIndexOf('.') + 1);
     private static final DecimalFormat format = new DecimalFormat("##.##");
     private static final OperatingSystemMXBean OS = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
-
-    public static void calculateServerType() {
-        String m = Bukkit.getServerName().toUpperCase();
-        if (m.startsWith(ServerType.FACTIONS)) {
-            NetworkTools.getInstance().setServerType(ServerType.FACTIONS);
-        } else if (m.startsWith(ServerType.SKYBLOCK)) {
-            NetworkTools.getInstance().setServerType(ServerType.SKYBLOCK);
-        } else if (m.startsWith(ServerType.PRISON)) {
-            NetworkTools.getInstance().setServerType(ServerType.PRISON);
-        } else if (m.startsWith(ServerType.TROLLWARS)) {
-            NetworkTools.getInstance().setServerType(ServerType.TROLLWARS);
-        } else if (m.startsWith(ServerType.HUB)) {
-            NetworkTools.getInstance().setServerType(ServerType.HUB);
-        }
-    }
 
     public static void safeShutdown() {
         System.out.println("[NetworkTools] Server restarting in 3 seconds...");

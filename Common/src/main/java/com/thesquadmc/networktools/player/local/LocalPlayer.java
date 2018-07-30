@@ -1,5 +1,6 @@
 package com.thesquadmc.networktools.player.local;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -11,7 +12,9 @@ import java.util.UUID;
 public class LocalPlayer {
 
     private final UUID uuid;
+
     private final Map<String, Long> usedKits = Maps.newHashMap();
+    private final Map<String, Location> homes = Maps.newHashMap();
 
     private String username;
     private String nickname;
@@ -36,6 +39,34 @@ public class LocalPlayer {
         } else {
             teleportLocation = here ? requester.getLocation() : getPlayer().getLocation();
         }
+    }
+
+    public int getHomesSize() {
+        return homes.size();
+    }
+
+    public boolean hasHome(String name) {
+        return homes.containsKey(name);
+    }
+
+    public Location getHome(String name) {
+        return homes.get(name);
+    }
+
+    public boolean addHome(String name, Location location) {
+        Preconditions.checkNotNull(name, "Name of home cannot be null!");
+        Preconditions.checkNotNull(location, "Location of home cannot be null!");
+
+        if (homes.containsKey(name)) {
+            return false;
+        }
+
+        homes.put(name, location);
+        return true;
+    }
+
+    public void removeHome(String name) {
+        homes.remove(name);
     }
 
     public UUID getTeleportRequest() {
