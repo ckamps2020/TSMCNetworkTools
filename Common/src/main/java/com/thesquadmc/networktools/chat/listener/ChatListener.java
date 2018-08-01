@@ -64,9 +64,6 @@ public class ChatListener implements Listener {
 
                 //Check if there is a chat delay
                 if (plugin.getChatManager().getChatDelay() > 0) {
-                    System.out.println(System.currentTimeMillis() - chatMessage.getTimestamp().getTime());
-                    System.out.println(plugin.getChatManager().getChatDelay() * 1000);
-
                     if (System.currentTimeMillis() - chatMessage.getTimestamp().getTime() < plugin.getChatManager().getChatDelay() * 1000) {
                         player.sendMessage(FILTER_PREFIX + "You are sending messages too fast!");
 

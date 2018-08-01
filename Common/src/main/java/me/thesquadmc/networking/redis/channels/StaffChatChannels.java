@@ -12,7 +12,6 @@ import me.thesquadmc.utils.enums.RedisChannels;
 import me.thesquadmc.utils.msgs.CC;
 import me.thesquadmc.utils.msgs.StringUtils;
 import me.thesquadmc.utils.msgs.Unicode;
-import me.thesquadmc.utils.server.Multithreading;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -30,10 +29,6 @@ public class StaffChatChannels implements RedisChannel {
     @Override
     public void handle(String channel, JsonObject object) {
         if (channel.equals(RedisChannels.STAFFCHAT.getName())) {
-            object.entrySet().forEach(stringJsonElementEntry -> {
-                System.out.println(stringJsonElementEntry.getKey());
-            });
-
             getPlayersWithRank(Rank.TRAINEE).forEach(player -> {
                 TSMCUser user = TSMCUser.fromPlayer(player);
 

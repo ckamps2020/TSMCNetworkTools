@@ -8,6 +8,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.thesquadmc.networktools.networking.mongo.codecs.IPInfoCodec;
 import com.thesquadmc.networktools.networking.mongo.codecs.NoteCodec;
+import com.thesquadmc.networktools.networking.mongo.codecs.ServerStatisticsCodec;
 import org.bson.BSON;
 import org.bson.BsonBinary;
 import org.bson.BsonDocument;
@@ -56,7 +57,8 @@ public final class MongoManager {
         codecRegistry = CodecRegistries.fromRegistries(MongoClient.getDefaultCodecRegistry(),
                 CodecRegistries.fromCodecs(
                         new NoteCodec(defaultDocumentCodec),
-                        new IPInfoCodec(defaultDocumentCodec)
+                        new IPInfoCodec(defaultDocumentCodec),
+                        new ServerStatisticsCodec(defaultDocumentCodec)
                 ));
 
         MongoCredential credential = MongoCredential.createCredential(user, db, password.toCharArray());

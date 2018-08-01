@@ -77,7 +77,6 @@ import com.thesquadmc.networktools.managers.PartyManager;
 import com.thesquadmc.networktools.networking.mongo.MongoManager;
 import com.thesquadmc.networktools.networking.mongo.MongoUserDatabase;
 import com.thesquadmc.networktools.networking.mongo.UserDatabase;
-import com.thesquadmc.networktools.networking.redis.RedisChannel;
 import com.thesquadmc.networktools.networking.redis.RedisManager;
 import com.thesquadmc.networktools.networking.redis.RedisMesage;
 import com.thesquadmc.networktools.networking.redis.channels.AnnounceChannel;
@@ -101,7 +100,6 @@ import com.thesquadmc.networktools.utils.player.uuid.UUIDTranslator;
 import com.thesquadmc.networktools.utils.server.Multithreading;
 import com.thesquadmc.networktools.utils.server.ServerState;
 import com.thesquadmc.networktools.utils.server.ServerType;
-import com.thesquadmc.networktools.utils.server.ServerUtils;
 import com.thesquadmc.networktools.warp.WarpManager;
 import me.clip.placeholderapi.PlaceholderAPIPlugin;
 import me.clip.placeholderapi.expansion.cloud.CloudExpansion;
@@ -266,12 +264,6 @@ public final class NetworkTools extends JavaPlugin {
         registerListeners();
         registerCommands();
 
-        Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> redisManager.sendMessage(RedisChannels.PLAYER_COUNT, RedisMesage.newMessage()
-                .set(RedisArg.SERVER.getName(), Bukkit.getServerName())
-                .set(RedisArg.COUNT.getName(), Bukkit.getOnlinePlayers().size())), 20L, 20L);
-
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> BarUtils.getPlayers().forEach(nmsAbstract.getBossBarManager()::teleportBar), 1, 20L);
-
         Stream.of(
                 new GamemodeCommand(),
                 new NoteCommand(this),
@@ -291,6 +283,11 @@ public final class NetworkTools extends JavaPlugin {
             plugin.getExpansionCloud().downloadExpansion(null, playerExpansion, playerExpansion.getLatestVersion());
         }
 
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> redisManager.sendMessage(RedisChannels.PLAYER_COUNT, RedisMesage.newMessage()
+                .set(RedisArg.SERVER.getName(), Bukkit.getServerName())
+                .set(RedisArg.COUNT.getName(), Bukkit.getOnlinePlayers().size())), 20L, 20L);
+
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> BarUtils.getPlayers().forEach(nmsAbstract.getBossBarManager()::teleportBar), 1, 20L);
         getLogger().info("Plugin started up and ready to go!");
     }
 

@@ -1,6 +1,7 @@
 package com.thesquadmc.networktools.utils.converter;
 
 import com.thesquadmc.networktools.NetworkTools;
+import com.thesquadmc.networktools.player.local.LocalPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -10,20 +11,24 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.UUID;
 
 public class EssentialsPlayerConverter {
 
     private final NetworkTools plugin;
-    private final UUID uuid;
+    private final LocalPlayer localPlayer;
     private final File file;
 
     private final YamlConfiguration configuration = new YamlConfiguration();
 
-    public EssentialsPlayerConverter(NetworkTools plugin, UUID uuid) {
+    public EssentialsPlayerConverter(NetworkTools plugin, LocalPlayer localPlayer) {
         this.plugin = plugin;
-        this.uuid = uuid;
-        this.file = new File(Bukkit.getWorldContainer(), "plugins" + File.separator + "Essentials" + File.separator + "userdata" + File.separator + uuid.toString() + ".yml");
+        this.localPlayer = localPlayer;
+        this.file = new File(Bukkit.getWorldContainer(), "plugins" + File.separator + "Essentials" + File.separator + "userdata" + File.separator + localPlayer.getUUID().toString() + ".yml");
+
+        if (!file.exists()) {
+            plugin.getLogger().info(localPlayer.getUsername() + " did not have any Essentials data!");
+            return;
+        }
 
         try {
             configuration.load(file);
@@ -57,7 +62,7 @@ public class EssentialsPlayerConverter {
             float pitch = loc.getLong("pitch");
 
             Location location = new Location(world, x, y, z, yaw, pitch);
-            plugin.getLocalPlayerManager().getPlayer(uuid).addHome(name, location);
+            localPlayer.addHome(name, location);
         });
     }
 
@@ -66,7 +71,7 @@ public class EssentialsPlayerConverter {
             return;
         }
 
-        plugin.getLocalPlayerManager().getPlayer(uuid).setNickname(configuration.getString("nickname"));
+        localPlayer.setNickname(configuration.getString("nickname"));
     }
 
 }

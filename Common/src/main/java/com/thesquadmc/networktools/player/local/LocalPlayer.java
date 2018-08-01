@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
 
@@ -41,8 +42,8 @@ public class LocalPlayer {
         }
     }
 
-    public int getHomesSize() {
-        return homes.size();
+    public Map<String, Location> getHomes() {
+        return Collections.unmodifiableMap(homes);
     }
 
     public boolean hasHome(String name) {

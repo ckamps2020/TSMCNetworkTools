@@ -62,9 +62,9 @@ public class TSMCUser {
     private final Set<IPInfo> ips = Sets.newHashSet();
 
     /**
-     * Logs how long a player has played on each server type
+     * Per server statistics for the player
      */
-    private Map<ServerType, Long> timePlayed = Maps.newHashMap();
+    private Map<String, ServerStatistics> serverStats = Maps.newHashMap();
 
     /**
      * A list of friends that this player has
@@ -150,7 +150,6 @@ public class TSMCUser {
         }
 
         List<Document> notes = (List<Document>) document.get(NOTES);
-        System.out.println("notes: " + notes);
         if (notes != null) {
             user.notes.addAll(notes.stream().map(Note::fromDocument).collect(Collectors.toList()));
         }
@@ -160,8 +159,8 @@ public class TSMCUser {
             user.ips.addAll(ips.stream().map(IPInfo::fromDocument).collect(Collectors.toList()));
         }
 
-        user.timePlayed = (Map<ServerType, Long>) document.get("time_played");
-        System.out.println(user.timePlayed);
+        user.serverStats = (Map<String, ServerStatistics>) document.get("server_stats");
+        System.out.println("server stats" + user.serverStats);
 
         user.nickname = document.getString(NICKNAME);
         user.skinKey = document.getString(SKIN_KEY);
@@ -201,7 +200,7 @@ public class TSMCUser {
                 .append(REQUESTS, user.requests)
                 .append(NOTES, user.notes)
                 .append(SETTINGS, settings)
-                .append("time_played", user.timePlayed)
+                .append("server_stats", user.serverStats)
 
                 .append(SKIN_KEY, user.skinKey)
                 .append(SIGNATURE, user.signature)
@@ -280,12 +279,18 @@ public class TSMCUser {
         this.friends.clear();
     }
 
-    public void addTimePlayed(ServerType type, Long time) {
-        timePlayed.put(type, timePlayed.getOrDefault(type, 0L) + time);
+    public ServerStatistics getServerStatistic(String server) {
+        return serverStats.get(server);
     }
 
-    public long getTimePlayed(ServerType type) {
-        return timePlayed.getOrDefault(type, 0L);
+    public void addServerStatistic(ServerStatistics statistics) {
+        serverStats.put(statistics.getServerName(), statistics);
+    }
+
+    public Set<ServerStatistics> getServerStatistics(ServerType type) {
+        return serverStats.values().stream()
+                .filter(statistics -> statistics.getType() == type)
+                .collect(Collectors.toSet());
     }
 
     public void addIgnoredPlayer(UUID uuid) {
@@ -409,8 +414,6 @@ public class TSMCUser {
     }
 
     public void addNote(Note note) {
-        System.out.println(notes);
-
         notes.add(note);
     }
 

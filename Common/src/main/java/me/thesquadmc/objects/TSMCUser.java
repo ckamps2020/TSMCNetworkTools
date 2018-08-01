@@ -1,28 +1,34 @@
 package me.thesquadmc.objects;
 
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-
 import com.google.common.base.Preconditions;
-
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.sun.org.apache.regexp.internal.RE;
-import me.thesquadmc.networking.mongo.Database;
 import org.bson.Document;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
-import static me.thesquadmc.networking.mongo.Database.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import static me.thesquadmc.networking.mongo.Database.FORCEFIELD;
+import static me.thesquadmc.networking.mongo.Database.FRIENDS;
+import static me.thesquadmc.networking.mongo.Database.MONITOR;
+import static me.thesquadmc.networking.mongo.Database.NAME;
+import static me.thesquadmc.networking.mongo.Database.NICKNAMED;
+import static me.thesquadmc.networking.mongo.Database.NOTES;
+import static me.thesquadmc.networking.mongo.Database.REPORTS;
+import static me.thesquadmc.networking.mongo.Database.REQUESTS;
+import static me.thesquadmc.networking.mongo.Database.SIGNATURE;
+import static me.thesquadmc.networking.mongo.Database.SKIN_KEY;
+import static me.thesquadmc.networking.mongo.Database.VANISHED;
+import static me.thesquadmc.networking.mongo.Database.XRAY;
+import static me.thesquadmc.networking.mongo.Database.YT_VANISHED;
 
 public class TSMCUser {
 
@@ -315,22 +321,18 @@ public class TSMCUser {
 
     public static TSMCUser fromDocument(Document document) {
         TSMCUser user = new TSMCUser(document.get("_id", UUID.class), document.getString("name"));
-        System.out.println("user - " + user.getUuid());
 
         Set<UUID> friends = (Set<UUID>) document.get(FRIENDS);
-        System.out.println(friends);
         if (friends != null) {
             friends.addAll(user.friends);
         }
 
         Set<UUID> requests = (Set<UUID>) document.get(REQUESTS);
-        System.out.println(requests);
         if (requests != null) {
             requests.addAll(user.requests);
         }
 
         Set<Document> notes = (Set<Document>) document.get(NOTES);
-        System.out.println(notes);
         if (notes != null) {
             notes.stream().map(Note::fromDocument).collect(Collectors.toList()).addAll(user.notes);
         }

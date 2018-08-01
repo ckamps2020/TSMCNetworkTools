@@ -232,7 +232,6 @@ public class TeleportCommand {
         }
 
         // 2 minute expiry time
-        System.out.println((System.currentTimeMillis() - localPlayer.getTeleportRequestTime()) / 100);
         if (TimeUtils.elapsed(System.currentTimeMillis(), 60 * 1000)) {
             localPlayer.requestTeleport(null, false);
             player.sendMessage(CC.RED + "Your teleport request timed out!");

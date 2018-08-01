@@ -63,13 +63,7 @@ public class Utils {
             if (!file.exists()) {
                 file.createNewFile();
                 InputStream inputStream = plugin.getResource(resource);
-
-                System.out.println(plugin.getName());
-                System.out.println(inputStream);
-
                 OutputStream outputStream = new FileOutputStream(file);
-
-                System.out.println(outputStream);
 
                 byte[] buffer = new byte[1024];
                 int bytesRead;

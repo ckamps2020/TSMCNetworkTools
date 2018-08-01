@@ -319,6 +319,10 @@ public class NametagHandler implements Listener {
         });
     }
 
+    public Configuration getConfig() {
+        return config;
+    }
+
     public void applyTags() {
         if (!Bukkit.isPrimaryThread()) {
             new BukkitRunnable() {

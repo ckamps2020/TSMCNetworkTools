@@ -20,6 +20,9 @@ public class NametagEdit {
 
     //TODO clean this up lmfao what ru doing
 
+    //Temp solution until we merge this properly
+    private static NametagEdit instance;
+
     private static INametagApi api;
 
     private NametagHandler handler;
@@ -29,7 +32,18 @@ public class NametagEdit {
         return api;
     }
 
+    public static NametagEdit getInstance() {
+        return instance;
+    }
+
+    public void onDisable() {
+        manager.reset();
+        handler.getAbstractConfig().shutdown();
+    }
+
     public void onEnable() {
+        instance = this;
+
         testCompat();
         if (!NetworkTools.getInstance().isEnabled()) return;
 
@@ -46,11 +60,6 @@ public class NametagEdit {
         if (api == null) {
             api = new NametagAPI(handler, manager);
         }
-    }
-
-    public void onDisable() {
-        manager.reset();
-        handler.getAbstractConfig().shutdown();
     }
 
     void debug(String message) {

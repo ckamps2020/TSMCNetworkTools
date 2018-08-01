@@ -6,3 +6,6 @@ DisablePush: false
 ClearEmptyTeamsInterval: -1
 Debug: false
 RefreshInterval: 0
+
+sethome-multiple:
+  default: 1
