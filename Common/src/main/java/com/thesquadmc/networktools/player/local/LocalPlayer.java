@@ -54,16 +54,11 @@ public class LocalPlayer {
         return homes.get(name);
     }
 
-    public boolean addHome(String name, Location location) {
+    public void addHome(String name, Location location) {
         Preconditions.checkNotNull(name, "Name of home cannot be null!");
         Preconditions.checkNotNull(location, "Location of home cannot be null!");
 
-        if (homes.containsKey(name)) {
-            return false;
-        }
-
         homes.put(name, location);
-        return true;
     }
 
     public void removeHome(String name) {

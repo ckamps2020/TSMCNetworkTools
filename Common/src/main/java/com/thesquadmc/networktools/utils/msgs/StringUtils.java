@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -162,6 +163,24 @@ public final class StringUtils {
 
         return list.toArray(new BaseComponent[list.size()]);
     }
+
+    /**
+     * Merge a BaseComponent array into one array
+     *
+     * @param baseComponents components to merge
+     * @return the merged component
+     */
+    public static BaseComponent[] mergeComponents(LinkedList<BaseComponent[]> baseComponents) {
+        List<BaseComponent> list = Lists.newLinkedList(); //We must keep the order so we use a linked list
+
+        for (BaseComponent[] array : baseComponents) {
+            int len = array.length;
+            list.addAll(Arrays.asList(array).subList(0, len));
+        }
+
+        return list.toArray(new BaseComponent[list.size()]);
+    }
+
 
     public static BaseComponent[] getHoverMessage(String message, String hoverMessage) {
         BaseComponent[] components = TextComponent.fromLegacyText(CC.translate(message));

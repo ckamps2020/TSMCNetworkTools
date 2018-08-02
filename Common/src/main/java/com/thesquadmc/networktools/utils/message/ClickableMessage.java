@@ -1,5 +1,6 @@
 package com.thesquadmc.networktools.utils.message;
 
+import com.google.common.base.Preconditions;
 import com.thesquadmc.networktools.NetworkTools;
 import com.thesquadmc.networktools.utils.msgs.CC;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -23,12 +24,12 @@ public class ClickableMessage implements Listener {
     private final UUID command;
     private final Consumer<Player> consumer;
 
+    private final BaseComponent[] components;
+
     public ClickableMessage(Player player, String message, String hoverMessage, Consumer<Player> consumer) {
         this.player = player;
         this.command = UUID.randomUUID();
         this.consumer = consumer;
-
-        Bukkit.getPluginManager().registerEvents(this, NetworkTools.getInstance());
 
         BaseComponent[] components = TextComponent.fromLegacyText(CC.translate(message));
         ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + command.toString());
@@ -47,7 +48,22 @@ public class ClickableMessage implements Listener {
             }
         }
 
+        this.components = components;
+    }
+
+    public void send() {
+        Preconditions.checkNotNull(player);
+
+        register();
         player.spigot().sendMessage(components);
+    }
+
+    protected void register() {
+        Bukkit.getPluginManager().registerEvents(this, NetworkTools.getInstance());
+    }
+
+    public BaseComponent[] getComponents() {
+        return components;
     }
 
     @EventHandler(priority = EventPriority.LOWEST)

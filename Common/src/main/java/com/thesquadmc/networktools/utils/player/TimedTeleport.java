@@ -13,7 +13,6 @@ public class TimedTeleport implements Runnable {
     private final Player player;
     private final Player targetPlayer;
     private final Location target;
-
     private final long started;
     private final long delay;
 
@@ -85,7 +84,7 @@ public class TimedTeleport implements Runnable {
             health = player.getHealth();  // in case user healed, then later gets injured
             final long now = System.currentTimeMillis();
 
-            if (now > (started + delay)) {
+            if (now > (started + delay) || player.hasPermission("essentials.teleport.instant")) {
                 cancelTimer(false);
 
                 if (LocationUtil.isBlockUnsafeForUser(player, target)) {

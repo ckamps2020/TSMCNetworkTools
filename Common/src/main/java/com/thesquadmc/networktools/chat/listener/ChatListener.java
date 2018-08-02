@@ -116,6 +116,11 @@ public class ChatListener implements Listener {
     public void on(PlayerCommandPreprocessEvent e) {
         String message = e.getMessage();
 
+        if (e.isCancelled()) {
+            return;
+        }
+
+
         if (message.equals("/")) {
             return;
         }
