@@ -31,7 +31,6 @@ import com.thesquadmc.networktools.commands.MonitorCommand;
 import com.thesquadmc.networktools.commands.NTVersionCommand;
 import com.thesquadmc.networktools.commands.NoteCommand;
 import com.thesquadmc.networktools.commands.OnlineCountCommand;
-import com.thesquadmc.networktools.commands.PartyCommand;
 import com.thesquadmc.networktools.commands.PingCommand;
 import com.thesquadmc.networktools.commands.ProxyTransportCommand;
 import com.thesquadmc.networktools.commands.RandomTPCommand;
@@ -74,7 +73,6 @@ import com.thesquadmc.networktools.managers.CountManager;
 import com.thesquadmc.networktools.managers.HologramManager;
 import com.thesquadmc.networktools.managers.ItemManager;
 import com.thesquadmc.networktools.managers.NPCManager;
-import com.thesquadmc.networktools.managers.PartyManager;
 import com.thesquadmc.networktools.networking.mongo.MongoManager;
 import com.thesquadmc.networktools.networking.mongo.MongoUserDatabase;
 import com.thesquadmc.networktools.networking.mongo.UserDatabase;
@@ -84,7 +82,6 @@ import com.thesquadmc.networktools.networking.redis.channels.AnnounceChannel;
 import com.thesquadmc.networktools.networking.redis.channels.FindChannel;
 import com.thesquadmc.networktools.networking.redis.channels.MessageChannel;
 import com.thesquadmc.networktools.networking.redis.channels.MonitorChannel;
-import com.thesquadmc.networktools.networking.redis.channels.PartyChannel;
 import com.thesquadmc.networktools.networking.redis.channels.ServerManagementChannel;
 import com.thesquadmc.networktools.networking.redis.channels.StaffChatChannels;
 import com.thesquadmc.networktools.networking.redis.channels.WhitelistChannel;
@@ -157,7 +154,6 @@ public final class NetworkTools extends JavaPlugin {
     private HologramManager hologramManager;
     private NPCManager npcManager;
     private CommandHandler commandHandler;
-    private PartyManager partyManager;
     private MCLeaksAPI mcLeaksAPI;
     private CountManager countManager;
     private ClickableMessageManager clickableMessageManager;
@@ -209,7 +205,6 @@ public final class NetworkTools extends JavaPlugin {
         hologramManager = new HologramManager();
         npcManager = new NPCManager();
         commandHandler = new CommandHandler(this);
-        partyManager = new PartyManager();
         countManager = new CountManager();
         clickableMessageManager = new ClickableMessageManager(this);
         itemManager = new ItemManager();
@@ -231,7 +226,6 @@ public final class NetworkTools extends JavaPlugin {
         redisManager.registerChannel(new FindChannel(this), RedisChannels.FIND, RedisChannels.FOUND, RedisChannels.REQUEST_LIST, RedisChannels.RETURN_REQUEST_LIST);
         redisManager.registerChannel(new ServerManagementChannel(this), RedisChannels.STARTUP_REQUEST, RedisChannels.PLAYER_COUNT, RedisChannels.RETURN_SERVER, RedisChannels.STOP);
         redisManager.registerChannel(new WhitelistChannel(this), RedisChannels.WHITELIST, RedisChannels.WHITELIST_ADD, RedisChannels.WHITELIST_REMOVE);
-        redisManager.registerChannel(new PartyChannel(), RedisChannels.PARTY_JOIN_SERVER, RedisChannels.PARTY_DISBAND, RedisChannels.PARTY_UPDATE);
         redisManager.registerChannel(new MonitorChannel(this), RedisChannels.MONITOR_INFO, RedisChannels.MONITOR_REQUEST);
         redisManager.registerChannel(new AnnounceChannel(), RedisChannels.ANNOUNCEMENT);
         //redisManager.registerChannel(new FriendsChannel(this), RedisChannels.LEAVE);
@@ -400,10 +394,6 @@ public final class NetworkTools extends JavaPlugin {
         return mcLeaksAPI;
     }
 
-    public PartyManager getPartyManager() {
-        return partyManager;
-    }
-
     public ServerType getServerType() {
         return serverType;
     }
@@ -526,7 +516,6 @@ public final class NetworkTools extends JavaPlugin {
                 }
 
                 if (!clazz.isAnnotationPresent(AbstractionModule.class)) {
-                    getLogger().info("not an abstract module");
                     continue; // Not an abstraction module... ignore
                 }
 
@@ -615,6 +604,5 @@ public final class NetworkTools extends JavaPlugin {
         getCommand("vanishlist").setExecutor(new VanishListCommand());
         getCommand("ntversion").setExecutor(new NTVersionCommand(this));
         getCommand("onlinecount").setExecutor(new OnlineCountCommand(this));
-        getCommand("party").setExecutor(new PartyCommand(this));
     }
 }

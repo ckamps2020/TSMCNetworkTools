@@ -1,6 +1,6 @@
 package com.thesquadmc.networktools.networking.mongo.codecs;
 
-import com.thesquadmc.networktools.player.ServerStatistics;
+import com.thesquadmc.networktools.player.stats.ServerStatistics;
 import com.thesquadmc.networktools.utils.server.ServerType;
 import org.bson.BsonReader;
 import org.bson.BsonWriter;

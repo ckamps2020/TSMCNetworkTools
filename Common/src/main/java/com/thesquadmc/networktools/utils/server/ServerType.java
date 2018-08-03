@@ -1,7 +1,5 @@
 package com.thesquadmc.networktools.utils.server;
 
-import org.bukkit.Bukkit;
-
 public enum ServerType {
 
     HUB,

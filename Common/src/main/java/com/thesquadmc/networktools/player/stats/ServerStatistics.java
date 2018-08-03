@@ -1,4 +1,4 @@
-package com.thesquadmc.networktools.player;
+package com.thesquadmc.networktools.player.stats;
 
 import com.thesquadmc.networktools.utils.server.ServerType;
 

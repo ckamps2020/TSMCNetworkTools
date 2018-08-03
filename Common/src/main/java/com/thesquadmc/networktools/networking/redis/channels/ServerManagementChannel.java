@@ -95,7 +95,7 @@ public class ServerManagementChannel implements RedisChannel {
                         if (Bukkit.getPlayer(player) != null) {
                             Player p = Bukkit.getPlayer(player);
                             ConnectionUtils.getFetching().remove(p.getUniqueId());
-                            ConnectionUtils.sendPlayer(p, newServer, true);
+                            ConnectionUtils.sendPlayer(p, newServer);
                         }
                     }
                 }

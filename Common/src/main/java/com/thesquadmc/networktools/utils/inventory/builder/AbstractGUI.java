@@ -226,7 +226,6 @@ public abstract class AbstractGUI implements GUI {
         public GUI getGUI() {
             return AbstractGUI.this;
         }
-
     }
 
 }

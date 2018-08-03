@@ -6,6 +6,7 @@ import com.google.common.collect.Sets;
 import com.thesquadmc.networktools.NetworkTools;
 import com.thesquadmc.networktools.objects.logging.IPInfo;
 import com.thesquadmc.networktools.objects.logging.Note;
+import com.thesquadmc.networktools.player.stats.ServerStatistics;
 import com.thesquadmc.networktools.utils.DocumentUtils;
 import com.thesquadmc.networktools.utils.player.PlayerUtils;
 import com.thesquadmc.networktools.utils.server.ServerType;

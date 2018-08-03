@@ -14,6 +14,7 @@ import com.thesquadmc.networktools.utils.server.Multithreading;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -153,11 +154,9 @@ public final class ConnectionListeners implements Listener {
         }, 3L);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onQuit(PlayerQuitEvent e) {
         Player player = e.getPlayer();
-
-        player.performCommand("party leave");
 
         for (Player p : Bukkit.getServer().getOnlinePlayers()) {
             if (TSMCUser.fromPlayer(p).getSetting(PlayerSetting.YOUTUBE_VANISHED)) {
@@ -166,7 +165,6 @@ public final class ConnectionListeners implements Listener {
         }
 
         TSMCUser user = TSMCUser.fromPlayer(player);
-
         TSMCUser.unloadUser(user, true);
 
         LocalPlayer localPlayer = plugin.getLocalPlayerManager().removePlayer(player);

@@ -65,7 +65,6 @@ commands:
     ntversion:
     staffalert:
     onlinecount:
-    party:
     rename:
     ne:
       aliases: [nametagedit, nte]

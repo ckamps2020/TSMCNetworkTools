@@ -61,8 +61,8 @@ public class LocalPlayer {
         homes.put(name, location);
     }
 
-    public void removeHome(String name) {
-        homes.remove(name);
+    public Location removeHome(String name) {
+        return homes.remove(name);
     }
 
     public UUID getTeleportRequest() {

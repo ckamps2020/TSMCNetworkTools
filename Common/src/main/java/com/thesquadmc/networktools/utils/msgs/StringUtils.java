@@ -281,41 +281,41 @@ public final class StringUtils {
     public static boolean serverCommand(Player player, String msg) {
         switch (msg) {
             case "/SKYBLOCK-1":
-                ConnectionUtils.sendPlayer(player, "SKYBLOCK-1", true);
+                ConnectionUtils.sendPlayer(player, "SKYBLOCK-1");
                 return true;
             case "/SKYBLOCK-2":
-                ConnectionUtils.sendPlayer(player, "SKYBLOCK-2", true);
+                ConnectionUtils.sendPlayer(player, "SKYBLOCK-2");
                 return true;
             case "/SKYBLOCK-3":
-                ConnectionUtils.sendPlayer(player, "SKYBLOCK-3", true);
+                ConnectionUtils.sendPlayer(player, "SKYBLOCK-3");
                 return true;
             case "/FACTIONS":
-                ConnectionUtils.sendPlayer(player, "FACTIONS-FIRE", true);
+                ConnectionUtils.sendPlayer(player, "FACTIONS-FIRE");
                 return true;
             case "/PRISON-1":
-                ConnectionUtils.sendPlayer(player, "PRISON-1", true);
+                ConnectionUtils.sendPlayer(player, "PRISON-1");
                 return true;
             case "/PRISON-2":
-                ConnectionUtils.sendPlayer(player, "PRISON-2", true);
+                ConnectionUtils.sendPlayer(player, "PRISON-2");
                 return true;
             case "/PRISON-3":
-                ConnectionUtils.sendPlayer(player, "PRISON-3", true);
+                ConnectionUtils.sendPlayer(player, "PRISON-3");
                 return true;
             case "/TROLLWARS":
-                ConnectionUtils.sendPlayer(player, "TROLLWARS", true);
+                ConnectionUtils.sendPlayer(player, "TROLLWARS");
                 return true;
             case "/CREATIVE":
-                ConnectionUtils.sendPlayer(player, "CREATIVE", true);
+                ConnectionUtils.sendPlayer(player, "CREATIVE");
                 return true;
             case "/HUB":
                 int i = MathUtils.random(1, 12);
                 String s = "HUB-" + i;
-                ConnectionUtils.sendPlayer(player, s, true);
+                ConnectionUtils.sendPlayer(player, s);
                 return true;
             case "/LOBBY":
                 int h = MathUtils.random(1, 12);
                 String b = "HUB-" + h;
-                ConnectionUtils.sendPlayer(player, b, true);
+                ConnectionUtils.sendPlayer(player, b);
                 return true;
         }
         return false;

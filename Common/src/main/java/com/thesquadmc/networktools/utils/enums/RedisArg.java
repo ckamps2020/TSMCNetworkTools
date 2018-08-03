@@ -9,7 +9,6 @@ public enum RedisArg {
     ORIGIN_SERVER("ORIGIN_SERVER"),
     ORIGIN_PLAYER("ORIGIN_PLAYER"),
     UUID("UUID"),
-    PARTY("PARTY"),
     ONOFF("ONOFF"),
 
     PROXIES("PROXIES"),
