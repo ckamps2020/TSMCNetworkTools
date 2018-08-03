@@ -12,14 +12,14 @@ import org.bukkit.event.Listener;
 
 public final class TimedListener implements Listener {
 
-    private final NetworkTools networkTools;
+    private final NetworkTools plugin;
 
-    public TimedListener(NetworkTools networkTools) {
-        this.networkTools = networkTools;
+    public TimedListener(NetworkTools plugin) {
+        this.plugin = plugin;
     }
 
     @EventHandler
-    public void onUpdate(UpdateEvent e) {
+    public void on(UpdateEvent e) {
         if (e.getUpdateType() == UpdateType.MIN) {
             if (Bukkit.getServerName().toUpperCase().contains("HUB")
                     || Bukkit.getServerName().toUpperCase().contains("SKYBLOCK")
@@ -27,13 +27,13 @@ public final class TimedListener implements Listener {
                     || Bukkit.getServerName().toUpperCase().contains("PRISON")
                     || Bukkit.getServerName().toUpperCase().contains("TROLLWARS")
                     || Bukkit.getServerName().toUpperCase().contains("CREATIVE")) {
-                networkTools.setRestartTime(networkTools.getRestartTime() + 1);
-                if (networkTools.getRestartTime() == 720) {
+                plugin.setRestartTime(plugin.getRestartTime() + 1);
+                if (plugin.getRestartTime() == 720) {
                     for (Player player : Bukkit.getOnlinePlayers()) {
                         player.kickPlayer(CC.translate("&e&lRESTART &6■ &7Daily server restart"));
                     }
                     Bukkit.shutdown();
-                } else if (networkTools.getRestartTime() == 715) {
+                } else if (plugin.getRestartTime() == 715) {
                     Bukkit.broadcastMessage(" ");
                     Bukkit.broadcastMessage(" ");
                     Bukkit.broadcastMessage(CC.translate("&e&lRESTART &6■ &7Daily server restart in &e5 &7min"));
@@ -42,7 +42,7 @@ public final class TimedListener implements Listener {
                     for (Player player : Bukkit.getOnlinePlayers()) {
                         player.playSound(player.getLocation(), Sounds.NOTE_PLING.bukkitSound(), 1.0f, 1.0f);
                     }
-                } else if (networkTools.getRestartTime() == 719) {
+                } else if (plugin.getRestartTime() == 719) {
                     Bukkit.broadcastMessage(" ");
                     Bukkit.broadcastMessage(" ");
                     Bukkit.broadcastMessage(CC.translate("&e&lRESTART &6■ &7Daily server restart in &e1 &7min"));

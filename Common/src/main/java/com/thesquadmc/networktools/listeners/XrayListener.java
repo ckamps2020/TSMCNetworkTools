@@ -26,7 +26,7 @@ public final class XrayListener implements Listener {
     private Map<UUID, Integer> spawnerMined = new HashMap<>();
 
     @EventHandler
-    public void onUpdate(UpdateEvent e) {
+    public void on(UpdateEvent e) {
         if (e.getUpdateType() == UpdateType.MIN) {
             // Compile list of all xrayers
             Set<UUID> xrayers = new HashSet<>(diamondsMined.keySet());
@@ -61,7 +61,7 @@ public final class XrayListener implements Listener {
     }
 
     @EventHandler
-    public void onMine(BlockBreakEvent e) {
+    public void on(BlockBreakEvent e) {
         Player player = e.getPlayer();
         if (e.getBlock().getType() == Material.DIAMOND_ORE) {
             if (diamondsMined.containsKey(player.getUniqueId())) {

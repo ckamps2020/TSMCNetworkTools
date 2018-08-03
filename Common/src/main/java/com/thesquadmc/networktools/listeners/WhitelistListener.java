@@ -14,7 +14,7 @@ public final class WhitelistListener implements Listener {
     }
 
     @EventHandler
-    public void onLogin(PlayerLoginEvent e) {
+    public void on(PlayerLoginEvent e) {
         if (e.getResult() == PlayerLoginEvent.Result.KICK_WHITELIST) {
             e.setKickMessage(networkTools.getWhitelistMessage());
         }

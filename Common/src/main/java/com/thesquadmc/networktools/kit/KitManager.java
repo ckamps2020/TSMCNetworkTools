@@ -15,15 +15,11 @@ import java.util.Set;
 
 import static sun.audio.AudioPlayer.player;
 
-/**
- * This class handles all warps/spawns
- * provided in the locations.yml file.
- */
 public class KitManager {
 
     private final NetworkTools plugin;
 
-    private final Set<Kit> warps = Sets.newHashSet();
+    private final Set<Kit> kits = Sets.newHashSet();
 
     public KitManager(NetworkTools plugin) {
         this.plugin = plugin;
@@ -42,20 +38,20 @@ public class KitManager {
                             Kit.class
                     );
 
-                    warps.add(kit);
+                    kits.add(kit);
                 }
 
             } catch (IOException ignored) {
             }
         }
 
-        plugin.getLogger().info(MessageFormat.format("Loaded in {0} warps!", warps.size()));
+        plugin.getLogger().info(MessageFormat.format("Loaded in {0} kits!", kits.size()));
     }
 
-    public void saveWarps() {
+    public void saveKits() {
         File file = new File(plugin.getDataFolder(), "kits");
 
-        warps.forEach(kit -> {
+        kits.forEach(kit -> {
             try (FileWriter writer = new FileWriter(new File(file, kit.getName() + ".json"))) {
                 JSONUtils.getGson().toJson(
                         kit,
@@ -63,32 +59,32 @@ public class KitManager {
                 );
 
             } catch (IOException e) {
-                plugin.getLogger().severe("Could not save data of user " + player);
+                plugin.getLogger().severe("Could not save data of kit: " + player);
                 e.printStackTrace();
             }
         });
     }
 
-    public void addWarp(Kit warp) {
-        warps.add(warp);
+    public void addKit(Kit kit) {
+        kits.add(kit);
     }
 
-    public void removeWarp(Kit warp) {
-        warps.remove(warp);
+    public void removeKit(Kit kit) {
+        kits.remove(kit);
     }
 
-    public Optional<Kit> getWarp(String name) {
-        for (Kit warp : warps) {
-            if (warp.getName().equalsIgnoreCase(name)) {
-                return Optional.of(warp);
+    public Optional<Kit> getKit(String name) {
+        for (Kit kit : kits) {
+            if (kit.getName().equalsIgnoreCase(name)) {
+                return Optional.of(kit);
             }
         }
 
         return Optional.empty();
     }
 
-    public Set<Kit> getWarps() {
-        return Collections.unmodifiableSet(warps);
+    public Set<Kit> getKits() {
+        return Collections.unmodifiableSet(kits);
     }
 }
 

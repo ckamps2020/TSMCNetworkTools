@@ -8,7 +8,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 public final class LightningListener implements Listener {
 
     @EventHandler
-    public void onAttack(EntityDamageByEntityEvent e) {
+    public void on(EntityDamageByEntityEvent e) {
         if (e.getEntity().getType() == EntityType.PLAYER) {
             if (e.getDamager().getType() == EntityType.LIGHTNING) {
                 e.setCancelled(true);

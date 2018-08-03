@@ -10,7 +10,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 public final class LaunchListener implements Listener {
 
     @EventHandler
-    public void onDamage(EntityDamageEvent e) {
+    public void on(EntityDamageEvent e) {
         if (e.getEntity() != null && e.getEntity().getType() == EntityType.PLAYER) {
             Player player = (Player) e.getEntity();
             if (LaunchCommand.getLaunched().contains(player.getUniqueId())) {

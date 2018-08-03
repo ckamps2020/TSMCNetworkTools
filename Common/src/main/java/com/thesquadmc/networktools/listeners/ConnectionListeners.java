@@ -5,6 +5,7 @@ import com.thesquadmc.networktools.abstraction.MojangGameProfile;
 import com.thesquadmc.networktools.player.PlayerSetting;
 import com.thesquadmc.networktools.player.TSMCUser;
 import com.thesquadmc.networktools.player.local.LocalPlayer;
+import com.thesquadmc.networktools.player.stats.ServerStatistics;
 import com.thesquadmc.networktools.utils.converter.EssentialsPlayerConverter;
 import com.thesquadmc.networktools.utils.enums.Rank;
 import com.thesquadmc.networktools.utils.json.JSONUtils;
@@ -90,7 +91,7 @@ public final class ConnectionListeners implements Listener {
     }
 
     @EventHandler
-    public void onJoin(PlayerJoinEvent e) {
+    public void on(PlayerJoinEvent e) {
         Player player = e.getPlayer();
 
         Multithreading.runAsync(() -> {
@@ -111,6 +112,10 @@ public final class ConnectionListeners implements Listener {
             PlayerUtils.setName(player, user.getNickname());
         }
 
+        if (user.getServerStatistic(Bukkit.getServerName()) == null) {
+            user.addServerStatistic(new ServerStatistics(Bukkit.getServerName(), plugin.getServerType()));
+        }
+
         MojangGameProfile profile = plugin.getNMSAbstract().getGameProfile(player);
         profile.getPropertyMap().values().forEach(p -> {
             user.setSkinKey(p.getValue());
@@ -118,44 +123,28 @@ public final class ConnectionListeners implements Listener {
         });
 
         PlayerUtils.unfreezePlayer(player);
-        Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            if (Bukkit.getServerName().toUpperCase().startsWith("MG")
-                    || Bukkit.getServerName().toUpperCase().startsWith("FACTIONS")
-                    || Bukkit.getServerName().toUpperCase().startsWith("HUB")
-                    || Bukkit.getServerName().toUpperCase().startsWith("CREATIVE")) {
-                if (PlayerUtils.isEqualOrHigherThen(player, Rank.ADMIN)) {
-                    player.chat("/ev");
-                }
-            }
+        if (!plugin.getSig().equalsIgnoreCase("NONE")) {
+            PlayerUtils.setSameSkin(player);
+        }
 
-            if (Bukkit.getServerName().toUpperCase().startsWith("MG")
-                    || Bukkit.getServerName().toUpperCase().startsWith("FACTIONS")
-                    || Bukkit.getServerName().toUpperCase().startsWith("HUB")
-                    || Bukkit.getServerName().toUpperCase().startsWith("PRISON")
-                    || Bukkit.getServerName().toUpperCase().startsWith("SKYBLOCK")
-                    || Bukkit.getServerName().toUpperCase().startsWith("CREATIVE")) {
-                if (PlayerUtils.isEqualOrHigherThen(player, Rank.ADMIN)) {
-                    player.chat("/vanish");
-                }
-            }
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            TSMCUser target = TSMCUser.fromPlayer(p);
+            if (target.getSetting(PlayerSetting.YOUTUBE_VANISHED)) {
+                player.hidePlayer(p);
+                //PlayerUtils.hidePlayerSpectatorYT(p);
 
-            if (!NetworkTools.getInstance().getSig().equalsIgnoreCase("NONE")) {
-                PlayerUtils.setSameSkin(player);
-            }
-
-            for (Player p : Bukkit.getOnlinePlayers()) {
-                TSMCUser targetUser = TSMCUser.fromPlayer(p);
-                if (targetUser.getSetting(PlayerSetting.YOUTUBE_VANISHED)) {
-                    PlayerUtils.hidePlayerSpectatorYT(p);
-                } else if (targetUser.getSetting(PlayerSetting.VANISHED)) {
-                    PlayerUtils.hidePlayerSpectatorStaff(p);
+            } else if (target.getSetting(PlayerSetting.VANISHED)) {
+                if (!PlayerUtils.isEqualOrHigherThen(player, Rank.TRAINEE)) {
+                    player.hidePlayer(p);
                 }
+
+                //PlayerUtils.hidePlayerSpectatorStaff(p);
             }
-        }, 3L);
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onQuit(PlayerQuitEvent e) {
+    public void on(PlayerQuitEvent e) {
         Player player = e.getPlayer();
 
         for (Player p : Bukkit.getServer().getOnlinePlayers()) {

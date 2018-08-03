@@ -55,7 +55,7 @@ public final class StaffmodeListener implements Listener {
     }
 
     @EventHandler
-    public void onUpdate(UpdateEvent e) {
+    public void on(UpdateEvent e) {
         if (e.getUpdateType() == UpdateType.SEC) {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 if (timeRemaining.containsKey(player.getUniqueId())) {
@@ -79,7 +79,7 @@ public final class StaffmodeListener implements Listener {
     }
 
     @EventHandler
-    public void onTarget(EntityTargetLivingEntityEvent e) {
+    public void on(EntityTargetLivingEntityEvent e) {
         if (e.getTarget() != null && e.getTarget().getType() == EntityType.PLAYER) {
             Player player = (Player) e.getTarget();
             if (StaffmodeCommand.getStaffmode().containsKey(player.getUniqueId())) {
@@ -89,7 +89,7 @@ public final class StaffmodeListener implements Listener {
     }
 
     @EventHandler
-    public void onInter(PlayerInteractEvent e) {
+    public void on(PlayerInteractEvent e) {
         Player player = e.getPlayer();
         if (e.getPlayer().getItemInHand() != null) {
             if (StaffmodeCommand.getStaffmode().containsKey(player.getUniqueId())) {
@@ -137,7 +137,7 @@ public final class StaffmodeListener implements Listener {
     }
 
     @EventHandler
-    public void onQuit(PlayerQuitEvent e) {
+    public void on(PlayerQuitEvent e) {
         Player player = e.getPlayer();
         if (StaffmodeCommand.getStaffmode().containsKey(player.getUniqueId())) {
             player.getInventory().clear();
@@ -155,21 +155,21 @@ public final class StaffmodeListener implements Listener {
     }
 
     @EventHandler
-    public void onPickup(PlayerPickupItemEvent e) {
+    public void on(PlayerPickupItemEvent e) {
         if (StaffmodeCommand.getStaffmode().containsKey(e.getPlayer().getUniqueId())) {
             e.setCancelled(true);
         }
     }
 
     @EventHandler
-    public void onDrop(PlayerDropItemEvent e) {
+    public void on(PlayerDropItemEvent e) {
         if (StaffmodeCommand.getStaffmode().containsKey(e.getPlayer().getUniqueId())) {
             e.setCancelled(true);
         }
     }
 
     @EventHandler
-    public void onMove(PlayerMoveEvent e) {
+    public void on(PlayerMoveEvent e) {
         Double x = e.getFrom().getX();
         Double y = e.getFrom().getY();
         Double z = e.getFrom().getZ();
@@ -195,7 +195,7 @@ public final class StaffmodeListener implements Listener {
     }
 
     @EventHandler
-    public void onBreak(BlockBreakEvent e) {
+    public void on(BlockBreakEvent e) {
         if (Bukkit.getServerName().toUpperCase().contains("SKYBLOCK")) {
             if (!e.getBlock().getType().name().toUpperCase().contains("WOOD")) {
                 if (blocksMined.containsKey(e.getPlayer().getUniqueId())) {
@@ -214,14 +214,14 @@ public final class StaffmodeListener implements Listener {
     }
 
     @EventHandler
-    public void onPlace(BlockPlaceEvent e) {
+    public void on(BlockPlaceEvent e) {
         if (StaffmodeCommand.getStaffmode().containsKey(e.getPlayer().getUniqueId())) {
             e.setCancelled(true);
         }
     }
 
     @EventHandler
-    public void onHit(EntityDamageByEntityEvent e) {
+    public void on(EntityDamageByEntityEvent e) {
         if (e.getEntity().getType() == EntityType.PLAYER && e.getDamager().getType() == EntityType.PLAYER) {
             Player p = (Player) e.getEntity();
             Player d = (Player) e.getDamager();
@@ -242,7 +242,7 @@ public final class StaffmodeListener implements Listener {
     }
 
     @EventHandler
-    public void onLoss(FoodLevelChangeEvent e) {
+    public void on(FoodLevelChangeEvent e) {
         Player player = (Player) e.getEntity();
         if (StaffmodeCommand.getStaffmode().containsKey(player.getUniqueId())) {
             e.setCancelled(true);
@@ -252,21 +252,21 @@ public final class StaffmodeListener implements Listener {
     }
 
     @EventHandler
-    public void onDur(PlayerItemDamageEvent e) {
+    public void on(PlayerItemDamageEvent e) {
         if (StaffmodeCommand.getStaffmode().containsKey(e.getPlayer().getUniqueId())) {
             e.setCancelled(true);
         }
     }
 
     @EventHandler
-    public void portalEvent(PlayerPortalEvent e) {
+    public void on(PlayerPortalEvent e) {
         if (StaffmodeCommand.getStaffmode().containsKey(e.getPlayer().getUniqueId())) {
             e.setCancelled(true);
         }
     }
 
     @EventHandler
-    public void onDamage(EntityDamageEvent e) {
+    public void on(EntityDamageEvent e) {
         if (e.getEntity() != null && e.getEntity().getType() == EntityType.PLAYER) {
             Player player = (Player) e.getEntity();
             if (player != null) {
@@ -278,14 +278,14 @@ public final class StaffmodeListener implements Listener {
     }
 
     @EventHandler
-    public void onAInteract(PlayerArmorStandManipulateEvent e) {
+    public void on(PlayerArmorStandManipulateEvent e) {
         if (StaffmodeCommand.getStaffmode().containsKey(e.getPlayer().getUniqueId())) {
             e.setCancelled(true);
         }
     }
 
     @EventHandler
-    public void onInventoryClick(InventoryClickEvent e) {
+    public void on(InventoryClickEvent e) {
         if (e.getInventory() != null && e.getInventory().getName().equalsIgnoreCase("LOGS")) {
             e.setCancelled(true);
             return;
@@ -386,7 +386,7 @@ public final class StaffmodeListener implements Listener {
     }
 
     @EventHandler
-    public void onInteract(PlayerInteractAtEntityEvent e) {
+    public void on(PlayerInteractAtEntityEvent e) {
         if (e.getRightClicked().getType() == EntityType.PLAYER) {
             Player target = (Player) e.getRightClicked();
             Player player = e.getPlayer();

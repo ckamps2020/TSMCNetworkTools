@@ -10,9 +10,9 @@ public class ServerStatistics {
     private final String serverName;
     private final ServerType type;
 
-    private long playtime;
-    private int logins;
-    private int blocksBroken;
+    private long playtime = 0L;
+    private int logins = 0;
+    private int blocksBroken = 0;
 
     public ServerStatistics(String serverName, ServerType type) {
         this.serverName = serverName;

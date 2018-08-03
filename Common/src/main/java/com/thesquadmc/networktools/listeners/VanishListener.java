@@ -14,7 +14,7 @@ import org.bukkit.event.Listener;
 public final class VanishListener implements Listener {
 
     @EventHandler
-    public void onUpdate(UpdateEvent e) {
+    public void on(UpdateEvent e) {
         if (e.getUpdateType() == UpdateType.SEC) {
 
             for (Player player : Bukkit.getOnlinePlayers()) {
