@@ -86,7 +86,7 @@ public final class PlayerUtils {
             }
 
             try (Jedis jedis = NetworkTools.getInstance().getRedisManager().getResource()) {
-                Map<String, String> status = jedis.hgetAll("players:" + uuid.toString());
+                Map<String, String> status = jedis.hgetAll("player:" + uuid.toString());
                 if (status == null) {
                     return false;
 

@@ -23,6 +23,7 @@ import com.thesquadmc.networktools.commands.HealCommand;
 import com.thesquadmc.networktools.commands.HomeCommand;
 import com.thesquadmc.networktools.commands.IgnoreCommand;
 import com.thesquadmc.networktools.commands.InvseeCommand;
+import com.thesquadmc.networktools.commands.KitCommand;
 import com.thesquadmc.networktools.commands.LaunchCommand;
 import com.thesquadmc.networktools.commands.LookupCommand;
 import com.thesquadmc.networktools.commands.ManagerChatCommand;
@@ -57,6 +58,7 @@ import com.thesquadmc.networktools.commands.YtNickCommand;
 import com.thesquadmc.networktools.commands.YtVanishCommand;
 import com.thesquadmc.networktools.inventories.FrozenInventory;
 import com.thesquadmc.networktools.inventories.StaffmodeInventory;
+import com.thesquadmc.networktools.kit.KitManager;
 import com.thesquadmc.networktools.listeners.ConnectionListeners;
 import com.thesquadmc.networktools.listeners.ForceFieldListeners;
 import com.thesquadmc.networktools.listeners.FreezeListener;
@@ -162,6 +164,7 @@ public final class NetworkTools extends JavaPlugin {
     private NMSAbstract nmsAbstract;
     private MongoManager mongoManager;
     private UserDatabase userDatabase;
+    private KitManager kitManager;
     private ItemManager itemManager;
     private NametagEdit nametagEdit;
 
@@ -202,6 +205,7 @@ public final class NetworkTools extends JavaPlugin {
         updateHandler.run();
 
         localPlayerManager = new LocalPlayerManager();
+        kitManager = new KitManager(this);
         warpManager = new WarpManager(this);
         chatManager = new ChatManager(this);
         hologramManager = new HologramManager();
@@ -273,6 +277,7 @@ public final class NetworkTools extends JavaPlugin {
                 new TeleportCommand(this),
                 new IgnoreCommand(this),
                 new HomeCommand(this),
+                new KitCommand(this),
                 new HealCommand()
         ).forEach(o -> commandHandler.registerCommands(o));
 
@@ -335,6 +340,10 @@ public final class NetworkTools extends JavaPlugin {
 
         vaultPermissions = rsp.getProvider();
         return vaultPermissions != null;
+    }
+
+    public KitManager getKitManager() {
+        return kitManager;
     }
 
     public String getCurrentSeason() {

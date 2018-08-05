@@ -6,7 +6,6 @@ import com.thesquadmc.networktools.NetworkTools;
 import com.thesquadmc.networktools.utils.json.JSONUtils;
 import org.bukkit.Bukkit;
 import redis.clients.jedis.Jedis;
-import redis.clients.jedis.Pipeline;
 import redis.clients.jedis.exceptions.JedisException;
 
 import java.util.Calendar;
@@ -75,15 +74,15 @@ public final class UUIDTranslator {
         // Nothing local has worked, let's check in Redis
         return CompletableFuture.supplyAsync(() -> {
             try (Jedis jedis = plugin.getRedisManager().getResource()) {
-                String stored = jedis.hget("name-cache", player.toLowerCase());
+                String stored = jedis.hget("uuid-cache", player.toLowerCase());
                 if (stored != null) {
                     // Found an entry value. Deserialize it.
                     CachedUUIDEntry entry = JSONUtils.getGson().fromJson(stored, CachedUUIDEntry.class);
 
                     // Check for expiry. If expired, delete values from Redis
                     if (entry.expired()) {
-                        jedis.hdel("name-cache", player.toLowerCase());
-                        jedis.hdel("name-cache", entry.getUuid().toString());
+                        jedis.hdel("uuid-cache", player.toLowerCase());
+                        jedis.hdel("uuid-cache", entry.getUuid().toString());
 
                     } else {
                         nameToUuidMap.put(player.toLowerCase(), entry);
@@ -140,15 +139,15 @@ public final class UUIDTranslator {
         // Okay, it wasn't locally cached. Let's try Redis.
         return CompletableFuture.supplyAsync(() -> {
             try (Jedis jedis = plugin.getRedisManager().getResource()) {
-                String stored = jedis.hget("name-cache", player.toString());
+                String stored = jedis.hget("uuid-cache", player.toString());
                 if (stored != null) {
                     // Found an entry value. Deserialize it.
                     CachedUUIDEntry entry = JSONUtils.getGson().fromJson(stored, CachedUUIDEntry.class);
 
                     // Check for expiry:
                     if (entry.expired()) {
-                        jedis.hdel("name-cache", player.toString());
-                        jedis.hdel("name-cache", entry.getName());
+                        jedis.hdel("uuid-cache", player.toString());
+                        jedis.hdel("uuid-cache", entry.getName());
 
                     } else {
                         nameToUuidMap.put(entry.getName().toLowerCase(), entry);
@@ -187,13 +186,7 @@ public final class UUIDTranslator {
     private final void persistInfo(String name, UUID uuid, Jedis jedis) {
         addToMaps(name, uuid);
         String json = JSONUtils.getGson().toJson(uuidToNameMap.get(uuid));
-        jedis.hmset("name-cache", ImmutableMap.of(name.toLowerCase(), json, uuid.toString(), json));
-    }
-
-    public final void persistInfo(String name, UUID uuid, Pipeline jedis) {
-        addToMaps(name, uuid);
-        String json = JSONUtils.getGson().toJson(uuidToNameMap.get(uuid));
-        jedis.hmset("name-cache", ImmutableMap.of(name.toLowerCase(), json, uuid.toString(), json));
+        jedis.hmset("uuid-cache", ImmutableMap.of(name.toLowerCase(), json, uuid.toString(), json));
     }
 
     private class CachedUUIDEntry {

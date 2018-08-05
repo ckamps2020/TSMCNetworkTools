@@ -260,4 +260,23 @@ public final class ItemUtils {
         return false;
     }
 
+    /**
+     * Gets a number of empty slots there are in an
+     * inventory
+     *
+     * @param inventory the inventory to check
+     * @return an integer with the amount of empty slots
+     */
+    public static int getEmptySlots(Inventory inventory) {
+        int empty = 0;
+
+        for (ItemStack itemStack : inventory) {
+            if (itemStack == null || itemStack.getType() == Material.AIR) {
+                empty++;
+            }
+        }
+
+        return empty;
+    }
+
 }
