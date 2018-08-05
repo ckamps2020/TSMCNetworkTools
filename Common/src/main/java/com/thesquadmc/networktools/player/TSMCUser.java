@@ -6,19 +6,21 @@ import com.google.common.collect.Sets;
 import com.thesquadmc.networktools.NetworkTools;
 import com.thesquadmc.networktools.objects.logging.IPInfo;
 import com.thesquadmc.networktools.objects.logging.Note;
+import com.thesquadmc.networktools.player.stats.Season;
 import com.thesquadmc.networktools.player.stats.ServerStatistics;
 import com.thesquadmc.networktools.utils.DocumentUtils;
 import com.thesquadmc.networktools.utils.player.PlayerUtils;
-import com.thesquadmc.networktools.utils.server.ServerType;
 import org.bson.Document;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -65,7 +67,7 @@ public class TSMCUser {
     /**
      * Per server statistics for the player
      */
-    private Map<String, ServerStatistics> serverStats = Maps.newHashMap();
+    private Set<Season> seasons = new HashSet<>();
 
     /**
      * A list of friends that this player has
@@ -138,30 +140,43 @@ public class TSMCUser {
 
     public static TSMCUser fromDocument(Document document) {
         TSMCUser user = new TSMCUser(document.get("_id", UUID.class), document.getString("name"));
+        System.out.println("USERS ACTIVE");
 
         Set<String> previousNames = DocumentUtils.documentToStringSet(document, PREVIOUS_NAMES);
         previousNames.addAll(user.previousNames);
 
+        System.out.println("previous names");
+
         Set<UUID> friends = DocumentUtils.documentToUUIDSet(document, FRIENDS);
         friends.addAll(user.friends);
+
+        System.out.println("friends");
 
         Set<UUID> requests = DocumentUtils.documentToUUIDSet(document, REQUESTS);
         if (requests != null) {
             requests.addAll(user.requests);
         }
 
+        System.out.println("requests");
+
         List<Document> notes = (List<Document>) document.get(NOTES);
         if (notes != null) {
             user.notes.addAll(notes.stream().map(Note::fromDocument).collect(Collectors.toList()));
         }
+
+        System.out.println("notes");
 
         List<Document> ips = (List<Document>) document.get(IPS);
         if (ips != null) {
             user.ips.addAll(ips.stream().map(IPInfo::fromDocument).collect(Collectors.toList()));
         }
 
-        user.serverStats = (Map<String, ServerStatistics>) document.get("server_stats");
-        System.out.println("server stats" + user.serverStats);
+        System.out.println("ips");
+
+        List<Document> seasons = (List<Document>) document.get("seasons");
+        seasons.forEach(doc -> user.seasons.add(Season.fromDocument(doc)));
+
+        System.out.println("SERVER STATS" + user.seasons);
 
         user.nickname = document.getString(NICKNAME);
         user.skinKey = document.getString(SKIN_KEY);
@@ -179,17 +194,12 @@ public class TSMCUser {
         return user;
     }
 
-    public static TSMCUser fromPlayer(OfflinePlayer player) {
-        return (player != null) ? USERS.computeIfAbsent(player.getUniqueId(), TSMCUser::new) : null;
-    }
-
-    public static TSMCUser fromUUID(UUID player) {
-        return (player != null) ? USERS.computeIfAbsent(player, TSMCUser::new) : null;
-    }
-
     public static Document toDocument(TSMCUser user) {
         Map<String, Object> settings = Maps.newHashMapWithExpectedSize(user.settings.size());
         user.settings.forEach((setting, object) -> settings.put(setting.getName(), object));
+
+        List<Document> seasons = new ArrayList<>();
+        user.seasons.forEach(season -> seasons.add(season.toDocument()));
 
         return new Document("_id", user.uuid)
                 .append(NAME, user.name)
@@ -201,12 +211,21 @@ public class TSMCUser {
                 .append(REQUESTS, user.requests)
                 .append(NOTES, user.notes)
                 .append(SETTINGS, settings)
-                .append("server_stats", user.serverStats)
+                .append("seasons", seasons)
 
                 .append(SKIN_KEY, user.skinKey)
                 .append(SIGNATURE, user.signature)
 
                 .append(LAST_MESSAGER, user.lastMessager);
+    }
+
+
+    public static TSMCUser fromPlayer(OfflinePlayer player) {
+        return (player != null) ? USERS.computeIfAbsent(player.getUniqueId(), TSMCUser::new) : null;
+    }
+
+    public static TSMCUser fromUUID(UUID player) {
+        return (player != null) ? USERS.computeIfAbsent(player, TSMCUser::new) : null;
     }
 
     public static boolean isLoaded(OfflinePlayer player) {
@@ -280,18 +299,59 @@ public class TSMCUser {
         this.friends.clear();
     }
 
-    public ServerStatistics getServerStatistic(String server) {
-        return serverStats.get(server);
+    public Set<Season> getAllSeasons() {
+        return Collections.unmodifiableSet(seasons);
     }
 
-    public void addServerStatistic(ServerStatistics statistics) {
-        serverStats.put(statistics.getServerName(), statistics);
+    private Optional<Season> getCurrentSeason(String season) {
+        return seasons.stream()
+                .filter(season1 -> season1.getSeason().equals(season))
+                .findFirst();
     }
 
-    public Set<ServerStatistics> getServerStatistics(ServerType type) {
-        return serverStats.values().stream()
-                .filter(statistics -> statistics.getType() == type)
-                .collect(Collectors.toSet());
+    public Season getCurrentSeason() {
+        Optional<Season> season = getCurrentSeason(NetworkTools.getInstance().getCurrentSeason());
+
+        return season.orElseGet(() -> {
+            Season season1 = new Season(NetworkTools.getInstance().getCurrentSeason());
+            seasons.add(season1);
+
+            return season1;
+        });
+    }
+
+    public ServerStatistics getCurrentStatistics() {
+        Season season = getCurrentSeason();
+
+        Optional<ServerStatistics> stats = season.getServerStatistic(Bukkit.getServerName());
+        return stats.orElseGet(() -> {
+            ServerStatistics statistics = new ServerStatistics(Bukkit.getServerName(), NetworkTools.getInstance().getServerType());
+            season.addServerStatistic(statistics);
+
+            return statistics;
+        });
+    }
+
+    public Optional<ServerStatistics> getServerStatistic(String server, String seasonNumber) {
+        Optional<Season> season = getCurrentSeason(seasonNumber);
+        if (!season.isPresent()) {
+            return Optional.empty();
+        }
+
+        return season.get().getServerStatistic(server);
+    }
+
+    public void addServerStatistic(String seasonNumber, ServerStatistics statistics) {
+        Optional<Season> season = getCurrentSeason(seasonNumber);
+        if (!season.isPresent()) {
+            Season season1 = new Season(seasonNumber);
+            season1.addServerStatistic(statistics);
+            seasons.add(season1);
+
+            return;
+        }
+
+        season.get().addServerStatistic(statistics);
     }
 
     public void addIgnoredPlayer(UUID uuid) {
@@ -480,5 +540,4 @@ public class TSMCUser {
             ips.add(new IPInfo(ip, new Date(), new Date()));
         }
     }
-
 }

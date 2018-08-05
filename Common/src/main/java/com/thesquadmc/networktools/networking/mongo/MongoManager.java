@@ -8,7 +8,8 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.thesquadmc.networktools.networking.mongo.codecs.IPInfoCodec;
 import com.thesquadmc.networktools.networking.mongo.codecs.NoteCodec;
-import com.thesquadmc.networktools.networking.mongo.codecs.ServerStatisticsCodec;
+import com.thesquadmc.networktools.networking.mongo.codecs.SeasonCodec;
+import com.thesquadmc.networktools.player.stats.Stat;
 import org.bson.BSON;
 import org.bson.BsonBinary;
 import org.bson.BsonDocument;
@@ -45,6 +46,8 @@ public final class MongoManager {
             BsonBinary bsonBinary = holder.getBinary("uuid");
             return new Binary(bsonBinary.getType(), bsonBinary.getData());
         });
+
+        BSON.addEncodingHook(Stat.class, Object::toString);
     }
 
     private final CodecRegistry codecRegistry;
@@ -53,12 +56,12 @@ public final class MongoManager {
     private MongoDatabase mongoDatabase;
 
     public MongoManager(String user, String db, String password, String host, int port) {
-        Codec<Document> defaultDocumentCodec = MongoClient.getDefaultCodecRegistry().get(Document.class);
+        Codec<Document> documentCodec = MongoClient.getDefaultCodecRegistry().get(Document.class);
         codecRegistry = CodecRegistries.fromRegistries(MongoClient.getDefaultCodecRegistry(),
                 CodecRegistries.fromCodecs(
-                        new NoteCodec(defaultDocumentCodec),
-                        new IPInfoCodec(defaultDocumentCodec),
-                        new ServerStatisticsCodec(defaultDocumentCodec)
+                        new NoteCodec(documentCodec),
+                        new SeasonCodec(documentCodec),
+                        new IPInfoCodec(documentCodec)
                 ));
 
         MongoCredential credential = MongoCredential.createCredential(user, db, password.toCharArray());

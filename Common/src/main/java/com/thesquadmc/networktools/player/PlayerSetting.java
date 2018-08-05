@@ -41,7 +41,6 @@ public class PlayerSetting<T> {
         return name;
     }
 
-
     public Class<T> getSettingType() {
         return settingType;
     }

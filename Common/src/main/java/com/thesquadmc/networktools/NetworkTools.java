@@ -87,6 +87,7 @@ import com.thesquadmc.networktools.networking.redis.channels.StaffChatChannels;
 import com.thesquadmc.networktools.networking.redis.channels.WhitelistChannel;
 import com.thesquadmc.networktools.player.PlayerSetting;
 import com.thesquadmc.networktools.player.local.LocalPlayerManager;
+import com.thesquadmc.networktools.player.stats.ServerStatsListener;
 import com.thesquadmc.networktools.utils.command.CommandHandler;
 import com.thesquadmc.networktools.utils.enums.RedisArg;
 import com.thesquadmc.networktools.utils.enums.RedisChannels;
@@ -137,6 +138,7 @@ public final class NetworkTools extends JavaPlugin {
     private String sig = "NONE";
     private int restartTime = 0;
 
+    private String currentSeason;
     private String version;
     private ServerType serverType;
     private String serverState = ServerState.LOADING;
@@ -213,6 +215,8 @@ public final class NetworkTools extends JavaPlugin {
         nametagEdit = new NametagEdit();
         nametagEdit.onEnable();
 
+        currentSeason = nametagEdit.getHandler().getConfig().getString("currentSeason", "season-1");
+
         AbstractGUI.initializeListeners(this);
 
         String host1 = fileManager.getNetworkingConfig().getString("redis.host");
@@ -223,12 +227,11 @@ public final class NetworkTools extends JavaPlugin {
         uuidTranslator = new UUIDTranslator(this);
 
         redisManager = new RedisManager(host1, port1, password1);
-        redisManager.registerChannel(new FindChannel(this), RedisChannels.FIND, RedisChannels.FOUND, RedisChannels.REQUEST_LIST, RedisChannels.RETURN_REQUEST_LIST);
+        redisManager.registerChannel(new FindChannel(this), RedisChannels.REQUEST_LIST, RedisChannels.RETURN_REQUEST_LIST);
         redisManager.registerChannel(new ServerManagementChannel(this), RedisChannels.STARTUP_REQUEST, RedisChannels.PLAYER_COUNT, RedisChannels.RETURN_SERVER, RedisChannels.STOP);
         redisManager.registerChannel(new WhitelistChannel(this), RedisChannels.WHITELIST, RedisChannels.WHITELIST_ADD, RedisChannels.WHITELIST_REMOVE);
         redisManager.registerChannel(new MonitorChannel(this), RedisChannels.MONITOR_INFO, RedisChannels.MONITOR_REQUEST);
         redisManager.registerChannel(new AnnounceChannel(), RedisChannels.ANNOUNCEMENT);
-        //redisManager.registerChannel(new FriendsChannel(this), RedisChannels.LEAVE);
         redisManager.registerChannel(new MessageChannel(), RedisChannels.MESSAGE, RedisChannels.MESSAGE, RedisChannels.NOTES);
         redisManager.registerChannel(new StaffChatChannels(), RedisChannels.STAFFCHAT, RedisChannels.ADMINCHAT, RedisChannels.MANAGERCHAT, RedisChannels.DISCORD_STAFFCHAT_SERVER);
 
@@ -279,9 +282,13 @@ public final class NetworkTools extends JavaPlugin {
             plugin.getExpansionCloud().downloadExpansion(null, playerExpansion, playerExpansion.getLatestVersion());
         }
 
-        Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> redisManager.sendMessage(RedisChannels.PLAYER_COUNT, RedisMesage.newMessage()
-                .set(RedisArg.SERVER.getName(), Bukkit.getServerName())
-                .set(RedisArg.COUNT.getName(), Bukkit.getOnlinePlayers().size())), 20L, 20L);
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> {
+            redisManager.sendMessage(RedisChannels.PLAYER_COUNT, RedisMesage.newMessage()
+                    .set(RedisArg.SERVER.getName(), Bukkit.getServerName())
+                    .set(RedisArg.COUNT.getName(), Bukkit.getOnlinePlayers().size()));
+        }, 20L, 20L);
+
+
 
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> BarUtils.getPlayers().forEach(nmsAbstract.getBossBarManager()::teleportBar), 1, 20L);
         getLogger().info("Plugin started up and ready to go!");
@@ -328,6 +335,10 @@ public final class NetworkTools extends JavaPlugin {
 
         vaultPermissions = rsp.getProvider();
         return vaultPermissions != null;
+    }
+
+    public String getCurrentSeason() {
+        return currentSeason;
     }
 
     public void registerPlayerSetting(PlayerSetting setting) {
@@ -550,7 +561,6 @@ public final class NetworkTools extends JavaPlugin {
     private void registerListeners() {
         Stream.of(
                 new ConnectionListeners(this),
-                //new FilterListener(this),
                 new ForceFieldListeners(),
                 new FreezeListener(this),
                 new LaunchListener(),
@@ -560,6 +570,7 @@ public final class NetworkTools extends JavaPlugin {
                 new TimedListener(this),
                 new VanishListener(),
                 new WhitelistListener(this),
+                new ServerStatsListener(),
                 new XrayListener()
         ).forEach(listener -> Bukkit.getPluginManager().registerEvents(listener, this));
     }

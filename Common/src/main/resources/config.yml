@@ -7,5 +7,7 @@ ClearEmptyTeamsInterval: -1
 Debug: false
 RefreshInterval: 0
 
+currentSeason: season-1
+
 sethome-multiple:
   default: 1

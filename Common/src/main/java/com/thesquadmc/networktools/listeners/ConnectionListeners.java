@@ -5,7 +5,6 @@ import com.thesquadmc.networktools.abstraction.MojangGameProfile;
 import com.thesquadmc.networktools.player.PlayerSetting;
 import com.thesquadmc.networktools.player.TSMCUser;
 import com.thesquadmc.networktools.player.local.LocalPlayer;
-import com.thesquadmc.networktools.player.stats.ServerStatistics;
 import com.thesquadmc.networktools.utils.converter.EssentialsPlayerConverter;
 import com.thesquadmc.networktools.utils.enums.Rank;
 import com.thesquadmc.networktools.utils.json.JSONUtils;
@@ -112,10 +111,6 @@ public final class ConnectionListeners implements Listener {
             PlayerUtils.setName(player, user.getNickname());
         }
 
-        if (user.getServerStatistic(Bukkit.getServerName()) == null) {
-            user.addServerStatistic(new ServerStatistics(Bukkit.getServerName(), plugin.getServerType()));
-        }
-
         MojangGameProfile profile = plugin.getNMSAbstract().getGameProfile(player);
         profile.getPropertyMap().values().forEach(p -> {
             user.setSkinKey(p.getValue());
@@ -143,7 +138,7 @@ public final class ConnectionListeners implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.MONITOR)
     public void on(PlayerQuitEvent e) {
         Player player = e.getPlayer();
 

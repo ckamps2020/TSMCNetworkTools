@@ -119,23 +119,6 @@ public class FindChannel implements RedisChannel {
                         .set(RedisArg.DEVELOPER, dSB.toString())
                         .set(RedisArg.OWNER, oSB.toString())
                 );
-
-                /*Multithreading.runAsync(() -> {
-                    try (Jedis jedis = plugin.getRedisManager().getResource()) {
-                        JedisTask.withName(UUID.randomUUID().toString())
-                                .withArg(RedisArg.SERVER.getName(), object.get(RedisArg.SERVER.getName()).getAsString())
-                                .withArg(RedisArg.PLAYER.getName(), object.get(RedisArg.PLAYER.getName()).getAsString())
-                                .withArg(RedisArg.TRAINEE.getName(), listToString(trainee))
-                                .withArg(RedisArg.HELPER.getName(), listToString(helper))
-                                .withArg(RedisArg.MOD.getName(), listToString(mod))
-                                .withArg(RedisArg.SRMOD.getName(), listToString(srmod))
-                                .withArg(RedisArg.ADMIN.getName(), listToString(admin))
-                                .withArg(RedisArg.MANAGER.getName(), listToString(manager))
-                                .withArg(RedisArg.DEVELOPER.getName(), listToString(developer))
-                                .withArg(RedisArg.OWNER.getName(), listToString(owner))
-                                .send(RedisChannels.RETURN_REQUEST_LIST.getName(), jedis);
-                    }
-                });*/
             });
 
         } else if (channel.equalsIgnoreCase(RedisChannels.RETURN_REQUEST_LIST.getName())) {

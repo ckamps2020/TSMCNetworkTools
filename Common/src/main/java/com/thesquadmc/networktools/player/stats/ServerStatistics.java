@@ -1,6 +1,12 @@
 package com.thesquadmc.networktools.player.stats;
 
+import com.thesquadmc.networktools.NetworkTools;
+import com.thesquadmc.networktools.utils.enums.EnumUtil;
 import com.thesquadmc.networktools.utils.server.ServerType;
+import org.bson.Document;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Statistics for each server
@@ -10,21 +16,18 @@ public class ServerStatistics {
     private final String serverName;
     private final ServerType type;
 
-    private long playtime = 0L;
-    private int logins = 0;
-    private int blocksBroken = 0;
+    private Map<Stat<?>, Object> data;
 
     public ServerStatistics(String serverName, ServerType type) {
         this.serverName = serverName;
         this.type = type;
+        this.data = new HashMap<>();
     }
 
-    public ServerStatistics(String serverName, ServerType type, long playtime, int logins, int blocksBroken) {
+    public ServerStatistics(String serverName, ServerType type, Map<Stat<?>, Object> data) {
         this.serverName = serverName;
         this.type = type;
-        this.playtime = playtime;
-        this.logins = logins;
-        this.blocksBroken = blocksBroken;
+        this.data = data;
     }
 
     public String getServerName() {
@@ -35,53 +38,51 @@ public class ServerStatistics {
         return type;
     }
 
-    /**
-     * @return Gets how long the player has been playing
-     * on a specifc server in milliseconds
-     */
-    public long getPlaytime() {
-        return playtime;
+    public static ServerStatistics fromDocument(Document document) {
+        String name = document.getString("_id");
+        ServerType type = EnumUtil.getEnum(ServerType.class, document.getString("server_type"));
+        Map<String, Object> statistics = (Map<String, Object>) document.get("data");
+
+        Map<Stat<?>, Object> stats = new HashMap<>();
+        statistics.forEach((s, o) -> {
+            Stat<?> stat = Stat.valueOf(s);
+            if (stat == null) {
+                NetworkTools.getInstance().getLogger().info(s + " could not be parsed as a Stat!");
+                return;
+            }
+
+            stats.put(stat, o);
+        });
+
+        return new ServerStatistics(name, type, stats);
     }
 
-    /**
-     * Sets how long the player has been playing on
-     * a specific server
-     *
-     * @param playtime how long the player has been playing for in milliseconds
-     */
-    public void setPlaytime(long playtime) {
-        this.playtime = playtime;
+    public <T> T updateStat(Stat<T> stat, T value) {
+        return stat.getStatsType().cast(data.put(stat, value));
     }
 
-    /**
-     * @return Gets the amount of times this player has logged into a specific server
-     */
-    public int getLogins() {
-        return logins;
+    public <T> T getStat(Stat<T> stat) {
+        return (stat != null) ? stat.getStatsType()
+                .cast(data.getOrDefault(stat, stat.getDefaultValue())) : null;
     }
 
-    /**
-     * Sets the amount of times this player has logged into a specific server
-     *
-     * @param logins how many times the player has logged in
-     */
-    public void setLogins(int logins) {
-        this.logins = logins;
+    public void overrideStats(Map<Stat<?>, Object> data) {
+        this.data = data;
     }
 
-    /**
-     * @return Gets how many blocks this player has broken on this specific server
-     */
-    public int getBlocksBroken() {
-        return blocksBroken;
+    public void resetStatsToDefault() {
+        this.data.clear();
+        for (Stat<?> stat : Stat.VALUES) {
+            this.data.put(stat, stat.getDefaultValue());
+        }
     }
 
-    /**
-     * Sets how many blocks this player has broken on this specific server
-     *
-     * @param blocksBroken how many blocks the player has broken
-     */
-    public void setBlocksBroken(int blocksBroken) {
-        this.blocksBroken = blocksBroken;
+    public Document toDocument() {
+        Map<String, Object> data = new HashMap<>();
+        this.data.forEach((stat, o) -> data.put(stat.getName(), o));
+
+        return new Document("_id", serverName)
+                .append("server_type", type.name())
+                .append("data", data);
     }
 }
