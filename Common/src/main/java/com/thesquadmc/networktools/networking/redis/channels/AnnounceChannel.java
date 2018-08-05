@@ -12,9 +12,9 @@ public class AnnounceChannel implements RedisChannel {
 
     @Override
     public void handle(String channel, JsonObject object) {
-        String server = object.get(RedisArg.SERVER.getName()).getAsString();
+        String server = object.get(RedisArg.SERVER).getAsString();
         if (server.equalsIgnoreCase("ALL") || Bukkit.getServerName().toUpperCase().contains(server)) {
-            String msg = object.get(RedisArg.MESSAGE.getName()).getAsString();
+            String msg = object.get(RedisArg.MESSAGE).getAsString();
 
             Bukkit.broadcastMessage(CC.translate("&7"));
             Bukkit.broadcastMessage(CC.translate("&7"));

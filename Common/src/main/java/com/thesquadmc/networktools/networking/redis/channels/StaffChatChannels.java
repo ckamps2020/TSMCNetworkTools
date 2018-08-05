@@ -21,49 +21,54 @@ public class StaffChatChannels implements RedisChannel {
 
     @Override
     public void handle(String channel, JsonObject object) {
-        if (channel.equals(RedisChannels.STAFFCHAT.getName())) {
-            getPlayersWithRank(Rank.TRAINEE).forEach(player -> {
-                TSMCUser user = TSMCUser.fromPlayer(player);
+        switch (channel) {
+            case RedisChannels.STAFFCHAT:
+                getPlayersWithRank(Rank.TRAINEE).forEach(player -> {
+                    TSMCUser user = TSMCUser.fromPlayer(player);
 
-                if (user.getSetting(PlayerSetting.STAFFCHAT_ENABLED)) {
-                    String message = object.get(RedisArg.MESSAGE.getName()).getAsString();
-                    String server = object.get(RedisArg.SERVER.getName()).getAsString();
+                    if (user.getSetting(PlayerSetting.STAFFCHAT_ENABLED)) {
+                        String message = object.get(RedisArg.MESSAGE).getAsString();
+                        String server = object.get(RedisArg.SERVER).getAsString();
 
-                    player.spigot().sendMessage(StringUtils.getHoverMessage(message, "&7Currently on &e" + server));
-                }
-            });
+                        player.spigot().sendMessage(StringUtils.getHoverMessage(message, "&7Currently on &e" + server));
+                    }
+                });
 
-        } else if (channel.equals(RedisChannels.ADMINCHAT.getName())) {
-            getPlayersWithRank(Rank.ADMIN).forEach(player -> {
-                TSMCUser user = TSMCUser.fromPlayer(player);
-                if (user.getSetting(PlayerSetting.ADMINCHAT_ENABLED)) {
-                    String message = object.get(RedisArg.MESSAGE.getName()).getAsString();
+                break;
+            case RedisChannels.ADMINCHAT:
+                getPlayersWithRank(Rank.ADMIN).forEach(player -> {
+                    TSMCUser user = TSMCUser.fromPlayer(player);
+                    if (user.getSetting(PlayerSetting.ADMINCHAT_ENABLED)) {
+                        String message = object.get(RedisArg.MESSAGE).getAsString();
 
-                    player.sendMessage(CC.translate(message));
-                }
-            });
+                        player.sendMessage(CC.translate(message));
+                    }
+                });
 
-        } else if (channel.equals(RedisChannels.MANAGERCHAT.getName())) {
-            getPlayersWithRank(Rank.MANAGER).forEach(player -> {
-                TSMCUser user = TSMCUser.fromPlayer(player);
-                if (user.getSetting(PlayerSetting.MANAGERCHAT_ENABLED)) {
-                    String message = object.get(RedisArg.MESSAGE.getName()).getAsString();
+                break;
+            case RedisChannels.MANAGERCHAT:
+                getPlayersWithRank(Rank.MANAGER).forEach(player -> {
+                    TSMCUser user = TSMCUser.fromPlayer(player);
+                    if (user.getSetting(PlayerSetting.MANAGERCHAT_ENABLED)) {
+                        String message = object.get(RedisArg.MESSAGE).getAsString();
 
-                    player.sendMessage(CC.translate(message));
-                }
-            });
+                        player.sendMessage(CC.translate(message));
+                    }
+                });
 
-        } else if (channel.equals(RedisChannels.DISCORD_STAFFCHAT_SERVER.getName())) {
-            String server = object.get(RedisArg.SERVER.getName()).getAsString();
-            String p = object.get(RedisArg.PLAYER.getName()).getAsString();
-            String message = object.get(RedisArg.MESSAGE.getName()).getAsString();
+                break;
+            case RedisChannels.DISCORD_STAFFCHAT_SERVER:
+                String server = object.get(RedisArg.SERVER).getAsString();
+                String p = object.get(RedisArg.PLAYER).getAsString();
+                String message = object.get(RedisArg.MESSAGE).getAsString();
 
-            getPlayersWithRank(Rank.TRAINEE).forEach(player -> {
-                TSMCUser user = TSMCUser.fromPlayer(player);
-                if (user.getSetting(PlayerSetting.STAFFCHAT_ENABLED)) {
-                    player.spigot().sendMessage(StringUtils.getHoverMessage("&8[&a&lSTAFFCHAT&8] &9" + p + " &8" + Unicode.DOUBLE_ARROW_RIGHT + " &a" + message, "&7Currently on &e" + server));
-                }
-            });
+                getPlayersWithRank(Rank.TRAINEE).forEach(player -> {
+                    TSMCUser user = TSMCUser.fromPlayer(player);
+                    if (user.getSetting(PlayerSetting.STAFFCHAT_ENABLED)) {
+                        player.spigot().sendMessage(StringUtils.getHoverMessage("&8[&a&lSTAFFCHAT&8] &9" + p + " &8" + Unicode.DOUBLE_ARROW_RIGHT + " &a" + message, "&7Currently on &e" + server));
+                    }
+                });
+                break;
         }
     }
 

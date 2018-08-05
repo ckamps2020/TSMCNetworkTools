@@ -1,5 +1,8 @@
 package com.thesquadmc.networktools.utils.enums;
 
+/**
+ * Provies a list of ranks on the server
+ */
 public enum Rank {
 
     TRAINEE("TRAINEE", 1),

@@ -289,8 +289,8 @@ public final class NetworkTools extends JavaPlugin {
 
         Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> {
             redisManager.sendMessage(RedisChannels.PLAYER_COUNT, RedisMesage.newMessage()
-                    .set(RedisArg.SERVER.getName(), Bukkit.getServerName())
-                    .set(RedisArg.COUNT.getName(), Bukkit.getOnlinePlayers().size()));
+                    .set(RedisArg.SERVER, Bukkit.getServerName())
+                    .set(RedisArg.COUNT, Bukkit.getOnlinePlayers().size()));
         }, 20L, 20L);
 
 

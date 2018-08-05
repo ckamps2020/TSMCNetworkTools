@@ -15,9 +15,9 @@ public class FriendsChannel implements RedisChannel {
 
     @Override
     public void handle(String channel, JsonObject object) {
-        if (channel.equals(RedisChannels.LEAVE.getName())) {
+        if (channel.equals(RedisChannels.LEAVE)) {
             Multithreading.runAsync(() -> {
-                String player = object.get(RedisArg.PLAYER.getName()).getAsString();
+                String player = object.get(RedisArg.PLAYER).getAsString();
                 OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(player);
 
                 for (Player p : Bukkit.getOnlinePlayers()) {

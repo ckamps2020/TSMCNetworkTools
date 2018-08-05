@@ -50,23 +50,6 @@ public final class WhitelistCommand implements CommandExecutor {
                         networkTools.getRedisManager().sendMessage(RedisChannels.WHITELIST_ADD, RedisMesage.newMessage()
                                 .set(RedisArg.SERVER, server.toUpperCase())
                                 .set(RedisArg.PLAYER, name));
-                        /*
-                        Bukkit.getScheduler().runTaskAsynchronously(networkTools, new Runnable() {
-                            @Override
-                            public void run() {
-                                Multithreading.runAsync(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        try (Jedis jedis = networkTools.getPool().getResource()) {
-                                            JedisTask.withName(UUID.randomUUID().toString())
-                                                    .withArg(RedisArg.SERVER.getArg(), server.toUpperCase())
-                                                    .withArg(RedisArg.PLAYER.getArg(), name)
-                                                    .send(RedisChannels.WHITELIST_ADD.getChannelName(), jedis);
-                                        }
-                                    }
-                                });
-                            }
-                        }); */
                     } else if (a.equalsIgnoreCase("remove")) {
                         String name = args[1];
                         String server = args[2];
@@ -75,23 +58,6 @@ public final class WhitelistCommand implements CommandExecutor {
                         networkTools.getRedisManager().sendMessage(RedisChannels.WHITELIST_REMOVE, RedisMesage.newMessage()
                                 .set(RedisArg.SERVER, server.toUpperCase())
                                 .set(RedisArg.PLAYER, name));
-
-                        /*Bukkit.getScheduler().runTaskAsynchronously(networkTools, new Runnable() {
-                            @Override
-                            public void run() {
-                                Multithreading.runAsync(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        try (Jedis jedis = networkTools.getPool().getResource()) {
-                                            JedisTask.withName(UUID.randomUUID().toString())
-                                                    .withArg(RedisArg.SERVER.getArg(), server.toUpperCase())
-                                                    .withArg(RedisArg.PLAYER.getArg(), name)
-                                                    .send(RedisChannels.WHITELIST_REMOVE.getChannelName(), jedis);
-                                        }
-                                    }
-                                });
-                            }
-                        }); */
                     } else {
                         String server = args[0];
                         String onoff = args[1];
@@ -120,24 +86,6 @@ public final class WhitelistCommand implements CommandExecutor {
                                 .set(RedisArg.SERVER, server.toUpperCase())
                                 .set(RedisArg.ONOFF, onoff)
                                 .set(RedisArg.MESSAGE, stringBuilder.toString()));
-                        /*
-                        Bukkit.getScheduler().runTaskAsynchronously(networkTools, new Runnable() {
-                            @Override
-                            public void run() {
-                                Multithreading.runAsync(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        try (Jedis jedis = networkTools.getPool().getResource()) {
-                                            JedisTask.withName(UUID.randomUUID().toString())
-                                                    .withArg(RedisArg.SERVER.getArg(), server.toUpperCase())
-                                                    .withArg(RedisArg.ONOFF.getArg(), onoff)
-                                                    .withArg(RedisArg.MESSAGE.getArg(), stringBuilder.toString())
-                                                    .send(RedisChannels.WHITELIST.getChannelName(), jedis);
-                                        }
-                                    }
-                                });
-                            }
-                        });*/
                     }
                 } else {
                     player.sendMessage(CC.translate("&e&lWHITELIST &6■ &7Usage: /whitelist <servertype|server|all> <on|off> <reason>"));

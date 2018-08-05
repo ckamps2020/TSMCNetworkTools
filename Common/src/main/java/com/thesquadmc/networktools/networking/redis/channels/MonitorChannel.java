@@ -27,24 +27,24 @@ public class MonitorChannel implements RedisChannel {
 
     @Override
     public void handle(String channel, JsonObject object) {
-        if (channel.equals(RedisChannels.MONITOR_REQUEST.getName())) {
-            String server = object.get(RedisArg.SERVER.getName()).getAsString();
+        if (channel.equals(RedisChannels.MONITOR_REQUEST)) {
+            String server = object.get(RedisArg.SERVER).getAsString();
             if (server.equalsIgnoreCase(Bukkit.getServerName())) {
                 plugin.getRedisManager().sendMessage(RedisChannels.MONITOR_RETURN, RedisMesage.newMessage()
-                        .set(RedisArg.SERVER.getName(), server)
-                        .set(RedisArg.UPTIME.getName(), TimeUtils.getFormattedTime(System.currentTimeMillis() - plugin.getStartup()))
-                        .set(RedisArg.COUNT.getName(), Bukkit.getOnlinePlayers().size())
-                        .set(RedisArg.TPS.getName(), ServerUtils.getTPS(0))
-                        .set(RedisArg.MESSAGE.getName(), String.format("&7TPS = &e%s&7, Memory = &e%s&8/&e%s", ServerUtils.getTPS(0), ServerUtils.getUsedMemory(), ServerUtils.getTotalMemory())));
+                        .set(RedisArg.SERVER, server)
+                        .set(RedisArg.UPTIME, TimeUtils.getFormattedTime(System.currentTimeMillis() - plugin.getStartup()))
+                        .set(RedisArg.COUNT, Bukkit.getOnlinePlayers().size())
+                        .set(RedisArg.TPS, ServerUtils.getTPS(0))
+                        .set(RedisArg.MESSAGE, String.format("&7TPS = &e%s&7, Memory = &e%s&8/&e%s", ServerUtils.getTPS(0), ServerUtils.getUsedMemory(), ServerUtils.getTotalMemory())));
 
             }
-        } else if (channel.equalsIgnoreCase(RedisChannels.MONITOR_INFO.getName())) {
+        } else if (channel.equalsIgnoreCase(RedisChannels.MONITOR_INFO)) {
             Multithreading.runAsync(() -> {
-                String server = object.get(RedisArg.SERVER.getName()).getAsString();
-                String count = object.get(RedisArg.COUNT.getName()).getAsString();
-                String msg = object.get(RedisArg.MESSAGE.getName()).getAsString();
-                String uptime = object.get(RedisArg.UPTIME.getName()).getAsString();
-                String tps = object.get(RedisArg.TPS.getName()).getAsString();
+                String server = object.get(RedisArg.SERVER).getAsString();
+                String count = object.get(RedisArg.COUNT).getAsString();
+                String msg = object.get(RedisArg.MESSAGE).getAsString();
+                String uptime = object.get(RedisArg.UPTIME).getAsString();
+                String tps = object.get(RedisArg.TPS).getAsString();
                 if (!uptime.equalsIgnoreCase("0")) {
                     for (Player player : Bukkit.getOnlinePlayers()) {
                         if (PlayerUtils.isEqualOrHigherThen(player, Rank.ADMIN) && TSMCUser.fromPlayer(player).getSetting(PlayerSetting.MONITOR)) {

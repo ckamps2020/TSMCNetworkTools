@@ -9,7 +9,6 @@ import com.thesquadmc.networktools.utils.json.JSONUtils;
 import com.thesquadmc.networktools.utils.msgs.CC;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.UUID;
 
@@ -17,7 +16,7 @@ public class MessageChannel implements RedisChannel {
 
     @Override
     public void handle(String channel, JsonObject object) {
-        if (channel.equalsIgnoreCase(RedisChannels.MESSAGE.getName())) {
+        if (channel.equalsIgnoreCase(RedisChannels.MESSAGE)) {
             UUID targetUUID = UUID.fromString(object.get("target").getAsString());
 
             Player target = Bukkit.getPlayer(targetUUID);
@@ -36,7 +35,7 @@ public class MessageChannel implements RedisChannel {
 
             //TODO new SocialSpyEvent
 
-        } else if (channel.equalsIgnoreCase(RedisChannels.NOTES.getName())) {
+        } else if (channel.equalsIgnoreCase(RedisChannels.NOTES)) {
             UUID targetUUID = UUID.fromString(object.get("target").getAsString());
 
             Player target = Bukkit.getPlayer(targetUUID);

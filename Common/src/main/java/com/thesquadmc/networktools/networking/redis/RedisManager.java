@@ -3,7 +3,6 @@ package com.thesquadmc.networktools.networking.redis;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.thesquadmc.networktools.NetworkTools;
-import com.thesquadmc.networktools.utils.enums.RedisChannels;
 import com.thesquadmc.networktools.utils.json.JSONUtils;
 import com.thesquadmc.networktools.utils.server.Multithreading;
 import org.bukkit.Bukkit;
@@ -11,7 +10,6 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
-import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
@@ -51,10 +49,10 @@ public class RedisManager {
         Bukkit.getScheduler().runTaskTimerAsynchronously(NetworkTools.getInstance(), () -> System.out.println(getPoolCurrentUsage()), 0L, 20 * 60);
     }
 
-    public void sendMessage(RedisChannels channel, RedisMesage message) {
-        message.set("channel", channel.getName());
+    public void sendMessage(String channel, RedisMesage message) {
+        message.set("channel", channel);
 
-        executeJedisAsync(jedis -> jedis.publish(channel.getName(), JSONUtils.toJson(message)));
+        executeJedisAsync(jedis -> jedis.publish(channel, JSONUtils.toJson(message)));
     }
 
     public void executeJedisAsync(Consumer<Jedis> consumer) {
@@ -71,11 +69,10 @@ public class RedisManager {
         pool.close();
     }
 
-    public void registerChannel(RedisChannel redisChannel, RedisChannels... channels) {
+    public void registerChannel(RedisChannel redisChannel, String... channels) {
         Preconditions.checkNotNull(redisChannel, "RedisChannel cannot be null!");
 
-        String[] subscribing = Arrays.stream(channels).map(RedisChannels::getName).toArray(String[]::new);
-        subscriberExecutor.submit(() -> pubSub.subscribe(redisChannel, subscribing));
+        subscriberExecutor.submit(() -> pubSub.subscribe(redisChannel, channels));
     }
 
     public Jedis getResource() {

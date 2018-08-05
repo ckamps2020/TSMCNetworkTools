@@ -1,7 +1,6 @@
 package com.thesquadmc.networktools.networking.redis;
 
 import com.google.gson.JsonObject;
-import com.thesquadmc.networktools.utils.enums.RedisArg;
 import com.thesquadmc.networktools.utils.json.JSONUtils;
 
 @SuppressWarnings("unchecked")
@@ -19,11 +18,6 @@ public class RedisMesage {
 
     public RedisMesage set(String key, Object value) {
         message.add(key, JSONUtils.getGson().toJsonTree(value));
-        return this;
-    }
-
-    public RedisMesage set(RedisArg key, Object value) {
-        set(key.getName(), value);
         return this;
     }
 }

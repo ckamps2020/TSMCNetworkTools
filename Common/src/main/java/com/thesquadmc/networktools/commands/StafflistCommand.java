@@ -18,14 +18,14 @@ import java.util.UUID;
 
 public final class StafflistCommand implements CommandExecutor {
 
-    private static Map<UUID, Map<RedisArg, String>> stafflist = new HashMap<>();
+    private static Map<UUID, Map<String, String>> stafflist = new HashMap<>();
     private final NetworkTools networkTools;
 
     public StafflistCommand(NetworkTools networkTools) {
         this.networkTools = networkTools;
     }
 
-    public static Map<UUID, Map<RedisArg, String>> getStafflist() {
+    public static Map<UUID, Map<String, String>> getStafflist() {
         return stafflist;
     }
 
@@ -48,22 +48,22 @@ public final class StafflistCommand implements CommandExecutor {
                 String manager = "";
                 String developer = "";
                 String owner = "";
-                for (Map.Entry<RedisArg, String> m : stafflist.get(player.getUniqueId()).entrySet()) {
-                    if (m.getKey() == RedisArg.TRAINEE) {
+                for (Map.Entry<String, String> m : stafflist.get(player.getUniqueId()).entrySet()) {
+                    if (m.getKey().equals(RedisArg.TRAINEE)) {
                         trainee = m.getValue();
-                    } else if (m.getKey() == RedisArg.HELPER) {
+                    } else if (m.getKey().equals(RedisArg.HELPER)) {
                         helper = m.getValue();
-                    } else if (m.getKey() == RedisArg.MOD) {
+                    } else if (m.getKey().equals(RedisArg.MOD)) {
                         mod = m.getValue();
-                    } else if (m.getKey() == RedisArg.SRMOD) {
+                    } else if (m.getKey().equals(RedisArg.SRMOD)) {
                         srmod = m.getValue();
-                    } else if (m.getKey() == RedisArg.ADMIN) {
+                    } else if (m.getKey().equals(RedisArg.ADMIN)) {
                         admin = m.getValue();
-                    } else if (m.getKey() == RedisArg.MANAGER) {
+                    } else if (m.getKey().equals(RedisArg.MANAGER)) {
                         manager = m.getValue();
-                    } else if (m.getKey() == RedisArg.DEVELOPER) {
+                    } else if (m.getKey().equals(RedisArg.DEVELOPER)) {
                         developer = m.getValue();
-                    } else if (m.getKey() == RedisArg.OWNER) {
+                    } else if (m.getKey().equals(RedisArg.OWNER)) {
                         owner = m.getValue();
                     }
                 }

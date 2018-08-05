@@ -22,7 +22,7 @@ public final class ServerListener implements Listener {
                         .set(RedisArg.SERVER, Bukkit.getServerName() + " ")
                         .set(RedisArg.UPTIME, TimeUtils.getFormattedTime(System.currentTimeMillis() - NetworkTools.getInstance().getStartup()))
                         .set(RedisArg.COUNT, String.valueOf(Bukkit.getOnlinePlayers().size()))
-                        .set(RedisArg.MESSAGE.getName(), String.format("&7TPS = &e%s&7, Memory = &e%s&8/&e%s", ServerUtils.getTPS(0), ServerUtils.getUsedMemory(), ServerUtils.getTotalMemory()))
+                        .set(RedisArg.MESSAGE, String.format("&7TPS = &e%s&7, Memory = &e%s&8/&e%s", ServerUtils.getTPS(0), ServerUtils.getUsedMemory(), ServerUtils.getTotalMemory()))
                         .set(RedisArg.TPS, ServerUtils.getTPS(0))
                         .set(RedisArg.MEMORY, ServerUtils.getUsedMemory() + "/" + ServerUtils.getTotalMemory()));
             }

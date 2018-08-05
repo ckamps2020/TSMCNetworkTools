@@ -26,7 +26,7 @@ public class FindChannel implements RedisChannel {
 
     @Override
     public void handle(String channel, JsonObject object) {
-        if (channel.equalsIgnoreCase(RedisChannels.REQUEST_LIST.getName())) { //TODO Move us to something better than this
+        if (channel.equalsIgnoreCase(RedisChannels.REQUEST_LIST)) { //TODO Move us to something better than this
             plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
                 ArrayList<String> trainee = new ArrayList<>();
                 ArrayList<String> helper = new ArrayList<>();
@@ -108,8 +108,8 @@ public class FindChannel implements RedisChannel {
                 }
 
                 plugin.getRedisManager().sendMessage(RedisChannels.RETURN_REQUEST_LIST, RedisMesage.newMessage()
-                        .set(RedisArg.SERVER, object.get(RedisArg.SERVER.getName()).getAsString())
-                        .set(RedisArg.PLAYER, object.get(RedisArg.PLAYER.getName()).getAsString())
+                        .set(RedisArg.SERVER, object.get(RedisArg.SERVER).getAsString())
+                        .set(RedisArg.PLAYER, object.get(RedisArg.PLAYER).getAsString())
                         .set(RedisArg.TRAINEE, tSB.toString())
                         .set(RedisArg.HELPER, hSB.toString())
                         .set(RedisArg.MOD, mSB.toString())
@@ -121,23 +121,23 @@ public class FindChannel implements RedisChannel {
                 );
             });
 
-        } else if (channel.equalsIgnoreCase(RedisChannels.RETURN_REQUEST_LIST.getName())) {
-            String server = object.get(RedisArg.SERVER.getName()).getAsString();
-            String name = object.get(RedisArg.PLAYER.getName()).getAsString();
+        } else if (channel.equalsIgnoreCase(RedisChannels.RETURN_REQUEST_LIST)) {
+            String server = object.get(RedisArg.SERVER).getAsString();
+            String name = object.get(RedisArg.PLAYER).getAsString();
 
             if (server.equalsIgnoreCase(Bukkit.getServerName())) {
-                Map<UUID, Map<RedisArg, String>> map = StafflistCommand.getStafflist();
-                for (Map.Entry<UUID, Map<RedisArg, String>> m : map.entrySet()) {
+                Map<UUID, Map<String, String>> map = StafflistCommand.getStafflist();
+                for (Map.Entry<UUID, Map<String, String>> m : map.entrySet()) {
                     Player p = Bukkit.getPlayer(m.getKey());
                     if (p.getName().equalsIgnoreCase(name)) {
-                        String trainee = object.get(RedisArg.TRAINEE.getName()).getAsString();
-                        String helper = object.get(RedisArg.HELPER.getName()).getAsString();
-                        String mod = object.get(RedisArg.MOD.getName()).getAsString();
-                        String srmod = object.get(RedisArg.SRMOD.getName()).getAsString();
-                        String admin = object.get(RedisArg.ADMIN.getName()).getAsString();
-                        String manager = object.get(RedisArg.MANAGER.getName()).getAsString();
-                        String developer = object.get(RedisArg.DEVELOPER.getName()).getAsString();
-                        String owner = object.get(RedisArg.OWNER.getName()).getAsString();
+                        String trainee = object.get(RedisArg.TRAINEE).getAsString();
+                        String helper = object.get(RedisArg.HELPER).getAsString();
+                        String mod = object.get(RedisArg.MOD).getAsString();
+                        String srmod = object.get(RedisArg.SRMOD).getAsString();
+                        String admin = object.get(RedisArg.ADMIN).getAsString();
+                        String manager = object.get(RedisArg.MANAGER).getAsString();
+                        String developer = object.get(RedisArg.DEVELOPER).getAsString();
+                        String owner = object.get(RedisArg.OWNER).getAsString();
 
                         if (m.getValue().get(RedisArg.TRAINEE) != null) {
                             m.getValue().put(RedisArg.TRAINEE, m.getValue().get(RedisArg.TRAINEE) + trainee);

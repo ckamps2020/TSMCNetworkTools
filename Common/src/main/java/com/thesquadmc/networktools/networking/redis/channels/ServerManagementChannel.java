@@ -31,9 +31,9 @@ public class ServerManagementChannel implements RedisChannel {
 
     @Override
     public void handle(String channel, JsonObject object) {
-        if (channel.equalsIgnoreCase(RedisChannels.STOP.getName())) {
-            String server = object.get(RedisArg.SERVER.getName()).getAsString();
-            String msg = object.get(RedisArg.MESSAGE.getName()).getAsString();
+        if (channel.equalsIgnoreCase(RedisChannels.STOP)) {
+            String server = object.get(RedisArg.SERVER).getAsString();
+            String msg = object.get(RedisArg.MESSAGE).getAsString();
 
             if (server.equalsIgnoreCase("ALL") || Bukkit.getServerName().toUpperCase().contains(server)) {
                 Bukkit.broadcastMessage(CC.translate("&7"));
@@ -79,12 +79,12 @@ public class ServerManagementChannel implements RedisChannel {
                 }, 10 * 20);
             }
 
-        } else if (channel.equalsIgnoreCase(RedisChannels.RETURN_SERVER.getName())) {
+        } else if (channel.equalsIgnoreCase(RedisChannels.RETURN_SERVER)) {
             Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> Multithreading.runAsync(() -> {
-                String server = object.get(RedisArg.ORIGIN_SERVER.getName()).getAsString();
+                String server = object.get(RedisArg.ORIGIN_SERVER).getAsString();
                 if (Bukkit.getServerName().equalsIgnoreCase(server)) {
-                    String player = object.get(RedisArg.ORIGIN_PLAYER.getName()).getAsString();
-                    String newServer = object.get(RedisArg.SERVER.getName()).getAsString();
+                    String player = object.get(RedisArg.ORIGIN_PLAYER).getAsString();
+                    String newServer = object.get(RedisArg.SERVER).getAsString();
                     if (newServer.equalsIgnoreCase("NONE")) {
                         if (Bukkit.getPlayer(player) != null) {
                             Player p = Bukkit.getPlayer(player);
@@ -100,13 +100,13 @@ public class ServerManagementChannel implements RedisChannel {
                     }
                 }
             }));
-        } else if (channel.equalsIgnoreCase(RedisChannels.STARTUP_REQUEST.getName())) {
+        } else if (channel.equalsIgnoreCase(RedisChannels.STARTUP_REQUEST)) {
             Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> Multithreading.runAsync(() -> ServerUtils.updateServerState(plugin.getServerState())));
 
-        } else if (channel.equalsIgnoreCase(RedisChannels.PLAYER_COUNT.getName())) {
+        } else if (channel.equalsIgnoreCase(RedisChannels.PLAYER_COUNT)) {
             try { //TODO Remove
-                String server = object.get(RedisArg.SERVER.getName()).getAsString();
-                int count = object.get(RedisArg.COUNT.getName()).getAsInt();
+                String server = object.get(RedisArg.SERVER).getAsString();
+                int count = object.get(RedisArg.COUNT).getAsInt();
 
                 plugin.getCountManager().getCount().put(server, count);
             } catch (NullPointerException ignored) {
