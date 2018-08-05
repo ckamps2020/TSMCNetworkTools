@@ -140,43 +140,30 @@ public class TSMCUser {
 
     public static TSMCUser fromDocument(Document document) {
         TSMCUser user = new TSMCUser(document.get("_id", UUID.class), document.getString("name"));
-        System.out.println("USERS ACTIVE");
 
         Set<String> previousNames = DocumentUtils.documentToStringSet(document, PREVIOUS_NAMES);
         previousNames.addAll(user.previousNames);
 
-        System.out.println("previous names");
-
         Set<UUID> friends = DocumentUtils.documentToUUIDSet(document, FRIENDS);
         friends.addAll(user.friends);
-
-        System.out.println("friends");
 
         Set<UUID> requests = DocumentUtils.documentToUUIDSet(document, REQUESTS);
         if (requests != null) {
             requests.addAll(user.requests);
         }
 
-        System.out.println("requests");
-
         List<Document> notes = (List<Document>) document.get(NOTES);
         if (notes != null) {
             user.notes.addAll(notes.stream().map(Note::fromDocument).collect(Collectors.toList()));
         }
-
-        System.out.println("notes");
 
         List<Document> ips = (List<Document>) document.get(IPS);
         if (ips != null) {
             user.ips.addAll(ips.stream().map(IPInfo::fromDocument).collect(Collectors.toList()));
         }
 
-        System.out.println("ips");
-
         List<Document> seasons = (List<Document>) document.get("seasons");
         seasons.forEach(doc -> user.seasons.add(Season.fromDocument(doc)));
-
-        System.out.println("SERVER STATS" + user.seasons);
 
         user.nickname = document.getString(NICKNAME);
         user.skinKey = document.getString(SKIN_KEY);
