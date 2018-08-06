@@ -33,14 +33,22 @@ public class WarpCommand {
                 player.sendMessage(CC.translate("&e&lWARP &6■ &7No warps defined"));
 
             } else {
-                player.sendMessage(CC.translate("&e&lWARP &6■ &7Warps: &e{0}", warps));
+                player.sendMessage(CC.translate("&e&lWARP &6■ &7Warps ({0}): &e{1}", plugin.getWarpManager().getWarps().size(), warps));
             }
 
         } else {
-            Optional<Warp> warp = plugin.getWarpManager().getWarp(args.getArg(0));
-            if (warp.isPresent()) {
-                new TimedTeleport.Builder(player, warp.get().getLocation())
-                        .whenComplete(() -> player.sendMessage(CC.translate("&e&lWARP &6■ &7Teleported to &ewarp {0}", warp.get().getName())))
+            Optional<Warp> optionalWarp = plugin.getWarpManager().getWarp(args.getArg(0));
+            if (optionalWarp.isPresent()) {
+                Warp warp = optionalWarp.get();
+
+                if (!player.hasPermission("essentials.warp." + warp.getName().toLowerCase())) {
+                    player.sendMessage(CC.RED + "You do not have permission to go to this warp!");
+                    return;
+                }
+
+                player.sendMessage(CC.translate("&e&lWARP &6■ &7Teleporting you to &6{0} Warp", warp.getName()));
+                new TimedTeleport.Builder(player, optionalWarp.get().getLocation())
+                        .whenComplete(() -> player.sendMessage(CC.translate("&e&lWARP &6■ &7Teleported to &ewarp {0}", optionalWarp.get().getName())))
                         .build();
 
             } else {
@@ -56,6 +64,8 @@ public class WarpCommand {
 
         Optional<Warp> warp = plugin.getWarpManager().getWarp("spawn");
         if (warp.isPresent()) {
+            player.sendMessage(CC.translate("&e&lWARP &6■ &7Teleporting you to &6spawn"));
+
             new TimedTeleport.Builder(player, warp.get().getLocation())
                     .whenComplete(() -> player.sendMessage(CC.translate("&e&lWARP &6■ &7Teleported to &espawn")))
                     .build();
