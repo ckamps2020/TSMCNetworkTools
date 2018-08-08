@@ -1,10 +1,12 @@
 package com.thesquadmc.networktools.networking.mongo;
 
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.UpdateOptions;
 import com.thesquadmc.networktools.NetworkTools;
 import com.thesquadmc.networktools.player.TSMCUser;
 import com.thesquadmc.networktools.utils.server.Multithreading;
 import org.bson.Document;
+import org.bukkit.Bukkit;
 
 import java.text.MessageFormat;
 import java.util.UUID;
@@ -18,6 +20,8 @@ public class MongoUserDatabase implements UserDatabase {
 
     public MongoUserDatabase(MongoManager plugin) {
         this.users = plugin.getMongoDatabase().getCollection(USER_DATABASE, Document.class);
+        users.createIndex(new Document("name", 1));
+
     }
 
     @Override
@@ -43,16 +47,33 @@ public class MongoUserDatabase implements UserDatabase {
     }
 
     @Override
+    public CompletableFuture<TSMCUser> getUser(String name) {
+        if (Bukkit.getPlayer(name) != null) {
+            return CompletableFuture.completedFuture(TSMCUser.fromPlayer(Bukkit.getPlayer(name)));
+        }
+
+        return CompletableFuture.supplyAsync(() -> {
+            Document document = users.find(eq("name", name)).first();
+
+            if (document == null) {
+                return null;
+            }
+
+            return TSMCUser.fromDocument(document);
+        });
+    }
+
+    @Override
     public CompletableFuture<Void> saveUser(TSMCUser user) {
         return CompletableFuture.runAsync(() -> {
-            Document document = users.find(eq("_id", user.getUUID())).first();
+            // Document document = users.find(eq("_id", user.getUUID())).first();
 
-            if (document != null) {
-                users.findOneAndReplace(eq("_id", user.getUUID()), TSMCUser.toDocument(user));
+            //if (document != null) {
+            users.replaceOne(eq("_id", user.getUUID()), TSMCUser.toDocument(user), new UpdateOptions().upsert(true));
 
-            } else {
-                users.insertOne(TSMCUser.toDocument(user));
-            }
+            //} else {
+            //  users.insertOne(TSMCUser.toDocument(user));
+            //}
         });
     }
 }

@@ -6,6 +6,7 @@ import com.thesquadmc.networktools.utils.command.CommandArgs;
 import com.thesquadmc.networktools.utils.msgs.CC;
 import com.thesquadmc.networktools.utils.player.TimedTeleport;
 import com.thesquadmc.networktools.warp.Warp;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.Optional;
@@ -46,7 +47,6 @@ public class WarpCommand {
                     return;
                 }
 
-                player.sendMessage(CC.translate("&e&lWARP &6■ &7Teleporting you to &6{0} Warp", warp.getName()));
                 new TimedTeleport.Builder(player, optionalWarp.get().getLocation())
                         .whenComplete(() -> player.sendMessage(CC.translate("&e&lWARP &6■ &7Teleported to &ewarp {0}", optionalWarp.get().getName())))
                         .build();
@@ -62,16 +62,37 @@ public class WarpCommand {
     public void spawn(CommandArgs args) {
         Player player = args.getPlayer();
 
-        Optional<Warp> warp = plugin.getWarpManager().getWarp("spawn");
-        if (warp.isPresent()) {
-            player.sendMessage(CC.translate("&e&lWARP &6■ &7Teleporting you to &6spawn"));
+        if (args.length() > 0 && player.hasPermission("essentials.spawn.others")) {
+            Player target = Bukkit.getPlayer(args.getArg(0));
 
-            new TimedTeleport.Builder(player, warp.get().getLocation())
-                    .whenComplete(() -> player.sendMessage(CC.translate("&e&lWARP &6■ &7Teleported to &espawn")))
-                    .build();
+            if (target == null) {
+                player.sendMessage(CC.RED + args.getArg(0) + " is not online!");
+                return;
+            }
+
+            Optional<Warp> warp = plugin.getWarpManager().getWarp("spawn");
+            if (warp.isPresent()) {
+                new TimedTeleport.Builder(target, warp.get().getLocation())
+                        .whenComplete(() -> {
+                            target.sendMessage(CC.translate("&e&lWARP &6■ &7Teleported to &espawn"));
+                            player.sendMessage(CC.translate("&e&lWARP &6■ &7Teleported &e{0} &7to &espawn", target.getName()));
+                        })
+                        .build();
+
+            } else {
+                player.sendMessage(CC.RED + "There is no warp to spawn set!");
+            }
 
         } else {
-            player.sendMessage(CC.RED + "There is no warp to spawn set!");
+            Optional<Warp> warp = plugin.getWarpManager().getWarp("spawn");
+            if (warp.isPresent()) {
+                new TimedTeleport.Builder(player, warp.get().getLocation())
+                        .whenComplete(() -> player.sendMessage(CC.translate("&e&lWARP &6■ &7Teleported to &espawn")))
+                        .build();
+
+            } else {
+                player.sendMessage(CC.RED + "There is no warp to spawn set!");
+            }
         }
 
     }

@@ -16,7 +16,12 @@ pipeline {
         archiveArtifacts(artifacts: 'StaffTools1.12R1/target/TSMCNetworkTools.jar', allowEmptyArchive: true, fingerprint: true, onlyIfSuccessful: true)
       }
     }
-    stage('deploy 1.8') {
+
+    stage('deploy') {
+      when {
+        branch 'master'
+      }
+
       parallel {
         stage('deploy 1.8') {
           steps {
@@ -34,12 +39,22 @@ pipeline {
         }
       }
     }
-    stage('Notify') {
-      steps {
-        slackSend(failOnError: true, botUser: true, channel: 'dev-notifications', teamDomain: 'thesquadmc', token: 'Yd7UWIwrGc8ibjPOBHYzMgGT', tokenCredentialId: 'Yd7UWIwrGc8ibjPOBHYzMgGT', baseUrl: 'https://thesquadmc.slack.com/services/hooks/jenkins-ci/', message: '[TSMCNetworkTools] Build was triggered!')
-      }
+  }
+
+  post {
+    success {
+      slackSend(color: 'good', message: "SUCCESS: `${env.JOB_NAME}` #${env.BUILD_NUMBER}:\n${env.BUILD_URL}")
+    }
+
+    failure {
+      slackSend(color: 'danger', message: "FAILURE: `${env.JOB_NAME}` #${env.BUILD_NUMBER}:\n${env.BUILD_URL}")
+    }
+
+    aborted {
+      slackSend(color: 'warning', message: "ABORTED: `${env.JOB_NAME}` #${env.BUILD_NUMBER}:\n${env.BUILD_URL}")
     }
   }
+
   tools {
     maven 'M3'
   }

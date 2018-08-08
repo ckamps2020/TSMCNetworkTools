@@ -236,7 +236,7 @@ public final class NetworkTools extends JavaPlugin {
         redisManager.registerChannel(new WhitelistChannel(this), RedisChannels.WHITELIST, RedisChannels.WHITELIST_ADD, RedisChannels.WHITELIST_REMOVE);
         redisManager.registerChannel(new MonitorChannel(this), RedisChannels.MONITOR_INFO, RedisChannels.MONITOR_REQUEST);
         redisManager.registerChannel(new AnnounceChannel(), RedisChannels.ANNOUNCEMENT);
-        redisManager.registerChannel(new MessageChannel(), RedisChannels.MESSAGE, RedisChannels.MESSAGE, RedisChannels.NOTES);
+        redisManager.registerChannel(new MessageChannel(this), RedisChannels.MESSAGE, RedisChannels.MESSAGE_RESPONSE, RedisChannels.NOTES);
         redisManager.registerChannel(new StaffChatChannels(), RedisChannels.STAFFCHAT, RedisChannels.ADMINCHAT, RedisChannels.MANAGERCHAT, RedisChannels.DISCORD_STAFFCHAT_SERVER);
 
         getLogger().info("Redis PUB/SUB setup!");

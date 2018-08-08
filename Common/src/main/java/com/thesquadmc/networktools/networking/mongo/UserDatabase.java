@@ -47,6 +47,15 @@ public interface UserDatabase {
     CompletableFuture<TSMCUser> getUser(UUID uuid);
 
     /**
+     * Loads a user from the database using
+     * the player's name.
+     *
+     * @param name name of the player
+     * @return the user, null if not found
+     */
+    CompletableFuture<TSMCUser> getUser(String name);
+
+    /**
      * Saves a user to the database
      *
      * @param user user to save

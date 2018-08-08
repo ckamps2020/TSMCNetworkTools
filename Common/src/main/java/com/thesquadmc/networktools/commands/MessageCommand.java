@@ -2,6 +2,7 @@ package com.thesquadmc.networktools.commands;
 
 import com.thesquadmc.networktools.NetworkTools;
 import com.thesquadmc.networktools.networking.redis.RedisMesage;
+import com.thesquadmc.networktools.player.PlayerSetting;
 import com.thesquadmc.networktools.player.TSMCUser;
 import com.thesquadmc.networktools.utils.command.Command;
 import com.thesquadmc.networktools.utils.command.CommandArgs;
@@ -34,8 +35,12 @@ public class MessageCommand {
         String name = args.getArg(0);
         String message = String.join(" ", Arrays.copyOfRange(args.getArgs(), 1, args.length()));
 
-        if (Bukkit.getPlayer(name) != null) {
-            Player target = Bukkit.getPlayer(name);
+        Player target = Bukkit.getPlayer(name);
+        if (target != null) {
+            if (player.getName().equals(target.getName())) {
+                player.sendMessage(CC.RED + "You cannot message yourself");
+                return;
+            }
 
             if (TSMCUser.fromPlayer(target).isIgnored(player.getUniqueId())) {
                 player.sendMessage(CC.RED + "You cannot send messages to this player!");
@@ -51,36 +56,28 @@ public class MessageCommand {
             TSMCUser.fromPlayer(target).setLastMessager(player.getUniqueId());
 
         } else {
-            plugin.getUUIDTranslator().getUUID(name, true).thenAccept(uuid -> {
-                if (uuid == null) {
-                    player.sendMessage(CC.RED + "Could not find " + name);
+            plugin.getUUIDTranslator().getUUID(name, false).thenAccept(user -> {
+                if (user == null) {
+                    player.sendMessage(CC.RED + name + " could not be found");
                     return;
                 }
 
-                plugin.getUserDatabase().getUser(uuid).thenAccept(user -> {
-                    if (user != null && user.isIgnored(player.getUniqueId())) {
-                        player.sendMessage(CC.RED + "You cannot send messages to this player!");
-                        return;
+                PlayerUtils.isOnline(user).thenAccept(online -> {
+                    if (online) {
+                        TSMCUser p = TSMCUser.fromPlayer(player);
+
+                        plugin.getRedisManager().sendMessage(RedisChannels.MESSAGE, RedisMesage.newMessage()
+                                .set("sender", player.getUniqueId())
+                                .set("sender_name", p.getName())
+                                .set("target", user)
+                                .set("message", message));
+
+                        player.sendMessage(CC.translate("&6Me &7■ &6{0} &8» &e{1}", name, message));
+                        p.setLastMessager(user);
+
+                    } else {
+                        player.sendMessage(CC.RED + "Could not find " + name + " (redis)");
                     }
-
-
-                    PlayerUtils.isOnline(uuid).thenAccept(online -> {
-                        if (online) {
-                            TSMCUser p = TSMCUser.fromPlayer(player);
-
-                            plugin.getRedisManager().sendMessage(RedisChannels.MESSAGE, RedisMesage.newMessage()
-                                    .set("sender", player.getUniqueId())
-                                    .set("sender_name", p.getName())
-                                    .set("target", uuid)
-                                    .set("message", message));
-
-                            player.sendMessage(CC.translate("&6Me &7■ &6{0} &8» &e{1}", name, message));
-                            p.setLastMessager(uuid);
-
-                        } else {
-                            player.sendMessage(CC.RED + "Could not find " + name);
-                        }
-                    });
                 });
             });
         }
@@ -89,6 +86,10 @@ public class MessageCommand {
     @Command(name = {"togglemessage", "togglepms"}, playerOnly = true)
     public void toggle(CommandArgs args) {
         TSMCUser user = TSMCUser.fromPlayer(args.getPlayer());
+
+        boolean change = !user.getSetting(PlayerSetting.PRIVATE_MESSAGES);
+        user.updateSetting(PlayerSetting.PRIVATE_MESSAGES, change);
+        args.getSender().sendMessage(CC.translate("&e&lMESSAGES &6■ &7You have turned {0} &7private messages!", (change ? "&aon" : "&coff")));
     }
 
     @Command(name = {"reply", "r"}, playerOnly = true)
@@ -112,13 +113,6 @@ public class MessageCommand {
                         .set("sender_name", player.getName())
                         .set("target", uuid)
                         .set("message", message));
-
-                TSMCUser.fromPlayer(player).setLastMessager(uuid);
-
-                plugin.getUUIDTranslator().getName(uuid, true).thenAccept(name -> {
-                    player.sendMessage(CC.translate("&6Me &7■ &6{0} &8» &e{1}", name, message));
-                });
-
             } else {
                 player.sendMessage(CC.RED + "Could not find the last player you messaged!");
             }

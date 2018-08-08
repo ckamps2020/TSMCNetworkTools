@@ -15,7 +15,7 @@ public final class ProxyTransportCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            if (PlayerUtils.isEqualOrHigherThen(player, Rank.TRAINEE)) {
+            if (PlayerUtils.isEqualOrHigherThen(player, Rank.TRAINEE) || player.hasPermission("nte.pt")) {
                 if (args.length == 1) {
                     String server = args[0];
                     ConnectionUtils.sendPlayer(player, server);

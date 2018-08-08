@@ -147,10 +147,11 @@ public class TSMCUser {
         Set<UUID> friends = DocumentUtils.documentToUUIDSet(document, FRIENDS);
         friends.addAll(user.friends);
 
+        Set<UUID> ignored = DocumentUtils.documentToUUIDSet(document, "ignored");
+        ignored.addAll(user.ignored);
+
         Set<UUID> requests = DocumentUtils.documentToUUIDSet(document, REQUESTS);
-        if (requests != null) {
-            requests.addAll(user.requests);
-        }
+        requests.addAll(user.requests);
 
         List<Document> notes = (List<Document>) document.get(NOTES);
         if (notes != null) {
@@ -194,6 +195,7 @@ public class TSMCUser {
 
                 .append(PREVIOUS_NAMES, user.previousNames)
                 .append(FRIENDS, user.friends)
+                .append("ignored", user.ignored)
                 .append(IPS, user.ips)
                 .append(REQUESTS, user.requests)
                 .append(NOTES, user.notes)

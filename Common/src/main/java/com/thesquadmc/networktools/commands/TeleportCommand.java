@@ -140,7 +140,7 @@ public class TeleportCommand {
         }
 
         if (player == target) {
-            player.sendMessage(CC.RED + "Find some friends to teleport to, loser!");
+            player.sendMessage(CC.RED + "You can't teleport to yourself");
             return;
         }
 
@@ -181,7 +181,7 @@ public class TeleportCommand {
         }
 
         if (player == target) {
-            player.sendMessage(CC.RED + "Find some friends to teleport to, loser!");
+            player.sendMessage(CC.RED + "You can't teleport to yourself");
             return;
         }
 

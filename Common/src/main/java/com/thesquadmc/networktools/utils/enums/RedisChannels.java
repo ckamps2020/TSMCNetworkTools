@@ -4,6 +4,7 @@ public class RedisChannels {
 
     public static final String ANNOUNCEMENT = "announcement";
     public static final String MESSAGE = "message";
+    public static final String MESSAGE_RESPONSE = "message_response";
     public static final String STAFFCHAT = "staffchat";
     public static final String ADMINCHAT = "adminchat";
     public static final String MANAGERCHAT = "managerchat";

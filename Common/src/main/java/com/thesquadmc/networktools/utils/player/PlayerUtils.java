@@ -96,7 +96,6 @@ public final class PlayerUtils {
             }
 
             return true;
-
         }, Multithreading.POOL);
     }
 
