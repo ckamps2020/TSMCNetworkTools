@@ -1,10 +1,5 @@
 pipeline {
   agent any
-
-  triggers {
-    pollSCM('H/1 * * * *')
-  }
-
   stages {
     stage('Build') {
       steps {
@@ -39,8 +34,16 @@ pipeline {
         }
       }
     }
+    stage('Notify') {
+      steps {
+        slackSend(failOnError: true, botUser: true, channel: 'dev-notifications', teamDomain: 'thesquadmc', token: 'Yd7UWIwrGc8ibjPOBHYzMgGT', tokenCredentialId: 'Yd7UWIwrGc8ibjPOBHYzMgGT', baseUrl: 'https://thesquadmc.slack.com/services/hooks/jenkins-ci/', message: '[TSMCNetworkTools] Build was triggered!')
+      }
+    }
   }
   tools {
     maven 'M3'
+  }
+  triggers {
+    pollSCM('H/1 * * * *')
   }
 }
