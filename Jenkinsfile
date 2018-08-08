@@ -43,15 +43,15 @@ pipeline {
 
   post {
     success {
-      slackSend(color: 'good', message: "SUCCESS: `${env.JOB_NAME}` #${env.BUILD_NUMBER}:\n${env.BUILD_URL}")
+      slackSend(color: 'good', message: "`${env.BRANCH_NAME}` Build ${env.BUILD_NUMBER} was successful: ${env.BUILD_URL}")
     }
 
     failure {
-      slackSend(color: 'danger', message: "FAILURE: `${env.JOB_NAME}` #${env.BUILD_NUMBER}:\n${env.BUILD_URL}")
+      slackSend(color: 'danger', message: "`${env.BRANCH_NAME}` Build ${env.BUILD_NUMBER} was a failure: ${env.BUILD_URL}")
     }
 
     aborted {
-      slackSend(color: 'warning', message: "ABORTED: `${env.JOB_NAME}` #${env.BUILD_NUMBER}:\n${env.BUILD_URL}")
+      slackSend(color: 'warning', message: "`${env.BRANCH_NAME}` Build ${env.BUILD_NUMBER} was aborted: ${env.BUILD_URL}")
     }
   }
 
