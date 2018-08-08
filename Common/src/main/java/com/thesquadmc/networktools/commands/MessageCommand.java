@@ -72,9 +72,6 @@ public class MessageCommand {
                                 .set("target", user)
                                 .set("message", message));
 
-                        player.sendMessage(CC.translate("&6Me &7■ &6{0} &8» &e{1}", name, message));
-                        p.setLastMessager(user);
-
                     } else {
                         player.sendMessage(CC.RED + "Could not find " + name + " (redis)");
                     }
@@ -83,7 +80,7 @@ public class MessageCommand {
         }
     }
 
-    @Command(name = {"togglemessage", "togglepms"}, playerOnly = true)
+    @Command(name = {"togglemessage", "togglepm", "togglepms"}, playerOnly = true)
     public void toggle(CommandArgs args) {
         TSMCUser user = TSMCUser.fromPlayer(args.getPlayer());
 

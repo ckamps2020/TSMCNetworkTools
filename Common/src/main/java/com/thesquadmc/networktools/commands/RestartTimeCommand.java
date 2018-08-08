@@ -10,18 +10,18 @@ import org.bukkit.entity.Player;
 
 public final class RestartTimeCommand implements CommandExecutor {
 
-    private final NetworkTools networkTools;
+    private final NetworkTools plugin;
 
-    public RestartTimeCommand(NetworkTools networkTools) {
-        this.networkTools = networkTools;
+    public RestartTimeCommand(NetworkTools plugin) {
+        this.plugin = plugin;
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            int i = 720 - networkTools.getRestartTime();
-            player.sendMessage(CC.translate("&e&lRESTART &6■ &7Server restarts in &e" + TimeUtils.convertPlaytime(i)));
+            int i = 720 - plugin.getRestartTime();
+            player.sendMessage(CC.translate("&e&lRESTART &6■ &7Server restarts in &e" + TimeUtils.getFormattedTime(i * 60)));
         }
         return true;
     }

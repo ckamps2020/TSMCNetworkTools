@@ -26,7 +26,6 @@ public class IgnoreCommand {
         Player player = args.getPlayer();
 
         Stream.of(
-                CC.translate("&6—————————————————————"),
                 CC.translate("&e/ignore &8- &6Sends you this message"),
                 CC.translate("&e/ignore add <player> &8- &6Adds the player to your ignored list"),
                 CC.translate("&e/ignore remove <player> &8- &6Removes a player from your ignored list"),
@@ -104,10 +103,10 @@ public class IgnoreCommand {
 
         plugin.getUUIDTranslator().getUUID(name, true).thenAccept(uuid -> {
             if (user.isIgnored(uuid)) {
-                player.sendMessage(CC.translate("&e&lIGNORE &6■ &7You are ignoring &e{0}", name));
+                player.sendMessage(CC.translate("&e&lIGNORE &6■ &e{0} &7is ignored!", name));
 
             } else {
-                player.sendMessage(CC.translate("&e&lIGNORE &6■ &7You are not ignoring &e{0}", name));
+                player.sendMessage(CC.translate("&e&lIGNORE &6■ &e{0} &7is not ignored!t", name));
             }
         });
     }

@@ -55,10 +55,10 @@ public class FindCommand {
             } else if (server.containsKey("onlineSince")) {
                 timestamp = System.currentTimeMillis() - Long.parseLong(server.get("onlineSince"));
 
-                sender.sendMessage(CC.B_YELLOW + name);
-                sender.sendMessage(CC.GRAY + Unicode.SQUARE + " Status: " + CC.GREEN + "Online");
-                sender.sendMessage(CC.GRAY + Unicode.SQUARE + " Server: " + CC.WHITE + StringUtils.capitalize(server.get("server")));
-                sender.sendMessage(CC.GRAY + Unicode.SQUARE + " Online Since: " + CC.WHITE + TimeUtils.getFormattedTime(timestamp));
+                sender.sendMessage(CC.translate("&e&lFound {0}:", name));
+                sender.sendMessage(CC.translate("&7■ &eStatus: &aOnline"));
+                sender.sendMessage(CC.translate("&7■ &eServer: &f{0}", StringUtils.capitalize(server.get("server"))));
+                sender.sendMessage(CC.translate("&7■ &eOnline since: &f{0} ago", TimeUtils.getFormattedTime(timestamp)));
 
             } else {
                 sender.sendMessage(CC.translate("&e&lWHEREIS&6■ &7Unable to find player &e" + name));

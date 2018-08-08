@@ -57,7 +57,7 @@ public final class ItemUtils {
 
         meta.setLore(Arrays.asList(
                 "", CC.GRAY + StringUtils.toNiceString(type.name()) + " " + level + " Potion",
-                CC.GRAY + "    Duration: " + TimeUtils.millisToRoundedTime(duration * 1000L)));
+                CC.GRAY + "    Duration: " + TimeUtils.getFormattedTime(duration * 1000L)));
 
         meta.addCustomEffect(new PotionEffect(type.getEffectType(), duration * 20, level - 1), false);
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_POTION_EFFECTS);

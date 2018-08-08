@@ -4,6 +4,7 @@ import com.thesquadmc.networktools.NetworkTools;
 import com.thesquadmc.networktools.utils.enums.Rank;
 import com.thesquadmc.networktools.utils.msgs.CC;
 import com.thesquadmc.networktools.utils.player.PlayerUtils;
+import com.thesquadmc.networktools.utils.server.ServerType;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -17,10 +18,10 @@ import java.util.UUID;
 public final class FreezeCommand implements CommandExecutor {
 
     private static List<UUID> frozen = new ArrayList<>();
-    private final NetworkTools networkTools;
+    private final NetworkTools plugin;
 
     public FreezeCommand(NetworkTools networkTools) {
-        this.networkTools = networkTools;
+        this.plugin = networkTools;
     }
 
     public static List<UUID> getFrozen() {
@@ -32,10 +33,11 @@ public final class FreezeCommand implements CommandExecutor {
         if (sender instanceof Player) {
             Player player = (Player) sender;
             if (PlayerUtils.isEqualOrHigherThen(player, Rank.MOD)) {
-                if (Bukkit.getServerName().toUpperCase().contains("HUB")) {
+                if (plugin.getServerType() == ServerType.HUB) {
                     player.sendMessage(CC.translate("&e&lFREEZE &6■ &7You are not allowed to use this command here!"));
                     return true;
                 }
+
                 if (args.length == 1) {
                     String name = args[0];
                     Player t = Bukkit.getPlayer(name);
@@ -45,9 +47,9 @@ public final class FreezeCommand implements CommandExecutor {
                                 PlayerUtils.freezePlayer(t);
                                 t.sendMessage(CC.translate("&c&lYou have been frozen by staff, do not log out at all. Please follow staffs instructions at all time"));
                                 frozen.add(t.getUniqueId());
-                                networkTools.getFrozenInventory().buildFrozenInventory(t);
-                                networkTools.getFrozenInventory().buildStaffGUI(player, t);
-                                networkTools.getFrozenInventory().getViewing().put(player.getUniqueId(), t.getUniqueId());
+                                plugin.getFrozenInventory().buildFrozenInventory(t);
+                                plugin.getFrozenInventory().buildStaffGUI(player, t);
+                                plugin.getFrozenInventory().getViewing().put(player.getUniqueId(), t.getUniqueId());
                                 player.sendMessage(CC.translate("&e&lFREEZE &6■ &7You have frozen &e" + t.getName() + "&7!"));
                             } else {
                                 player.sendMessage(CC.translate("&e&lFREEZE &6■ &7That player is already frozen!"));

@@ -595,7 +595,7 @@ public final class NetworkTools extends JavaPlugin {
         getCommand("freezepanel").setExecutor(new FreezePanelCommand(this));
         getCommand("invsee").setExecutor(new InvseeCommand());
         getCommand("randomtp").setExecutor(new RandomTPCommand());
-        getCommand("staffmode").setExecutor(new StaffmodeCommand());
+        getCommand("staffmode").setExecutor(new StaffmodeCommand(this));
         getCommand("staff").setExecutor(new StafflistCommand(this));
         getCommand("xray").setExecutor(new XrayVerboseCommand());
         getCommand("alert").setExecutor(new AlertCommand(this));
