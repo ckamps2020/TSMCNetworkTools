@@ -34,15 +34,15 @@ public final class ManagerChatCommand implements CommandExecutor {
             if (PlayerUtils.isEqualOrHigherThen(player, Rank.MANAGER)) {
                 TSMCUser tsmcUser = TSMCUser.fromPlayer(player);
                 if (args.length == 0) {
-                    if (!tsmcUser.getSetting(PlayerSetting.MANAGERCHAT_ENABLED)) {
-                        tsmcUser.updateSetting(PlayerSetting.MANAGERCHAT_ENABLED, true);
+                    if (!tsmcUser.getSetting(PlayerSetting.MANAGERCHAT)) {
+                        tsmcUser.updateSetting(PlayerSetting.MANAGERCHAT, true);
                         player.sendMessage(CC.translate("&e&lMANAGER CHAT &6■ &7You toggled Manager Chat &eon&7!"));
                     } else {
-                        tsmcUser.updateSetting(PlayerSetting.MANAGERCHAT_ENABLED, false);
+                        tsmcUser.updateSetting(PlayerSetting.MANAGERCHAT, false);
                         player.sendMessage(CC.translate("&e&lMANAGER CHAT &6■ &7You toggled Manager Chat &eoff&7!"));
                     }
                 } else {
-                    if (!tsmcUser.getSetting(PlayerSetting.MANAGERCHAT_ENABLED)) {
+                    if (!tsmcUser.getSetting(PlayerSetting.MANAGERCHAT)) {
                         player.sendMessage(CC.translate("&e&lMANAGER CHAT &6■ &7Please enable managerchat first!"));
                         return true;
                     }

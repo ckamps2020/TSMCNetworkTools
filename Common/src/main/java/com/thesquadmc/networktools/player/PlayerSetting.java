@@ -15,9 +15,9 @@ public class PlayerSetting<T> {
     public static final PlayerSetting<Boolean> TELEPORT_REQUESTS = new PlayerSetting<>("TELEPORT_REQUESTS", Boolean.class, true);
 
     // Staff settings
-    public static final PlayerSetting<Boolean> STAFFCHAT_ENABLED = new PlayerSetting<>("STAFFCHAT_ENABLED", Boolean.class, true);
-    public static final PlayerSetting<Boolean> MANAGERCHAT_ENABLED = new PlayerSetting<>("MANAGERCHAT_ENABLED", Boolean.class, true);
-    public static final PlayerSetting<Boolean> ADMINCHAT_ENABLED = new PlayerSetting<>("ADMINCHAT_ENABLED", Boolean.class, true);
+    public static final PlayerSetting<Boolean> STAFFCHAT = new PlayerSetting<>("STAFFCHAT", Boolean.class, true);
+    public static final PlayerSetting<Boolean> MANAGERCHAT = new PlayerSetting<>("MANAGERCHAT", Boolean.class, true);
+    public static final PlayerSetting<Boolean> ADMINCHAT = new PlayerSetting<>("ADMINCHAT", Boolean.class, true);
     public static final PlayerSetting<Boolean> REPORTS = new PlayerSetting<>("REPORTS", Boolean.class, true);
     public static final PlayerSetting<Boolean> MONITOR = new PlayerSetting<>("MONITOR", Boolean.class, true);
     public static final PlayerSetting<Boolean> FORCEFIELD = new PlayerSetting<>("FORCEFIELD", Boolean.class, false);

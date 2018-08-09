@@ -34,16 +34,16 @@ public final class AdminChatCommand implements CommandExecutor {
             if (PlayerUtils.isEqualOrHigherThen(player, Rank.ADMIN)) {
                 TSMCUser tsmcUser = TSMCUser.fromPlayer(player);
                 if (args.length == 0) {
-                    if (!tsmcUser.getSetting(PlayerSetting.ADMINCHAT_ENABLED)) {
-                        tsmcUser.updateSetting(PlayerSetting.ADMINCHAT_ENABLED, true);
+                    if (!tsmcUser.getSetting(PlayerSetting.ADMINCHAT)) {
+                        tsmcUser.updateSetting(PlayerSetting.ADMINCHAT, true);
                         player.sendMessage(CC.translate("&e&lADMIN CHAT &6■ &7You toggled Admin Chat &eon&7!"));
                     } else {
-                        tsmcUser.updateSetting(PlayerSetting.ADMINCHAT_ENABLED, false);
+                        tsmcUser.updateSetting(PlayerSetting.ADMINCHAT, false);
                         player.sendMessage(CC.translate("&e&lADMIN CHAT &6■ &7You toggled Admin Chat &eoff&7!"));
                     }
 
                 } else {
-                    if (!tsmcUser.getSetting(PlayerSetting.ADMINCHAT_ENABLED)) {
+                    if (!tsmcUser.getSetting(PlayerSetting.ADMINCHAT)) {
                         player.sendMessage(CC.translate("&e&lADMIN CHAT &6■ &7Please enable adminchat first!"));
                         return true;
                     }

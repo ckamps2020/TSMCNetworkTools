@@ -36,15 +36,15 @@ public final class StaffChatCommand implements CommandExecutor {
 
             TSMCUser tsmcUser = TSMCUser.fromPlayer(player);
             if (args.length == 0) {
-                if (!tsmcUser.getSetting(PlayerSetting.STAFFCHAT_ENABLED)) {
-                    tsmcUser.updateSetting(PlayerSetting.STAFFCHAT_ENABLED, true);
+                if (!tsmcUser.getSetting(PlayerSetting.STAFFCHAT)) {
+                    tsmcUser.updateSetting(PlayerSetting.STAFFCHAT, true);
                     player.sendMessage(CC.translate("&e&lSTAFF CHAT &6■ &7You toggled Staff Chat &eon&7!"));
                 } else {
-                    tsmcUser.updateSetting(PlayerSetting.STAFFCHAT_ENABLED, false);
+                    tsmcUser.updateSetting(PlayerSetting.STAFFCHAT, false);
                     player.sendMessage(CC.translate("&e&lSTAFF CHAT &6■ &7You toggled Staff Chat &eoff&7!"));
                 }
             } else {
-                if (!tsmcUser.getSetting(PlayerSetting.STAFFCHAT_ENABLED)) {
+                if (!tsmcUser.getSetting(PlayerSetting.STAFFCHAT)) {
                     player.sendMessage(CC.translate("&e&lSTAFF CHAT &6■ &7Please enable staffchat first!"));
                     return true;
                 }

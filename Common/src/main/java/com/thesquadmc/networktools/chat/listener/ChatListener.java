@@ -4,6 +4,8 @@ import com.google.common.collect.Maps;
 import com.thesquadmc.networktools.NetworkTools;
 import com.thesquadmc.networktools.chat.ChatFormat;
 import com.thesquadmc.networktools.chat.ChatMessage;
+import com.thesquadmc.networktools.chat.event.PlayerMessageEvent;
+import com.thesquadmc.networktools.player.PlayerSetting;
 import com.thesquadmc.networktools.player.TSMCUser;
 import com.thesquadmc.networktools.utils.enums.Rank;
 import com.thesquadmc.networktools.utils.msgs.CC;
@@ -110,6 +112,19 @@ public class ChatListener implements Listener {
 
         lastMessage.put(player.getUniqueId(), chatMessage);
         plugin.getChatManager().addMessage(chatMessage);
+    }
+
+    @EventHandler
+    public void on(PlayerMessageEvent e) {
+        String sender = e.getSender();
+        String target = e.getTarget();
+
+        String message = CC.translate("&8[&e&lSS&8] &6{0} &8■ &6{1} &8» &e{2}", sender, target, e.getMessage());
+
+        Bukkit.getOnlinePlayers().stream()
+                .filter(player -> PlayerUtils.isEqualOrHigherThen(player, Rank.TRAINEE))
+                .filter(player -> TSMCUser.fromPlayer(player).getSetting(PlayerSetting.SOCIALSPY))
+                .forEach(player -> player.sendMessage(message));
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

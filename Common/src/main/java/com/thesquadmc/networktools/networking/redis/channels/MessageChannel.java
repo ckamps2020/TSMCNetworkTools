@@ -2,6 +2,7 @@ package com.thesquadmc.networktools.networking.redis.channels;
 
 import com.google.gson.JsonObject;
 import com.thesquadmc.networktools.NetworkTools;
+import com.thesquadmc.networktools.chat.event.PlayerMessageEvent;
 import com.thesquadmc.networktools.networking.redis.RedisChannel;
 import com.thesquadmc.networktools.networking.redis.RedisMesage;
 import com.thesquadmc.networktools.objects.logging.Note;
@@ -59,7 +60,8 @@ public class MessageChannel implements RedisChannel {
 
                     target.sendMessage(CC.translate("&6{0} &7■ &6Me &8» &e{1}", senderName, message));
                     targetUser.setLastMessager(sender);
-                    //TODO new SocialSpyEvent
+
+                    Bukkit.getPluginManager().callEvent(new PlayerMessageEvent(senderName, target.getName(), message));
                 }
 
                 plugin.getRedisManager().sendMessage(RedisChannels.MESSAGE_RESPONSE, response);
@@ -98,6 +100,8 @@ public class MessageChannel implements RedisChannel {
                     case SUCCESSFUL: {
                         TSMCUser.fromPlayer(sender).setLastMessager(target);
                         sender.sendMessage(CC.translate("&6Me &7■ &6{0} &8» &e{1}", targetName, message));
+
+                        Bukkit.getPluginManager().callEvent(new PlayerMessageEvent(sender.getName(), targetName, message));
                     }
                 }
 

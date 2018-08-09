@@ -1,5 +1,6 @@
 package com.thesquadmc.networktools.utils.command;
 
+import com.thesquadmc.networktools.player.TSMCUser;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -101,6 +102,14 @@ public class CommandArgs {
         } else {
             return null;
         }
+    }
+
+    public TSMCUser getUser() {
+        if (isPlayer()) {
+            return TSMCUser.fromPlayer(getPlayer());
+        }
+
+        return null;
     }
 
 }

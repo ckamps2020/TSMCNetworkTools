@@ -26,7 +26,7 @@ public class StaffChatChannels implements RedisChannel {
                 getPlayersWithRank(Rank.TRAINEE).forEach(player -> {
                     TSMCUser user = TSMCUser.fromPlayer(player);
 
-                    if (user.getSetting(PlayerSetting.STAFFCHAT_ENABLED)) {
+                    if (user.getSetting(PlayerSetting.STAFFCHAT)) {
                         String message = object.get(RedisArg.MESSAGE).getAsString();
                         String server = object.get(RedisArg.SERVER).getAsString();
 
@@ -38,7 +38,7 @@ public class StaffChatChannels implements RedisChannel {
             case RedisChannels.ADMINCHAT:
                 getPlayersWithRank(Rank.ADMIN).forEach(player -> {
                     TSMCUser user = TSMCUser.fromPlayer(player);
-                    if (user.getSetting(PlayerSetting.ADMINCHAT_ENABLED)) {
+                    if (user.getSetting(PlayerSetting.ADMINCHAT)) {
                         String message = object.get(RedisArg.MESSAGE).getAsString();
 
                         player.sendMessage(CC.translate(message));
@@ -49,7 +49,7 @@ public class StaffChatChannels implements RedisChannel {
             case RedisChannels.MANAGERCHAT:
                 getPlayersWithRank(Rank.MANAGER).forEach(player -> {
                     TSMCUser user = TSMCUser.fromPlayer(player);
-                    if (user.getSetting(PlayerSetting.MANAGERCHAT_ENABLED)) {
+                    if (user.getSetting(PlayerSetting.MANAGERCHAT)) {
                         String message = object.get(RedisArg.MESSAGE).getAsString();
 
                         player.sendMessage(CC.translate(message));
@@ -64,7 +64,7 @@ public class StaffChatChannels implements RedisChannel {
 
                 getPlayersWithRank(Rank.TRAINEE).forEach(player -> {
                     TSMCUser user = TSMCUser.fromPlayer(player);
-                    if (user.getSetting(PlayerSetting.STAFFCHAT_ENABLED)) {
+                    if (user.getSetting(PlayerSetting.STAFFCHAT)) {
                         player.spigot().sendMessage(StringUtils.getHoverMessage("&8[&a&lSTAFFCHAT&8] &9" + p + " &8" + Unicode.DOUBLE_ARROW_RIGHT + " &a" + message, "&7Currently on &e" + server));
                     }
                 });

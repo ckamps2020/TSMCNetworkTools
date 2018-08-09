@@ -1,6 +1,7 @@
 package com.thesquadmc.networktools.commands;
 
 import com.thesquadmc.networktools.NetworkTools;
+import com.thesquadmc.networktools.chat.event.PlayerMessageEvent;
 import com.thesquadmc.networktools.networking.redis.RedisMesage;
 import com.thesquadmc.networktools.player.PlayerSetting;
 import com.thesquadmc.networktools.player.TSMCUser;
@@ -50,7 +51,7 @@ public class MessageCommand {
             player.sendMessage(CC.translate("&6Me &7■ &6{0} &8» &e{1}", target.getName(), message));
             target.sendMessage(CC.translate("&6{0} &7■ &6Me &8» &e{1}", player.getName(), message));
 
-            //TODO new SocialSpyEvent
+            Bukkit.getPluginManager().callEvent(new PlayerMessageEvent(player.getName(), target.getName(), message));
 
             TSMCUser.fromPlayer(player).setLastMessager(target.getUniqueId());
             TSMCUser.fromPlayer(target).setLastMessager(player.getUniqueId());
@@ -114,5 +115,16 @@ public class MessageCommand {
                 player.sendMessage(CC.RED + "Could not find the last player you messaged!");
             }
         });
+    }
+
+    @Command(name = {"socialspy"}, permission = "essentials.socialspy", playerOnly = true)
+    public void socialspy(CommandArgs args) {
+        Player player = args.getPlayer();
+        TSMCUser user = TSMCUser.fromPlayer(player);
+
+        boolean socialspy = !user.getSetting(PlayerSetting.SOCIALSPY);
+        user.updateSetting(PlayerSetting.SOCIALSPY, socialspy);
+        args.getSender().sendMessage(CC.translate("&e&lMESSAGES &6■ &7You have turned {0} &7SocialSpy!", (socialspy ? "&aon" : "&coff")));
+
     }
 }

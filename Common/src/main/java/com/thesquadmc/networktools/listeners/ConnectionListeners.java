@@ -111,6 +111,15 @@ public final class ConnectionListeners implements Listener {
             PlayerUtils.setName(player, user.getNickname());
         }
 
+        //Staff checks
+        if (!PlayerUtils.isEqualOrHigherThen(player, Rank.TRAINEE)) {
+            if (user.getSetting(PlayerSetting.VANISHED)) user.updateSetting(PlayerSetting.VANISHED, false);
+            if (user.getSetting(PlayerSetting.YOUTUBE_VANISHED))
+                user.updateSetting(PlayerSetting.YOUTUBE_VANISHED, false);
+            if (user.getSetting(PlayerSetting.SOCIALSPY)) user.updateSetting(PlayerSetting.SOCIALSPY, false);
+            if (user.getSetting(PlayerSetting.FORCEFIELD)) user.updateSetting(PlayerSetting.FORCEFIELD, false);
+        }
+
         MojangGameProfile profile = plugin.getNMSAbstract().getGameProfile(player);
         profile.getPropertyMap().values().forEach(p -> {
             user.setSkinKey(p.getValue());
@@ -166,5 +175,4 @@ public final class ConnectionListeners implements Listener {
             }
         });
     }
-
 }

@@ -2,7 +2,7 @@ package com.thesquadmc.networktools.utils.handlers;
 
 import com.thesquadmc.networktools.utils.enums.UpdateType;
 
-public class UpdateEvent extends ToolsHandler {
+public class UpdateEvent extends BaseEvent {
 
     private final UpdateType type;
 
