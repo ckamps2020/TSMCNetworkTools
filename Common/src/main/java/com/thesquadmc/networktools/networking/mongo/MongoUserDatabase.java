@@ -1,5 +1,6 @@
 package com.thesquadmc.networktools.networking.mongo;
 
+import com.google.common.base.Preconditions;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.UpdateOptions;
 import com.thesquadmc.networktools.NetworkTools;
@@ -20,8 +21,8 @@ public class MongoUserDatabase implements UserDatabase {
 
     public MongoUserDatabase(MongoManager plugin) {
         this.users = plugin.getMongoDatabase().getCollection(USER_DATABASE, Document.class);
-        users.createIndex(new Document("name", 1));
 
+        users.createIndex(new Document("name", 1));
     }
 
     @Override
@@ -66,6 +67,8 @@ public class MongoUserDatabase implements UserDatabase {
     @Override
     public CompletableFuture<Void> saveUser(TSMCUser user) {
         return CompletableFuture.runAsync(() -> {
+            Preconditions.checkNotNull(user.getUUID(), "uuid cannot be null!");
+            Preconditions.checkNotNull(user.getName(), "name cannot be null!");
             // Document document = users.find(eq("_id", user.getUUID())).first();
 
             //if (document != null) {

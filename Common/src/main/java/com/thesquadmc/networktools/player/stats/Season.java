@@ -27,6 +27,8 @@ public class Season {
     public static Season fromDocument(Document document) {
         List<Document> servers = (List<Document>) document.get("servers");
 
+        System.out.println(servers);
+
         return new Season(
                 document.getString("_id"),
                 servers.stream().map(ServerStatistics::fromDocument).collect(Collectors.toSet())
@@ -54,11 +56,14 @@ public class Season {
     }
 
     public void addServerStatistic(ServerStatistics serverStats) {
-        serverStatistics.add(serverStats);
+        boolean s = serverStatistics.add(serverStats);
+        System.out.println("Season add " + s);
     }
 
     public Document toDocument() {
         List<Document> servers = serverStatistics.stream().map(ServerStatistics::toDocument).collect(Collectors.toList());
+
+        System.out.println(servers);
 
         return new Document("_id", season)
                 .append("servers", servers);

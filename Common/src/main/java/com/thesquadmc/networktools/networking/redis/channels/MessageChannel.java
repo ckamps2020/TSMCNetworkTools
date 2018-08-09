@@ -8,9 +8,11 @@ import com.thesquadmc.networktools.objects.logging.Note;
 import com.thesquadmc.networktools.player.PlayerSetting;
 import com.thesquadmc.networktools.player.TSMCUser;
 import com.thesquadmc.networktools.utils.enums.EnumUtil;
+import com.thesquadmc.networktools.utils.enums.Rank;
 import com.thesquadmc.networktools.utils.enums.RedisChannels;
 import com.thesquadmc.networktools.utils.json.JSONUtils;
 import com.thesquadmc.networktools.utils.msgs.CC;
+import com.thesquadmc.networktools.utils.player.PlayerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -46,7 +48,7 @@ public class MessageChannel implements RedisChannel {
                         .set("target_name", targetUser.getName())
                         .set("message", message);
 
-                if (targetUser.getIgnoredPlayers().contains(sender)) {
+                if (!PlayerUtils.isEqualOrHigherThen(target, Rank.TRAINEE) || targetUser.getIgnoredPlayers().contains(sender)) {
                     response.set("type", MessageResponse.IGNORED.name());
 
                 } else if (!targetUser.getSetting(PlayerSetting.PRIVATE_MESSAGES)) {

@@ -105,7 +105,7 @@ public class ChatListener implements Listener {
         TextComponent msg = format.toTextComponent(player, message);
 
         Bukkit.getOnlinePlayers().stream()
-                .filter(p -> !TSMCUser.fromPlayer(p).isIgnored(player.getUniqueId()))
+                .filter(p -> !PlayerUtils.isEqualOrHigherThen(p, Rank.TRAINEE) || !TSMCUser.fromPlayer(p).isIgnored(player.getUniqueId()))
                 .forEach(p -> p.spigot().sendMessage(msg));
 
         lastMessage.put(player.getUniqueId(), chatMessage);

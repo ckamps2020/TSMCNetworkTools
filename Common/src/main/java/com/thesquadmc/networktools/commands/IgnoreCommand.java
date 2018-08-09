@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 
 public class IgnoreCommand {
 
-    private static final Rank[] CANNOT_IGNORE = new Rank[]{Rank.TRAINEE, Rank.MOD, Rank.SRMOD};
+    private static final Rank[] CANNOT_IGNORE = new Rank[]{Rank.TRAINEE, Rank.MOD, Rank.SRMOD, Rank.ADMIN};
 
     private final NetworkTools plugin;
 
@@ -51,7 +51,12 @@ public class IgnoreCommand {
         }
 
         String name = args.getArg(0);
-        plugin.getUUIDTranslator().getUUID(name, true).thenAccept(uuid -> {
+        plugin.getUUIDTranslator().getUUID(name, false).thenAccept(uuid -> {
+            if (uuid == null) {
+                player.sendMessage(CC.RED + "Could not find data " + name);
+                return;
+            }
+
             if (user.isIgnored(uuid)) {
                 player.sendMessage(CC.translate("&e&lIGNORE &6■ &7You are already ignoring &e{0}", name));
 

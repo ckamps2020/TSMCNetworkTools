@@ -204,11 +204,6 @@ public final class PlayerUtils {
 
     public static boolean isEqualOrHigherThen(UUID uuid, Rank rank) {
         User user = NetworkTools.getInstance().getLuckPermsApi().getUser(uuid);
-        if (user == null) {
-            NetworkTools.getInstance().getLuckPermsApi().getStorage().loadUser(uuid);
-            user = NetworkTools.getInstance().getLuckPermsApi().getUser(uuid);
-        }
-
         if (user != null) {
             for (Rank r : Rank.values()) {
                 if (r.getName().equalsIgnoreCase(user.getPrimaryGroup())) {

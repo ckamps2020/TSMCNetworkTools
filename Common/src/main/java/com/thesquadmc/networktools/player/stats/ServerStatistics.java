@@ -7,6 +7,7 @@ import org.bson.Document;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Statistics for each server
@@ -84,5 +85,29 @@ public class ServerStatistics {
         return new Document("_id", serverName)
                 .append("server_type", type.name())
                 .append("data", data);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ServerStatistics that = (ServerStatistics) o;
+        return Objects.equals(serverName, that.serverName) &&
+                type == that.type &&
+                Objects.equals(data, that.data);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(serverName, type, data);
+    }
+
+    @Override
+    public String toString() {
+        return "ServerStatistics{" +
+                "serverName='" + serverName + '\'' +
+                ", type=" + type +
+                ", data=" + data +
+                '}';
     }
 }
