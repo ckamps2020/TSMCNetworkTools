@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<name>NetworkTools</name>
+	<name>TSMCNetworkTools</name>
 
 	<groupId>com.thesquadmc</groupId>
 	<artifactId>networktools-parent</artifactId>
@@ -11,9 +11,9 @@
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>Common</module>
-		<module>StaffTools1.8R3</module>
-		<module>StaffTools1.12R1</module>
+		<module>NetworkTools-Common</module>
+		<module>NetworkTools-1.12</module>
+		<module>NetworkTools-1.8</module>
 	</modules>
 
 	<properties>

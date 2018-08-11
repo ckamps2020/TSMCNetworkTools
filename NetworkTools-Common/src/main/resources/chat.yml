@@ -1,0 +1,48 @@
+formats:
+  owner:
+    priority: 1
+    prefix: "&c&lOWNER %display_name%"
+    suffix: "&8»"
+    chatColor: "&c"
+
+  developer:
+    priority: 2
+    prefix: "&c&lDEVELOPER %display_name%"
+    suffix: "&8»"
+    chatColor: "&c"
+
+  admin:
+    priority: 3
+    prefix: "&c&lADMIN %display_name%"
+    suffix: "&8»"
+    chatColor: "&c"
+
+  srmod:
+    priority: 4
+    prefix: "&d&lSR MOD &d%display_name%"
+    suffix: "&8»"
+    chatColor: "&d"
+
+  mod:
+    priority: 5
+    prefix: "&9&lMOD &9%display_name%"
+    suffix: "&8»"
+    chatColor: "&9"
+
+  helper:
+    priority: 6
+    prefix: "&b&lCHAT MOD &b%display_name%"
+    suffix: "&8»"
+    chatColor: "&b"
+
+  trainee:
+    priority: 7
+    prefix: "&a&lTRAINEE &a%display_name%"
+    suffix: "&8»"
+    chatColor: "&a"
+
+  default:
+    priority: 1000
+    prefix: "&7%display_name%"
+    suffix: "&8»"
+    chatColor: "&a"
