@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class KitCommand {
@@ -26,7 +27,17 @@ public class KitCommand {
         Player player = args.getPlayer();
 
         if (args.length() == 0) {
-            player.sendMessage(CC.RED + "/kit <name>");
+            Set<Kit> kits = plugin.getKitManager().getKits();
+
+            if (kits.size() == 0) {
+                player.sendMessage(CC.RED + "There are no kits!");
+            } else {
+                player.sendMessage(CC.RED + "/kit <name>");
+                player.sendMessage(CC.translate("&cAvaiable kits for you: {0}", kits.stream()
+                        .filter(kit -> player.hasPermission("essentials.kits." + kit))
+                        .map(Kit::getName)
+                        .collect(Collectors.joining(", "))));
+            }
             return;
         }
 
@@ -42,7 +53,7 @@ public class KitCommand {
     }
 
     @Command(name = {"addkit"}, playerOnly = true)
-    public void createKit(CommandArgs args) {
+    public void addKit(CommandArgs args) {
         Player player = args.getPlayer();
 
         if (args.length() < 2) {

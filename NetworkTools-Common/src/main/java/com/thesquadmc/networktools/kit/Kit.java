@@ -30,6 +30,11 @@ public class Kit {
     public void giveKit(Player player) {
         LocalPlayer localPlayer = NetworkTools.getInstance().getLocalPlayerManager().getPlayer(player);
 
+        if (!player.hasPermission("essentials.kits." + name.toLowerCase())) {
+            player.sendMessage(CC.RED + "You do not have permission for this kit!");
+            return;
+        }
+
         boolean give = false;
         Long lastUsed = localPlayer.getUsedKit(name);
         if (lastUsed == -1 || (System.currentTimeMillis() - lastUsed) >= cooldown) {
@@ -37,8 +42,8 @@ public class Kit {
         }
 
         if (!give) {
-            player.sendMessage(CC.RED + "You cannot receive this kit yet!");
-            player.sendMessage(CC.RED + "You can use this kit again in: " + TimeUtils.getFormattedTime(System.currentTimeMillis() - lastUsed));
+            long since = System.currentTimeMillis() - lastUsed;
+            player.sendMessage(CC.RED + "You can use this kit again in " + TimeUtils.getFormattedTime(cooldown - since));
             return;
         }
 
@@ -49,6 +54,8 @@ public class Kit {
 
         items.forEach(player.getInventory()::addItem);
         player.sendMessage(CC.translate("&e&lKIT &6■ &7You have received the &e{0} &7Kit!", name));
+
+        localPlayer.setUsedKit(name, System.currentTimeMillis());
     }
 
     public String getName() {

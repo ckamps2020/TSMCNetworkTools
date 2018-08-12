@@ -58,11 +58,11 @@ public class ClickableMessage implements Listener {
         player.spigot().sendMessage(components);
     }
 
-    protected void register() {
+    void register() {
         Bukkit.getPluginManager().registerEvents(this, NetworkTools.getInstance());
     }
 
-    public BaseComponent[] getComponents() {
+    BaseComponent[] getComponents() {
         return components;
     }
 

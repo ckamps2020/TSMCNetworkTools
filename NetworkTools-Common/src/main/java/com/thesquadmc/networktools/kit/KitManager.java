@@ -2,18 +2,17 @@ package com.thesquadmc.networktools.kit;
 
 import com.google.common.collect.Sets;
 import com.thesquadmc.networktools.NetworkTools;
-import com.thesquadmc.networktools.utils.json.JSONUtils;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-
-import static sun.audio.AudioPlayer.player;
 
 public class KitManager {
 
@@ -31,17 +30,20 @@ public class KitManager {
 
         File[] files = file.listFiles();
         for (File loadFile : files) {
+            if (!loadFile.exists()) continue;
+
+            YamlConfiguration config = new YamlConfiguration();
+
             try {
-                if (loadFile.exists()) {
-                    Kit kit = JSONUtils.getGson().fromJson(
-                            new FileReader(loadFile),
-                            Kit.class
-                    );
+                config.load(loadFile);
 
-                    kits.add(kit);
-                }
+                String name = config.getString("name");
+                long cooldown = config.getLong("cooldwon");
+                List<ItemStack> items = (List<ItemStack>) config.getList("items");
 
-            } catch (IOException ignored) {
+                addKit(new Kit(name, cooldown, items));
+            } catch (InvalidConfigurationException | IOException e) {
+                e.printStackTrace();
             }
         }
 
@@ -50,16 +52,20 @@ public class KitManager {
 
     public void saveKits() {
         File file = new File(plugin.getDataFolder(), "kits");
+        file.delete();
+        file.mkdirs();
 
         kits.forEach(kit -> {
-            try (FileWriter writer = new FileWriter(new File(file, kit.getName() + ".json"))) {
-                JSONUtils.getGson().toJson(
-                        kit,
-                        writer
-                );
+            File kitFile = new File(file, kit.getName() + ".yml");
 
+            YamlConfiguration config = new YamlConfiguration();
+            config.set("name", kit.getName());
+            config.set("cooldown", kit.getCooldown());
+            config.set("items", kit.getItems());
+
+            try {
+                config.save(kitFile);
             } catch (IOException e) {
-                plugin.getLogger().severe("Could not save data of kit: " + player);
                 e.printStackTrace();
             }
         });

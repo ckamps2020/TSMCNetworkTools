@@ -124,16 +124,15 @@ public class TimedTeleport implements Runnable {
         task = -1;
 
         if (notifyUser) {
-            player.sendMessage("pendingTeleportCancelled");
+            player.sendMessage(CC.translate("&e&lTELEPORT &6■ Your teleport was cancelled!"));
 
             if (targetPlayer != null && !targetPlayer.equals(player)) {
-                targetPlayer.sendMessage("pendingTeleportCancelled");
+                targetPlayer.sendMessage(CC.translate("&e&lTELEPORT &6■ Your teleport was cancelled!"));
             }
         }
     }
 
     public static class Builder {
-
         private Player player;
         private Location target;
         private Player targetPlayer;

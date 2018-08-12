@@ -563,6 +563,12 @@ public class EssentialCommands {
         args.getSender().sendMessage(CC.translate("&e&lCHANNELS &6■ &7Channels ({0}): &e{1}", channels.size(), String.join(", ", channels)));
     }
 
+    @Command(name = {"chatreload"}, permission = "group.manager")
+    public void chatreload(CommandArgs args) {
+        plugin.getChatManager().reloadFormats();
+        args.getSender().sendMessage(CC.GREEN + "Reloaded chat formats");
+    }
+
     private String getNearestPlayers(final Player player, final long radius) {
         final Location loc = player.getLocation();
         final World world = loc.getWorld();
@@ -611,12 +617,12 @@ public class EssentialCommands {
     }
 
     private void clearInventory(Player player) {
-        new ClickableMessage(player, CC.B_YELLOW + "Are sure you want to clear your inventory", CC.GRAY + "Click to clear your inventory", p -> {
+        new ClickableMessage(player, CC.B_GREEN + "Are you sure you want to clear your inventory?", CC.GRAY + "Click to clear your inventory", p -> {
             p.getInventory().clear();
             p.getInventory().setArmorContents(null);
 
             p.sendMessage(CC.translate("&e&lCLEAR &6■ &7Your inventory was cleared"));
-        });
+        }).send();
     }
 
     private void toggleFlight(Player player) {

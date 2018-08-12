@@ -44,7 +44,7 @@ public class ChatManager {
 
         chatConfig = FileUtils.getConfig("chat");
 
-        int loaded = loadFormats();
+        int loaded = reloadFormats();
         plugin.getLogger().info(MessageFormat.format("Loaded in {0} formats", loaded));
 
         Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> {
@@ -85,13 +85,10 @@ public class ChatManager {
      *
      * @return the amount of formats loaded
      */
-    private int loadFormats() {
+    public int reloadFormats() {
         YamlConfiguration conf = chatConfig;
 
         formats.clear();
-
-        conf.getKeys(false).forEach(System.out::println);
-
         if (!conf.contains("formats") || !conf.isConfigurationSection("formats")) {
             return 0;
         }

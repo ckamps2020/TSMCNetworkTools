@@ -64,6 +64,7 @@ import com.thesquadmc.networktools.listeners.FreezeListener;
 import com.thesquadmc.networktools.listeners.LaunchListener;
 import com.thesquadmc.networktools.listeners.LightningListener;
 import com.thesquadmc.networktools.listeners.ServerListener;
+import com.thesquadmc.networktools.listeners.SignListener;
 import com.thesquadmc.networktools.listeners.StaffmodeListener;
 import com.thesquadmc.networktools.listeners.TimedListener;
 import com.thesquadmc.networktools.listeners.VanishListener;
@@ -530,7 +531,8 @@ public final class NetworkTools extends JavaPlugin {
                 new VanishListener(),
                 new WhitelistListener(this),
                 new ServerStatsListener(),
-                new XrayListener()
+                new XrayListener(),
+                new SignListener()
         ).forEach(listener -> Bukkit.getPluginManager().registerEvents(listener, this));
     }
 

@@ -6,7 +6,10 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.thesquadmc.networktools.utils.json.adapters.ItemStackAdapter;
+import com.thesquadmc.networktools.utils.json.adapters.LocationTypeAdapter;
 import org.bukkit.Location;
+import org.bukkit.inventory.ItemStack;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,6 +20,7 @@ public final class JSONUtils {
     private static final Gson GSON = new GsonBuilder()
             .setPrettyPrinting()
             .registerTypeAdapter(Location.class, new LocationTypeAdapter())
+            .registerTypeAdapter(ItemStack.class, new ItemStackAdapter())
             .create();
 
     public static JSONObject safeGetObject(JSONObject obj, String key) {

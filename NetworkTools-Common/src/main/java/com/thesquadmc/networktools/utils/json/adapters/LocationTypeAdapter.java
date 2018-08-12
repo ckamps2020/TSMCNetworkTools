@@ -1,4 +1,4 @@
-package com.thesquadmc.networktools.utils.json;
+package com.thesquadmc.networktools.utils.json.adapters;
 
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
