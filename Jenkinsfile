@@ -58,6 +58,7 @@ pipeline {
   tools {
     maven 'M3'
   }
+
   triggers {
     pollSCM('H/1 * * * *')
   }

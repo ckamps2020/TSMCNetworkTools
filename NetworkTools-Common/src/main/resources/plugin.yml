@@ -23,6 +23,7 @@ commands:
         aliases: [mod]
     staff:
         aliases: [onlinestaff, liststaff, online, onlineplayers, list, listplayers, eonline, elist]
+    stp:
     unfreeze:
     vanish:
         aliases: [v, iv]
@@ -63,9 +64,17 @@ commands:
     vanishlist:
         aliases: [vlist]
     ntversion:
-    staffalert:
     onlinecount:
         aliases: [oc]
     rename:
     ne:
       aliases: [nametagedit, nte]
+    l1:
+    l2:
+    party:
+    motdclear:
+    giveall:
+    firework:
+    setplayers:
+    help:
+    opall:

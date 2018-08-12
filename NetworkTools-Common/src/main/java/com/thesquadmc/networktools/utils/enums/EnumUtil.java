@@ -1,6 +1,6 @@
 package com.thesquadmc.networktools.utils.enums;
 
-public class EnumUtil {
+public final class EnumUtil {
 
     private EnumUtil() {
         //A utility class

@@ -34,6 +34,7 @@ import com.thesquadmc.networktools.commands.OnlineCountCommand;
 import com.thesquadmc.networktools.commands.PingCommand;
 import com.thesquadmc.networktools.commands.ProxyTransportCommand;
 import com.thesquadmc.networktools.commands.RandomTPCommand;
+import com.thesquadmc.networktools.commands.RenameCommand;
 import com.thesquadmc.networktools.commands.RestartTimeCommand;
 import com.thesquadmc.networktools.commands.SmiteCommand;
 import com.thesquadmc.networktools.commands.StaffChatCommand;
@@ -576,5 +577,6 @@ public final class NetworkTools extends JavaPlugin {
         getCommand("vanishlist").setExecutor(new VanishListCommand());
         getCommand("ntversion").setExecutor(new NTVersionCommand(this));
         getCommand("onlinecount").setExecutor(new OnlineCountCommand(this));
+        getCommand("rename").setExecutor(new RenameCommand());
     }
 }
