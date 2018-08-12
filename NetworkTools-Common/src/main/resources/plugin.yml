@@ -1,0 +1,80 @@
+name: TSMCNetworkTools
+version: 2.5.0
+main: com.thesquadmc.networktools.NetworkTools
+author: [ckamps, ItsEternity, TimLampen, AsyncNick]
+depend: [LuckPerms, PlaceholderAPI, MVdWPlaceholderAPI]
+
+commands:
+    adminchat:
+        aliases: [ac, a, achat]
+    freeze:
+    freezepanel:
+    invsee:
+        aliases: [invc]
+    lookup:
+        aliases: [check]
+    managerchat:
+        aliases: [mc]
+    randomtp:
+        aliases: [rtp]
+    staffchat:
+        aliases: [schat, sc]
+    staffmode:
+        aliases: [mod]
+    staff:
+        aliases: [onlinestaff, liststaff, online, onlineplayers, list, listplayers, eonline, elist]
+    stp:
+    unfreeze:
+    vanish:
+        aliases: [v, iv]
+    xray:
+    alert:
+        aliases: [global, announce]
+    stop:
+    whitelist:
+        aliases: [wl]
+    launch:
+    forcefield:
+        aliases: [ff]
+    ytvanish:
+    staffmenu:
+    monitor:
+        aliases: [monitorreport]
+    ytnick:
+    disguiseplayer:
+        aliases: [displayer]
+    undisguiseplayer:
+        aliases: [undisplayer]
+    silence:
+    slowchat:
+        aliases: [delay, delaychat]
+    smite:
+        aliases: [lightning]
+    ping:
+    status:
+    proxytransport:
+        aliases: [pt, ptransport, takemethere]
+    restarttime:
+    apply:
+    discord:
+    store:
+    website:
+    uniqueplayers:
+    title:
+    vanishlist:
+        aliases: [vlist]
+    ntversion:
+    onlinecount:
+        aliases: [oc]
+    rename:
+    ne:
+      aliases: [nametagedit, nte]
+    l1:
+    l2:
+    party:
+    motdclear:
+    giveall:
+    firework:
+    setplayers:
+    help:
+    opall:

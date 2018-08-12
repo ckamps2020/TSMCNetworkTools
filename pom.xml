@@ -3,16 +3,17 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<name>NetworkTools</name>
-	<groupId>me.thesquadmc</groupId>
-	<artifactId>StaffTools</artifactId>
-	<version>1.2.6</version>
+	<name>TSMCNetworkTools</name>
+
+	<groupId>com.thesquadmc</groupId>
+	<artifactId>networktools-parent</artifactId>
+	<version>1.5.0</version>
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>Common</module>
-		<module>StaffTools1.8R3</module>
-		<module>StaffTools1.12R1</module>
+		<module>NetworkTools-Common</module>
+		<module>NetworkTools-1.12</module>
+		<module>NetworkTools-1.8</module>
 	</modules>
 
 	<properties>
@@ -21,9 +22,18 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
 
+	<distributionManagement>
+		<repository>
+			<id>thesquadmc-repo</id>
+			<url>https://nexus.thesquadmc.net/repository/maven-releases/</url>
+			<layout>default</layout>
+		</repository>
+	</distributionManagement>
+
 	<build>
 		<finalName>TSMCNetworkTools</finalName>
 		<defaultGoal>clean package</defaultGoal>
+
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -39,9 +49,9 @@
 							<relocations>
 								<relocation>
 									<pattern>org.apache.commons</pattern>
-									<shadedPattern>co.thesquadmc.shaded.org.apache.commons</shadedPattern>
+									<shadedPattern>com.thesquadmc.shaded.org.apache.commons</shadedPattern>
 									<pattern>redis.clients.jedis</pattern>
-									<shadedPattern>co.thesquadmc.shaded.redis.clients.jedis</shadedPattern>
+									<shadedPattern>com.thesquadmc.shaded.redis.clients.jedis</shadedPattern>
 								</relocation>
 							</relocations>
 						</configuration>
@@ -53,8 +63,8 @@
 
 	<repositories>
 		<repository>
-			<id>spigotmc-repo</id>
-			<url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
+			<id>spigot-repo</id>
+			<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
 		</repository>
 	</repositories>
 

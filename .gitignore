@@ -1,6 +1,63 @@
-*.iml
-**/out/
-**/.idea/
-**/target/
+### Eclipse ###
 
-**/dependency-reduced-pom.xml
+.metadata
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+.recommenders
+
+# External tool builders #
+.externalToolBuilders/
+
+# Locally stored "Eclipse launch configurations"
+*.launch
+
+# Java annotation processor (APT)
+.factorypath
+
+# sbteclipse plugin
+.target
+
+# Tern plugin
+.tern-project
+
+# TeXlipse plugin
+.texlipse
+
+# Code Recommenders
+.recommenders/
+
+### Eclipse Patch ###
+.project
+
+# JDT-specific (Eclipse Java Development Tools)		
+.classpath
+
+### Intellij ###
+.idea/
+target/
+*.iml
+dependency-reduced-pom.xml
+
+### Java ###
+*.class
+
+# Log file #
+*.log
+
+# Package Files #
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+target/
