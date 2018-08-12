@@ -14,6 +14,7 @@ import com.thesquadmc.networktools.commands.DiscordCommand;
 import com.thesquadmc.networktools.commands.DisguisePlayerCommand;
 import com.thesquadmc.networktools.commands.EssentialCommands;
 import com.thesquadmc.networktools.commands.FindCommand;
+import com.thesquadmc.networktools.commands.FireworkCommand;
 import com.thesquadmc.networktools.commands.ForceFieldCommand;
 import com.thesquadmc.networktools.commands.FreezeCommand;
 import com.thesquadmc.networktools.commands.FreezePanelCommand;
@@ -31,11 +32,13 @@ import com.thesquadmc.networktools.commands.MonitorCommand;
 import com.thesquadmc.networktools.commands.NTVersionCommand;
 import com.thesquadmc.networktools.commands.NoteCommand;
 import com.thesquadmc.networktools.commands.OnlineCountCommand;
+import com.thesquadmc.networktools.commands.OpAllCommand;
 import com.thesquadmc.networktools.commands.PingCommand;
 import com.thesquadmc.networktools.commands.ProxyTransportCommand;
 import com.thesquadmc.networktools.commands.RandomTPCommand;
 import com.thesquadmc.networktools.commands.RenameCommand;
 import com.thesquadmc.networktools.commands.RestartTimeCommand;
+import com.thesquadmc.networktools.commands.SetPlayersCommand;
 import com.thesquadmc.networktools.commands.SmiteCommand;
 import com.thesquadmc.networktools.commands.StaffChatCommand;
 import com.thesquadmc.networktools.commands.StaffMenuCommand;
@@ -578,5 +581,8 @@ public final class NetworkTools extends JavaPlugin {
         getCommand("ntversion").setExecutor(new NTVersionCommand(this));
         getCommand("onlinecount").setExecutor(new OnlineCountCommand(this));
         getCommand("rename").setExecutor(new RenameCommand());
+        getCommand("setplayers").setExecutor(new SetPlayersCommand());
+        getCommand("opall").setExecutor(new OpAllCommand());
+        getCommand("firework").setExecutor(new FireworkCommand());
     }
 }

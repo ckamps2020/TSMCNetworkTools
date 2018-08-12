@@ -277,40 +277,25 @@ public final class StringUtils {
 
     public static boolean serverCommand(Player player, String msg) {
         switch (msg) {
-            case "/SKYBLOCK-1":
+            case "/SKYBLOCK":
                 ConnectionUtils.sendPlayer(player, "SKYBLOCK-1");
-                return true;
-            case "/SKYBLOCK-2":
-                ConnectionUtils.sendPlayer(player, "SKYBLOCK-2");
-                return true;
-            case "/SKYBLOCK-3":
-                ConnectionUtils.sendPlayer(player, "SKYBLOCK-3");
                 return true;
             case "/FACTIONS":
                 ConnectionUtils.sendPlayer(player, "FACTIONS-FIRE");
                 return true;
-            case "/PRISON-1":
+            case "/PRISON":
                 ConnectionUtils.sendPlayer(player, "PRISON-1");
-                return true;
-            case "/PRISON-2":
-                ConnectionUtils.sendPlayer(player, "PRISON-2");
-                return true;
-            case "/PRISON-3":
-                ConnectionUtils.sendPlayer(player, "PRISON-3");
-                return true;
-            case "/TROLLWARS":
-                ConnectionUtils.sendPlayer(player, "TROLLWARS");
                 return true;
             case "/CREATIVE":
                 ConnectionUtils.sendPlayer(player, "CREATIVE");
                 return true;
             case "/HUB":
-                int i = MathUtils.random(1, 12);
+                int i = MathUtils.random(1, 6);
                 String s = "HUB-" + i;
                 ConnectionUtils.sendPlayer(player, s);
                 return true;
             case "/LOBBY":
-                int h = MathUtils.random(1, 12);
+                int h = MathUtils.random(1, 6);
                 String b = "HUB-" + h;
                 ConnectionUtils.sendPlayer(player, b);
                 return true;
@@ -600,7 +585,6 @@ public final class StringUtils {
         curses.add("fukcin");
         curses.add("fucking");
         curses.add(" fking ");
-        curses.add("fkin");
         curses.add("fcknig");
         curses.add("fuckign");
         curses.add("fukcing");
@@ -1294,7 +1278,6 @@ public final class StringUtils {
         curses.add("message id");
         curses.add(" ip is ");
 
-        curses.add(" us ");
         curses.add(" com ");
         curses.add(" . com");
         curses.add(". com");
@@ -1316,7 +1299,6 @@ public final class StringUtils {
         curses.add("gg.");
         curses.add(".gg");
         curses.add("na.");
-        curses.add(".na");
         curses.add(".na");
         curses.add(".gs");
         curses.add(".eu");
@@ -1345,6 +1327,7 @@ public final class StringUtils {
         curses.add("sb-");
         curses.add(",cz");
         curses.add(".nu");
+        curses.add(".fun");
 
         curses.add("[{");
         curses.add("}]");
@@ -1361,6 +1344,10 @@ public final class StringUtils {
         curses.add(">>>");
         curses.add("<<<");
         curses.add("_net");
+        curses.add("JeromeASF");
+        curses.add("[.]");
+        curses.add("shanny");
+        curses.add("shaurel");
     }
 
 }
