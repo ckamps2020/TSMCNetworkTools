@@ -43,7 +43,6 @@ public class ChatListener implements Listener {
         String message = e.getMessage();
 
         if (!PlayerUtils.isEqualOrHigherThen(player, Rank.TRAINEE)) {
-
             //Check whether chat has been disabled
             if (plugin.getChatManager().isSilenced()) {
                 player.sendMessage(PREFIX + "The chat is currently silenced!");
@@ -131,10 +130,15 @@ public class ChatListener implements Listener {
     public void on(PlayerCommandPreprocessEvent e) {
         String message = e.getMessage();
 
-        if (e.isCancelled()) {
+        //TODO Move this elsewhere
+        if (StringUtils.serverCommand(e.getPlayer(), e.getMessage().toUpperCase())) {
+            e.setCancelled(true);
             return;
         }
 
+        if (e.isCancelled()) {
+            return;
+        }
 
         if (message.equals("/")) {
             return;
