@@ -275,6 +275,10 @@ public final class StringUtils {
         return message;
     }
 
+    @Deprecated
+    /**
+     * @deprecated Server commands are now handled in ProxyManager (our BungeeCord plugin)
+     */
     public static boolean serverCommand(Player player, String msg) {
         switch (msg) {
             case "/SKYBLOCK":

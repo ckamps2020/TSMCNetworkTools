@@ -130,12 +130,6 @@ public class ChatListener implements Listener {
     public void on(PlayerCommandPreprocessEvent e) {
         String message = e.getMessage();
 
-        //TODO Move this elsewhere
-        if (StringUtils.serverCommand(e.getPlayer(), e.getMessage().toUpperCase())) {
-            e.setCancelled(true);
-            return;
-        }
-
         if (e.isCancelled()) {
             return;
         }
