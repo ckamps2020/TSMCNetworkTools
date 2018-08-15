@@ -65,6 +65,16 @@ public final class CountManager {
         return i;
     }
 
+    public int getEventCount() {
+        int i = 0;
+        for (Map.Entry<String, Integer> map : count.entrySet()) {
+            if (map.getKey().toUpperCase().startsWith("EVENT")) {
+                i = i + map.getValue();
+            }
+        }
+        return i;
+    }
+
     public boolean doesCountExist(String string) {
         return count.containsKey(string);
     }

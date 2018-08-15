@@ -11,19 +11,19 @@ public enum ServerType {
     OTHER;
 
     public static ServerType getServerType(String name) {
-        if (name.startsWith(FACTIONS.name())) {
+        if (name.contains(FACTIONS.name())) {
             return FACTIONS;
 
-        } else if (name.startsWith(SKYBLOCK.name())) {
+        } else if (name.contains(SKYBLOCK.name())) {
             return SKYBLOCK;
 
-        } else if (name.startsWith(PRISON.name())) {
+        } else if (name.contains(PRISON.name())) {
             return PRISON;
 
-        } else if (name.startsWith(TROLLWARS.name())) {
+        } else if (name.contains(TROLLWARS.name())) {
             return TROLLWARS;
 
-        } else if (name.startsWith(HUB.name())) {
+        } else if (name.contains(HUB.name())) {
             return HUB;
 
         } else {

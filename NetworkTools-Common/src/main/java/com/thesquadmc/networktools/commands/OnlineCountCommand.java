@@ -11,10 +11,10 @@ import org.bukkit.entity.Player;
 
 public final class OnlineCountCommand implements CommandExecutor {
 
-    private final NetworkTools networkTools;
+    private final NetworkTools plugin;
 
-    public OnlineCountCommand(NetworkTools networkTools) {
-        this.networkTools = networkTools;
+    public OnlineCountCommand(NetworkTools plugin) {
+        this.plugin = plugin;
     }
 
     @Override
@@ -23,13 +23,14 @@ public final class OnlineCountCommand implements CommandExecutor {
             Player player = (Player) sender;
             if (PlayerUtils.isEqualOrHigherThen(player, Rank.TRAINEE)) {
                 player.sendMessage(CC.translate("&7"));
-                player.sendMessage(CC.translate("&c&lFACTIONS &c■ &7" + networkTools.getCountManager().getFactionsCount()));
-                player.sendMessage(CC.translate("&9&lCREATIVE &9■ &7" + networkTools.getCountManager().getCreativeCount()));
-                player.sendMessage(CC.translate("&d&lSKYBLOCK &d■ &7" + networkTools.getCountManager().getSkyblockCount()));
-                player.sendMessage(CC.translate("&b&lPRISON &b■ &7" + networkTools.getCountManager().getPrisonCount()));
-                player.sendMessage(CC.translate("&6&lHUB &6■ &7" + networkTools.getCountManager().getHubCount()));
+                player.sendMessage(CC.translate("&c&lFACTIONS &c■ &7" + plugin.getCountManager().getFactionsCount()));
+                player.sendMessage(CC.translate("&9&lCREATIVE &9■ &7" + plugin.getCountManager().getCreativeCount()));
+                player.sendMessage(CC.translate("&d&lSKYBLOCK &d■ &7" + plugin.getCountManager().getSkyblockCount()));
+                player.sendMessage(CC.translate("&b&lPRISON &b■ &7" + plugin.getCountManager().getPrisonCount()));
+                player.sendMessage(CC.translate("&e&lEVENTS &e■ &7" + plugin.getCountManager().getEventCount()));
+                player.sendMessage(CC.translate("&6&lHUB &6■ &7" + plugin.getCountManager().getHubCount()));
                 player.sendMessage(CC.translate("&7"));
-                player.sendMessage(CC.translate("&e" + networkTools.getCountManager().getTotalOnlineCount() + "&8/&e4000"));
+                player.sendMessage(CC.translate("&e" + plugin.getCountManager().getTotalOnlineCount() + "&8/&e4000"));
             } else {
                 player.sendMessage(CC.translate("&e&lPERMISSIONS &6■ &7You do not have permission to use this command!"));
             }
