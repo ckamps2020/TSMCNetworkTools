@@ -600,8 +600,8 @@ public class EssentialCommands {
 
     private String formatName(Material material) {
         String[] names = material.name().split("_");
-
         StringBuilder sb = new StringBuilder();
+
         for (String name : names) {
             sb.append(StringUtils.capitalize(name.toLowerCase())).append(" ");
         }
