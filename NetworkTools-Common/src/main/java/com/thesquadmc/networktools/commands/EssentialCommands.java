@@ -570,7 +570,6 @@ public class EssentialCommands {
 
     private String getNearestPlayers(final Player player, final long radius) {
         final Location loc = player.getLocation();
-
         final StringBuilder output = new StringBuilder();
         final long radiusSquared = radius * radius;
 
