@@ -15,10 +15,9 @@ import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Fireball;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.inventory.ItemStack;
@@ -571,33 +570,28 @@ public class EssentialCommands {
 
     private String getNearestPlayers(final Player player, final long radius) {
         final Location loc = player.getLocation();
-        final World world = loc.getWorld();
 
         final StringBuilder output = new StringBuilder();
         final long radiusSquared = radius * radius;
 
-        for (LivingEntity livingEntity : player.getWorld().getLivingEntities()) {
-            if (!(livingEntity instanceof Player)) {
+        for (Entity entity : player.getWorld().getEntities()) {
+            if (!(entity instanceof Player)) {
                 continue;
             }
 
-            Player p = (Player) livingEntity;
-            if (player == p) {
+            Player p = (Player) entity;
+            if (player == p || p.hasMetadata("data")) {
                 continue;
             }
 
-            final Location playerLoc = player.getLocation();
-            if (playerLoc.getWorld() != world) {
-                continue;
-            }
-
+            final Location playerLoc = p.getLocation();
             final long delta = (long) playerLoc.distanceSquared(loc);
             if (delta < radiusSquared) {
                 if (output.length() > 0) {
                     output.append(", ");
                 }
 
-                output.append(CC.YELLOW).append(player.getName()).append("§7(§4").append((long) Math.sqrt(delta)).append("m§7)");
+                output.append(CC.YELLOW).append(p.getName()).append("§7(§4").append((long) Math.sqrt(delta)).append("m§7)");
             }
         }
 

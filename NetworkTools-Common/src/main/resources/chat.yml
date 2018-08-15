@@ -1,19 +1,19 @@
 formats:
   owner:
     priority: 1
-    prefix: "&c&lOWNER %display_name%"
+    prefix: "&c&lOWNER &c%display_name%"
     suffix: "&8»"
     chatColor: "&c"
 
   developer:
     priority: 2
-    prefix: "&c&lDEVELOPER %display_name%"
+    prefix: "&c&lDEV &c%display_name%"
     suffix: "&8»"
     chatColor: "&c"
 
   admin:
     priority: 3
-    prefix: "&c&lADMIN %display_name%"
+    prefix: "&c&lADMIN &c%display_name%"
     suffix: "&8»"
     chatColor: "&c"
 
@@ -45,4 +45,4 @@ formats:
     priority: 1000
     prefix: "&7%display_name%"
     suffix: "&8»"
-    chatColor: "&a"
+    chatColor: "&7"
