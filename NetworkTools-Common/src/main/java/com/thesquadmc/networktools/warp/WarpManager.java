@@ -13,8 +13,6 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
 
-import static sun.audio.AudioPlayer.player;
-
 /**
  * This class handles all warps/spawns
  * provided in the locations.yml file.
@@ -63,7 +61,6 @@ public class WarpManager {
                 );
 
             } catch (IOException e) {
-                plugin.getLogger().severe("Could not save data of user " + player);
                 e.printStackTrace();
             }
         });
