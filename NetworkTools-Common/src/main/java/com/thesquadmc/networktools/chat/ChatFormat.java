@@ -114,7 +114,7 @@ public class ChatFormat {
         List<BaseComponent> toolTipComponents = new ArrayList<>();
         tooltip.forEach(s -> toolTipComponents.addAll(Arrays.asList(TextComponent.fromLegacyText(s))));
 
-        TextComponent prefix = new TextComponent(TextComponent.fromLegacyText(PlaceholderAPI.setPlaceholders(sender, name + " ")));
+        TextComponent prefix = new TextComponent(TextComponent.fromLegacyText(PlaceholderAPI.setPlaceholders(sender, name)));
         prefix.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, suggest));
         prefix.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, toolTipComponents.toArray(new BaseComponent[]{})));
 

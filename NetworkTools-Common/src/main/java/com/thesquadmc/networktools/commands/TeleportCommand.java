@@ -10,6 +10,7 @@ import com.thesquadmc.networktools.utils.message.ClickableMessageBuilder;
 import com.thesquadmc.networktools.utils.msgs.CC;
 import com.thesquadmc.networktools.utils.msgs.Unicode;
 import com.thesquadmc.networktools.utils.player.TimedTeleport;
+import com.thesquadmc.networktools.utils.server.ServerType;
 import com.thesquadmc.networktools.utils.time.TimeUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.Bukkit;
@@ -147,6 +148,11 @@ public class TeleportCommand {
     public void tpa(CommandArgs args) {
         Player player = args.getPlayer();
 
+        if (plugin.getServerType() == ServerType.PRISON) {
+            player.sendMessage(CC.RED + "You cannot teleport to players in Prison!");
+            return;
+        }
+
         if (args.length() == 0) {
             player.sendMessage(CC.RED + "/tpa <player>");
             return;
@@ -190,6 +196,11 @@ public class TeleportCommand {
     @Command(name = {"tpahere"}, playerOnly = true)
     public void tpahere(CommandArgs args) {
         Player player = args.getPlayer();
+
+        if (plugin.getServerType() == ServerType.PRISON) {
+            player.sendMessage(CC.RED + "You cannot teleport to players in Prison!");
+            return;
+        }
 
         if (args.length() == 0) {
             player.sendMessage(CC.RED + "/tpahere <player>");

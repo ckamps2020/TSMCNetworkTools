@@ -32,7 +32,7 @@ public class ChatManager {
     private final Queue<ChatMessage> chatMessages = new ConcurrentLinkedDeque<>();
 
     private final Map<Integer, ChatFormat> formats = Maps.newTreeMap();
-    private final YamlConfiguration chatConfig;
+    private YamlConfiguration chatConfig;
 
     private boolean silenced = false;
     private int chatDelay = 0;
@@ -86,6 +86,7 @@ public class ChatManager {
      * @return the amount of formats loaded
      */
     public int reloadFormats() {
+        chatConfig = FileUtils.getConfig("chat");
         YamlConfiguration conf = chatConfig;
 
         formats.clear();

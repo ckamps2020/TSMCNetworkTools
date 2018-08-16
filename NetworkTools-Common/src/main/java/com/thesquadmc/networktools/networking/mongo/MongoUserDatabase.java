@@ -2,6 +2,7 @@ package com.thesquadmc.networktools.networking.mongo;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import com.mongodb.bulk.BulkWriteResult;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.ReplaceOneModel;
@@ -39,6 +40,14 @@ public class MongoUserDatabase implements UserDatabase {
                         document,
                         new UpdateOptions().upsert(true)
                 ));
+            }
+
+            if (bulk.size() > 0) {
+                BulkWriteResult result = users.bulkWrite(bulk);
+                if (result.getModifiedCount() <= 0) {
+                    NetworkTools.getInstance().getLogger().severe(MessageFormat.format("Failed insert for {0} messages: {1}", bulk.size(), result));
+
+                }
             }
         }, 0, 5 * 60 * 20);
     }

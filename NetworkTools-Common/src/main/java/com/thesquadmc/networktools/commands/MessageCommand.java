@@ -112,7 +112,8 @@ public class MessageCommand {
                         .set("sender", player.getUniqueId())
                         .set("sender_name", player.getName())
                         .set("target", uuid)
-                        .set("message", message));
+                        .set("message", message)
+                        .set("bypass", PlayerUtils.isEqualOrHigherThen(player, Rank.TRAINEE)));
             } else {
                 player.sendMessage(CC.RED + "Could not find the last player you messaged!");
             }

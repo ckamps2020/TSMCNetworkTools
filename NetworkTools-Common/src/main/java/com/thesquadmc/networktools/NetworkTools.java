@@ -23,7 +23,6 @@ import com.thesquadmc.networktools.commands.HealCommand;
 import com.thesquadmc.networktools.commands.HomeCommand;
 import com.thesquadmc.networktools.commands.IgnoreCommand;
 import com.thesquadmc.networktools.commands.InvseeCommand;
-import com.thesquadmc.networktools.commands.KitCommand;
 import com.thesquadmc.networktools.commands.LaunchCommand;
 import com.thesquadmc.networktools.commands.LookupCommand;
 import com.thesquadmc.networktools.commands.ManagerChatCommand;
@@ -53,7 +52,6 @@ import com.thesquadmc.networktools.commands.UnFreezeCommand;
 import com.thesquadmc.networktools.commands.UndisguisePlayerCommand;
 import com.thesquadmc.networktools.commands.VanishCommand;
 import com.thesquadmc.networktools.commands.VanishListCommand;
-import com.thesquadmc.networktools.commands.WarpCommand;
 import com.thesquadmc.networktools.commands.WebsiteCommand;
 import com.thesquadmc.networktools.commands.WhitelistCommand;
 import com.thesquadmc.networktools.commands.XrayVerboseCommand;
@@ -209,8 +207,8 @@ public final class NetworkTools extends JavaPlugin {
         updateHandler.run();
 
         localPlayerManager = new LocalPlayerManager();
-        kitManager = new KitManager(this);
-        warpManager = new WarpManager(this);
+        //kitManager = new KitManager(this);
+        //warpManager = new WarpManager(this);
         chatManager = new ChatManager(this);
         hologramManager = new HologramManager();
         npcManager = new NPCManager();
@@ -271,7 +269,7 @@ public final class NetworkTools extends JavaPlugin {
         Stream.of(
                 new GamemodeCommand(),
                 new NoteCommand(this),
-                new WarpCommand(this),
+                //new WarpCommand(this),
                 new ChangeLogCommand(this),
                 new FindCommand(this),
                 new MessageCommand(this),
@@ -279,7 +277,7 @@ public final class NetworkTools extends JavaPlugin {
                 new TeleportCommand(this),
                 new IgnoreCommand(this),
                 new HomeCommand(this),
-                new KitCommand(this),
+                //new KitCommand(this),
                 new HealCommand()
         ).forEach(o -> commandHandler.registerCommands(o));
 
@@ -301,8 +299,8 @@ public final class NetworkTools extends JavaPlugin {
     public void onDisable() {
         getLogger().info("Shutting down...");
         nametagEdit.onDisable();
-        warpManager.saveWarps();
-        kitManager.saveKits();
+        //warpManager.saveWarps();
+        //kitManager.saveKits();
         redisManager.close();
         getLogger().info("Shut down! Cya :D");
     }

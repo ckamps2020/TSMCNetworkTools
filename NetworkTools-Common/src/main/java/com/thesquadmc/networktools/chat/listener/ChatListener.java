@@ -121,6 +121,7 @@ public class ChatListener implements Listener {
         String message = CC.translate("&8[&e&lSS&8] &6{0} &8■ &6{1} &8» &e{2}", sender, target, e.getMessage());
 
         Bukkit.getOnlinePlayers().stream()
+                .filter(player -> !player.getName().equals(sender) || !player.getName().equals(target))
                 .filter(player -> PlayerUtils.isEqualOrHigherThen(player, Rank.TRAINEE))
                 .filter(player -> TSMCUser.fromPlayer(player).getSetting(PlayerSetting.SOCIALSPY))
                 .forEach(player -> player.sendMessage(message));

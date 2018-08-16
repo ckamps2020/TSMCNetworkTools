@@ -564,8 +564,8 @@ public class EssentialCommands {
 
     @Command(name = {"chatreload"}, permission = "group.manager")
     public void chatreload(CommandArgs args) {
-        plugin.getChatManager().reloadFormats();
-        args.getSender().sendMessage(CC.GREEN + "Reloaded chat formats");
+        int amount = plugin.getChatManager().reloadFormats();
+        args.getSender().sendMessage(CC.GREEN + "Reloaded chat " + amount + " formats");
     }
 
     private String getNearestPlayers(final Player player, final long radius) {
