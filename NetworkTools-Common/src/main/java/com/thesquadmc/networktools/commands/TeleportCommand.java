@@ -144,7 +144,7 @@ public class TeleportCommand {
                 .send();
     }
 
-    @Command(name = {"tpa", "tpask", "tprequest"}, playerOnly = true)
+    @Command(name = {"tpa", "call", "ecall", "etpa", "tpask", "etpask"}, playerOnly = true)
     public void tpa(CommandArgs args) {
         Player player = args.getPlayer();
 
@@ -193,7 +193,7 @@ public class TeleportCommand {
         player.sendMessage(CC.translate("&e&lTELEPORT &6■ &7Sent a teleport request to &e{0}", target.getName()));
     }
 
-    @Command(name = {"tpahere"}, playerOnly = true)
+    @Command(name = {"tpahere", "etpahere"}, playerOnly = true)
     public void tpahere(CommandArgs args) {
         Player player = args.getPlayer();
 
@@ -242,7 +242,7 @@ public class TeleportCommand {
         player.sendMessage(CC.translate("&e&lTELEPORT &6■ &7Sent a teleport request to &e{0}", target.getName()));
     }
 
-    @Command(name = {"tpaccept", "tpayes"}, playerOnly = true)
+    @Command(name = {"tpaccept", "etpaccept", "tpyes", "etpyes"}, playerOnly = true)
     public void accept(CommandArgs args) {
         Player player = args.getPlayer();
         LocalPlayer localPlayer = plugin.getLocalPlayerManager().getPlayer(player);
@@ -293,7 +293,7 @@ public class TeleportCommand {
         localPlayer.requestTeleport(null, false);
     }
 
-    @Command(name = {"tpadeny", "tpano"}, playerOnly = true)
+    @Command(name = {"tpdeny", "etpdeny", "tpno", "tpno"}, playerOnly = true)
     public void deny(CommandArgs args) {
         LocalPlayer player = plugin.getLocalPlayerManager().getPlayer(args.getPlayer());
 

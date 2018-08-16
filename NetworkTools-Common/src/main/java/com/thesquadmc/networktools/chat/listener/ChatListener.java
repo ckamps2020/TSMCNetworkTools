@@ -37,7 +37,7 @@ public class ChatListener implements Listener {
         this.plugin = plugin;
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void on(AsyncPlayerChatEvent e) {
         Player player = e.getPlayer();
         String message = e.getMessage();
@@ -91,6 +91,8 @@ public class ChatListener implements Listener {
                 null
         );
 
+        lastMessage.put(player.getUniqueId(), chatMessage);
+        plugin.getChatManager().addMessage(chatMessage);
 
         message = FormatUtil.formatMessage(player, "essentials.chat", message);
         if (message == null) {
@@ -108,9 +110,6 @@ public class ChatListener implements Listener {
         Bukkit.getOnlinePlayers().stream()
                 .filter(p -> !PlayerUtils.isEqualOrHigherThen(p, Rank.TRAINEE) || !TSMCUser.fromPlayer(p).isIgnored(player.getUniqueId()))
                 .forEach(p -> p.spigot().sendMessage(msg));
-
-        lastMessage.put(player.getUniqueId(), chatMessage);
-        plugin.getChatManager().addMessage(chatMessage);
     }
 
     @EventHandler

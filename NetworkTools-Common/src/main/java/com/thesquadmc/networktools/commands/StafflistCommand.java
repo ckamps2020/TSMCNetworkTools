@@ -94,45 +94,45 @@ public final class StafflistCommand implements CommandExecutor {
                 String[] otokens = owner.split(or);
 
                 if (!trainee.equalsIgnoreCase("")) {
-                    player.spigot().sendMessage(StringUtils.getHoverMessage("&a" + ttokens.length + " &8[&a&lTrainee&8]&a " + trainee, "&7Want to become &eTrainee&7? Apply at:\n" +
+                    player.spigot().sendMessage(StringUtils.getHoverMessage("&a" + ttokens.length + " &a&lTRAINEE&a " + trainee, "&7Want to become &eTrainee&7? Apply at:\n" +
                             "&6&nwww.thesquadmc.net/forums/staff-applications"));
                 } else {
-                    player.sendMessage(CC.translate("&c0 &8[&a&lTrainee&8] &7None"));
+                    player.sendMessage(CC.translate("&c0 &a&lTRAINEE&a &7None"));
                 }
                 if (!helper.equalsIgnoreCase("")) {
-                    player.sendMessage(CC.translate("&a" + (htokens.length - 1) + " &8[&b&lChat-Mod&8]&3" + helper));
+                    player.sendMessage(CC.translate("&a" + (htokens.length - 1) + " &b&lCHAT MOD&b" + helper));
                 } else {
-                    player.sendMessage(CC.translate("&c0 &8[&b&lChat-Mod&8] &7None"));
+                    player.sendMessage(CC.translate("&c0 &b&lCHAT MOD&b &7None"));
                 }
                 if (!mod.equalsIgnoreCase("")) {
-                    player.sendMessage(CC.translate("&a" + (mtokens.length - 1) + " &8[&5&lMod&8]&5" + mod));
+                    player.sendMessage(CC.translate("&a" + (mtokens.length - 1) + " &9&lMOD&9" + mod));
                 } else {
                     player.sendMessage(CC.translate("&c0 &8[&5&lMod&8] &7None"));
                 }
                 if (!srmod.equalsIgnoreCase("")) {
-                    player.sendMessage(CC.translate("&a" + (srtokens.length - 1) + " &8[&d&lSr-Mod&8]&d" + srmod));
+                    player.sendMessage(CC.translate("&a" + (srtokens.length - 1) + " &d&lSR MOD&d" + srmod));
                 } else {
                     player.sendMessage(CC.translate("&c0 &8[&d&lSr-Mod&8] &7None"));
                 }
                 if (!admin.equalsIgnoreCase("")) {
-                    player.sendMessage(CC.translate("&a" + (atokens.length - 1) + " &8[&c&lAdmin&8]&c" + admin));
+                    player.sendMessage(CC.translate("&a" + (atokens.length - 1) + " &c&lADMIN&c" + admin));
                 } else {
-                    player.sendMessage(CC.translate("&c0 &8[&c&lAdmin&8] &7None"));
+                    player.sendMessage(CC.translate("&c0 &c&lADMIN&c &7None"));
                 }
                 if (!manager.equalsIgnoreCase("")) {
-                    player.sendMessage(CC.translate("&a" + (mantokens.length - 1) + " &8[&c&lManager&8]&c" + manager));
+                    player.sendMessage(CC.translate("&a" + (mantokens.length - 1) + " &c&lMANAGER&c" + manager));
                 } else {
-                    player.sendMessage(CC.translate("&c0 &8[&c&lManager&8] &7None"));
+                    player.sendMessage(CC.translate("&c0 &c&lMANAGER &7None"));
                 }
                 if (!developer.equalsIgnoreCase("")) {
-                    player.sendMessage(CC.translate("&a" + (dtokens.length - 1) + " &8[&c&lDeveloper&8]&c" + developer));
+                    player.sendMessage(CC.translate("&a" + (dtokens.length - 1) + " &c&lDEV&8" + developer));
                 } else {
-                    player.sendMessage(CC.translate("&c0 &8[&c&lDeveloper&8] &7None"));
+                    player.sendMessage(CC.translate("&c0 &c&lDEV &7None"));
                 }
                 if (!owner.equalsIgnoreCase("")) {
-                    player.sendMessage(CC.translate("&a" + (otokens.length - 1) + " &8[&4&lOwner&8]&4" + owner));
+                    player.sendMessage(CC.translate("&a" + (otokens.length - 1) + " &c&lOWNER&c" + owner));
                 } else {
-                    player.sendMessage(CC.translate("&c0 &8[&4&lOwner&8] &7None"));
+                    player.sendMessage(CC.translate("&c0 &c&lOWNER&c &7None"));
                 }
                 //fetch online count
                 stafflist.remove(player.getUniqueId());

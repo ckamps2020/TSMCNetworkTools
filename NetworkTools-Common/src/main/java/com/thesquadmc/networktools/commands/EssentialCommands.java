@@ -93,7 +93,7 @@ public class EssentialCommands {
         }
     }
 
-    @Command(name = {"clearinventory", "ci"}, permission = "essentials.clearinventory", playerOnly = true)
+    @Command(name = {"clearinventory", "ci", "eci", "clean", "eclean", "clear", "eclear", "clearinvent", "eclearinvent", "eclearinventory"}, permission = "essentials.clearinventory", playerOnly = true)
     public void clear(CommandArgs args) {
         Player player = args.getPlayer();
 
@@ -234,7 +234,7 @@ public class EssentialCommands {
         }
     }
 
-    @Command(name = {"enderchest", "echest"}, permission = "essentials.enderchest", playerOnly = true)
+    @Command(name = {"enderchest", "echest", "eechest", "eenderchest", "endersee", "eendersee", "ec", "eec"}, permission = "essentials.enderchest", playerOnly = true)
     public void enderchest(CommandArgs args) {
         Player player = args.getPlayer();
 
@@ -273,7 +273,7 @@ public class EssentialCommands {
         player.sendMessage(CC.translate("&e&lNEAR &6■ &7Players near you: {0}", getNearestPlayers(player, 200)));
     }
 
-    @Command(name = {"fly"}, permission = "essentials.fly", playerOnly = true)
+    @Command(name = {"fly", "efly"}, permission = "essentials.fly", playerOnly = true)
     public void fly(CommandArgs args) {
         Player player = args.getPlayer();
 

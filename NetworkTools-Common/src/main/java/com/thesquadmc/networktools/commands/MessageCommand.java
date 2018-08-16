@@ -25,7 +25,7 @@ public class MessageCommand {
         this.plugin = plugin;
     }
 
-    @Command(name = {"message", "msg"}, playerOnly = true)
+    @Command(name = {"message", "msg", "m", "tell", "t", "w", "whisper", "pm", "emsg", "epm", "etell", "ewhisper"}, playerOnly = true)
     public void messgae(CommandArgs args) {
         Player player = args.getPlayer();
 
@@ -83,16 +83,7 @@ public class MessageCommand {
         }
     }
 
-    @Command(name = {"togglemessage", "togglepm", "togglepms"}, playerOnly = true)
-    public void toggle(CommandArgs args) {
-        TSMCUser user = TSMCUser.fromPlayer(args.getPlayer());
-
-        boolean change = !user.getSetting(PlayerSetting.PRIVATE_MESSAGES);
-        user.updateSetting(PlayerSetting.PRIVATE_MESSAGES, change);
-        args.getSender().sendMessage(CC.translate("&e&lMESSAGES &6■ &7You have turned {0} &7private messages!", (change ? "&aon" : "&coff")));
-    }
-
-    @Command(name = {"reply", "r"}, playerOnly = true)
+    @Command(name = {"reply", "r", "er", "ereply"}, playerOnly = true)
     public void reply(CommandArgs args) {
         Player player = args.getPlayer();
 
@@ -120,6 +111,15 @@ public class MessageCommand {
         });
     }
 
+    @Command(name = {"togglemessage", "togglepms", "msgtoggle", "emsgtoggle"}, playerOnly = true)
+    public void toggle(CommandArgs args) {
+        TSMCUser user = TSMCUser.fromPlayer(args.getPlayer());
+
+        boolean change = !user.getSetting(PlayerSetting.PRIVATE_MESSAGES);
+        user.updateSetting(PlayerSetting.PRIVATE_MESSAGES, change);
+        args.getSender().sendMessage(CC.translate("&e&lMESSAGES &6■ &7You have turned {0} &7private messages!", (change ? "&aon" : "&coff")));
+    }
+
     @Command(name = {"socialspy"}, permission = "essentials.socialspy", playerOnly = true)
     public void socialspy(CommandArgs args) {
         Player player = args.getPlayer();
@@ -127,7 +127,7 @@ public class MessageCommand {
 
         boolean socialspy = !user.getSetting(PlayerSetting.SOCIALSPY);
         user.updateSetting(PlayerSetting.SOCIALSPY, socialspy);
-        args.getSender().sendMessage(CC.translate("&e&lMESSAGES &6■ &7You have turned {0} &7SocialSpy!", (socialspy ? "&aon" : "&coff")));
+        player.sendMessage(CC.translate("&e&lMESSAGES &6■ &7You have turned {0} &7SocialSpy!", (socialspy ? "&aon" : "&coff")));
 
     }
 }

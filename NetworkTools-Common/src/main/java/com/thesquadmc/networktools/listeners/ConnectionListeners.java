@@ -139,15 +139,10 @@ public final class ConnectionListeners implements Listener {
         for (Player p : Bukkit.getOnlinePlayers()) {
             TSMCUser target = TSMCUser.fromPlayer(p);
             if (target.getSetting(PlayerSetting.YOUTUBE_VANISHED)) {
-                player.hidePlayer(p);
-                //PlayerUtils.hidePlayerSpectatorYT(p);
+                PlayerUtils.hidePlayerSpectatorYT(p);
 
             } else if (target.getSetting(PlayerSetting.VANISHED)) {
-                if (!PlayerUtils.isEqualOrHigherThen(player, Rank.TRAINEE)) {
-                    player.hidePlayer(p);
-                }
-
-                //PlayerUtils.hidePlayerSpectatorStaff(p);
+                PlayerUtils.hidePlayerSpectatorStaff(p);
             }
         }
     }
