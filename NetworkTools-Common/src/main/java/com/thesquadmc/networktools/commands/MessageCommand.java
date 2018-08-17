@@ -105,7 +105,13 @@ public class MessageCommand {
 
         Player target = Bukkit.getPlayer(uuid);
         if (target != null) {
-            if (TSMCUser.fromPlayer(target).isIgnored(player.getUniqueId())) {
+            TSMCUser targetUser = TSMCUser.fromPlayer(target);
+            if (targetUser.getSetting(PlayerSetting.VANISHED) || targetUser.getSetting(PlayerSetting.YOUTUBE_VANISHED)) {
+                player.sendMessage(CC.RED + "You have no one to reply to!");
+                return;
+            }
+
+            if (targetUser.isIgnored(player.getUniqueId())) {
                 player.sendMessage(CC.RED + "You cannot send messages to this player!");
                 return;
             }
