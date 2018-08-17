@@ -44,7 +44,13 @@ public class MessageCommand {
                 return;
             }
 
-            if (TSMCUser.fromPlayer(target).isIgnored(player.getUniqueId())) {
+            TSMCUser user = TSMCUser.fromPlayer(target);
+            if (user.getSetting(PlayerSetting.VANISHED) || user.getSetting(PlayerSetting.YOUTUBE_VANISHED)) {
+                player.sendMessage(CC.RED + name + " could not be found");
+                return;
+            }
+
+            if (user.isIgnored(player.getUniqueId())) {
                 player.sendMessage(CC.RED + "You cannot send messages to this player!");
                 return;
             }

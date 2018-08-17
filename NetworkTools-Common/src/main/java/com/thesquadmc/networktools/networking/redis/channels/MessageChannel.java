@@ -91,6 +91,12 @@ public class MessageChannel implements RedisChannel {
                         break;
                     }
 
+                    case VANISHED: {
+                        //throw them off with the lowercase maybe?
+                        sender.sendMessage(CC.RED + targetName.toLowerCase() + " could not be found");
+                        break;
+                    }
+
                     case PM_DISABLED: {
                         sender.sendMessage(CC.translate("&c{0} has their private messages disabled!", targetName));
                         break;
@@ -124,6 +130,6 @@ public class MessageChannel implements RedisChannel {
     }
 
     public enum MessageResponse {
-        IGNORED, PM_DISABLED, SUCCESSFUL
+        IGNORED, PM_DISABLED, SUCCESSFUL, VANISHED
     }
 }

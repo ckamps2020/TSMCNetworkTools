@@ -25,7 +25,8 @@ public final class OnlineCountCommand implements CommandExecutor {
                 player.sendMessage(CC.translate("&7"));
                 player.sendMessage(CC.translate("&c&lFACTIONS &c■ &7" + plugin.getCountManager().getFactionsCount()));
                 player.sendMessage(CC.translate("&9&lCREATIVE &9■ &7" + plugin.getCountManager().getCreativeCount()));
-                player.sendMessage(CC.translate("&d&lSKYBLOCK &d■ &7" + plugin.getCountManager().getSkyblockCount() + plugin.getCountManager().getOPSkyblockCount()));
+                player.sendMessage(CC.translate("&d&lSKYBLOCK &d■ &7" + plugin.getCountManager().getSkyblockCount()));
+                player.sendMessage(CC.translate("&d&lOP SKYBLOCK &d■ &7" + plugin.getCountManager().getOPSkyblockCount()));
                 player.sendMessage(CC.translate("&b&lPRISON &b■ &7" + plugin.getCountManager().getPrisonCount()));
                 player.sendMessage(CC.translate("&e&lEVENTS &e■ &7" + plugin.getCountManager().getEventCount()));
                 player.sendMessage(CC.translate("&6&lHUB &6■ &7" + plugin.getCountManager().getHubCount()));

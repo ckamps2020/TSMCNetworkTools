@@ -5,6 +5,8 @@ import com.thesquadmc.networktools.NetworkTools;
 import com.thesquadmc.networktools.commands.StafflistCommand;
 import com.thesquadmc.networktools.networking.redis.RedisChannel;
 import com.thesquadmc.networktools.networking.redis.RedisMesage;
+import com.thesquadmc.networktools.player.PlayerSetting;
+import com.thesquadmc.networktools.player.TSMCUser;
 import com.thesquadmc.networktools.utils.enums.Rank;
 import com.thesquadmc.networktools.utils.enums.RedisArg;
 import com.thesquadmc.networktools.utils.enums.RedisChannels;
@@ -38,6 +40,11 @@ public class FindChannel implements RedisChannel {
                 ArrayList<String> owner = new ArrayList<>();
 
                 for (Player p : Bukkit.getOnlinePlayers()) {
+                    TSMCUser user = TSMCUser.fromPlayer(p);
+                    if (user.getSetting(PlayerSetting.VANISHED) || user.getSetting(PlayerSetting.YOUTUBE_VANISHED)) {
+                        continue;
+                    }
+
                     if (PlayerUtils.doesRankMatch(p, Rank.TRAINEE)) {
                         trainee.add(p.getName());
                     } else if (PlayerUtils.doesRankMatch(p, Rank.HELPER)) {
@@ -57,67 +64,67 @@ public class FindChannel implements RedisChannel {
                     }
                 }
 
-                StringBuilder tSB = new StringBuilder();
-                StringBuilder hSB = new StringBuilder();
-                StringBuilder mSB = new StringBuilder();
-                StringBuilder srSB = new StringBuilder();
-                StringBuilder aSB = new StringBuilder();
-                StringBuilder manSB = new StringBuilder();
-                StringBuilder dSB = new StringBuilder();
-                StringBuilder oSB = new StringBuilder();
+                StringBuilder traineeSB = new StringBuilder();
+                StringBuilder helperSB = new StringBuilder();
+                StringBuilder modSB = new StringBuilder();
+                StringBuilder srmodSB = new StringBuilder();
+                StringBuilder adminSB = new StringBuilder();
+                StringBuilder managerSB = new StringBuilder();
+                StringBuilder devSB = new StringBuilder();
+                StringBuilder ownerSB = new StringBuilder();
 
                 if (!trainee.isEmpty()) {
                     for (String s : trainee) {
-                        tSB.append(" ").append(s);
+                        traineeSB.append(" ").append(s);
                     }
                 }
                 if (!helper.isEmpty()) {
                     for (String s : helper) {
-                        hSB.append(" ").append(s);
+                        helperSB.append(" ").append(s);
                     }
                 }
                 if (!mod.isEmpty()) {
                     for (String s : mod) {
-                        mSB.append(" ").append(s);
+                        modSB.append(" ").append(s);
                     }
                 }
                 if (!srmod.isEmpty()) {
                     for (String s : srmod) {
-                        srSB.append(" ").append(s);
+                        srmodSB.append(" ").append(s);
                     }
                 }
                 if (!admin.isEmpty()) {
                     for (String s : admin) {
-                        aSB.append(" ").append(s);
+                        adminSB.append(" ").append(s);
                     }
                 }
                 if (!manager.isEmpty()) {
                     for (String s : manager) {
-                        manSB.append(" ").append(s);
+                        managerSB.append(" ").append(s);
                     }
                 }
                 if (!developer.isEmpty()) {
                     for (String s : developer) {
-                        dSB.append(" ").append(s);
+                        devSB.append(" ").append(s);
                     }
                 }
                 if (!owner.isEmpty()) {
                     for (String s : owner) {
-                        oSB.append(" ").append(s);
+                        ownerSB.append(" ").append(s);
                     }
                 }
 
                 plugin.getRedisManager().sendMessage(RedisChannels.RETURN_REQUEST_LIST, RedisMesage.newMessage()
                         .set(RedisArg.SERVER, object.get(RedisArg.SERVER).getAsString())
                         .set(RedisArg.PLAYER, object.get(RedisArg.PLAYER).getAsString())
-                        .set(RedisArg.TRAINEE, tSB.toString())
-                        .set(RedisArg.HELPER, hSB.toString())
-                        .set(RedisArg.MOD, mSB.toString())
-                        .set(RedisArg.SRMOD, srSB.toString())
-                        .set(RedisArg.ADMIN, aSB.toString())
-                        .set(RedisArg.MANAGER, manSB.toString())
-                        .set(RedisArg.DEVELOPER, dSB.toString())
-                        .set(RedisArg.OWNER, oSB.toString())
+                        .set(RedisArg.TRAINEE, traineeSB.toString())
+                        .set(RedisArg.HELPER, helperSB.toString())
+                        .set(RedisArg.MOD, modSB.toString())
+                        .set(RedisArg.SRMOD, srmodSB.toString())
+                        .set(RedisArg.ADMIN, adminSB.toString())
+                        .set(RedisArg.MANAGER, managerSB.toString())
+                        .set(RedisArg.DEVELOPER, devSB.toString())
+                        .set(RedisArg.OWNER, ownerSB.toString())
                 );
             });
 

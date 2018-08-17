@@ -32,7 +32,7 @@ public class FindCommand {
 
         sender.sendMessage(CC.translate("&e&lWHEREIS&6■ &7Trying to find &e" + name + "&7..."));
         sender.sendMessage(" ");
-        plugin.getRedisManager().executeJedisAsync(jedis -> plugin.getUUIDTranslator().getUUID(name, true).thenAcceptAsync(uuid -> {
+        plugin.getRedisManager().executeJedisAsync(jedis -> plugin.getUUIDTranslator().getUUID(name, false).thenAcceptAsync(uuid -> {
             if (uuid == null) {
                 sender.sendMessage(CC.translate("&e&lWHEREIS&6■ &7Unable to find player &e" + name));
                 return;
