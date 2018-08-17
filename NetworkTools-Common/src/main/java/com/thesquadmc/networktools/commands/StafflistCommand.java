@@ -107,12 +107,12 @@ public final class StafflistCommand implements CommandExecutor {
                 if (!mod.equalsIgnoreCase("")) {
                     player.sendMessage(CC.translate("&a" + (mtokens.length - 1) + " &9&lMOD&9" + mod));
                 } else {
-                    player.sendMessage(CC.translate("&c0 &8[&5&lMod&8] &7None"));
+                    player.sendMessage(CC.translate("&c0 &5&lMOD &7None"));
                 }
                 if (!srmod.equalsIgnoreCase("")) {
                     player.sendMessage(CC.translate("&a" + (srtokens.length - 1) + " &d&lSR MOD&d" + srmod));
                 } else {
-                    player.sendMessage(CC.translate("&c0 &8[&d&lSr-Mod&8] &7None"));
+                    player.sendMessage(CC.translate("&c0 &d&lSR MOD &7None"));
                 }
                 if (!admin.equalsIgnoreCase("")) {
                     player.sendMessage(CC.translate("&a" + (atokens.length - 1) + " &c&lADMIN&c" + admin));
@@ -125,7 +125,7 @@ public final class StafflistCommand implements CommandExecutor {
                     player.sendMessage(CC.translate("&c0 &c&lMANAGER &7None"));
                 }
                 if (!developer.equalsIgnoreCase("")) {
-                    player.sendMessage(CC.translate("&a" + (dtokens.length - 1) + " &c&lDEV&8" + developer));
+                    player.sendMessage(CC.translate("&a" + (dtokens.length - 1) + " &c&lDEV&c" + developer));
                 } else {
                     player.sendMessage(CC.translate("&c0 &c&lDEV &7None"));
                 }

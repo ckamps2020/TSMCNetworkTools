@@ -95,20 +95,37 @@ public class MessageCommand {
             return;
         }
 
-        PlayerUtils.isOnline(uuid).whenComplete((online, throwable) -> {
-            if (online) {
-                String message = String.join(" ", Arrays.copyOfRange(args.getArgs(), 0, args.length()));
+        String message = String.join(" ", Arrays.copyOfRange(args.getArgs(), 0, args.length()));
 
-                plugin.getRedisManager().sendMessage(RedisChannels.MESSAGE, RedisMesage.newMessage()
-                        .set("sender", player.getUniqueId())
-                        .set("sender_name", player.getName())
-                        .set("target", uuid)
-                        .set("message", message)
-                        .set("bypass", PlayerUtils.isEqualOrHigherThen(player, Rank.TRAINEE)));
-            } else {
-                player.sendMessage(CC.RED + "Could not find the last player you messaged!");
+        Player target = Bukkit.getPlayer(uuid);
+        if (target != null) {
+            if (TSMCUser.fromPlayer(target).isIgnored(player.getUniqueId())) {
+                player.sendMessage(CC.RED + "You cannot send messages to this player!");
+                return;
             }
-        });
+
+            player.sendMessage(CC.translate("&6Me &7■ &6{0} &8» &e{1}", target.getName(), message));
+            target.sendMessage(CC.translate("&6{0} &7■ &6Me &8» &e{1}", player.getName(), message));
+
+            Bukkit.getPluginManager().callEvent(new PlayerMessageEvent(player.getName(), target.getName(), message));
+
+            TSMCUser.fromPlayer(player).setLastMessager(target.getUniqueId());
+            TSMCUser.fromPlayer(target).setLastMessager(player.getUniqueId());
+
+        } else {
+            PlayerUtils.isOnline(uuid).whenComplete((online, throwable) -> {
+                if (online) {
+                    plugin.getRedisManager().sendMessage(RedisChannels.MESSAGE, RedisMesage.newMessage()
+                            .set("sender", player.getUniqueId())
+                            .set("sender_name", player.getName())
+                            .set("target", uuid)
+                            .set("message", message)
+                            .set("bypass", PlayerUtils.isEqualOrHigherThen(player, Rank.TRAINEE)));
+                } else {
+                    player.sendMessage(CC.RED + "Could not find the last player you messaged!");
+                }
+            });
+        }
     }
 
     @Command(name = {"togglemessage", "togglepms", "msgtoggle", "emsgtoggle"}, playerOnly = true)

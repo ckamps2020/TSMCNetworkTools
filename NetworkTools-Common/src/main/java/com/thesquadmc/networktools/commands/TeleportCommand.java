@@ -280,6 +280,8 @@ public class TeleportCommand {
                     })
                     .build();
 
+            sender.sendMessage(CC.translate("&e&lTELEPORT &6■ &e{0} &7accepted your request", player.getName()));
+
         } else {
             new TimedTeleport.Builder(sender, player.getLocation())
                     .targetPlayer(player)
@@ -288,6 +290,8 @@ public class TeleportCommand {
                         player.sendMessage(CC.translate("&e&lTELEPORT &6■ &7Teleporting &e{0}", sender.getName()));
                     })
                     .build();
+
+            player.sendMessage(CC.translate("&e&lTELEPORT &6■ &e{0} &7accepted your request", sender.getName()));
         }
 
         localPlayer.requestTeleport(null, false);

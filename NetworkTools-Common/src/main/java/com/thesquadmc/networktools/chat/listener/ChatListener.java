@@ -42,6 +42,10 @@ public class ChatListener implements Listener {
         Player player = e.getPlayer();
         String message = e.getMessage();
 
+        if (e.isCancelled()) {
+            return;
+        }
+
         if (!PlayerUtils.isEqualOrHigherThen(player, Rank.TRAINEE)) {
             //Check whether chat has been disabled
             if (plugin.getChatManager().isSilenced()) {
@@ -119,11 +123,33 @@ public class ChatListener implements Listener {
 
         String message = CC.translate("&8[&e&lSS&8] &6{0} &8■ &6{1} &8» &e{2}", sender, target, e.getMessage());
 
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (player.getName().equalsIgnoreCase(sender)) {
+                continue;
+            }
+
+            if (player.getName().equalsIgnoreCase(target)) {
+                continue;
+            }
+
+            if (!PlayerUtils.isEqualOrHigherThen(player, Rank.TRAINEE)) {
+                continue;
+            }
+
+            if (!TSMCUser.fromPlayer(player).getSetting(PlayerSetting.SOCIALSPY)) {
+                continue;
+            }
+
+            player.sendMessage(message);
+        }
+
+        /*
         Bukkit.getOnlinePlayers().stream()
                 .filter(player -> !player.getName().equals(sender) || !player.getName().equals(target))
                 .filter(player -> PlayerUtils.isEqualOrHigherThen(player, Rank.TRAINEE))
                 .filter(player -> TSMCUser.fromPlayer(player).getSetting(PlayerSetting.SOCIALSPY))
                 .forEach(player -> player.sendMessage(message));
+                */
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

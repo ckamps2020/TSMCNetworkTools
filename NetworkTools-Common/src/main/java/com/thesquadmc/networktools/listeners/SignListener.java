@@ -11,7 +11,7 @@ public class SignListener implements Listener {
     public void on(SignChangeEvent e) {
         for (int x = 0; x < e.getLines().length; x++) {
             String line = e.getLine(x);
-            line = FormatUtil.formatMessage(e.getPlayer(), "essentials", line);
+            line = FormatUtil.formatMessage(e.getPlayer(), "essentials.sign", line);
 
             e.setLine(x, line);
         }

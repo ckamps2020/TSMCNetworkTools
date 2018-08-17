@@ -63,13 +63,7 @@ public class ChatFormat {
         this.suffix = CC.translate(suffix);
         this.chatColor = CC.translate(chatColor);
         this.nameSuggestCommand = CC.translate(nameSuggestCommand);
-        this.nameToolTip = nameToolTip.stream().map(s -> {
-            if (s.equals(" ")) {
-                return s;
-            }
-
-            return CC.translate(s.trim());
-        }).collect(Collectors.toList());
+        this.nameToolTip = nameToolTip.stream().map(CC::translate).collect(Collectors.toList());
 
         if (Bukkit.getPluginManager().getPermission("chatformat." + key) == null) {
             try {

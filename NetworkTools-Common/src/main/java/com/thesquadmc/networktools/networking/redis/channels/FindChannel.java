@@ -115,7 +115,7 @@ public class FindChannel implements RedisChannel {
                         .set(RedisArg.MOD, mSB.toString())
                         .set(RedisArg.SRMOD, srSB.toString())
                         .set(RedisArg.ADMIN, aSB.toString())
-                        .set(RedisArg.MANAGER, mSB.toString())
+                        .set(RedisArg.MANAGER, manSB.toString())
                         .set(RedisArg.DEVELOPER, dSB.toString())
                         .set(RedisArg.OWNER, oSB.toString())
                 );

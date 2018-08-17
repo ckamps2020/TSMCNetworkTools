@@ -33,7 +33,7 @@ public final class ChatSlowCommand implements CommandExecutor {
                             Bukkit.broadcastMessage(" ");
                         } else {
                             Bukkit.broadcastMessage(" ");
-                            Bukkit.broadcastMessage(CC.translate("&e&lCHAT &6■ &7Chat delay set to &e{0} seconds"));
+                            Bukkit.broadcastMessage(CC.translate("&e&lCHAT &6■ &7Chat delay set to &e{0} seconds", i));
                             Bukkit.broadcastMessage(" ");
                         }
 

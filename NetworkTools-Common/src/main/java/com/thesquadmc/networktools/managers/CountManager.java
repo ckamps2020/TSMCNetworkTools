@@ -35,6 +35,16 @@ public final class CountManager {
         return i;
     }
 
+    public int getOPSkyblockCount() {
+        int i = 0;
+        for (Map.Entry<String, Integer> map : count.entrySet()) {
+            if (map.getKey().toUpperCase().startsWith("OPSKYBLOCK")) {
+                i = i + map.getValue();
+            }
+        }
+        return i;
+    }
+
     public int getPrisonCount() {
         int i = 0;
         for (Map.Entry<String, Integer> map : count.entrySet()) {
