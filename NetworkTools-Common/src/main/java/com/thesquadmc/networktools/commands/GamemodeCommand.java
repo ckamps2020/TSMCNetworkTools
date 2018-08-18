@@ -37,22 +37,22 @@ public final class GamemodeCommand {
         }
     }
 
-    @Command(name = {"gamemode.c", "gamemode creative", "gm.c", "gmc"}, permission = "essentials.gamemode")
+    @Command(name = {"gamemode.c", "gamemode creative", "gm.c", "gmc"}, permission = "essentials.gamemode.creative")
     public void creative(CommandArgs args) {
         handleArgs(args, GameMode.CREATIVE);
     }
 
-    @Command(name = {"gamemode.s", "gamemode survival", "gm.s", "gms"}, permission = "essentials.gamemode")
+    @Command(name = {"gamemode.s", "gamemode survival", "gm.s", "gms"}, permission = "essentials.gamemode.survival")
     public void survival(CommandArgs args) {
         handleArgs(args, GameMode.SURVIVAL);
     }
 
-    @Command(name = {"gamemode.sp", "gamemode spectator", "gm.sp", "gmsp"}, permission = "essentials.gamemode")
+    @Command(name = {"gamemode.sp", "gamemode spectator", "gm.sp", "gmsp"}, permission = "essentials.gamemode.spectator")
     public void spectator(CommandArgs args) {
         handleArgs(args, GameMode.SPECTATOR);
     }
 
-    @Command(name = {"gamemode.a", "gamemode adventure", "gm.a", "gma"}, permission = "essentials.gamemode")
+    @Command(name = {"gamemode.a", "gamemode adventure", "gm.a", "gma"}, permission = "essentials.gamemode.adventure")
     public void adventure(CommandArgs args) {
         handleArgs(args, GameMode.ADVENTURE);
     }

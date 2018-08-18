@@ -31,6 +31,15 @@ public class TeleportCommand {
         this.plugin = plugin;
     }
 
+    @Command(name = {"tptoggle", "etptoggle"})
+    public void tptoggle(CommandArgs args) {
+        TSMCUser user = TSMCUser.fromPlayer(args.getPlayer());
+
+        boolean change = !user.getSetting(PlayerSetting.TELEPORT_REQUESTS);
+        user.updateSetting(PlayerSetting.TELEPORT_REQUESTS, change);
+        args.getSender().sendMessage(CC.translate("&e&lTELEPORT &6■ &7You have turned {0} &7teleport requests!", (change ? "&aon" : "&coff")));
+    }
+
     @Command(name = {"teleport", "tp", "tpo"}, permission = "essentials.tp")
     public void teleport(CommandArgs args) {
         CommandSender sender = args.getSender();
