@@ -79,7 +79,7 @@ public class ChatListener implements Listener {
             }
 
             //Check if we should filter this message
-            if (StringUtils.isFiltered(message)) {
+            if (StringUtils.shouldFilter(message)) {
                 player.sendMessage(PREFIX + "You are not allowed to say that!");
 
                 e.setCancelled(true);

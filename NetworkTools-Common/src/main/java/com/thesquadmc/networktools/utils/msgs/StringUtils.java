@@ -287,6 +287,10 @@ public final class StringUtils {
             case "/FACTIONS":
                 ConnectionUtils.sendPlayer(player, "FACTIONS-FIRE");
                 return true;
+            case "/OPSKYBLOCK":
+                ConnectionUtils.sendPlayer(player, "OPSKYBLOCK-1");
+                return true;
+
             case "/PRISON":
                 ConnectionUtils.sendPlayer(player, "PRISON-1");
                 return true;

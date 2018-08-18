@@ -144,7 +144,7 @@ public class ChatManager {
                     Integer.MAX_VALUE,
                     "default",
                     "&7%display_name%",
-                    "&7: ",
+                    "&7:",
                     "&7",
                     "/msg %player_name% ",
                     Lists.newArrayList()
