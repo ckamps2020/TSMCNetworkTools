@@ -162,6 +162,14 @@ public class EssentialCommands {
         }
     }
 
+    @Command(name = {"debug"}, permission = "group.manager")
+    public void debug(CommandArgs args) {
+        boolean toggle = !NetworkTools.getInstance().debug;
+        NetworkTools.getInstance().debug = toggle;
+
+        args.getSender().sendMessage(CC.translate("&eDebug {0}", toggle));
+    }
+
     // /give <player> <item> [amount]
     // /give <item> [amount]
 

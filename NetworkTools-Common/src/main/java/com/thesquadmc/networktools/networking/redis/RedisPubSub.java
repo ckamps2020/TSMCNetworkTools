@@ -8,7 +8,6 @@ import redis.clients.jedis.JedisPubSub;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -71,7 +70,11 @@ public class RedisPubSub extends JedisPubSub {
         super.proceed(client, channels);
     }
 
-    public Collection<String> getListeners() {
-        return listeners.keySet();
+    // #subscribe requires a String array
+    public String[] getChannels() {
+        String[] subbed = new String[listeners.size()];
+        subbed = listeners.keySet().toArray(subbed);
+
+        return subbed;
     }
 }
