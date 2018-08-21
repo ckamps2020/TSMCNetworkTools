@@ -59,6 +59,8 @@ public class TSMCUser {
      */
     private Date firstJoin;
 
+    private Date lastJoin;
+
     /**
      * All previous names the player has had
      **/
@@ -357,6 +359,14 @@ public class TSMCUser {
         }
 
         season.get().addServerStatistic(statistics);
+    }
+
+    public Date getLastJoin() {
+        return lastJoin;
+    }
+
+    public void setLastJoin(Date lastJoin) {
+        this.lastJoin = lastJoin;
     }
 
     public void addIgnoredPlayer(UUID uuid) {

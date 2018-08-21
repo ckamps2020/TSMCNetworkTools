@@ -112,6 +112,8 @@ public final class ConnectionListeners implements Listener {
             user.setFirstJoin(new Date());
         }
 
+        user.setLastJoin(new Date());
+
         if (user.isNicknamed()) {
             PlayerUtils.setName(player, user.getNickname());
         }

@@ -65,18 +65,12 @@ public class RedisManager {
                     @Override
                     public void onMessage(String channel, String message) {
                         try {
-                            JsonObject object = JSONUtils.parseObject(message).getAsJsonObject("message");
+                            JsonObject object = JSONUtils.parseObject(message);
+                            String subchannel = object.get("channel").getAsString();
 
-                            if (object.has("channel")) {
-                                String subchannel = object.get("channel").getAsString();
-
-                                RedisChannel rc = channels.get(subchannel);
-                                if (rc != null) {
-                                    rc.handle(subchannel, object);
-                                }
-
-                            } else {
-                                NetworkTools.getInstance().getLogger().info("No channel: " + message);
+                            RedisChannel rc = channels.get(subchannel);
+                            if (rc != null) {
+                                rc.handle(subchannel, object);
                             }
 
                         } catch (JsonSyntaxException e) {
