@@ -24,6 +24,7 @@ public class PlayerSetting<T> {
     public static final PlayerSetting<Boolean> MONITOR = new PlayerSetting<>("MONITOR", Boolean.class, true);
     public static final PlayerSetting<Boolean> FORCEFIELD = new PlayerSetting<>("FORCEFIELD", Boolean.class, false);
     public static final PlayerSetting<Boolean> XRAY_NOTIFICATION = new PlayerSetting<>("XRAY_NOTIFICATION", Boolean.class, true);
+    public static final PlayerSetting<Boolean> AUTO_VANISH = new PlayerSetting<>("AUTO_VANISHED", Boolean.class, true);
     public static final PlayerSetting<Boolean> VANISHED = new PlayerSetting<>("VANISHED", Boolean.class, false);
     public static final PlayerSetting<Boolean> YOUTUBE_VANISHED = new PlayerSetting<>("YOUTUBE_VANISHED", Boolean.class, false);
 

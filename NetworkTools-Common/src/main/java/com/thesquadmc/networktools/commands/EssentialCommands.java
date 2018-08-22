@@ -3,6 +3,8 @@ package com.thesquadmc.networktools.commands;
 import com.google.common.collect.Lists;
 import com.google.common.primitives.Ints;
 import com.thesquadmc.networktools.NetworkTools;
+import com.thesquadmc.networktools.player.PlayerSetting;
+import com.thesquadmc.networktools.player.TSMCUser;
 import com.thesquadmc.networktools.utils.command.Command;
 import com.thesquadmc.networktools.utils.command.CommandArgs;
 import com.thesquadmc.networktools.utils.message.ClickableMessage;
@@ -10,6 +12,7 @@ import com.thesquadmc.networktools.utils.msgs.CC;
 import com.thesquadmc.networktools.utils.msgs.Unicode;
 import com.thesquadmc.networktools.utils.player.ExpUtil;
 import com.thesquadmc.networktools.utils.player.LocationUtil;
+import com.thesquadmc.networktools.utils.player.PlayerUtils;
 import com.thesquadmc.networktools.utils.server.Mob;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
@@ -21,13 +24,16 @@ import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
 
 import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class EssentialCommands {
 
@@ -162,12 +168,47 @@ public class EssentialCommands {
         }
     }
 
-    @Command(name = {"debug"}, permission = "group.manager")
-    public void debug(CommandArgs args) {
-        boolean toggle = !NetworkTools.getInstance().debug;
-        NetworkTools.getInstance().debug = toggle;
+    @Command(name = {"autovanish"}, permission = "group.trainee", playerOnly = true)
+    public void autovanish(CommandArgs args) {
+        TSMCUser user = TSMCUser.fromPlayer(args.getPlayer());
 
-        args.getSender().sendMessage(CC.translate("&eDebug {0}", toggle));
+        boolean change = !user.getSetting(PlayerSetting.AUTO_VANISH);
+        user.updateSetting(PlayerSetting.AUTO_VANISH, change);
+        args.getSender().sendMessage(CC.translate("&e&lVANISH &6■ &7You have turned {0} &7auto vanish!", (change ? "&aon" : "&coff")));
+    }
+
+    // sorted by alphabetical order because i don't looking through 70 plugins
+    @Command(name = {"ntpl"}, permission = "group.manager")
+    public void plugins(CommandArgs args) {
+        List<Plugin> plugins = Arrays.asList(Bukkit.getPluginManager().getPlugins());
+
+        String list = plugins.stream()
+                .map(pl -> pl.isEnabled() ? CC.GREEN + pl.getName() : CC.RED + pl.getName())
+                .sorted(String::compareToIgnoreCase)
+                .collect(Collectors.joining(","));
+
+        args.getSender().sendMessage(CC.translate("&e&lPLUGINS &6■ {0}", list));
+    }
+
+    @Command(name = {"resetvanish"}, permission = "group.trainee", playerOnly = true)
+    public void resetvanish(CommandArgs args) {
+        Player player = args.getPlayer();
+        TSMCUser user = TSMCUser.fromPlayer(args.getPlayer());
+
+        if (StaffmodeCommand.getStaffmode().containsKey(player.getUniqueId())) {
+            player.sendMessage(CC.RED + "Please leave staff mode!");
+            return;
+        }
+
+        if (user.getSetting(PlayerSetting.VANISHED) || user.getSetting(PlayerSetting.YOUTUBE_VANISHED)) {
+            PlayerUtils.showPlayerSpectator(player);
+
+            user.updateSetting(PlayerSetting.VANISHED, false);
+            user.updateSetting(PlayerSetting.YOUTUBE_VANISHED, false);
+            player.sendMessage(CC.translate("&e&lVANISH &6■ &7You toggled vanish &eoff&7! Everyone will be able to see you"));
+        } else {
+            player.sendMessage(CC.RED + "You were not in vanish!");
+        }
     }
 
     // /give <player> <item> [amount]

@@ -120,6 +120,7 @@ public final class ConnectionListeners implements Listener {
 
         //Staff checks
         if (!PlayerUtils.isEqualOrHigherThen(player, Rank.TRAINEE)) {
+            if (user.getSetting(PlayerSetting.AUTO_VANISH)) user.updateSetting(PlayerSetting.AUTO_VANISH, false);
             if (user.getSetting(PlayerSetting.VANISHED)) user.updateSetting(PlayerSetting.VANISHED, false);
             if (user.getSetting(PlayerSetting.YOUTUBE_VANISHED))
                 user.updateSetting(PlayerSetting.YOUTUBE_VANISHED, false);
@@ -136,6 +137,11 @@ public final class ConnectionListeners implements Listener {
         PlayerUtils.unfreezePlayer(player);
         if (!plugin.getSig().equalsIgnoreCase("NONE")) {
             PlayerUtils.setSameSkin(player);
+        }
+
+        if (user.getSetting(PlayerSetting.AUTO_VANISH)) {
+            player.chat("/ev off");
+            player.chat("/vanish on");
         }
 
         for (Player p : Bukkit.getOnlinePlayers()) {

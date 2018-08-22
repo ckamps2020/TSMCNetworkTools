@@ -149,6 +149,7 @@ public class TSMCUser {
         TSMCUser user = new TSMCUser(document.get("_id", UUID.class), document.getString("name"));
 
         user.setFirstJoin(document.getDate("first_join"));
+        user.setLastJoin(document.getDate("last_join"));
 
         Set<String> previousNames = DocumentUtils.documentToStringSet(document, PREVIOUS_NAMES);
         previousNames.addAll(user.previousNames);
@@ -201,6 +202,7 @@ public class TSMCUser {
         return new Document("_id", user.uuid)
                 .append(NAME, user.name)
                 .append("first_join", user.firstJoin)
+                .append("last_join", user.lastJoin)
                 .append(NICKNAME, user.nickname)
 
                 .append(PREVIOUS_NAMES, user.previousNames)
@@ -435,6 +437,10 @@ public class TSMCUser {
         return setting.getSettingType().cast(settings.put(setting, value));
     }
 
+    public <T> T removeSetting(PlayerSetting<T> setting, T value) {
+        return setting.getSettingType().cast(settings.remove(setting, value));
+    }
+
     public void overrideSettings(Map<PlayerSetting<?>, Object> settings) {
         this.settings = settings;
     }
@@ -443,6 +449,7 @@ public class TSMCUser {
         return (setting != null) ? setting.getSettingType()
                 .cast(settings.getOrDefault(setting, setting.getDefaultValue())) : null;
     }
+
 
     public void resetSettingsToDefault() {
         this.settings.clear();

@@ -162,9 +162,6 @@ public final class NetworkTools extends JavaPlugin {
     private ItemManager itemManager;
     private NametagEdit nametagEdit;
 
-    // temp I promise
-    public boolean debug = false;
-
     private RedisManager redisManager;
 
     public static NetworkTools getInstance() {
