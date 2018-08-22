@@ -45,7 +45,11 @@ public class RedisManager {
         config.setTestOnReturn(true);
         config.setTestWhileIdle(true);
 
-        this.pool = new JedisPool(config, host, port, 40 * 1000, pass);
+        if (!pass.isEmpty()) {
+            this.pool = new JedisPool(config, host, port, 40 * 1000, pass);
+        } else {
+            this.pool = new JedisPool(config, host, port, 40 * 1000);
+        }
 
         new Thread(this::run, "Redis Subscriber Thread").start();
 
@@ -65,7 +69,7 @@ public class RedisManager {
                     @Override
                     public void onMessage(String channel, String message) {
                         try {
-                            JsonObject object = JSONUtils.parseObject(message);
+                            JsonObject object = JSONUtils.parseObject(message).getAsJsonObject("message");
                             String subchannel = object.get("channel").getAsString();
 
                             RedisChannel rc = channels.get(subchannel);
@@ -73,8 +77,9 @@ public class RedisManager {
                                 rc.handle(subchannel, object);
                             }
 
-                        } catch (JsonSyntaxException e) {
+                        } catch (JsonSyntaxException | NullPointerException e) {
                             e.printStackTrace();
+                            System.out.println("Could not process Redis message: " + message);
                         }
                     }
                 }, "networktools");
