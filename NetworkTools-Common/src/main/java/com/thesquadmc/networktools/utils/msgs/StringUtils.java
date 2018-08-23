@@ -42,8 +42,11 @@ public final class StringUtils {
             "thesquadmc.net"
     );
 
-    private StringUtils() {
+    static {
         populate();
+    }
+
+    private StringUtils() {
     }
 
     public static String translateColorCode(String message) {
@@ -362,6 +365,7 @@ public final class StringUtils {
                         return false;
                     }
                 }
+
                 return true;
             }
         }
