@@ -629,7 +629,8 @@ public class EssentialCommands {
             }
 
             Player p = (Player) entity;
-            if (player == p || p.hasMetadata("data")) {
+            TSMCUser user = TSMCUser.fromPlayer(p);
+            if (player == p || user.getSetting(PlayerSetting.VANISHED) || user.getSetting(PlayerSetting.YOUTUBE_VANISHED) || p.hasMetadata("data")) {
                 continue;
             }
 
