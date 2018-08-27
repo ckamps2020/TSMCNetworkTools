@@ -2,6 +2,9 @@ package com.thesquadmc.networktools.commands;
 
 import com.google.common.collect.Lists;
 import com.google.common.primitives.Ints;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
+import com.mongodb.client.model.UpdateOneModel;
 import com.thesquadmc.networktools.NetworkTools;
 import com.thesquadmc.networktools.player.PlayerSetting;
 import com.thesquadmc.networktools.player.TSMCUser;
@@ -15,6 +18,7 @@ import com.thesquadmc.networktools.utils.player.LocationUtil;
 import com.thesquadmc.networktools.utils.player.PlayerUtils;
 import com.thesquadmc.networktools.utils.server.Mob;
 import org.apache.commons.lang.StringUtils;
+import org.bson.Document;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -28,6 +32,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -168,6 +173,18 @@ public class EssentialCommands {
         }
     }
 
+    @Command(name = {"convert"}, permission = "group.developer")
+    public void convert(CommandArgs args) {
+        MongoCollection<Document> users = plugin.getMongoManager().getCollection("users");
+
+        List<UpdateOneModel<Document>> updates = new ArrayList<>();
+        MongoCursor<Document> iterator = users.find().batchSize(50).iterator();
+        while (iterator.hasNext()) {
+
+        }
+
+    }
+
     @Command(name = {"autovanish"}, permission = "group.trainee", playerOnly = true)
     public void autovanish(CommandArgs args) {
         TSMCUser user = TSMCUser.fromPlayer(args.getPlayer());
@@ -185,7 +202,7 @@ public class EssentialCommands {
         String list = plugins.stream()
                 .map(pl -> pl.isEnabled() ? CC.GREEN + pl.getName() : CC.RED + pl.getName())
                 .sorted(String::compareToIgnoreCase)
-                .collect(Collectors.joining(","));
+                .collect(Collectors.joining(", "));
 
         args.getSender().sendMessage(CC.translate("&e&lPLUGINS &6■ {0}", list));
     }

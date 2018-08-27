@@ -20,4 +20,8 @@ public class RedisMesage {
         message.add(key, JSONUtils.getGson().toJsonTree(value));
         return this;
     }
+
+    public String toString() {
+        return message.toString();
+    }
 }

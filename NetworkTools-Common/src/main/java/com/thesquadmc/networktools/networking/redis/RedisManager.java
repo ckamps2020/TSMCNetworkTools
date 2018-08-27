@@ -69,7 +69,12 @@ public class RedisManager {
                     @Override
                     public void onMessage(String channel, String message) {
                         try {
-                            JsonObject object = JSONUtils.parseObject(message).getAsJsonObject("message");
+                            JsonObject object = JSONUtils.parseObject(message);
+                            if (!object.has("channel")) {
+                                // Legacy support (can remove once deployed on all servers)
+                                object = object.getAsJsonObject("message");
+                            }
+
                             String subchannel = object.get("channel").getAsString();
 
                             RedisChannel rc = channels.get(subchannel);
@@ -109,7 +114,7 @@ public class RedisManager {
     public void sendMessage(String channel, RedisMesage message) {
         message.set("channel", channel);
 
-        executeJedisAsync(jedis -> jedis.publish("networktools", JSONUtils.toJson(message)));
+        executeJedisAsync(jedis -> jedis.publish("networktools", message.toString()));
     }
 
     public void executeJedisAsync(Consumer<Jedis> consumer) {

@@ -60,7 +60,7 @@ public final class StaffChatCommand implements CommandExecutor {
                         .set(RedisArg.MESSAGE, finalMessage)
                         .set(RedisArg.SERVER, Bukkit.getServerName()));
 
-                networkTools.getRedisManager().sendMessage(RedisChannels.DISCORD_STAFFCHAT_DISCORD, RedisMesage.newMessage()
+                networkTools.getRedisManager().sendMessage(RedisChannels.STAFFCHAT_TO_SLACK, RedisMesage.newMessage()
                         .set(RedisArg.PLAYER, player.getName())
                         .set(RedisArg.MESSAGE, stringBuilder.toString())
                         .set(RedisArg.SERVER, Bukkit.getServerName()));

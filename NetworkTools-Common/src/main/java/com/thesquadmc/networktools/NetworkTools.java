@@ -93,7 +93,6 @@ import com.thesquadmc.networktools.player.local.LocalPlayerManager;
 import com.thesquadmc.networktools.player.stats.ServerStatsListener;
 import com.thesquadmc.networktools.utils.command.CommandHandler;
 import com.thesquadmc.networktools.utils.enums.RedisArg;
-import com.thesquadmc.networktools.utils.enums.RedisChannels;
 import com.thesquadmc.networktools.utils.file.FileManager;
 import com.thesquadmc.networktools.utils.handlers.UpdateHandler;
 import com.thesquadmc.networktools.utils.inventory.builder.AbstractGUI;
@@ -123,6 +122,26 @@ import java.util.concurrent.TimeUnit;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.stream.Stream;
+
+import static com.thesquadmc.networktools.utils.enums.RedisChannels.ADMINCHAT;
+import static com.thesquadmc.networktools.utils.enums.RedisChannels.ANNOUNCEMENT;
+import static com.thesquadmc.networktools.utils.enums.RedisChannels.MANAGERCHAT;
+import static com.thesquadmc.networktools.utils.enums.RedisChannels.MESSAGE;
+import static com.thesquadmc.networktools.utils.enums.RedisChannels.MESSAGE_RESPONSE;
+import static com.thesquadmc.networktools.utils.enums.RedisChannels.MONITOR_INFO;
+import static com.thesquadmc.networktools.utils.enums.RedisChannels.MONITOR_REQUEST;
+import static com.thesquadmc.networktools.utils.enums.RedisChannels.NOTES;
+import static com.thesquadmc.networktools.utils.enums.RedisChannels.PLAYER_COUNT;
+import static com.thesquadmc.networktools.utils.enums.RedisChannels.REQUEST_LIST;
+import static com.thesquadmc.networktools.utils.enums.RedisChannels.RETURN_REQUEST_LIST;
+import static com.thesquadmc.networktools.utils.enums.RedisChannels.RETURN_SERVER;
+import static com.thesquadmc.networktools.utils.enums.RedisChannels.SLACK_TO_STAFFCHAT;
+import static com.thesquadmc.networktools.utils.enums.RedisChannels.STAFFCHAT;
+import static com.thesquadmc.networktools.utils.enums.RedisChannels.STARTUP_REQUEST;
+import static com.thesquadmc.networktools.utils.enums.RedisChannels.STOP;
+import static com.thesquadmc.networktools.utils.enums.RedisChannels.WHITELIST;
+import static com.thesquadmc.networktools.utils.enums.RedisChannels.WHITELIST_ADD;
+import static com.thesquadmc.networktools.utils.enums.RedisChannels.WHITELIST_REMOVE;
 
 public final class NetworkTools extends JavaPlugin {
 
@@ -231,13 +250,13 @@ public final class NetworkTools extends JavaPlugin {
         uuidTranslator = new UUIDTranslator(this);
 
         redisManager = new RedisManager(host1, port1, password1);
-        redisManager.registerChannel(new FindChannel(this), RedisChannels.REQUEST_LIST, RedisChannels.RETURN_REQUEST_LIST);
-        redisManager.registerChannel(new ServerManagementChannel(this), RedisChannels.STARTUP_REQUEST, RedisChannels.PLAYER_COUNT, RedisChannels.RETURN_SERVER, RedisChannels.STOP);
-        redisManager.registerChannel(new WhitelistChannel(this), RedisChannels.WHITELIST, RedisChannels.WHITELIST_ADD, RedisChannels.WHITELIST_REMOVE);
-        redisManager.registerChannel(new MonitorChannel(this), RedisChannels.MONITOR_INFO, RedisChannels.MONITOR_REQUEST);
-        redisManager.registerChannel(new AnnounceChannel(), RedisChannels.ANNOUNCEMENT);
-        redisManager.registerChannel(new MessageChannel(this), RedisChannels.MESSAGE, RedisChannels.MESSAGE_RESPONSE, RedisChannels.NOTES);
-        redisManager.registerChannel(new StaffChatChannels(), RedisChannels.STAFFCHAT, RedisChannels.ADMINCHAT, RedisChannels.MANAGERCHAT);
+        redisManager.registerChannel(new FindChannel(this), REQUEST_LIST, RETURN_REQUEST_LIST);
+        redisManager.registerChannel(new ServerManagementChannel(this), STARTUP_REQUEST, PLAYER_COUNT, RETURN_SERVER, STOP);
+        redisManager.registerChannel(new WhitelistChannel(this), WHITELIST, WHITELIST_ADD, WHITELIST_REMOVE);
+        redisManager.registerChannel(new MonitorChannel(this), MONITOR_INFO, MONITOR_REQUEST);
+        redisManager.registerChannel(new AnnounceChannel(), ANNOUNCEMENT);
+        redisManager.registerChannel(new MessageChannel(this), MESSAGE, MESSAGE_RESPONSE, NOTES);
+        redisManager.registerChannel(new StaffChatChannels(), STAFFCHAT, ADMINCHAT, MANAGERCHAT, SLACK_TO_STAFFCHAT);
 
         getLogger().info("Redis PUB/SUB setup!");
 
@@ -287,7 +306,7 @@ public final class NetworkTools extends JavaPlugin {
             plugin.getExpansionCloud().downloadExpansion(null, playerExpansion, playerExpansion.getLatestVersion());
         }
 
-        Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> redisManager.sendMessage(RedisChannels.PLAYER_COUNT, RedisMesage.newMessage()
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> redisManager.sendMessage(PLAYER_COUNT, RedisMesage.newMessage()
                 .set(RedisArg.SERVER, Bukkit.getServerName())
                 .set(RedisArg.COUNT, Bukkit.getOnlinePlayers().size())), 20L, 20L);
 

@@ -35,9 +35,8 @@ public class RedisChannels {
     public static final String PLAYER_COUNT = "player_count";
     public static final String RETURN_SERVER = "return_server";
     public static final String STARTUP_REQUEST = "startup_request";
-    public static final String SLACK_STAFFCHAT = "slack_staffchat";
     public static final String MOTD = "motd";
-    public static final String DISCORD_STAFFCHAT_DISCORD = "discord_staffchat_discord";
-    public static final String DISCORD_STAFFCHAT_SERVER = "discord_staffchat_server";
+    public static final String STAFFCHAT_TO_SLACK = "staffchat_slack";
+    public static final String SLACK_TO_STAFFCHAT = "slack_staffchat";
     public static final String NOTES = "notes";
 }

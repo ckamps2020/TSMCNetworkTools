@@ -57,7 +57,7 @@ public class StaffChatChannels implements RedisChannel {
                 });
 
                 break;
-            case RedisChannels.DISCORD_STAFFCHAT_SERVER:
+            case RedisChannels.SLACK_TO_STAFFCHAT:
                 String server = object.get(RedisArg.SERVER).getAsString();
                 String p = object.get(RedisArg.PLAYER).getAsString();
                 String message = object.get(RedisArg.MESSAGE).getAsString();
