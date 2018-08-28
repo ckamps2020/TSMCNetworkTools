@@ -43,7 +43,7 @@ public class NoteCommand {
             sendNotes(sender, user);
 
         } else {
-            sender.sendMessage(CC.GRAY + "Loading...");
+            sender.sendMessage(CC.GRAY + "Player not online, checking database...");
             plugin.getUUIDTranslator().getUUID(name, true).thenAccept(uuid -> plugin.getUserDatabase().getUser(uuid).thenAccept(user -> {
                 if (user == null) {
                     sender.sendMessage(CC.RED + "Could not find " + name);
@@ -74,7 +74,7 @@ public class NoteCommand {
             TSMCUser user = TSMCUser.fromPlayer(Bukkit.getPlayer(name));
 
             user.addNote(note);
-            sender.sendMessage(CC.translate("&e&lNOTES &6■ &7Added note: &e{0}", note.getNote()));
+            sender.sendMessage(CC.translate("&e&lNOTES &6■ &7Added note &e{0} &7for &e{1}", note.getNote(), user.getName()));
 
         } else {
             plugin.getUUIDTranslator().getUUID(name, true).thenAccept(target -> plugin.getUserDatabase().getUser(target).thenAccept(user -> {
@@ -90,7 +90,7 @@ public class NoteCommand {
                         .set("target", target)
                         .set("note", JSONUtils.getGson().toJsonTree(note)));
 
-                sender.sendMessage(CC.translate("&e&lNOTES &6■ &7Added note for &e{0}&7: &e{1}", user.getName(), note.getNote()));
+                sender.sendMessage(CC.translate("&e&lNOTES &6■ &7Added note &e{0} &7for &e{1}", note.getNote(), user.getName()));
             }));
         }
     }

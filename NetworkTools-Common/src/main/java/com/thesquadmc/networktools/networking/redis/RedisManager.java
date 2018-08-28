@@ -71,7 +71,7 @@ public class RedisManager {
                         try {
                             JsonObject object = JSONUtils.parseObject(message);
                             if (!object.has("channel")) {
-                                // Legacy support (can remove once deployed on all servers)
+                                //TODO Legacy support (can remove once deployed on all servers)
                                 object = object.getAsJsonObject("message");
                             }
 
