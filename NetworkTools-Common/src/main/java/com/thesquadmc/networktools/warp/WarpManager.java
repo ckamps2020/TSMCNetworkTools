@@ -88,6 +88,10 @@ public class WarpManager {
         warps.add(warp);
     }
 
+    public void clearWarps() {
+        warps.clear();
+    }
+
     public void removeWarp(Warp warp) {
         warps.remove(warp);
     }

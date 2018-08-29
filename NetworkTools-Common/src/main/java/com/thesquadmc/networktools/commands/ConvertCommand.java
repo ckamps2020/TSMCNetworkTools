@@ -1,6 +1,5 @@
 package com.thesquadmc.networktools.commands;
 
-import com.google.common.base.Preconditions;
 import com.thesquadmc.networktools.NetworkTools;
 import com.thesquadmc.networktools.utils.command.Command;
 import com.thesquadmc.networktools.utils.command.CommandArgs;
@@ -15,8 +14,6 @@ import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 public class ConvertCommand {
 
@@ -35,47 +32,46 @@ public class ConvertCommand {
                 CC.B_RED + "Are you sure you want to do this? This will remove existing warps!",
                 CC.GRAY + "Click on the message if you wish to continue!",
                 p -> {
+                    plugin.getWarpManager().clearWarps();
                     p.sendMessage(CC.GRAY + "Attempting to load in current warps...");
 
-                    Path path = new File(Bukkit.getWorldContainer(), "plugins" + File.separator + "Essentials" + File.separator + "warps").toPath();
-                    if (!Files.exists(path) || !Files.isDirectory(path)) {
+                    File file = new File(Bukkit.getWorldContainer(), "plugins" + File.separator + "Essentials" + File.separator + "warps");
+                    if (!file.exists() || !file.isDirectory()) {
                         p.sendMessage(CC.RED + "Essentials warps folder does not exist or is not a directory!");
                         return;
                     }
 
-                    try {
-                        Files.walk(path)
-                                .filter(file -> file.endsWith(".yml"))
-                                .forEach(file -> {
-                                    p.sendMessage(CC.GRAY + "Found " + file.toString() + ", attempting to parse...");
-                                    YamlConfiguration warp = new YamlConfiguration();
-                                    try {
-                                        warp.load(file.toFile());
+                    File[] files = file.listFiles();
+                    for (File loadFile : files) {
+                        if (!loadFile.exists()) continue;
 
-                                        String name = warp.getString("name");
+                        YamlConfiguration warp = new YamlConfiguration();
+                        try {
+                            warp.load(loadFile);
 
-                                        String world = warp.getString("world");
-                                        double x = warp.getDouble("x");
-                                        double y = warp.getDouble("y");
-                                        double z = warp.getDouble("z");
+                            String name = warp.getString("name");
 
-                                        Location location = new Location(Bukkit.getWorld(world), x, y, z);
-                                        Preconditions.checkNotNull(location);
+                            String world = warp.getString("world");
+                            if (Bukkit.getWorld(world) == null) {
+                                p.sendMessage(CC.GRAY + world + " is not a loaded world!");
+                                continue;
+                            }
 
-                                        plugin.getWarpManager().addWarp(new Warp(name, location));
-                                        p.sendMessage(CC.GRAY + file.toString() + " parsed successfully!");
-                                    } catch (InvalidConfigurationException | IOException e) {
-                                        e.printStackTrace();
+                            double x = warp.getDouble("x");
+                            double y = warp.getDouble("y");
+                            double z = warp.getDouble("z");
 
-                                        p.sendMessage(CC.GRAY + file.toString() + " could not be parsed!");
-                                    }
-                                });
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                            Location location = new Location(Bukkit.getWorld(world), x, y, z);
+
+                            plugin.getWarpManager().addWarp(new Warp(name, location));
+                            p.sendMessage(CC.GRAY + "Added a new warp called " + name);
+
+                        } catch (InvalidConfigurationException | IOException e) {
+                            e.printStackTrace();
+                        }
                     }
 
-                    p.sendMessage((CC.GRAY + "Warps size: " + plugin.getWarpManager().getWarps().size()));
-
+                    p.sendMessage((CC.GRAY + "Warps converted: " + plugin.getWarpManager().getWarps().size()));
                 }
         ).send();
     }
