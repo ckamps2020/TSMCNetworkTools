@@ -33,7 +33,7 @@ public class ConvertCommand {
         new ClickableMessage(
                 player,
                 CC.B_RED + "Are you sure you want to do this? This will remove existing warps!",
-                "",
+                CC.GRAY + "Click on the message if you wish to continue!",
                 p -> {
                     Path path = new File(Bukkit.getWorldContainer(), "plugins" + File.separator + "Essentials" + File.separator + "warps").toPath();
                     if (!Files.exists(path) || !Files.isDirectory(path)) {
@@ -68,6 +68,6 @@ public class ConvertCommand {
                         e.printStackTrace();
                     }
                 }
-        );
+        ).send();
     }
 }
