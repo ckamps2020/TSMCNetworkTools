@@ -35,6 +35,8 @@ public class ConvertCommand {
                 CC.B_RED + "Are you sure you want to do this? This will remove existing warps!",
                 CC.GRAY + "Click on the message if you wish to continue!",
                 p -> {
+                    p.sendMessage(CC.GRAY + "Attempting to load in current warps...");
+
                     Path path = new File(Bukkit.getWorldContainer(), "plugins" + File.separator + "Essentials" + File.separator + "warps").toPath();
                     if (!Files.exists(path) || !Files.isDirectory(path)) {
                         p.sendMessage(CC.RED + "Essentials warps folder does not exist or is not a directory!");
@@ -45,6 +47,7 @@ public class ConvertCommand {
                         Files.walk(path)
                                 .filter(file -> file.endsWith(".yml"))
                                 .forEach(file -> {
+                                    p.sendMessage(CC.GRAY + "Found " + file.toString() + ", attempting to parse...");
                                     YamlConfiguration warp = new YamlConfiguration();
                                     try {
                                         warp.load(file.toFile());
@@ -60,13 +63,19 @@ public class ConvertCommand {
                                         Preconditions.checkNotNull(location);
 
                                         plugin.getWarpManager().addWarp(new Warp(name, location));
+                                        p.sendMessage(CC.GRAY + file.toString() + " parsed successfully!");
                                     } catch (InvalidConfigurationException | IOException e) {
                                         e.printStackTrace();
+
+                                        p.sendMessage(CC.GRAY + file.toString() + " could not be parsed!");
                                     }
                                 });
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+
+                    p.sendMessage((CC.GRAY + "Warps size: " + plugin.getWarpManager().getWarps().size()));
+
                 }
         ).send();
     }
