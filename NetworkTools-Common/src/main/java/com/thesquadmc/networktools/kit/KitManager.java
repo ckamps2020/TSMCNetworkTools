@@ -32,14 +32,14 @@ public class KitManager {
         for (File loadFile : files) {
             if (!loadFile.exists()) continue;
 
-            YamlConfiguration config = new YamlConfiguration();
+            YamlConfiguration kit = new YamlConfiguration();
 
             try {
-                config.load(loadFile);
+                kit.load(loadFile);
 
-                String name = config.getString("name");
-                long cooldown = config.getLong("cooldwon");
-                List<ItemStack> items = (List<ItemStack>) config.getList("items");
+                String name = kit.getString("name");
+                long cooldown = kit.getLong("cooldwon");
+                List<ItemStack> items = (List<ItemStack>) kit.getList("items");
 
                 addKit(new Kit(name, cooldown, items));
             } catch (InvalidConfigurationException | IOException e) {

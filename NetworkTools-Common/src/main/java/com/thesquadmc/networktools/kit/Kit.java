@@ -11,6 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class Kit {
 
@@ -68,5 +69,20 @@ public class Kit {
 
     public List<ItemStack> getItems() {
         return Collections.unmodifiableList(items);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Kit kit = (Kit) o;
+        return cooldown == kit.cooldown &&
+                Objects.equals(name, kit.name) &&
+                Objects.equals(items, kit.items);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, cooldown, items);
     }
 }
