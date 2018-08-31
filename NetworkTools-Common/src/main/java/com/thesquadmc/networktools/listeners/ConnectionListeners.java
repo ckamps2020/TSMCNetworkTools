@@ -98,7 +98,7 @@ public final class ConnectionListeners implements Listener {
             if (plugin.getMcLeaksAPI().checkAccount(e.getPlayer().getUniqueId()).isMCLeaks()) {
                 Bukkit.getScheduler().runTask(plugin, () -> {
                     if (!e.getPlayer().isOnline()) { //Incase they log off before response comes
-                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), e.getPlayer().getName() + " is an MCLeaks account!");
+                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "sc " + e.getPlayer().getName() + " is an MCLeaks account!");
                         return;
                     }
 
