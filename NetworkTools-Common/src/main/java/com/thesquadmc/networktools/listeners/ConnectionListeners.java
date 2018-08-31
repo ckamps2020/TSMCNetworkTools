@@ -142,6 +142,7 @@ public final class ConnectionListeners implements Listener {
         if (user.getSetting(PlayerSetting.AUTO_VANISH)) {
             player.chat("/ev off");
             player.chat("/vanish on");
+
         }
 
         for (Player p : Bukkit.getOnlinePlayers()) {
@@ -153,6 +154,9 @@ public final class ConnectionListeners implements Listener {
                 PlayerUtils.hidePlayerSpectatorStaff(p);
             }
         }
+
+        plugin.getRedisManager().executeJedisAsync(jedis -> {
+        });
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
