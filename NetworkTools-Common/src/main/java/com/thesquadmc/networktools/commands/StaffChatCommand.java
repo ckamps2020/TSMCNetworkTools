@@ -66,6 +66,22 @@ public final class StaffChatCommand implements CommandExecutor {
                         .set(RedisArg.SERVER, Bukkit.getServerName()));
 
             }
+        } else {
+            StringBuilder stringBuilder = new StringBuilder();
+            for (String s : args) {
+                stringBuilder.append(s).append(" ");
+            }
+
+            String finalMessage = "&8[&a&lSTAFFCHAT&8] &c&lCONSOLE " + " &8» &a" + stringBuilder.toString();
+
+            networkTools.getRedisManager().sendMessage(RedisChannels.STAFFCHAT, RedisMesage.newMessage()
+                    .set(RedisArg.MESSAGE, finalMessage)
+                    .set(RedisArg.SERVER, Bukkit.getServerName()));
+
+            networkTools.getRedisManager().sendMessage(RedisChannels.DISCORD_STAFFCHAT_DISCORD, RedisMesage.newMessage()
+                    .set(RedisArg.PLAYER, "Console")
+                    .set(RedisArg.MESSAGE, stringBuilder.toString())
+                    .set(RedisArg.SERVER, Bukkit.getServerName()));
         }
         return true;
     }
