@@ -86,7 +86,6 @@ import com.thesquadmc.networktools.networking.mongo.UserDatabase;
 import com.thesquadmc.networktools.networking.redis.RedisManager;
 import com.thesquadmc.networktools.networking.redis.RedisMesage;
 import com.thesquadmc.networktools.networking.redis.channels.AnnounceChannel;
-import com.thesquadmc.networktools.networking.redis.channels.FindChannel;
 import com.thesquadmc.networktools.networking.redis.channels.MessageChannel;
 import com.thesquadmc.networktools.networking.redis.channels.MonitorChannel;
 import com.thesquadmc.networktools.networking.redis.channels.ServerManagementChannel;
@@ -140,8 +139,6 @@ import static com.thesquadmc.networktools.utils.enums.RedisChannels.MONITOR_INFO
 import static com.thesquadmc.networktools.utils.enums.RedisChannels.MONITOR_REQUEST;
 import static com.thesquadmc.networktools.utils.enums.RedisChannels.NOTES;
 import static com.thesquadmc.networktools.utils.enums.RedisChannels.PLAYER_COUNT;
-import static com.thesquadmc.networktools.utils.enums.RedisChannels.REQUEST_LIST;
-import static com.thesquadmc.networktools.utils.enums.RedisChannels.RETURN_REQUEST_LIST;
 import static com.thesquadmc.networktools.utils.enums.RedisChannels.RETURN_SERVER;
 import static com.thesquadmc.networktools.utils.enums.RedisChannels.SLACK_TO_STAFFCHAT;
 import static com.thesquadmc.networktools.utils.enums.RedisChannels.STAFFCHAT;
@@ -259,7 +256,6 @@ public final class NetworkTools extends JavaPlugin {
         uuidTranslator = new UUIDTranslator(this);
 
         redisManager = new RedisManager(host1, port1, password1);
-        redisManager.registerChannel(new FindChannel(this), REQUEST_LIST, RETURN_REQUEST_LIST);
         redisManager.registerChannel(new ServerManagementChannel(this), STARTUP_REQUEST, PLAYER_COUNT, RETURN_SERVER, STOP);
         redisManager.registerChannel(new WhitelistChannel(this), WHITELIST, WHITELIST_ADD, WHITELIST_REMOVE);
         redisManager.registerChannel(new MonitorChannel(this), MONITOR_INFO, MONITOR_REQUEST);
