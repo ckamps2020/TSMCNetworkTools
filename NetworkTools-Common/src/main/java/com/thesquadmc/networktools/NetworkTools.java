@@ -574,7 +574,7 @@ public final class NetworkTools extends JavaPlugin {
         getCommand("adminchat").setExecutor(new AdminChatCommand(this));
         getCommand("managerchat").setExecutor(new ManagerChatCommand(this));
         getCommand("lookup").setExecutor(new LookupCommand(this));
-        getCommand("vanish").setExecutor(new VanishCommand());
+        getCommand("vanish").setExecutor(new VanishCommand(this));
         getCommand("freeze").setExecutor(new FreezeCommand(this));
         getCommand("unfreeze").setExecutor(new UnFreezeCommand(this));
         getCommand("freezepanel").setExecutor(new FreezePanelCommand(this));
@@ -586,7 +586,7 @@ public final class NetworkTools extends JavaPlugin {
         getCommand("stop").setExecutor(new StopCommand(this));
         getCommand("whitelist").setExecutor(new WhitelistCommand(this));
         getCommand("launch").setExecutor(new LaunchCommand(this));
-        getCommand("ytvanish").setExecutor(new YtVanishCommand());
+        getCommand("ytvanish").setExecutor(new YtVanishCommand(this));
         getCommand("forcefield").setExecutor(new ForceFieldCommand());
         getCommand("staffmenu").setExecutor(new StaffMenuCommand(this));
         getCommand("monitor").setExecutor(new MonitorCommand());

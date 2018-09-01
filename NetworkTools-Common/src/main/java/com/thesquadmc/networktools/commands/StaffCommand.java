@@ -25,8 +25,6 @@ public final class StaffCommand {
     private final Multimap<Rank, StaffListInfo> staffList = ArrayListMultimap.create();
     private long lastRetrived = 0;
 
-    private Inventory publicView;
-
     public StaffCommand(NetworkTools plugin) {
         this.plugin = plugin;
     }
@@ -34,7 +32,7 @@ public final class StaffCommand {
     @Command(name = {"staff"})
     public void staff(CommandArgs args) {
         if (args.isPlayer()) {
-            if (lastRetrived == 0 || TimeUtils.elapsed(lastRetrived, 30 * 1000)) {
+            if (lastRetrived == 0 || TimeUtils.elapsed(lastRetrived, 10 * 1000)) {
                 staffList.clear();
                 lastRetrived = System.currentTimeMillis();
 
@@ -59,7 +57,8 @@ public final class StaffCommand {
                 });
 
             } else {
-                new StaffMenuBuilder(InventorySize.SIX_LINE, staffList).build(args.getPlayer());
+                int size = staffList.keys().size();
+                new StaffMenuBuilder(InventorySize.getSize(size), staffList).build(args.getPlayer());
             }
         }
     }

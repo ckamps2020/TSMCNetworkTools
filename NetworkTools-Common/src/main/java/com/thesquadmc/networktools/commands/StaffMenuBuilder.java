@@ -29,7 +29,11 @@ public class StaffMenuBuilder extends Menu {
                     Collection<StaffCommand.StaffListInfo> infos = staffList.get(rank);
 
                     infos.stream()
-                            .filter(StaffCommand.StaffListInfo::isVanished)
+                            .filter(staffListInfo -> {
+                                System.out.println(staffListInfo.isVanished());
+
+                                return !staffListInfo.isVanished();
+                            })
                             .forEach(info -> addMenuItem(new MenuItem() {
                                 @Override
                                 public ItemStack getItem(Player player) {
