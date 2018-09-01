@@ -130,8 +130,9 @@ public final class ConnectionListeners implements Listener {
         } else {
             plugin.getRedisManager().executeJedisAsync(jedis -> {
                 JsonObject object = new JsonObject();
-                object.add("rank", JSONUtils.getGson().toJsonTree(PlayerUtils.getStaffRank(player)));
-                object.add("is_vanished", JSONUtils.getGson().toJsonTree(user.getSetting(PlayerSetting.VANISHED) || user.getSetting(PlayerSetting.YOUTUBE_VANISHED)));
+                object.add("server", JSONUtils.getGson().toJsonTree(Bukkit.getServerName()));
+                object.add("rank", JSONUtils.getGson().toJsonTree(PlayerUtils.getStaffRank(player).name()));
+                object.add("vanished", JSONUtils.getGson().toJsonTree(user.getSetting(PlayerSetting.VANISHED) || user.getSetting(PlayerSetting.YOUTUBE_VANISHED)));
 
                 jedis.hset("staff", player.getName(), object.toString());
             });

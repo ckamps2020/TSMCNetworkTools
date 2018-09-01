@@ -206,8 +206,8 @@ public final class PlayerUtils {
         User user = NetworkTools.getInstance().getLuckPermsApi().getUser(uuid);
         if (user != null) {
             for (Rank r : Rank.values()) {
-                if (r.getName().equalsIgnoreCase(user.getPrimaryGroup())) {
-                    if (r.getPriority() >= rank.getPriority()) {
+                if (r.name().equalsIgnoreCase(user.getPrimaryGroup())) {
+                    if (r.getPriority() <= rank.getPriority()) {
                         return true;
                     }
                 }
@@ -221,8 +221,8 @@ public final class PlayerUtils {
         User user = NetworkTools.getInstance().getLuckPermsApi().getUser(player.getUniqueId());
         if (user.getPrimaryGroup() != null) {
             for (Rank r : Rank.values()) {
-                if (r.getName().equalsIgnoreCase(user.getPrimaryGroup())) {
-                    if (r.getName().equalsIgnoreCase(rank.getName())) {
+                if (r.name().equalsIgnoreCase(user.getPrimaryGroup())) {
+                    if (r.name().equalsIgnoreCase(rank.name())) {
                         return true;
                     }
                 }
@@ -236,7 +236,7 @@ public final class PlayerUtils {
 
         if (user.getPrimaryGroup() != null) {
             for (Rank rank : Rank.values()) {
-                if (rank.getName().equalsIgnoreCase(user.getPrimaryGroup())) {
+                if (rank.name().equalsIgnoreCase(user.getPrimaryGroup())) {
                     return rank;
                 }
             }
