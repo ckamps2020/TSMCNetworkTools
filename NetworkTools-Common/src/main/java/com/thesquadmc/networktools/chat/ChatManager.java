@@ -141,6 +141,7 @@ public class ChatManager {
             PermissionData permissionData = user.getCachedData().getPermissionData(Contexts.allowAll());
 
             Tristate result = permissionData.getPermissionValue("chatformat." + format1.getKey());
+            System.out.println(format1.getKey() + " | " + result.asBoolean());
             if (result.asBoolean()) {
                 format = format1;
                 break;
