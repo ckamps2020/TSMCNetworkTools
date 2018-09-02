@@ -42,8 +42,8 @@ import com.thesquadmc.networktools.commands.RestartTimeCommand;
 import com.thesquadmc.networktools.commands.SetPlayersCommand;
 import com.thesquadmc.networktools.commands.SmiteCommand;
 import com.thesquadmc.networktools.commands.StaffChatCommand;
+import com.thesquadmc.networktools.commands.StaffCommand;
 import com.thesquadmc.networktools.commands.StaffMenuCommand;
-import com.thesquadmc.networktools.commands.StafflistCommand;
 import com.thesquadmc.networktools.commands.StaffmodeCommand;
 import com.thesquadmc.networktools.commands.StatusCommand;
 import com.thesquadmc.networktools.commands.StopCommand;
@@ -86,7 +86,6 @@ import com.thesquadmc.networktools.networking.mongo.UserDatabase;
 import com.thesquadmc.networktools.networking.redis.RedisManager;
 import com.thesquadmc.networktools.networking.redis.RedisMesage;
 import com.thesquadmc.networktools.networking.redis.channels.AnnounceChannel;
-import com.thesquadmc.networktools.networking.redis.channels.FindChannel;
 import com.thesquadmc.networktools.networking.redis.channels.MessageChannel;
 import com.thesquadmc.networktools.networking.redis.channels.MonitorChannel;
 import com.thesquadmc.networktools.networking.redis.channels.ServerManagementChannel;
@@ -95,11 +94,14 @@ import com.thesquadmc.networktools.networking.redis.channels.WhitelistChannel;
 import com.thesquadmc.networktools.player.local.LocalPlayerManager;
 import com.thesquadmc.networktools.player.stats.ServerStatsListener;
 import com.thesquadmc.networktools.utils.command.CommandHandler;
+import com.thesquadmc.networktools.utils.enums.Rank;
 import com.thesquadmc.networktools.utils.enums.RedisArg;
 import com.thesquadmc.networktools.utils.file.FileManager;
 import com.thesquadmc.networktools.utils.handlers.UpdateHandler;
 import com.thesquadmc.networktools.utils.inventory.builder.AbstractGUI;
+import com.thesquadmc.networktools.utils.inventory.builder.MenuManager;
 import com.thesquadmc.networktools.utils.nms.BarUtils;
+import com.thesquadmc.networktools.utils.player.PlayerUtils;
 import com.thesquadmc.networktools.utils.player.uuid.UUIDTranslator;
 import com.thesquadmc.networktools.utils.server.Multithreading;
 import com.thesquadmc.networktools.utils.server.ServerState;
@@ -116,6 +118,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.Pipeline;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -135,8 +139,6 @@ import static com.thesquadmc.networktools.utils.enums.RedisChannels.MONITOR_INFO
 import static com.thesquadmc.networktools.utils.enums.RedisChannels.MONITOR_REQUEST;
 import static com.thesquadmc.networktools.utils.enums.RedisChannels.NOTES;
 import static com.thesquadmc.networktools.utils.enums.RedisChannels.PLAYER_COUNT;
-import static com.thesquadmc.networktools.utils.enums.RedisChannels.REQUEST_LIST;
-import static com.thesquadmc.networktools.utils.enums.RedisChannels.RETURN_REQUEST_LIST;
 import static com.thesquadmc.networktools.utils.enums.RedisChannels.RETURN_SERVER;
 import static com.thesquadmc.networktools.utils.enums.RedisChannels.SLACK_TO_STAFFCHAT;
 import static com.thesquadmc.networktools.utils.enums.RedisChannels.STAFFCHAT;
@@ -182,9 +184,9 @@ public final class NetworkTools extends JavaPlugin {
     private UserDatabase userDatabase;
     private KitManager kitManager;
     private ItemManager itemManager;
-    private NametagEdit nametagEdit;
-
     private RedisManager redisManager;
+    private MenuManager menuManager;
+    private NametagEdit nametagEdit;
 
     public static NetworkTools getInstance() {
         return networkTools;
@@ -238,6 +240,7 @@ public final class NetworkTools extends JavaPlugin {
         countManager = new CountManager();
         clickableMessageManager = new ClickableMessageManager(this);
         itemManager = new ItemManager();
+        menuManager = new MenuManager();
         fileManager = new FileManager(this);
         fileManager.setup();
 
@@ -253,7 +256,6 @@ public final class NetworkTools extends JavaPlugin {
         uuidTranslator = new UUIDTranslator(this);
 
         redisManager = new RedisManager(host1, port1, password1);
-        redisManager.registerChannel(new FindChannel(this), REQUEST_LIST, RETURN_REQUEST_LIST);
         redisManager.registerChannel(new ServerManagementChannel(this), STARTUP_REQUEST, PLAYER_COUNT, RETURN_SERVER, STOP);
         redisManager.registerChannel(new WhitelistChannel(this), WHITELIST, WHITELIST_ADD, WHITELIST_REMOVE);
         redisManager.registerChannel(new MonitorChannel(this), MONITOR_INFO, MONITOR_REQUEST);
@@ -305,6 +307,20 @@ public final class NetworkTools extends JavaPlugin {
     @Override
     public void onDisable() {
         getLogger().info("Shutting down...");
+
+        try (Jedis jedis = getRedisManager().getResource();
+             Pipeline pipeline = jedis.pipelined()) {
+
+            Bukkit.getOnlinePlayers().stream()
+                    .filter(player -> PlayerUtils.isEqualOrHigherThen(player, Rank.TRAINEE))
+                    .forEach(player -> pipeline.hdel("staff", player.getName()));
+
+            pipeline.sync();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         nametagEdit.onDisable();
         warpManager.saveWarps();
         kitManager.saveKits();
@@ -320,6 +336,10 @@ public final class NetworkTools extends JavaPlugin {
 
         vaultPermissions = rsp.getProvider();
         return vaultPermissions != null;
+    }
+
+    public MenuManager getMenuManager() {
+        return menuManager;
     }
 
     public KitManager getKitManager() {
@@ -550,20 +570,19 @@ public final class NetworkTools extends JavaPlugin {
         getCommand("adminchat").setExecutor(new AdminChatCommand(this));
         getCommand("managerchat").setExecutor(new ManagerChatCommand(this));
         getCommand("lookup").setExecutor(new LookupCommand(this));
-        getCommand("vanish").setExecutor(new VanishCommand());
+        getCommand("vanish").setExecutor(new VanishCommand(this));
         getCommand("freeze").setExecutor(new FreezeCommand(this));
         getCommand("unfreeze").setExecutor(new UnFreezeCommand(this));
         getCommand("freezepanel").setExecutor(new FreezePanelCommand(this));
         getCommand("invsee").setExecutor(new InvseeCommand());
         getCommand("randomtp").setExecutor(new RandomTPCommand());
         getCommand("staffmode").setExecutor(new StaffmodeCommand(this));
-        getCommand("staff").setExecutor(new StafflistCommand(this));
         getCommand("xray").setExecutor(new XrayVerboseCommand());
         getCommand("alert").setExecutor(new AlertCommand(this));
         getCommand("stop").setExecutor(new StopCommand(this));
         getCommand("whitelist").setExecutor(new WhitelistCommand(this));
         getCommand("launch").setExecutor(new LaunchCommand(this));
-        getCommand("ytvanish").setExecutor(new YtVanishCommand());
+        getCommand("ytvanish").setExecutor(new YtVanishCommand(this));
         getCommand("forcefield").setExecutor(new ForceFieldCommand());
         getCommand("staffmenu").setExecutor(new StaffMenuCommand(this));
         getCommand("monitor").setExecutor(new MonitorCommand());
@@ -603,6 +622,7 @@ public final class NetworkTools extends JavaPlugin {
                 new HomeCommand(this),
                 new KitCommand(this),
                 new ConvertCommand(this),
+                new StaffCommand(this),
                 new HealCommand()
         ).forEach(o -> commandHandler.registerCommands(o));
     }

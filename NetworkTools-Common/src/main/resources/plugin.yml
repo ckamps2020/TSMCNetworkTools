@@ -21,8 +21,8 @@ commands:
         aliases: [schat, sc]
     staffmode:
         aliases: [mod]
-    staff:
-        aliases: [onlinestaff, liststaff, online, onlineplayers, list, listplayers, eonline, elist]
+    #staff:
+    #    aliases: [onlinestaff, liststaff, online, onlineplayers, list, listplayers, eonline, elist]
     stp:
     unfreeze:
     vanish:

@@ -206,8 +206,8 @@ public final class PlayerUtils {
         User user = NetworkTools.getInstance().getLuckPermsApi().getUser(uuid);
         if (user != null) {
             for (Rank r : Rank.values()) {
-                if (r.getName().equalsIgnoreCase(user.getPrimaryGroup())) {
-                    if (r.getPriority() >= rank.getPriority()) {
+                if (r.name().equalsIgnoreCase(user.getPrimaryGroup())) {
+                    if (r.getPriority() <= rank.getPriority()) {
                         return true;
                     }
                 }
@@ -221,14 +221,28 @@ public final class PlayerUtils {
         User user = NetworkTools.getInstance().getLuckPermsApi().getUser(player.getUniqueId());
         if (user.getPrimaryGroup() != null) {
             for (Rank r : Rank.values()) {
-                if (r.getName().equalsIgnoreCase(user.getPrimaryGroup())) {
-                    if (r.getName().equalsIgnoreCase(rank.getName())) {
+                if (r.name().equalsIgnoreCase(user.getPrimaryGroup())) {
+                    if (r.name().equalsIgnoreCase(rank.name())) {
                         return true;
                     }
                 }
             }
         }
         return false;
+    }
+
+    public static Rank getStaffRank(Player player) {
+        User user = NetworkTools.getInstance().getLuckPermsApi().getUser(player.getUniqueId());
+
+        if (user.getPrimaryGroup() != null) {
+            for (Rank rank : Rank.values()) {
+                if (rank.name().equalsIgnoreCase(user.getPrimaryGroup())) {
+                    return rank;
+                }
+            }
+        }
+
+        return Rank.DEFAULT;
     }
 
     public static boolean hasPermission(Group group, String permission) {
