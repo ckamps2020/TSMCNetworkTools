@@ -11,6 +11,8 @@ import com.thesquadmc.networktools.NetworkTools;
 import com.thesquadmc.networktools.chat.listener.ChatListener;
 import com.thesquadmc.networktools.utils.file.FileUtils;
 import com.thesquadmc.networktools.utils.server.Multithreading;
+import me.lucko.luckperms.api.Node;
+import me.lucko.luckperms.api.User;
 import org.bson.Document;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -140,10 +142,14 @@ public class ChatManager {
                     System.out.println(permissionAttachmentInfo.getPermission());
                 }
             });
-            if (player.hasPermission("chatformat." + format1.getKey())) {
-                System.out.println(format1.getKey() + " picked!");
-                format = format1;
-                break;
+
+            User user = plugin.getLuckPermsApi().getUser(player.getUniqueId());
+            for (Node permission : user.getPermissions()) {
+                if (permission.getPermission().equalsIgnoreCase("chatformat." + format1.getKey())) {
+                    System.out.println(format1.getKey() + " picked!");
+                    format = format1;
+                    break;
+                }
             }
         }
 
