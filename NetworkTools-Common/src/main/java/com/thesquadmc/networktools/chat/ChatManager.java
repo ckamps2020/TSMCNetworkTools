@@ -135,6 +135,11 @@ public class ChatManager {
 
         for (final ChatFormat format1 : getFormats().values()) {
             System.out.println(format1.getKey());
+            player.getEffectivePermissions().forEach(permissionAttachmentInfo -> {
+                if (permissionAttachmentInfo.getPermission().startsWith("chatformat")) {
+                    System.out.println(permissionAttachmentInfo.getPermission());
+                }
+            });
             if (player.hasPermission("chatformat." + format1.getKey())) {
                 System.out.println(format1.getKey() + " picked!");
                 format = format1;
