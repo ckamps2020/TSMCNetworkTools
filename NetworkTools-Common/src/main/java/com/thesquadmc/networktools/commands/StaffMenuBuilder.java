@@ -6,7 +6,6 @@ import com.thesquadmc.networktools.utils.inventory.ItemBuilder;
 import com.thesquadmc.networktools.utils.inventory.ItemUtils;
 import com.thesquadmc.networktools.utils.inventory.builder.Menu;
 import com.thesquadmc.networktools.utils.inventory.builder.MenuItem;
-import com.thesquadmc.networktools.utils.inventory.builder.MenuManager;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -15,13 +14,10 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Collection;
 
-public class StaffMenuBuilder extends Menu {
+class StaffMenuBuilder extends Menu {
 
-    private final Multimap<Rank, StaffCommand.StaffListInfo> staffList;
-
-    public StaffMenuBuilder(int size, Multimap<Rank, StaffCommand.StaffListInfo> staffList) {
+    StaffMenuBuilder(Multimap<Rank, StaffCommand.StaffListInfo> staffList, int size, boolean showVanished) {
         super("Staff Online", size);
-        this.staffList = staffList;
 
         staffList.keySet().stream()
                 .sorted(Enum::compareTo)
@@ -29,11 +25,7 @@ public class StaffMenuBuilder extends Menu {
                     Collection<StaffCommand.StaffListInfo> infos = staffList.get(rank);
 
                     infos.stream()
-                            .filter(staffListInfo -> {
-                                System.out.println(staffListInfo.isVanished());
-
-                                return !staffListInfo.isVanished();
-                            })
+                            .filter(staffListInfo -> showVanished || !staffListInfo.isVanished())
                             .forEach(info -> addMenuItem(new MenuItem() {
                                 @Override
                                 public ItemStack getItem(Player player) {

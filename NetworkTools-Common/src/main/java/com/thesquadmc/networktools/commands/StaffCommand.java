@@ -10,13 +10,11 @@ import com.thesquadmc.networktools.utils.enums.EnumUtil;
 import com.thesquadmc.networktools.utils.enums.Rank;
 import com.thesquadmc.networktools.utils.inventory.InventorySize;
 import com.thesquadmc.networktools.utils.json.JSONUtils;
+import com.thesquadmc.networktools.utils.player.PlayerUtils;
 import com.thesquadmc.networktools.utils.time.TimeUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.inventory.Inventory;
 
-import java.util.Collection;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public final class StaffCommand {
 
@@ -29,37 +27,30 @@ public final class StaffCommand {
         this.plugin = plugin;
     }
 
-    @Command(name = {"staff"})
+    @Command(name = {"staff"}, playerOnly = true)
     public void staff(CommandArgs args) {
-        if (args.isPlayer()) {
-            if (lastRetrived == 0 || TimeUtils.elapsed(lastRetrived, 10 * 1000)) {
-                staffList.clear();
-                lastRetrived = System.currentTimeMillis();
+        if (lastRetrived == 0 || TimeUtils.elapsed(lastRetrived, 10 * 1000)) {
+            staffList.clear();
+            lastRetrived = System.currentTimeMillis();
 
-                plugin.getRedisManager().executeJedisAsync(jedis -> {
-                    Map<String, String> staff = jedis.hgetAll("staff");
+            plugin.getRedisManager().executeJedisAsync(jedis -> {
+                Map<String, String> staff = jedis.hgetAll("staff");
 
-                    Bukkit.getScheduler().runTask(plugin, () -> {
-                        System.out.println(staff);
-                        staff.forEach((name, data) -> {
-                            JsonObject object = JSONUtils.parseObject(data);
+                Bukkit.getScheduler().runTask(plugin, () -> {
+                    staff.forEach((name, data) -> {
+                        JsonObject object = JSONUtils.parseObject(data);
 
-                            String server = object.get("server").getAsString();
-                            Rank rank = EnumUtil.getEnum(Rank.class, object.get("rank").getAsString());
-                            boolean vanished = object.get("vanished").getAsBoolean();
+                        String server = object.get("server").getAsString();
+                        Rank rank = EnumUtil.getEnum(Rank.class, object.get("rank").getAsString());
+                        boolean vanished = object.get("vanished").getAsBoolean();
 
-                            staffList.put(rank, new StaffListInfo(name, server, rank, vanished));
-                        });
-
-                        int size = staffList.keys().size();
-                        new StaffMenuBuilder(InventorySize.getSize(size), staffList).build(args.getPlayer());
+                        staffList.put(rank, new StaffListInfo(name, server, rank, vanished));
                     });
-                });
 
-            } else {
-                int size = staffList.keys().size();
-                new StaffMenuBuilder(InventorySize.getSize(size), staffList).build(args.getPlayer());
-            }
+                    int size = staffList.keys().size();
+                    new StaffMenuBuilder(staffList, InventorySize.getSize(size), PlayerUtils.isEqualOrHigherThen(args.getPlayer(), Rank.TRAINEE)).build(args.getPlayer());
+                });
+            });
         }
     }
 

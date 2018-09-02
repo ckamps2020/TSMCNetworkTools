@@ -1,7 +1,6 @@
 package com.thesquadmc.networktools.chat;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.mongodb.bulk.BulkWriteResult;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.BulkWriteOptions;
@@ -22,6 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class ChatManager {
@@ -31,7 +31,7 @@ public class ChatManager {
     private final NetworkTools plugin;
     private final Queue<ChatMessage> chatMessages = new ConcurrentLinkedDeque<>();
 
-    private final Map<Integer, ChatFormat> formats = Maps.newTreeMap();
+    private final Map<Integer, ChatFormat> formats = new TreeMap<>();
     private YamlConfiguration chatConfig;
 
     private boolean silenced = false;
@@ -130,10 +130,13 @@ public class ChatManager {
     }
 
     public ChatFormat getPlayerFormat(final Player player) {
+        System.out.println("trying to find format for " + player.getName());
         ChatFormat format = null;
 
         for (final ChatFormat format1 : getFormats().values()) {
+            System.out.println(format1.getKey());
             if (hasPermission(player, "chatformat." + format1.getKey())) {
+                System.out.println(format1.getKey() + " picked!");
                 format = format1;
                 break;
             }
