@@ -11,8 +11,10 @@ import com.thesquadmc.networktools.NetworkTools;
 import com.thesquadmc.networktools.chat.listener.ChatListener;
 import com.thesquadmc.networktools.utils.file.FileUtils;
 import com.thesquadmc.networktools.utils.server.Multithreading;
-import me.lucko.luckperms.api.Node;
+import me.lucko.luckperms.api.Contexts;
+import me.lucko.luckperms.api.Tristate;
 import me.lucko.luckperms.api.User;
+import me.lucko.luckperms.api.caching.PermissionData;
 import org.bson.Document;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -132,24 +134,16 @@ public class ChatManager {
     }
 
     public ChatFormat getPlayerFormat(final Player player) {
-        System.out.println("trying to find format for " + player.getName());
         ChatFormat format = null;
 
         for (final ChatFormat format1 : getFormats().values()) {
-            System.out.println(format1.getKey());
-            player.getEffectivePermissions().forEach(permissionAttachmentInfo -> {
-                if (permissionAttachmentInfo.getPermission().startsWith("chatformat")) {
-                    System.out.println(permissionAttachmentInfo.getPermission());
-                }
-            });
-
             User user = plugin.getLuckPermsApi().getUser(player.getUniqueId());
-            for (Node permission : user.getPermissions()) {
-                if (permission.getPermission().equalsIgnoreCase("chatformat." + format1.getKey())) {
-                    System.out.println(format1.getKey() + " picked!");
-                    format = format1;
-                    break;
-                }
+            PermissionData permissionData = user.getCachedData().getPermissionData(Contexts.allowAll());
+
+            Tristate result = permissionData.getPermissionValue("chatformat." + format1.getKey());
+            if (result.asBoolean()) {
+                format = format1;
+                break;
             }
         }
 
