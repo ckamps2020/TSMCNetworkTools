@@ -134,7 +134,7 @@ public final class ConnectionListeners implements Listener {
                 object.add("rank", JSONUtils.getGson().toJsonTree(PlayerUtils.getStaffRank(player).name()));
                 object.add("vanished", JSONUtils.getGson().toJsonTree(user.getSetting(PlayerSetting.VANISHED) || user.getSetting(PlayerSetting.YOUTUBE_VANISHED)));
 
-                jedis.hset("staff", player.getName(), object.toString());
+                jedis.hset("staff", user.getName(), object.toString());
             });
         }
 

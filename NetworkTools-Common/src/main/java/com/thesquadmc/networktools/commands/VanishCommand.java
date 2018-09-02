@@ -89,7 +89,7 @@ public final class VanishCommand implements CommandExecutor {
             object.add("rank", JSONUtils.getGson().toJsonTree(PlayerUtils.getStaffRank(player).name()));
             object.add("vanished", JSONUtils.getGson().toJsonTree(false));
 
-            jedis.hset("staff", player.getName(), object.toString());
+            jedis.hset("staff", user.getName(), object.toString());
         });
     }
 
@@ -107,7 +107,7 @@ public final class VanishCommand implements CommandExecutor {
             object.add("rank", JSONUtils.getGson().toJsonTree(PlayerUtils.getStaffRank(player).name()));
             object.add("vanished", JSONUtils.getGson().toJsonTree(true));
 
-            jedis.hset("staff", player.getName(), object.toString());
+            jedis.hset("staff", user.getName(), object.toString());
         });
     }
 
