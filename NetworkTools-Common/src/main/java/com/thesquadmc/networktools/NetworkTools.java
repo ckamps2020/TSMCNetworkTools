@@ -231,8 +231,8 @@ public final class NetworkTools extends JavaPlugin {
         updateHandler.run();
 
         localPlayerManager = new LocalPlayerManager();
-        kitManager = new KitManager(this);
-        warpManager = new WarpManager(this);
+        //kitManager = new KitManager(this);
+        //warpManager = new WarpManager(this);
         chatManager = new ChatManager(this);
         hologramManager = new HologramManager();
         npcManager = new NPCManager();
@@ -322,20 +322,19 @@ public final class NetworkTools extends JavaPlugin {
         }
 
         nametagEdit.onDisable();
-        warpManager.saveWarps();
-        kitManager.saveKits();
+        //warpManager.saveWarps();
+        //kitManager.saveKits();
         redisManager.close();
         getLogger().info("Shut down! Cya :D");
     }
 
-    private boolean setupPermissions() {
+    private void setupPermissions() {
         RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
         if (rsp == null) {
-            return false;
+            return;
         }
 
         vaultPermissions = rsp.getProvider();
-        return vaultPermissions != null;
     }
 
     public MenuManager getMenuManager() {
