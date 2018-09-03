@@ -128,7 +128,6 @@ public final class ConnectionListeners implements Listener {
             if (user.getSetting(PlayerSetting.SOCIALSPY)) user.updateSetting(PlayerSetting.SOCIALSPY, false);
             if (user.getSetting(PlayerSetting.FORCEFIELD)) user.updateSetting(PlayerSetting.FORCEFIELD, false);
 
-            System.out.println("is not staff");
         } else {
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 plugin.getRedisManager().executeJedisAsync(jedis -> {
@@ -138,7 +137,6 @@ public final class ConnectionListeners implements Listener {
                     object.add("vanished", JSONUtils.getGson().toJsonTree(user.getSetting(PlayerSetting.VANISHED) || user.getSetting(PlayerSetting.YOUTUBE_VANISHED)));
 
                     jedis.hset("staff", user.getName(), object.toString());
-                    jedis.hgetAll("staff").forEach((s, s2) -> System.out.println(s + " : " + s2));
                 });
             }, 2 * 20); //Move this to BungeeCord
         }
