@@ -51,6 +51,10 @@ public final class StaffCommand {
                     new StaffMenuBuilder(staffList, InventorySize.getSize(size), PlayerUtils.isEqualOrHigherThen(args.getPlayer(), Rank.TRAINEE)).build(args.getPlayer());
                 });
             });
+
+        } else {
+            int size = staffList.keys().size();
+            new StaffMenuBuilder(staffList, InventorySize.getSize(size), PlayerUtils.isEqualOrHigherThen(args.getPlayer(), Rank.TRAINEE)).build(args.getPlayer());
         }
     }
 
