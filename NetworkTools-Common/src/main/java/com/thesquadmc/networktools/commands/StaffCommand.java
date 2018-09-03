@@ -37,6 +37,8 @@ public final class StaffCommand {
             plugin.getRedisManager().executeJedisAsync(jedis -> {
                 Map<String, String> staff = jedis.hgetAll("staff");
 
+                System.out.println(staff);
+
                 Bukkit.getScheduler().runTask(plugin, () -> {
                     staff.forEach((name, data) -> {
                         JsonObject object = JSONUtils.parseObject(data);

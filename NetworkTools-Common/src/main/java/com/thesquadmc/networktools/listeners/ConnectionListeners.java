@@ -130,15 +130,17 @@ public final class ConnectionListeners implements Listener {
 
             System.out.println("is not staff");
         } else {
-            plugin.getRedisManager().executeJedisAsync(jedis -> {
-                JsonObject object = new JsonObject();
-                object.add("server", JSONUtils.getGson().toJsonTree(Bukkit.getServerName()));
-                object.add("rank", JSONUtils.getGson().toJsonTree(PlayerUtils.getStaffRank(player).name()));
-                object.add("vanished", JSONUtils.getGson().toJsonTree(user.getSetting(PlayerSetting.VANISHED) || user.getSetting(PlayerSetting.YOUTUBE_VANISHED)));
+            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                plugin.getRedisManager().executeJedisAsync(jedis -> {
+                    JsonObject object = new JsonObject();
+                    object.add("server", JSONUtils.getGson().toJsonTree(Bukkit.getServerName()));
+                    object.add("rank", JSONUtils.getGson().toJsonTree(PlayerUtils.getStaffRank(player).name()));
+                    object.add("vanished", JSONUtils.getGson().toJsonTree(user.getSetting(PlayerSetting.VANISHED) || user.getSetting(PlayerSetting.YOUTUBE_VANISHED)));
 
-                jedis.hset("staff", user.getName(), object.toString());
-                System.out.println("setting to staff");
-            });
+                    jedis.hset("staff", user.getName(), object.toString());
+                    jedis.hgetAll("staff").forEach((s, s2) -> System.out.println(s + " : " + s2));
+                });
+            }, 2 * 20); //Move this to BungeeCord
         }
 
         MojangGameProfile profile = plugin.getNMSAbstract().getGameProfile(player);
