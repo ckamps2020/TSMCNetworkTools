@@ -10,6 +10,7 @@ import com.thesquadmc.networktools.utils.enums.EnumUtil;
 import com.thesquadmc.networktools.utils.enums.Rank;
 import com.thesquadmc.networktools.utils.inventory.InventorySize;
 import com.thesquadmc.networktools.utils.json.JSONUtils;
+import com.thesquadmc.networktools.utils.msgs.CC;
 import com.thesquadmc.networktools.utils.player.PlayerUtils;
 import com.thesquadmc.networktools.utils.time.TimeUtils;
 import org.bukkit.Bukkit;
@@ -48,12 +49,20 @@ public final class StaffCommand {
                     });
 
                     int size = staffList.keys().size();
+                    if (size <= 0) {
+                        args.getPlayer().sendMessage(CC.RED + "There are no staff online :(");
+                        return;
+                    }
                     new StaffMenuBuilder(staffList, InventorySize.getSize(size), PlayerUtils.isEqualOrHigherThen(args.getPlayer(), Rank.TRAINEE)).build(args.getPlayer());
                 });
             });
 
         } else {
             int size = staffList.keys().size();
+            if (size <= 0) {
+                args.getPlayer().sendMessage(CC.RED + "There are no staff online :(");
+                return;
+            }
             new StaffMenuBuilder(staffList, InventorySize.getSize(size), PlayerUtils.isEqualOrHigherThen(args.getPlayer(), Rank.TRAINEE)).build(args.getPlayer());
         }
     }
