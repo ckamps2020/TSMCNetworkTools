@@ -127,6 +127,8 @@ public final class ConnectionListeners implements Listener {
                 user.updateSetting(PlayerSetting.YOUTUBE_VANISHED, false);
             if (user.getSetting(PlayerSetting.SOCIALSPY)) user.updateSetting(PlayerSetting.SOCIALSPY, false);
             if (user.getSetting(PlayerSetting.FORCEFIELD)) user.updateSetting(PlayerSetting.FORCEFIELD, false);
+
+            System.out.println("is not staff");
         } else {
             plugin.getRedisManager().executeJedisAsync(jedis -> {
                 JsonObject object = new JsonObject();
@@ -135,6 +137,7 @@ public final class ConnectionListeners implements Listener {
                 object.add("vanished", JSONUtils.getGson().toJsonTree(user.getSetting(PlayerSetting.VANISHED) || user.getSetting(PlayerSetting.YOUTUBE_VANISHED)));
 
                 jedis.hset("staff", user.getName(), object.toString());
+                System.out.println("setting to staff");
             });
         }
 
