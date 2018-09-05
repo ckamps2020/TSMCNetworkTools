@@ -11,8 +11,10 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class KitManager {
 
@@ -32,14 +34,14 @@ public class KitManager {
         for (File loadFile : files) {
             if (!loadFile.exists()) continue;
 
-            YamlConfiguration config = new YamlConfiguration();
+            YamlConfiguration kit = new YamlConfiguration();
 
             try {
-                config.load(loadFile);
+                kit.load(loadFile);
 
-                String name = config.getString("name");
-                long cooldown = config.getLong("cooldwon");
-                List<ItemStack> items = (List<ItemStack>) config.getList("items");
+                String name = kit.getString("name");
+                long cooldown = kit.getLong("cooldwon");
+                List<ItemStack> items = (List<ItemStack>) kit.getList("items");
 
                 addKit(new Kit(name, cooldown, items));
             } catch (InvalidConfigurationException | IOException e) {
@@ -61,7 +63,11 @@ public class KitManager {
             YamlConfiguration config = new YamlConfiguration();
             config.set("name", kit.getName());
             config.set("cooldown", kit.getCooldown());
-            config.set("items", kit.getItems());
+
+            List<Map<String, Object>> items = kit.getItems().stream()
+                    .map(ItemStack::serialize)
+                    .collect(Collectors.toList());
+            config.set("items", items);
 
             try {
                 config.save(kitFile);
@@ -73,6 +79,10 @@ public class KitManager {
 
     public void addKit(Kit kit) {
         kits.add(kit);
+    }
+
+    public void clearKits() {
+        kits.clear();
     }
 
     public void removeKit(Kit kit) {

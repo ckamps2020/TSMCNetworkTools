@@ -36,6 +36,7 @@ public final class AlertCommand implements CommandExecutor {
                     player.sendMessage(CC.translate("  &7Message: &e" + stringBuilder.toString()));
 
                     networkTools.getRedisManager().sendMessage(RedisChannels.ANNOUNCEMENT, RedisMesage.newMessage()
+                            .set("sender", player.getName())
                             .set(RedisArg.SERVER, server.toUpperCase())
                             .set(RedisArg.MESSAGE, stringBuilder.toString()));
                 } else {

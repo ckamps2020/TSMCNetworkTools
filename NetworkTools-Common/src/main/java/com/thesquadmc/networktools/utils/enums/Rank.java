@@ -5,30 +5,30 @@ package com.thesquadmc.networktools.utils.enums;
  */
 public enum Rank {
 
-    TRAINEE("TRAINEE", 1),
-    HELPER("HELPER", 2),
-    MOD("MOD", 3),
-    SRMOD("SRMOD", 4),
-    ADMIN("ADMIN", 5),
-    YOUTUBE("YOUTUBE", 6),
-    MANAGER("MANAGER", 7),
-    DEVELOPER("DEVELOPER", 8),
-    OWNER("OWNER", 9),;
+    OWNER(1, "&c&lOWNER"),
+    DEVELOPER(2, "&c&lDEV"),
+    MANAGER(3, "&c&lMANAGER"),
+    YOUTUBE(4, "&f&lYOU&cTube"),
+    ADMIN(5, "&c&lADMIN"),
+    SRMOD(6, "&5&lSR MOD"),
+    MOD(7, "&5MOD"),
+    HELPER(8, "&b&lCHAT MOD"),
+    TRAINEE(9, "&a&lTRAINEE"),
+    DEFAULT(10, "&7Default");
 
-    private String name;
-    private int priority;
+    private final int priority;
+    private final String prefix;
 
-    Rank(String name, int priority) {
-        this.name = name;
+    Rank(int priority, String prefix) {
         this.priority = priority;
-    }
-
-    public String getName() {
-        return name;
+        this.prefix = prefix;
     }
 
     public int getPriority() {
         return priority;
     }
 
+    public String getPrefix() {
+        return prefix;
+    }
 }

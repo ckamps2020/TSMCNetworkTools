@@ -1,5 +1,6 @@
 package com.thesquadmc.networktools.listeners;
 
+import com.google.gson.JsonObject;
 import com.thesquadmc.networktools.NetworkTools;
 import com.thesquadmc.networktools.abstraction.MojangGameProfile;
 import com.thesquadmc.networktools.player.PlayerSetting;
@@ -126,6 +127,18 @@ public final class ConnectionListeners implements Listener {
                 user.updateSetting(PlayerSetting.YOUTUBE_VANISHED, false);
             if (user.getSetting(PlayerSetting.SOCIALSPY)) user.updateSetting(PlayerSetting.SOCIALSPY, false);
             if (user.getSetting(PlayerSetting.FORCEFIELD)) user.updateSetting(PlayerSetting.FORCEFIELD, false);
+
+        } else {
+            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                plugin.getRedisManager().executeJedisAsync(jedis -> {
+                    JsonObject object = new JsonObject();
+                    object.add("server", JSONUtils.getGson().toJsonTree(Bukkit.getServerName()));
+                    object.add("rank", JSONUtils.getGson().toJsonTree(PlayerUtils.getStaffRank(player).name()));
+                    object.add("vanished", JSONUtils.getGson().toJsonTree(user.getSetting(PlayerSetting.VANISHED) || user.getSetting(PlayerSetting.YOUTUBE_VANISHED)));
+
+                    jedis.hset("staff", user.getName(), object.toString());
+                });
+            }, 2 * 20); //Move this to BungeeCord
         }
 
         MojangGameProfile profile = plugin.getNMSAbstract().getGameProfile(player);
@@ -167,6 +180,10 @@ public final class ConnectionListeners implements Listener {
 
         TSMCUser user = TSMCUser.fromPlayer(player);
         TSMCUser.unloadUser(user, true);
+
+        plugin.getRedisManager().executeJedisAsync(jedis -> {
+            jedis.hdel("staff", user.getName());
+        });
 
         LocalPlayer localPlayer = plugin.getLocalPlayerManager().removePlayer(player);
         Multithreading.runAsync(() -> {
