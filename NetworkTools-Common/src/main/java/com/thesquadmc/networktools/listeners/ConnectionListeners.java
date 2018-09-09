@@ -20,6 +20,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import redis.clients.jedis.exceptions.JedisDataException;
 
 import java.io.File;
 import java.io.FileReader;
@@ -182,8 +183,12 @@ public final class ConnectionListeners implements Listener {
 
         String name = user.getName();
         plugin.getRedisManager().executeJedisAsync(jedis -> {
-            if (jedis.hexists("staff", name)) {
-                jedis.hdel("staff", name);
+            try {
+                if (jedis.hexists("staff", name)) {
+                    jedis.hdel("staff", name);
+                }
+
+            } catch (JedisDataException ignored) {
             }
         });
 
