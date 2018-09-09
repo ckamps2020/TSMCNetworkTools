@@ -182,6 +182,7 @@ public final class ConnectionListeners implements Listener {
 
         String name = user.getName();
         plugin.getRedisManager().executeJedisAsync(jedis -> {
+            System.out.println(name);
             if (jedis.hexists("staff", name)) {
                 jedis.hdel("staff", name);
             }
