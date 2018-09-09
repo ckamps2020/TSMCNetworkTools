@@ -25,9 +25,6 @@ public class RedisPubSub extends JedisPubSub {
             RedisChannel redisChannel = redisManager.getChannels().get(channel);
             if (redisChannel != null) {
                 redisChannel.handle(channel, object);
-            } else {
-                System.out.println(object.get("channel").getAsString());
-                System.out.println(redisManager.getChannels().keySet());
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -36,7 +33,6 @@ public class RedisPubSub extends JedisPubSub {
 
     void subscribe(RedisChannel listener, String... channels) {
         Preconditions.checkState(connected, "PubSub has not been subscribed!");
-        System.out.println("attempting to subscribe");
 
         try {
             super.subscribe(channels);
