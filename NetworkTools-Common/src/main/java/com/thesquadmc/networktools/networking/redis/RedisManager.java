@@ -1,18 +1,12 @@
 package com.thesquadmc.networktools.networking.redis;
 
 import com.google.common.base.Preconditions;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
 import com.thesquadmc.networktools.NetworkTools;
-import com.thesquadmc.networktools.utils.json.JSONUtils;
-import com.thesquadmc.networktools.utils.msgs.CC;
 import com.thesquadmc.networktools.utils.server.Multithreading;
 import org.bukkit.Bukkit;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
-import redis.clients.jedis.JedisPubSub;
-import redis.clients.jedis.exceptions.JedisConnectionException;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -25,17 +19,13 @@ public class RedisManager {
 
     private final JedisPoolConfig config;
     private final JedisPool pool;
-
-    private final String host;
-    private final String pass;
-    private final int port;
+    private final RedisPubSub pubSub;
 
     private final Map<String, RedisChannel> channels = new ConcurrentHashMap<>();
 
     public RedisManager(String host, int port, String pass) {
-        this.host = host;
-        this.pass = pass;
-        this.port = port;
+        ClassLoader previous = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
 
         int maxConnections = 200;
         config = new JedisPoolConfig();
@@ -45,72 +35,21 @@ public class RedisManager {
         config.setTestOnReturn(true);
         config.setTestWhileIdle(true);
 
-        if (!pass.isEmpty()) {
-            this.pool = new JedisPool(config, host, port, 40 * 1000, pass);
-        } else {
-            this.pool = new JedisPool(config, host, port, 40 * 1000);
-        }
+        this.pool = new JedisPool(config, host, port, 40 * 1000, pass);
+        Thread.currentThread().setContextClassLoader(previous);
 
-        new Thread(this::run, "Redis Subscriber Thread").start();
+        Jedis redisSubscriber = pool.getResource(); //Do not remove this line, it breaks Redis if you do!!!
+        pubSub = new RedisPubSub();
+
+        Multithreading.runAsync(() -> {
+            try (Jedis jedis = pool.getResource()) {
+                jedis.subscribe(pubSub, "networktools");
+            }
+        });
 
         Bukkit.getScheduler().runTaskTimerAsynchronously(NetworkTools.getInstance(), () -> System.out.println(getPoolCurrentUsage()), 0L, 20 * 60 * 5);
     }
 
-    private void run() {
-        int secs = 1;
-        while (true) {
-            Jedis subscriber = null;
-            try {
-                subscriber = new Jedis(host, port);
-                subscriber.auth(pass);
-
-                secs = 1;
-                subscriber.subscribe(new JedisPubSub() {
-                    @Override
-                    public void onMessage(String channel, String message) {
-                        try {
-                            JsonObject object = JSONUtils.parseObject(message);
-                            if (!object.has("channel")) {
-                                //TODO Legacy support (can remove once deployed on all servers)
-                                object = object.getAsJsonObject("message");
-                            }
-
-                            String subchannel = object.get("channel").getAsString();
-
-                            RedisChannel rc = channels.get(subchannel);
-                            if (rc != null) {
-                                rc.handle(subchannel, object);
-                            }
-
-                        } catch (JsonSyntaxException | NullPointerException e) {
-                            e.printStackTrace();
-                            System.out.println("Could not process Redis message: " + message);
-                        }
-                    }
-                }, "networktools");
-
-            } catch (JedisConnectionException e) {
-                if (subscriber != null) {
-                    subscriber.close();
-                }
-
-                NetworkTools.getInstance().getLogger().severe("Lost Redis connection, going to retry in " + secs + " seconds...");
-                Bukkit.broadcast(CC.B_RED + " ", "group.trainee");
-                Bukkit.broadcast(CC.B_RED + " ", "group.trainee");
-                Bukkit.broadcast(CC.B_RED + "Lost Redis connection, going to retry in " + secs + " seconds...", "group.trainee");
-                Bukkit.broadcast(CC.B_RED + "Server: " + Bukkit.getServerName(), "group.trainee");
-
-                Bukkit.broadcast(CC.B_RED + " ", "group.trainee");
-                Bukkit.broadcast(CC.B_RED + " ", "group.trainee");
-                try {
-                    Thread.sleep(secs * 1000);
-                } catch (InterruptedException e1) {
-                    return;
-                }
-                secs += secs;
-            }
-        }
-    }
     public void sendMessage(String channel, RedisMesage message) {
         message.set("channel", channel);
 

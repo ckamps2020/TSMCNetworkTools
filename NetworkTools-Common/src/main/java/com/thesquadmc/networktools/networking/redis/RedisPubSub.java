@@ -22,9 +22,9 @@ public class RedisPubSub extends JedisPubSub {
         try {
             JsonObject object = JSONUtils.parseObject(message);
 
-            RedisChannel redisChannel = listeners.get(channel);
+            RedisChannel redisChannel = listeners.get(object.get("channel").getAsString());
             if (redisChannel != null) {
-                redisChannel.handle(channel, object.getAsJsonObject("message"));
+                redisChannel.handle(channel, object);
             }
         } catch (Exception e) {
             e.printStackTrace();
