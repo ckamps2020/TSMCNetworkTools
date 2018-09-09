@@ -182,7 +182,9 @@ public final class ConnectionListeners implements Listener {
         TSMCUser.unloadUser(user, true);
 
         plugin.getRedisManager().executeJedisAsync(jedis -> {
-            jedis.hdel("staff", user.getName());
+            if (jedis.hexists("staff", user.getName())) {
+                jedis.hdel("staff", user.getName());
+            }
         });
 
         LocalPlayer localPlayer = plugin.getLocalPlayerManager().removePlayer(player);
