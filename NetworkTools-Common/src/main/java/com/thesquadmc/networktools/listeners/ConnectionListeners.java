@@ -179,9 +179,11 @@ public final class ConnectionListeners implements Listener {
         }
 
         TSMCUser user = TSMCUser.fromPlayer(player);
+
+        String name = user.getName();
         plugin.getRedisManager().executeJedisAsync(jedis -> {
-            if (jedis.hexists("staff", user.getName())) {
-                jedis.hdel("staff", user.getName());
+            if (jedis.hexists("staff", name)) {
+                jedis.hdel("staff", name);
             }
         });
 
