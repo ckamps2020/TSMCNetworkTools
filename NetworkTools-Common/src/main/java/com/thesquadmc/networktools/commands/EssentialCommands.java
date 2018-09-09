@@ -623,7 +623,7 @@ public class EssentialCommands {
 
     @Command(name = {"channels"}, permission = "group.trainee")
     public void channels(CommandArgs args) {
-        Collection<String> channels = plugin.getRedisManager().getChannels();
+        Collection<String> channels = plugin.getRedisManager().getChannels().keySet();
 
         args.getSender().sendMessage(CC.translate("&e&lCHANNELS &6■ &7Channels ({0}): &e{1}", channels.size(), String.join(", ", channels)));
     }

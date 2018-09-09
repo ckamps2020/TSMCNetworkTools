@@ -1,6 +1,7 @@
 package com.thesquadmc.networktools.networking.redis;
 
 import com.google.common.base.Preconditions;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.thesquadmc.networktools.NetworkTools;
 import com.thesquadmc.networktools.utils.server.Multithreading;
 import org.bukkit.Bukkit;
@@ -8,14 +9,15 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
-import java.util.Arrays;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
 public class RedisManager {
 
+    private final ExecutorService subscriberExecutor = Executors.newSingleThreadExecutor(new ThreadFactoryBuilder().setNameFormat("Redis Subscriber").build());
 
     private final JedisPoolConfig config;
     private final JedisPool pool;
@@ -39,7 +41,7 @@ public class RedisManager {
         Thread.currentThread().setContextClassLoader(previous);
 
         Jedis redisSubscriber = pool.getResource(); //Do not remove this line, it breaks Redis if you do!!!
-        pubSub = new RedisPubSub();
+        pubSub = new RedisPubSub(this);
 
         Multithreading.runAsync(() -> {
             try (Jedis jedis = pool.getResource()) {
@@ -73,11 +75,13 @@ public class RedisManager {
     public void registerChannel(RedisChannel redisChannel, String... channels) {
         Preconditions.checkNotNull(redisChannel, "RedisChannel cannot be null!");
 
-        Arrays.stream(channels).forEach(s -> this.channels.put(s, redisChannel));
+        for (String channel : channels) {
+            this.channels.put(channel, redisChannel);
+        }
     }
 
-    public Set<String> getChannels() {
-        return channels.keySet();
+    public Map<String, RedisChannel> getChannels() {
+        return channels;
     }
 
     public Jedis getResource() {
@@ -89,7 +93,7 @@ public class RedisManager {
         int idle = pool.getNumIdle();
         int total = active + idle;
         return String.format(
-                "Active=%d, Idle=%d, Waiters=%d, total=%d, maxTotal=%d, minIdle=%d, maxIdle=%d, subbed=%s",
+                "Active=%d, Idle=%d, Waiters=%d, total=%d, maxTotal=%d, minIdle=%d, maxIdle=%d, subbed=%s, amount=%d",
                 active,
                 idle,
                 pool.getNumWaiters(),
@@ -97,7 +101,8 @@ public class RedisManager {
                 config.getMaxTotal(),
                 config.getMinIdle(),
                 config.getMaxIdle(),
-                channels.keySet()
+                channels.keySet(),
+                pubSub.getSubscribedChannels()
         );
     }
 }

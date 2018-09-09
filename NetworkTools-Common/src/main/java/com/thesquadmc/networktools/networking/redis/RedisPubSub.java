@@ -7,36 +7,39 @@ import redis.clients.jedis.Client;
 import redis.clients.jedis.JedisPubSub;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 
-import java.util.Arrays;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 public class RedisPubSub extends JedisPubSub {
 
-    private final Map<String, RedisChannel> listeners = new ConcurrentHashMap<>();
-
+    private final RedisManager redisManager;
     private boolean connected = false;
 
+    RedisPubSub(RedisManager redisManager) {
+        this.redisManager = redisManager;
+    }
+
     @Override
-    public void onMessage(String channel, String message) {
+    public void onMessage(String rChannel, String message) {
         try {
             JsonObject object = JSONUtils.parseObject(message);
 
-            RedisChannel redisChannel = listeners.get(object.get("channel").getAsString());
+            String channel = object.get("channel").getAsString();
+            RedisChannel redisChannel = redisManager.getChannels().get(channel);
             if (redisChannel != null) {
                 redisChannel.handle(channel, object);
+            } else {
+                System.out.println(object.get("channel").getAsString());
+                System.out.println(redisManager.getChannels().keySet());
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void subscribe(RedisChannel listener, String... channels) {
+    void subscribe(RedisChannel listener, String... channels) {
         Preconditions.checkState(connected, "PubSub has not been subscribed!");
+        System.out.println("attempting to subscribe");
 
         try {
             super.subscribe(channels);
-            Arrays.stream(channels).forEach(s -> listeners.put(s, listener));
         } catch (JedisConnectionException e) {
             e.printStackTrace();
         }
@@ -46,7 +49,6 @@ public class RedisPubSub extends JedisPubSub {
     public void unsubscribe(String... channels) {
         Preconditions.checkState(connected, "PubSub has not been subscribed!");
 
-        Arrays.stream(channels).forEach(listeners::remove);
         super.unsubscribe(channels);
     }
 
@@ -54,7 +56,6 @@ public class RedisPubSub extends JedisPubSub {
     public void unsubscribe() {
         Preconditions.checkState(connected, "PubSub has not been subscribed!");
 
-        listeners.clear();
         super.unsubscribe();
     }
 
@@ -68,13 +69,5 @@ public class RedisPubSub extends JedisPubSub {
         connected = true;
 
         super.proceed(client, channels);
-    }
-
-    // #subscribe requires a String array
-    public String[] getChannels() {
-        String[] subbed = new String[listeners.size()];
-        subbed = listeners.keySet().toArray(subbed);
-
-        return subbed;
     }
 }
